@@ -10,9 +10,7 @@ import {
 import { useKeycloak } from "@react-keycloak/web";
 
 export default function ApolloAuthProvider({ children }) {
-  console.log("CALLED");
   const { initialized, keycloak } = useKeycloak();
-  console.log(initialized);
   const httpLink = new HttpLink({
     uri: "http://localhost:4000/graphql",
   });

@@ -8,4 +8,6 @@ const keycloak = new Keycloak({
   clientId: process.env.REACT_APP_SSO_CLIENT_ID,
 });
 
+console.log(process.env.REACT_APP_SSO_URL)
+
 export default keycloak;
