@@ -12,13 +12,12 @@ import { useKeycloak } from "@react-keycloak/web";
 export default function ApolloAuthProvider({ children }) {
   const { initialized, keycloak } = useKeycloak();
   const httpLink = new HttpLink({
-    uri: "http://localhost:4000/graphql",
+    uri: process.env.REACT_APP_API_URL,
   });
 
   const authMiddleware = new ApolloLink((operation, forward) => {
     const bearerToken = keycloak.authenticated ? keycloak.token : "";
 
-    // add the authorization to the headers
     operation.setContext(({ headers = {} }) => ({
       headers: {
         ...headers,

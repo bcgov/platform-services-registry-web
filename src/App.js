@@ -1,68 +1,33 @@
-import logo from "./logo.svg";
+import * as React from "react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "./App.css";
-import { useQuery, gql } from "@apollo/client";
+import DenseAppBar from "./components/AppBar";
+import Home from "./pages/Home"
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
-const USERS = gql`
-  query GetUsers {
-    users {
-      id
-      firstName
-    }
-  }
-`;
+const theme = createTheme({
+  typography: {
+    fontFamily: ["Roboto"].join(","),
+  },
+  palette: {
+    primary: {
+      main: "#003366",
+    },
+  },
+});
 
-const ME = gql`
-  query GetMe {
-    me {
-      id
-      firstName
-      lastName
-    }
-  }
-`;
-
-function Users() {
-  const { loading, error, data } = useQuery(USERS);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
-
-  return data.users.map(({ id, firstName }) => (
-    <div key={id}>
-      <p>
-        {id}
-        <br />
-        {firstName}
-      </p>
-    </div>
-  ));
-}
-
-function Me() {
-  const { loading, error, data } = useQuery(ME);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
-
-  return (
-    !!data.me && (<div>
-      {data.me.id}
-      <br />
-      {data.me.firstName}
-      <br />
-      {data.me.lastName}
-    </div>)
-  );
-}
 
 function App() {
   return (
-    <div>
-      <img src={logo} className="App-logo" alt="logo" />
-      <h2>My first Apollo app 🚀</h2>
-      <Users />
-      <Me/>
-    </div>
+    <ThemeProvider theme={theme}>
+      <div>
+        <DenseAppBar title={"Platform Services Project Registry"} />
+        <Home />
+      </div>
+    </ThemeProvider>
   );
 }
 
