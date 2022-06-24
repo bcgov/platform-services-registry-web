@@ -2,7 +2,6 @@ import * as React from "react";
 import { useQuery, gql } from "@apollo/client";
 import Table from "./Common/Table";
 import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
 
 const columns = [
   { id: "type", label: "Type", minWidth: 0 },
@@ -78,7 +77,6 @@ export default function Requests() {
           ))}
         </div>
       ),
-      ministry,
       status,
       type: <Chip style={{ borderRadius: 7 }} label={type} />,
     })
