@@ -1,9 +1,8 @@
 import React, { useCallback } from "react";
-import { useNavigate, useLocation, Navigate } from "react-router-dom";
+import { useLocation, Navigate } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 
 function LogIn() {
-  // let navigate = useNavigate();
   let location = useLocation();
   const { keycloak } = useKeycloak();
 
