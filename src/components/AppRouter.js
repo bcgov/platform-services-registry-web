@@ -1,10 +1,9 @@
-import { useKeycloak } from "@react-keycloak/web";
-
 import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-
+import { Route, Routes } from "react-router-dom";
+import { useKeycloak } from "@react-keycloak/web";
 import Home from "../pages/Home";
-import { PrivateRoute } from "../utilities/PrivateRoute";
+import LogIn from "../pages/LogIn";
+import RequireAuth from "./Utilities/RequireAuth";
 
 export const AppRouter = () => {
   const { initialized } = useKeycloak();
@@ -12,15 +11,19 @@ export const AppRouter = () => {
     return <h3>Loading ... </h3>;
   }
   return (
-      <BrowserRouter>
-        <Switch>
-          {/* <Route exact path="/" component={Home} /> */}
-          <PrivateRoute
-            // roles={["RealmAdmin"]}
-            path="/home"
-            component={Home}
-          />
-        </Switch>
-      </BrowserRouter>
+    <Routes>
+      <Route>
+        <Route path="/login" element={<LogIn />} />
+        <Route
+          path="/"
+          roles={[]}
+          element={
+            <RequireAuth>
+              <Home />
+            </RequireAuth>
+          }
+        />
+      </Route>
+    </Routes>
   );
 };

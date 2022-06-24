@@ -11,6 +11,7 @@
     "@mui/material": "^5.8.2",
     "@mui/styled-engine-sc": "^5.8.0",
     "@react-keycloak/web": "^3.4.0",
+    "@rebass/forms": "^4.0.6",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",
@@ -20,6 +21,7 @@
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "^4.0.0",
+    "rebass": "^4.0.7",
     "styled-components": "^5.3.5",
     "web-vitals": "^2.1.4"
   },

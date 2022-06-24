@@ -6,15 +6,17 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloak from "./keycloak";
-import ApolloLinkAuthProvider from "./ApolloLinkAuthProvider"
-
+import ApolloLinkAuthProvider from "./ApolloLinkAuthProvider";
+import { BrowserRouter } from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <ReactKeycloakProvider authClient={keycloak}>
     <ApolloLinkAuthProvider>
       <React.StrictMode>
-        <App />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </React.StrictMode>
     </ApolloLinkAuthProvider>
   </ReactKeycloakProvider>
