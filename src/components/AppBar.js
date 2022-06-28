@@ -25,7 +25,7 @@ export default function DenseAppBar({ title }) {
   }, [keycloak]);
 
   const style = {
-    "border-bottom": "2px solid #fcba19"
+    "borderBottom": "2px solid #fcba19"
   }
   return (
     <Box sx={{ flexGrow: 1 }}>
