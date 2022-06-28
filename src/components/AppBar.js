@@ -10,7 +10,6 @@ import Button from "@mui/material/Button";
 import styled from "styled-components";
 import { useKeycloak } from "@react-keycloak/web";
 import logoImage from "./Common/assets/bcid-symbol-rev.svg"
-import LogIn from "../pages/LogIn";
 
 const Logo = styled.img`
   max-width: 125px;

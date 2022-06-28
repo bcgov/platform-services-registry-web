@@ -1,7 +1,6 @@
 import React from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
-import Button from "@mui/material/Button";
 
 function LogIn() {
   let location = useLocation();
