@@ -24,9 +24,12 @@ export default function DenseAppBar({ title }) {
 
   }, [keycloak]);
 
+  const style = {
+    "border-bottom": "2px solid #fcba19"
+  }
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" style={style}>
         <Toolbar variant="dense">
         <Link to="/">
           <Logo alt="BC Gov Logo" src={logoImage} width="125px"/>
