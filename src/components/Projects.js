@@ -16,44 +16,38 @@ const columns = [
   { id: "licensePlate", label: "License Place", minWidth: 0 },
 ];
 
-export const ACTIVE_REQUEST_FIELDS = gql`
-  fragment ActiveRequestFields on Request {
+export const PROJECT_FIELDS = gql`
+  fragment ProjectFields on PrivateCloudProject {
     id
-    status
-    type
-    requestedProject {
-      name
-      description
-      projectOwner {
-        firstName
-        lastName
-      }
-      technicalLeads {
-        firstName
-        lastName
-      }
-      ... on PrivateCloudProject {
-        cluster
-      }
-      ministry
+    name
+    description
+    cluster
+    ministry
+    projectOwner {
+      firstName
+      lastName
+    }
+    technicalLeads {
+      firstName
+      lastName
     }
   }
 `;
 
-const USER_ACTIVE_REQUESTS = gql`
-  ${ACTIVE_REQUEST_FIELDS}
-  query UserPrivateCloudActiveRequests {
-    userPrivateCloudActiveRequests {
-      ...ActiveRequestFields
+const USER_PROJECTS = gql`
+  ${PROJECT_FIELDS}
+  query UserProjects {
+    privateCloudProjects {
+      ...ProjectFields
     }
   }
 `;
 
-const ALL_ACTIVE_REQUESTS = gql`
-  ${ACTIVE_REQUEST_FIELDS}
-  query PrivateCloudActiveRequests {
-    privateCloudActiveRequests {
-      ...ActiveRequestFields
+const ALL_PROJECTS = gql`
+  ${PROJECT_FIELDS}
+  query PrivateCloudProjects {
+    privateCloudProjects {
+      ...ProjectFields
     }
   }
 `;
@@ -62,27 +56,24 @@ export default function Requests() {
   const { admin, toggleAdmin } = useContext(AdminContext);
 
   const { loading, error, data } = useQuery(
-    admin ? ALL_ACTIVE_REQUESTS : USER_ACTIVE_REQUESTS
+    admin ? ALL_PROJECTS : USER_PROJECTS
   );
 
   if (loading) return "Loading...";
   if (error) return `Error! ${error.message}`;
   if (data === undefined) return <p>ERROR</p>;
 
-  const privateCloudActiveRequests = data?.privateCloudActiveRequests || data?.userPrivateCloudActiveRequests
+  const privateCloudProjects =
+    data?.privateCloudProjects || data?.userPrivateCloudProjects;
 
-  const rows = privateCloudActiveRequests.map(
+  const rows = privateCloudProjects.map(
     ({
-      status,
-      type,
-      requestedProject: {
-        name,
-        description,
-        projectOwner,
-        technicalLeads,
-        ministry,
-        cluster,
-      },
+      name,
+      description,
+      projectOwner,
+      technicalLeads,
+      ministry,
+      cluster,
     }) => ({
       name,
       description,
@@ -96,8 +87,6 @@ export default function Requests() {
           ))}
         </div>
       ),
-      status,
-      type: <Chip style={{ borderRadius: 7 }} label={type} />,
     })
   );
 
