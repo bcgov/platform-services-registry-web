@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "./App.css";
 import DenseAppBar from "./components/AppBar";

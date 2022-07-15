@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import Table from "./common/Table";
 import Chip from "@mui/material/Chip";
 import AdminContext from "../context/admin";
@@ -59,17 +59,26 @@ const ALL_ACTIVE_REQUESTS = gql`
 `;
 
 export default function Requests() {
-  const { admin, toggleAdmin } = useContext(AdminContext);
+  const { admin } = useContext(AdminContext);
 
-  const { loading, error, data } = useQuery(
-    admin ? ALL_ACTIVE_REQUESTS : USER_ACTIVE_REQUESTS
-  );
+  const [loadUserActiveRequests, userActiveRequests] =
+    useLazyQuery(USER_ACTIVE_REQUESTS);
+  const allActiveRequests = useQuery(ALL_ACTIVE_REQUESTS);
+
+  if (!admin && !userActiveRequests.called) {
+    loadUserActiveRequests();
+    return "Loading...";
+  }
+
+  const errors = userActiveRequests.error || allActiveRequests.error;
+  const loading = userActiveRequests.loading || allActiveRequests.loading;
 
   if (loading) return "Loading...";
-  if (error) return `Error! ${error.message}`;
-  if (data === undefined) return <p>ERROR</p>;
+  if (errors) return `Error! ${errors.message}`;
 
-  const privateCloudActiveRequests = data?.privateCloudActiveRequests || data?.userPrivateCloudActiveRequests
+  const privateCloudActiveRequests = admin
+    ? allActiveRequests.data?.privateCloudActiveRequests
+    : userActiveRequests.data?.userPrivateCloudActiveRequests;
 
   const rows = privateCloudActiveRequests.map(
     ({

@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import AdminContext from "../context/admin";
 
 function AdminProvider({ children }) {
-  const [admin, toggleAdmin] = useState(false);
+  const [admin, toggleAdmin] = useState(true);
 
   const value = useMemo(
     () => ({

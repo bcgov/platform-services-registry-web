@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import Table from "./common/Table";
 import Chip from "@mui/material/Chip";
 import AdminContext from "../context/admin";
@@ -37,7 +37,7 @@ export const PROJECT_FIELDS = gql`
 const USER_PROJECTS = gql`
   ${PROJECT_FIELDS}
   query UserProjects {
-    privateCloudProjects {
+    userPrivateCloudProjects {
       ...ProjectFields
     }
   }
@@ -53,18 +53,25 @@ const ALL_PROJECTS = gql`
 `;
 
 export default function Requests() {
-  const { admin, toggleAdmin } = useContext(AdminContext);
+  const { admin } = useContext(AdminContext);
 
-  const { loading, error, data } = useQuery(
-    admin ? ALL_PROJECTS : USER_PROJECTS
-  );
+  const [loadUserProjects, userProjects] = useLazyQuery(USER_PROJECTS);
+  const allProjects = useQuery(ALL_PROJECTS);
+
+  if (!admin && !userProjects.called) {
+    loadUserProjects();
+    return "Loading...";
+  }
+
+  const errors = userProjects.error || allProjects.error;
+  const loading = userProjects.loading || allProjects.loading;
 
   if (loading) return "Loading...";
-  if (error) return `Error! ${error.message}`;
-  if (data === undefined) return <p>ERROR</p>;
+  if (errors) return `Error! ${errors.message}`;
 
-  const privateCloudProjects =
-    data?.privateCloudProjects || data?.userPrivateCloudProjects;
+  const privateCloudProjects = admin
+    ? allProjects.data?.privateCloudProjects
+    : userProjects.data?.userPrivateCloudProjects;
 
   const rows = privateCloudProjects.map(
     ({
