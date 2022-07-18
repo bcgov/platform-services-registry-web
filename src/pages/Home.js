@@ -1,12 +1,13 @@
 import React from "react";
-import Requests from "../components/Requests";
-import Projects from "../components/Projects"
+import { useKeycloak } from "@react-keycloak/web";
+import NavTabs from "./NavTabs"
 
 export default function Home() {
+  const { keycloak } = useKeycloak();
+
   return (
-    <div>
-      <Requests />
-      <Projects />
-    </div>
+    <>
+      <NavTabs />
+    </>
   );
 }

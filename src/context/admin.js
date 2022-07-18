@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 const AdminContext = createContext({
-  admin: true,
+  admin: false,
   toggleAdmin: () => {},
 });
 

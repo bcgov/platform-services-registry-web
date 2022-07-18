@@ -7,8 +7,15 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import TableFooter from "@mui/material/TableFooter";
+import Box from "@mui/material/Box";
 
-export default function StickyHeadTable({ columns, rows }) {
+export default function StickyTable({ columns, rows, title }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -24,7 +31,28 @@ export default function StickyHeadTable({ columns, rows }) {
   return (
     <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
       {/* <TableContainer sx={{ maxHeight: 440 }}> */}
-      <TableContainer>
+      <TableContainer sx={{ height: "78vh" }}>
+        {/* <Toolbar
+          // style={{position: "fixed", top: 0}}
+          sx={{
+            pl: { sm: 2 },
+            pr: { xs: 1, sm: 1 },
+          }}
+        >
+          <Typography
+            sx={{ flex: "1 1 100%" }}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+            {title}
+          </Typography>
+          <Tooltip title="Filter list">
+            <IconButton>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+        </Toolbar> */}
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

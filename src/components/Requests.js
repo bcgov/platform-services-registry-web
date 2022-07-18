@@ -1,19 +1,21 @@
 import React, { useContext } from "react";
 import { useQuery, useLazyQuery, gql } from "@apollo/client";
-import Table from "./common/Table";
+import StickyTable from "./common/Table";
 import Chip from "@mui/material/Chip";
 import AdminContext from "../context/admin";
+import { useKeycloak } from "@react-keycloak/web";
+import NavTabs from "../pages/NavTabs";
 
 const columns = [
   { id: "type", label: "Type", minWidth: 0 },
+  { id: "status", label: "Status", minWidth: 0 },
   { id: "name", label: "Name", minWidth: 0 },
   { id: "description", label: "Description", minWidth: 200 },
   { id: "ministry", label: "Ministry", minWidth: 0 },
   { id: "cluster", label: "Cluster", minWidth: 0 },
   { id: "projectOwner", label: "Project Owner", minWidth: 0 },
   { id: "technicalLeads", label: "Technical Leads", minWidth: 0 },
-  { id: "status", label: "Status", minWidth: 0 },
-  { id: "licensePlate", label: "License Place", minWidth: 0 },
+  { id: "licencePlate", label: "License Place", minWidth: 0 },
 ];
 
 export const ACTIVE_REQUEST_FIELDS = gql`
@@ -34,6 +36,7 @@ export const ACTIVE_REQUEST_FIELDS = gql`
       }
       ... on PrivateCloudProject {
         cluster
+        licencePlate
       }
       ministry
     }
@@ -60,10 +63,13 @@ const ALL_ACTIVE_REQUESTS = gql`
 
 export default function Requests() {
   const { admin } = useContext(AdminContext);
+  const { keycloak } = useKeycloak();
+
+  const skip = !keycloak.hasResourceRole("admin", "registry-api");
 
   const [loadUserActiveRequests, userActiveRequests] =
     useLazyQuery(USER_ACTIVE_REQUESTS);
-  const allActiveRequests = useQuery(ALL_ACTIVE_REQUESTS);
+  const allActiveRequests = useQuery(ALL_ACTIVE_REQUESTS, { skip });
 
   if (!admin && !userActiveRequests.called) {
     loadUserActiveRequests();
@@ -87,6 +93,7 @@ export default function Requests() {
       requestedProject: {
         name,
         description,
+        licencePlate,
         projectOwner,
         technicalLeads,
         ministry,
@@ -95,6 +102,7 @@ export default function Requests() {
     }) => ({
       name,
       description,
+      licencePlate,
       ministry,
       cluster,
       projectOwner: `${projectOwner.firstName} ${projectOwner.lastName}`,
@@ -110,5 +118,10 @@ export default function Requests() {
     })
   );
 
-  return <Table columns={columns} rows={rows} />;
+  return (
+    <div>
+      <NavTabs />
+      <StickyTable title={"Active Requests"} columns={columns} rows={rows} />
+    </div>
+  );
 }

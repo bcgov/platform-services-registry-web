@@ -49,7 +49,7 @@ export default function DenseAppBar({ title }) {
           >
             {title}
           </Typography>
-          {!!keycloak.hasResourceRole("admin", "registry-api") && (
+          {keycloak.hasResourceRole("admin", "registry-api") && (
             <FormGroup>
               <FormControlLabel
                 control={
@@ -60,7 +60,7 @@ export default function DenseAppBar({ title }) {
                   />
                 }
                 labelPlacement="start"
-                label="show all"
+                label="admin"
               />
             </FormGroup>
           )}

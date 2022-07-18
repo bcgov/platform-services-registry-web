@@ -14,7 +14,7 @@ function LogIn() {
     return <Navigate to={currentLocationState?.from} />
   }
 
-  return;
+  return; // LogIn page - can put old login page here (use this as a hoc)
 }
 
 export default LogIn;
