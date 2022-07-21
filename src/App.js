@@ -14,6 +14,9 @@ const theme = createTheme({
   typography: {
     fontFamily: ["Roboto"].join(","),
   },
+  tablecell: {
+    fontSize: "200px"
+  },
   palette: {
     primary: {
       main: "#003366",

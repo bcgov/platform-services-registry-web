@@ -5,6 +5,7 @@ import Tab from "@mui/material/Tab";
 import { Link, useLocation } from "react-router-dom";
 import Divider from "@mui/material/Divider";
 import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 
 export default function NavTabs() {
   const { pathname } = useLocation();
@@ -18,7 +19,15 @@ export default function NavTabs() {
 
   return (
     <Toolbar>
-      <span> Private Cloud </span>
+      <Typography
+        variant="button"
+        color="inherit"
+        component="div"
+        noWrap={true}
+        sx={{ flexGrow: 1, fontWeight: 400,  color: "rgba(0, 0, 0, 0.6)",fontSize: 20, minWidth: 170 }}
+      >
+        <span style={{display: "inlineBlock"}}> PRIVATE CLOUD</span>
+      </Typography>
       <Divider orientation="vertical" variant="middle" flexItem />
       <Box sx={{ width: "100%" }}>
         <Tabs

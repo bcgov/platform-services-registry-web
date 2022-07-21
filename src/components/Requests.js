@@ -2,9 +2,24 @@ import React, { useContext } from "react";
 import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import StickyTable from "./common/Table";
 import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import Avatar from "@mui/material/Avatar";
 import AdminContext from "../context/admin";
 import { useKeycloak } from "@react-keycloak/web";
 import NavTabs from "../pages/NavTabs";
+
+function truncate(str, n) {
+  return str.length > n ? str.substr(0, n - 1) + "..." : str;
+}
+
+const statusLookup = {
+  APPROVED: "APPROVED",
+  PENDING_DECISION: "PENDING DECISION",
+};
+
+const typeLookup = {
+  CREATE: "CREATE",
+};
 
 const columns = [
   { id: "type", label: "Type", minWidth: 0 },
@@ -29,10 +44,12 @@ export const ACTIVE_REQUEST_FIELDS = gql`
       projectOwner {
         firstName
         lastName
+        githubId
       }
       technicalLeads {
         firstName
         lastName
+        githubId
       }
       ... on PrivateCloudProject {
         cluster
@@ -100,21 +117,49 @@ export default function Requests() {
         cluster,
       },
     }) => ({
-      name,
-      description,
-      licencePlate,
+      name: <span style={{ fontSize: 16, fontWeight: "500" }}>{name}</span>,
+      description: (
+        <span style={{ fontSize: 14 }}> {truncate(description, 130)}</span>
+      ),
+      licencePlate: (
+        <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
+      ),
       ministry,
       cluster,
-      projectOwner: `${projectOwner.firstName} ${projectOwner.lastName}`,
-      technicalLeads: (
-        <div>
-          {technicalLeads.map(({ firstName, lastName }, i) => (
-            <div key={i}>{`${firstName} ${lastName}`}</div>
-          ))}
-        </div>
+      projectOwner: (
+        <Chip
+          key={projectOwner.githubId}
+          style={{ width: "fit-content" }}
+          avatar={
+            <Avatar
+              alt={projectOwner.firstName}
+              src={`https://github.com/${projectOwner.githubId}.png`}
+            />
+          }
+          label={`${projectOwner.firstName} ${projectOwner.lastName}`}
+          variant="outlined"
+        />
       ),
-      status,
-      type: <Chip style={{ borderRadius: 7 }} label={type} />,
+      technicalLeads: (
+        <Stack direction="column" spacing={1}>
+          {technicalLeads.map(({ firstName, lastName, githubId }) => (
+            <Chip
+              key={githubId}
+              style={{ width: "fit-content" }}
+              avatar={
+                <Avatar
+                  alt={firstName}
+                  src={`https://github.com/${githubId}.png`}
+                />
+              }
+              label={`${firstName} ${lastName}`}
+              variant="outlined"
+            />
+          ))}
+        </Stack>
+      ),
+      status: <Chip style={{ borderRadius: 7 }} label={statusLookup[status]} />,
+      type: <Chip style={{ borderRadius: 7 }} label={typeLookup[type]} />,
     })
   );
 

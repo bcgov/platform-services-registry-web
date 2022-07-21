@@ -7,13 +7,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import TableFooter from "@mui/material/TableFooter";
-import Box from "@mui/material/Box";
 
 export default function StickyTable({ columns, rows, title }) {
   const [page, setPage] = React.useState(0);
@@ -55,12 +48,16 @@ export default function StickyTable({ columns, rows, title }) {
         </Toolbar> */}
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
-            <TableRow>
+            <TableRow style={{ marginLeft: 110, marginRight: 11 }}>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{
+                    minWidth: column.minWidth,
+                    fontSize: 17,
+                    color: "#3c4043",
+                  }}
                 >
                   {column.label}
                 </TableCell>
@@ -77,7 +74,12 @@ export default function StickyTable({ columns, rows, title }) {
                       const value = row[column.id];
                       return (
                         <TableCell
-                          style={{ maxWidth: 250, verticalAlign: "top" }}
+                          style={{
+                            maxWidth: 250,
+                            verticalAlign: "top",
+                            fontSize: 15,
+                            color: "#3c4043",
+                          }}
                           key={column.id}
                           align={column.align}
                         >

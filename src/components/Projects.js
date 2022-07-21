@@ -2,9 +2,16 @@ import React, { useContext } from "react";
 import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import StickyTable from "./common/Table";
 import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import Avatar from "@mui/material/Avatar";
 import AdminContext from "../context/admin";
 import { useKeycloak } from "@react-keycloak/web";
 import NavTabs from "../pages/NavTabs";
+import Typography from "@mui/material/Typography";
+
+function truncate(str, n) {
+  return str.length > n ? str.substr(0, n - 1) + "..." : str;
+}
 
 const columns = [
   { id: "name", label: "Name", minWidth: 0 },
@@ -27,10 +34,12 @@ export const PROJECT_FIELDS = gql`
     projectOwner {
       firstName
       lastName
+      githubId
     }
     technicalLeads {
       firstName
       lastName
+      githubId
     }
   }
 `;
@@ -87,25 +96,53 @@ export default function Projects() {
       cluster,
       licencePlate,
     }) => ({
-      name,
-      description,
+      name: <span style={{ fontSize: 16, fontWeight: "500" }}>{name}</span>,
+      description: (
+        <span style={{ fontSize: 14 }}> {truncate(description, 130)}</span>
+      ),
       ministry,
       cluster,
-      licencePlate,
-      projectOwner: `${projectOwner.firstName} ${projectOwner.lastName}`,
+      licencePlate: (
+        <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
+      ),
+      projectOwner: (
+        <Chip
+          key={projectOwner.githubId}
+          style={{ width: "fit-content" }}
+          avatar={
+            <Avatar
+              alt={projectOwner.firstName}
+              src={`https://github.com/${projectOwner.githubId}.png`}
+            />
+          }
+          label={`${projectOwner.firstName} ${projectOwner.lastName}`}
+          variant="outlined"
+        />
+      ),
       technicalLeads: (
-        <div>
-          {technicalLeads.map(({ firstName, lastName }, i) => (
-            <div key={i}>{`${firstName} ${lastName}`}</div>
+        <Stack direction="column" spacing={1}>
+          {technicalLeads.map(({ firstName, lastName, githubId }) => (
+            <Chip
+              key={githubId}
+              style={{ width: "fit-content" }}
+              avatar={
+                <Avatar
+                  alt={firstName}
+                  src={`https://github.com/${githubId}.png`}
+                />
+              }
+              label={`${firstName} ${lastName}`}
+              variant="outlined"
+            />
           ))}
-        </div>
+        </Stack>
       ),
     })
   );
 
   return (
     <div>
-      <NavTabs/>
+      <NavTabs />
       <StickyTable
         title={"Private Cloud Projects"}
         columns={columns}
