@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import StickyTable from "./common/Table";
 import Chip from "@mui/material/Chip";
@@ -14,7 +14,7 @@ function truncate(str, n) {
 }
 
 const columns = [
-  { id: "name", label: "Name", minWidth: 0 },
+  { id: "name", label: "Name", minWidth: 180 },
   { id: "description", label: "Description", minWidth: 200 },
   { id: "ministry", label: "Ministry", minWidth: 0 },
   { id: "cluster", label: "Cluster", minWidth: 0 },
@@ -62,93 +62,98 @@ const ALL_PROJECTS = gql`
   }
 `;
 
+const projectsToRows = ({
+  name,
+  description,
+  projectOwner,
+  technicalLeads,
+  ministry,
+  cluster,
+  licencePlate,
+}) => ({
+  name: <span style={{ fontSize: 16, fontWeight: "450" }}>{name}</span>,
+  description: (
+    <span style={{ fontSize: 14 }}> {truncate(description, 130)}</span>
+  ),
+  ministry,
+  cluster,
+  licencePlate: (
+    <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
+  ),
+  projectOwner: (
+    <Chip
+      key={projectOwner.githubId + licencePlate + "po"}
+      style={{ width: "fit-content" }}
+      avatar={
+        <Avatar
+          alt={projectOwner.firstName}
+          src={`https://github.com/${projectOwner.githubId}.png`}
+        />
+      }
+      label={`${projectOwner.firstName} ${projectOwner.lastName}`}
+      variant="outlined"
+    />
+  ),
+  technicalLeads: (
+    <Stack direction="column" spacing={1}>
+      {technicalLeads.map(({ firstName, lastName, githubId }, i) => (
+        <Chip
+          key={projectOwner.githubId + licencePlate + i}
+          style={{ width: "fit-content" }}
+          avatar={
+            <Avatar
+              alt={firstName}
+              src={`https://github.com/${githubId}.png`}
+            />
+          }
+          label={`${firstName} ${lastName}`}
+          variant="outlined"
+        />
+      ))}
+    </Stack>
+  ),
+});
+
 export default function Projects() {
   const { admin } = useContext(AdminContext);
   const { keycloak } = useKeycloak();
-
-  const skip = !keycloak.hasResourceRole("admin", "registry-api");
+  const [rows, setRows] = useState([]);
 
   const [loadUserProjects, userProjects] = useLazyQuery(USER_PROJECTS);
-  const allProjects = useQuery(ALL_PROJECTS, { skip });
+
+  const allProjects = useQuery(ALL_PROJECTS, {
+    skip: !keycloak.hasResourceRole("admin", "registry-api"),
+  });
 
   if (!admin && !userProjects.called) {
     loadUserProjects();
-    return "Loading...";
   }
 
   const errors = userProjects.error || allProjects.error;
-  const loading = userProjects.loading || allProjects.loading;
-
-  if (loading) return "Loading...";
-  if (errors) return `Error! ${errors.message}`;
+  const loadingProjects = userProjects.loading || allProjects.loading;
 
   const privateCloudProjects = admin
     ? allProjects.data?.privateCloudProjects
     : userProjects.data?.userPrivateCloudProjects;
 
-  const rows = privateCloudProjects.map(
-    ({
-      name,
-      description,
-      projectOwner,
-      technicalLeads,
-      ministry,
-      cluster,
-      licencePlate,
-    }) => ({
-      name: <span style={{ fontSize: 16, fontWeight: "500" }}>{name}</span>,
-      description: (
-        <span style={{ fontSize: 14 }}> {truncate(description, 130)}</span>
-      ),
-      ministry,
-      cluster,
-      licencePlate: (
-        <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
-      ),
-      projectOwner: (
-        <Chip
-          key={projectOwner.githubId}
-          style={{ width: "fit-content" }}
-          avatar={
-            <Avatar
-              alt={projectOwner.firstName}
-              src={`https://github.com/${projectOwner.githubId}.png`}
-            />
-          }
-          label={`${projectOwner.firstName} ${projectOwner.lastName}`}
-          variant="outlined"
-        />
-      ),
-      technicalLeads: (
-        <Stack direction="column" spacing={1}>
-          {technicalLeads.map(({ firstName, lastName, githubId }) => (
-            <Chip
-              key={githubId}
-              style={{ width: "fit-content" }}
-              avatar={
-                <Avatar
-                  alt={firstName}
-                  src={`https://github.com/${githubId}.png`}
-                />
-              }
-              label={`${firstName} ${lastName}`}
-              variant="outlined"
-            />
-          ))}
-        </Stack>
-      ),
-    })
-  );
+  useEffect(() => {
+    if (!loadingProjects) {
+      const rows = privateCloudProjects.map(projectsToRows);
+      setRows(rows);
+    }
+  }, [loadingProjects, admin]);
+
+  if (errors) return `Error! ${errors.message}`;
 
   return (
     <div>
       <NavTabs />
       <StickyTable
+        loading={loadingProjects}
         title={"Private Cloud Projects"}
         columns={columns}
         rows={rows}
       />
-      ;
     </div>
   );
 }

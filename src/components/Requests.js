@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState, useMemo } from "react";
 import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import StickyTable from "./common/Table";
 import Chip from "@mui/material/Chip";
@@ -15,6 +15,12 @@ function truncate(str, n) {
 const statusLookup = {
   APPROVED: "APPROVED",
   PENDING_DECISION: "PENDING DECISION",
+};
+
+const statusColourLookup = {
+  APPROVED: "success",
+  PENDING_DECISION: "secondary",
+  REJECTED: "error",
 };
 
 const typeLookup = {
@@ -78,95 +84,119 @@ const ALL_ACTIVE_REQUESTS = gql`
   }
 `;
 
-export default function Requests() {
-  const { admin } = useContext(AdminContext);
-  const { keycloak } = useKeycloak();
-
-  const skip = !keycloak.hasResourceRole("admin", "registry-api");
-
-  const [loadUserActiveRequests, userActiveRequests] =
-    useLazyQuery(USER_ACTIVE_REQUESTS);
-  const allActiveRequests = useQuery(ALL_ACTIVE_REQUESTS, { skip });
-
-  if (!admin && !userActiveRequests.called) {
-    loadUserActiveRequests();
-    return "Loading...";
-  }
-
-  const errors = userActiveRequests.error || allActiveRequests.error;
-  const loading = userActiveRequests.loading || allActiveRequests.loading;
-
-  if (loading) return "Loading...";
-  if (errors) return `Error! ${errors.message}`;
-
-  const privateCloudActiveRequests = admin
-    ? allActiveRequests.data?.privateCloudActiveRequests
-    : userActiveRequests.data?.userPrivateCloudActiveRequests;
-
-  const rows = privateCloudActiveRequests.map(
-    ({
-      status,
-      type,
-      requestedProject: {
-        name,
-        description,
-        licencePlate,
-        projectOwner,
-        technicalLeads,
-        ministry,
-        cluster,
-      },
-    }) => ({
-      name: <span style={{ fontSize: 16, fontWeight: "500" }}>{name}</span>,
-      description: (
-        <span style={{ fontSize: 14 }}> {truncate(description, 130)}</span>
-      ),
-      licencePlate: (
-        <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
-      ),
-      ministry,
-      cluster,
-      projectOwner: (
+const requestsToRows = ({
+  status,
+  type,
+  requestedProject: {
+    name,
+    description,
+    licencePlate,
+    projectOwner,
+    technicalLeads,
+    ministry,
+    cluster,
+  },
+}) => ({
+  name: <span style={{ fontSize: 16, fontWeight: "500" }}>{name}</span>,
+  description: (
+    <span style={{ fontSize: 14 }}> {truncate(description, 130)}</span>
+  ),
+  licencePlate: (
+    <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
+  ),
+  ministry,
+  cluster,
+  projectOwner: (
+    <Chip
+      key={projectOwner.githubId}
+      style={{ width: "fit-content" }}
+      avatar={
+        <Avatar
+          alt={projectOwner.firstName}
+          src={`https://github.com/${projectOwner.githubId}.png`}
+        />
+      }
+      label={`${projectOwner.firstName} ${projectOwner.lastName}`}
+      variant="outlined"
+    />
+  ),
+  technicalLeads: (
+    <Stack direction="column" spacing={1}>
+      {technicalLeads.map(({ firstName, lastName, githubId }) => (
         <Chip
-          key={projectOwner.githubId}
+          key={githubId}
           style={{ width: "fit-content" }}
           avatar={
             <Avatar
-              alt={projectOwner.firstName}
-              src={`https://github.com/${projectOwner.githubId}.png`}
+              alt={firstName}
+              src={`https://github.com/${githubId}.png`}
             />
           }
-          label={`${projectOwner.firstName} ${projectOwner.lastName}`}
+          label={`${firstName} ${lastName}`}
           variant="outlined"
         />
-      ),
-      technicalLeads: (
-        <Stack direction="column" spacing={1}>
-          {technicalLeads.map(({ firstName, lastName, githubId }) => (
-            <Chip
-              key={githubId}
-              style={{ width: "fit-content" }}
-              avatar={
-                <Avatar
-                  alt={firstName}
-                  src={`https://github.com/${githubId}.png`}
-                />
-              }
-              label={`${firstName} ${lastName}`}
-              variant="outlined"
-            />
-          ))}
-        </Stack>
-      ),
-      status: <Chip style={{ borderRadius: 7 }} label={statusLookup[status]} />,
-      type: <Chip style={{ borderRadius: 7 }} label={typeLookup[type]} />,
-    })
+      ))}
+    </Stack>
+  ),
+  status: (
+    <Chip
+      style={{ borderRadius: 7, fontWeight: "500" }}
+      color={statusColourLookup[status]}
+      variant="outlined"
+      label={statusLookup[status]}
+    />
+  ),
+  type: <Chip style={{ borderRadius: 7 }} label={typeLookup[type]} />,
+});
+
+export default function Requests() {
+  const { admin } = useContext(AdminContext);
+  const { keycloak } = useKeycloak();
+  const [privateCloudActiveRequests, setPrivateCloudActiveRequests] = useState(
+    []
   );
+
+  const allActiveRequests = useQuery(ALL_ACTIVE_REQUESTS, {
+    skip: !keycloak.hasResourceRole("admin", "registry-api"),
+  });
+
+  const [loadUserActiveRequests, userActiveRequests] =
+    useLazyQuery(USER_ACTIVE_REQUESTS);
+
+  if (!admin && !userActiveRequests.called) {
+    loadUserActiveRequests();
+  }
+
+  const errors = userActiveRequests.error || allActiveRequests.error;
+  const loadingRequests =
+    userActiveRequests.loading || allActiveRequests.loading;
+
+  const rows = useMemo(
+    () => privateCloudActiveRequests.map(requestsToRows),
+    [privateCloudActiveRequests]
+  );
+
+  useEffect(() => {
+    if (!loadingRequests) {
+      const privateCloudActiveRequests = admin
+        ? allActiveRequests.data?.privateCloudActiveRequests
+        : userActiveRequests.data?.userPrivateCloudActiveRequests;
+
+      setPrivateCloudActiveRequests(privateCloudActiveRequests);
+    }
+  }, [loadingRequests, admin]);
+
+  if (errors) return `Error! ${errors.message}`;
 
   return (
     <div>
       <NavTabs />
-      <StickyTable title={"Active Requests"} columns={columns} rows={rows} />
+      <StickyTable
+        loading={loadingRequests}
+        title={"Active Requests"}
+        columns={columns}
+        rows={rows}
+      />
     </div>
   );
 }

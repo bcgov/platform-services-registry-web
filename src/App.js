@@ -15,7 +15,7 @@ const theme = createTheme({
     fontFamily: ["Roboto"].join(","),
   },
   tablecell: {
-    fontSize: "200px"
+    fontSize: "200px",
   },
   palette: {
     primary: {
@@ -29,7 +29,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <AdminProvider>
         <div>
-          <DenseAppBar title={"Platform Services Project Registry"} />
+          <DenseAppBar />
           <AppRouter />
           {/* <Footer /> */}
         </div>

@@ -10,9 +10,6 @@ import Button from "@mui/material/Button";
 import styled from "styled-components";
 import { useKeycloak } from "@react-keycloak/web";
 import logoImage from "./assets/bcid-symbol-rev.svg";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import StyledSwitch from "./common/Switch";
 import AdminContext from "../context/admin";
 
 const Logo = styled.img`
@@ -24,11 +21,6 @@ const Logo = styled.img`
 
 export default function DenseAppBar({ title }) {
   const { keycloak } = useKeycloak();
-  const { admin, toggleAdmin } = useContext(AdminContext);
-
-  const handleChange = (event) => {
-    toggleAdmin(event.target.checked);
-  };
 
   const login = useCallback(() => {
     keycloak?.login({ idpHint: "idir" });
@@ -37,45 +29,44 @@ export default function DenseAppBar({ title }) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" style={{ borderBottom: "2px solid #fcba19" }}>
-        <Toolbar variant="dense">
-          <Link to="/">
-            <Logo alt="BC Gov Logo" src={logoImage} width="125px" />
-          </Link>
-          <Typography
-            variant="h6"
-            color="inherit"
-            component="div"
-            sx={{ flexGrow: 1 }}
+        <Toolbar
+          variant="dense"
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <Link to="/" style={{marginTop: 7}} >
+              <Logo alt="BC Gov Logo" src={logoImage} width="50" />
+            </Link>
+
+            <p style={{ fontWeight: "300", fontSize: 20 }}>
+              BC Platform Services&nbsp;
+            </p>
+            <p style={{ fontWeight: "500", fontSize: 20 }}>Project Registry</p>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
           >
-            {title}
-          </Typography>
-          {keycloak.hasResourceRole("admin", "registry-api") && (
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <StyledSwitch
-                    onClick={handleChange}
-                    sx={{ m: 1 }}
-                    checked={admin}
-                  />
-                }
-                labelPlacement="start"
-                label="admin"
-              />
-            </FormGroup>
-          )}
-          <div style={{ marginLeft: 75 }}>
-            {!!keycloak?.authenticated ? (
-              <Button color="inherit" onClick={() => keycloak.logout()}>
-                Logout
-              </Button>
-            ) : (
-              <div>
-                <Button type="button" color="inherit" onClick={login}>
-                  Login
+            <div style={{ marginLeft: 75 }}>
+              {!!keycloak?.authenticated ? (
+                <Button color="inherit" onClick={() => keycloak.logout()}>
+                  Logout
                 </Button>
-              </div>
-            )}
+              ) : (
+                <div>
+                  <Button type="button" color="inherit" onClick={login}>
+                    Login
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </Toolbar>
       </AppBar>
