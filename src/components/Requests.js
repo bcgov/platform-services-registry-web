@@ -171,11 +171,6 @@ export default function Requests() {
   const loadingRequests =
     userActiveRequests.loading || allActiveRequests.loading;
 
-  const rows = useMemo(
-    () => privateCloudActiveRequests.map(requestsToRows),
-    [privateCloudActiveRequests]
-  );
-
   useEffect(() => {
     if (!loadingRequests) {
       const privateCloudActiveRequests = admin
@@ -185,6 +180,11 @@ export default function Requests() {
       setPrivateCloudActiveRequests(privateCloudActiveRequests);
     }
   }, [loadingRequests, admin]);
+
+  const rows = useMemo(
+    () => privateCloudActiveRequests.map(requestsToRows),
+    [privateCloudActiveRequests]
+  );
 
   if (errors) return `Error! ${errors.message}`;
 

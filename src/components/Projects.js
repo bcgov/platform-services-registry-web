@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useMemo } from "react";
 import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import StickyTable from "./common/Table";
 import Chip from "@mui/material/Chip";
@@ -117,13 +117,13 @@ const projectsToRows = ({
 export default function Projects() {
   const { admin } = useContext(AdminContext);
   const { keycloak } = useKeycloak();
-  const [rows, setRows] = useState([]);
-
-  const [loadUserProjects, userProjects] = useLazyQuery(USER_PROJECTS);
+  const [privateCloudProjects, setPrivateCloudProjects] = useState([]);
 
   const allProjects = useQuery(ALL_PROJECTS, {
     skip: !keycloak.hasResourceRole("admin", "registry-api"),
   });
+
+  const [loadUserProjects, userProjects] = useLazyQuery(USER_PROJECTS);
 
   if (!admin && !userProjects.called) {
     loadUserProjects();
@@ -132,16 +132,20 @@ export default function Projects() {
   const errors = userProjects.error || allProjects.error;
   const loadingProjects = userProjects.loading || allProjects.loading;
 
-  const privateCloudProjects = admin
-    ? allProjects.data?.privateCloudProjects
-    : userProjects.data?.userPrivateCloudProjects;
-
   useEffect(() => {
     if (!loadingProjects) {
-      const rows = privateCloudProjects.map(projectsToRows);
-      setRows(rows);
+      const privateCloudProjects = admin
+        ? allProjects.data?.privateCloudProjects
+        : userProjects.data?.userPrivateCloudProjects;
+
+      setPrivateCloudProjects(privateCloudProjects);
     }
   }, [loadingProjects, admin]);
+
+  const rows = useMemo(
+    () => privateCloudProjects.map(projectsToRows),
+    [privateCloudProjects]
+  );
 
   if (errors) return `Error! ${errors.message}`;
 
