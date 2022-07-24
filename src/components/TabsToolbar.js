@@ -17,7 +17,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 
-export default function NavTabs() {
+export default function TabsToolbar() {
   const { pathname } = useLocation();
   const { keycloak } = useKeycloak();
   const { admin, toggleAdmin } = useContext(AdminContext);
@@ -49,7 +49,7 @@ export default function NavTabs() {
           minWidth: 170,
         }}
       >
-        <span style={{ display: "inlineBlock" }}> PRIVATE CLOUD</span>
+       PRIVATE CLOUD
       </Typography>
       <Divider orientation="vertical" variant="middle" flexItem />
       <Box sx={{ width: "100%" }}>
@@ -79,6 +79,8 @@ export default function NavTabs() {
         </FormGroup>
       )}
       <Button
+        component={Link}
+        to="/private-cloud/create"
         variant="outlined"
         style={{ border: "none" }}
         size="large"

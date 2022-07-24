@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
 import { useQuery, useLazyQuery, gql } from "@apollo/client";
-import StickyTable from "./common/Table";
+import StickyTable from "../components/common/Table";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import AdminContext from "../context/admin";
 import { useKeycloak } from "@react-keycloak/web";
-import NavTabs from "../pages/NavTabs";
+import TabsToolbar from "../components/TabsToolbar";
 
 function truncate(str, n) {
   return str.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -179,7 +179,7 @@ export default function Requests() {
 
       setPrivateCloudActiveRequests(privateCloudActiveRequests);
     }
-  }, [loadingRequests, admin]);
+  }, [loadingRequests, admin, allActiveRequests, userActiveRequests]);
 
   const rows = useMemo(
     () => privateCloudActiveRequests.map(requestsToRows),
@@ -190,7 +190,7 @@ export default function Requests() {
 
   return (
     <div>
-      <NavTabs />
+      <TabsToolbar />
       <StickyTable
         loading={loadingRequests}
         title={"Active Requests"}

@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
 import { useQuery, useLazyQuery, gql } from "@apollo/client";
-import StickyTable from "./common/Table";
+import StickyTable from "../components/common/Table";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import AdminContext from "../context/admin";
 import { useKeycloak } from "@react-keycloak/web";
-import NavTabs from "../pages/NavTabs";
+import TabsToolbar from "../components/TabsToolbar";
 import Typography from "@mui/material/Typography";
 
 function truncate(str, n) {
@@ -140,7 +140,7 @@ export default function Projects() {
 
       setPrivateCloudProjects(privateCloudProjects);
     }
-  }, [loadingProjects, admin]);
+  }, [loadingProjects, admin, allProjects, userProjects]);
 
   const rows = useMemo(
     () => privateCloudProjects.map(projectsToRows),
@@ -151,7 +151,7 @@ export default function Projects() {
 
   return (
     <div>
-      <NavTabs />
+      <TabsToolbar />
       <StickyTable
         loading={loadingProjects}
         title={"Private Cloud Projects"}
