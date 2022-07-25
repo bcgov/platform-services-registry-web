@@ -4,14 +4,27 @@ import { useKeycloak } from "@react-keycloak/web";
 import Home from "../pages/Home";
 import LogIn from "../pages/LogIn";
 import RequireAuth from "./Utilities/RequireAuth";
-import Projects from "./Projects";
-import Requests from "./Requests";
-import NavTabs from "../pages/NavTabs";
+import Projects from "../pages/Projects";
+import Requests from "../pages/Requests";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import Create from "../pages/Create";
 
 export const AppRouter = () => {
   const { initialized } = useKeycloak();
   if (!initialized) {
-    return <h3>Loading ... </h3>;
+    return (
+      <Box sx={{ height: "100%", width: "100%" }}>
+        <CircularProgress
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        />
+      </Box>
+    );
   }
   return (
     <Routes>
@@ -37,6 +50,15 @@ export const AppRouter = () => {
           element={
             <RequireAuth>
               <Requests />
+            </RequireAuth>
+          }
+        />
+         <Route
+          path="private-cloud/create"
+          roles={[]}
+          element={
+            <RequireAuth>
+              <Create />
             </RequireAuth>
           }
         />
