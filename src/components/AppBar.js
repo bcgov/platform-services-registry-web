@@ -21,7 +21,7 @@ const Logo = styled.img`
   margin-bottom: 6px;
 `;
 
-export default function DenseAppBar({ title }) {
+export default function DenseAppBar({ title, setMode }) {
   const { keycloak } = useKeycloak();
   const { admin, toggleAdmin } = useContext(AdminContext);
 
@@ -60,7 +60,9 @@ export default function DenseAppBar({ title }) {
               />
             </FormGroup>
           )}
-           <DropDownLoginMenu/>         
+           <DropDownLoginMenu 
+           setMode = {setMode}
+           />         
         </Toolbar>
       </AppBar>
     </Box>

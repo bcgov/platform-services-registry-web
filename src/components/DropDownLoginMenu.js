@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from "react";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import styled from "styled-components";
 import { useKeycloak } from "@react-keycloak/web";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -18,16 +17,18 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import Typography from "@mui/material/Typography";
 
-export default function DropDownLoginMenu() {
+export default function DropDownLoginMenu({ setMode }) {
     const { keycloak } = useKeycloak();
     const [anchorEl, setAnchorEl] = useState(null);
-    const [colorMode, setColorMode] = useState(true);
-
-    const toggleColorMode = () => {
-        setColorMode(!colorMode)
-    }
+    const [localMode, setLocalMode] = useState(localStorage.getItem('appMode') === 'light' || true)
     const open = Boolean(anchorEl);
-    
+
+    const togglemode = () => {
+        setLocalMode(!localMode)
+        setMode(localMode ? 'light' : 'dark')
+        localStorage.setItem('appMode', localMode ? 'light' : 'dark')
+    }
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -63,18 +64,18 @@ export default function DropDownLoginMenu() {
                 onClick={handleClose}
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            ><MenuItem>
+            >
+                <MenuItem>
                     <Typography
                         variant="body"
                         color="inherit"
                         component="p"
                         sx={{ flexGrow: 1 }}
-                    >  {colorMode ? 'Light' : 'Dark'}
+                    >  {localMode ? 'Light' : 'Dark'}
+                        <IconButton sx={{ ml: 1 }} onClick={togglemode} color="inherit">
+                            {localMode ? <Brightness7Icon /> : <Brightness4Icon />}
+                        </IconButton>
                     </Typography>
-                    <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
-                        {colorMode ? <Brightness7Icon /> : <Brightness4Icon />}
-                    </IconButton>
-
                 </MenuItem>
                 {/* <MenuItem>
                     <Avatar /> Profile
@@ -114,6 +115,3 @@ export default function DropDownLoginMenu() {
         </Box>
     );
 }
-
-
-
