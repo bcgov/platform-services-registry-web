@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { useKeycloak } from "@react-keycloak/web";
@@ -16,18 +16,13 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import Typography from "@mui/material/Typography";
+import { ModeContext } from "../App";
 
-export default function DropDownLoginMenu({ setMode }) {
+export default function DropDownLoginMenu() {
     const { keycloak } = useKeycloak();
     const [anchorEl, setAnchorEl] = useState(null);
-    const [localMode, setLocalMode] = useState(localStorage.getItem('appMode') === 'light' || true)
     const open = Boolean(anchorEl);
-
-    const togglemode = () => {
-        setLocalMode(!localMode)
-        setMode(localMode ? 'light' : 'dark')
-        localStorage.setItem('appMode', localMode ? 'light' : 'dark')
-    }
+    const modeLocal = useContext(ModeContext)
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -39,6 +34,7 @@ export default function DropDownLoginMenu({ setMode }) {
     const login = useCallback(() => {
         keycloak?.login({ idpHint: "idir" });
     }, [keycloak]);
+   
 
     return (
         <Box>
@@ -71,9 +67,9 @@ export default function DropDownLoginMenu({ setMode }) {
                         color="inherit"
                         component="p"
                         sx={{ flexGrow: 1 }}
-                    >  {localMode ? 'Light' : 'Dark'}
-                        <IconButton sx={{ ml: 1 }} onClick={togglemode} color="inherit">
-                            {localMode ? <Brightness7Icon /> : <Brightness4Icon />}
+                    >  {modeLocal.mode === 'dark' ? 'Light' : 'Dark'}
+                        <IconButton sx={{ ml: 1 }} onClick={modeLocal.toggleMode} color="inherit">
+                            {modeLocal.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
                         </IconButton>
                     </Typography>
                 </MenuItem>

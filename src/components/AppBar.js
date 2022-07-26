@@ -3,10 +3,6 @@ import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import Button from "@mui/material/Button";
 import styled from "styled-components";
 import { useKeycloak } from "@react-keycloak/web";
 import logoImage from "./assets/bcid-symbol-rev.svg";
@@ -20,12 +16,8 @@ const Logo = styled.img`
   margin-bottom: 6px;
 `;
 
-export default function DenseAppBar({ title, setMode }) {
+export default function DenseAppBar() {
   const { keycloak } = useKeycloak();
-
-  const login = useCallback(() => {
-    keycloak?.login({ idpHint: "idir" });
-  }, [keycloak]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -39,18 +31,15 @@ export default function DenseAppBar({ title, setMode }) {
           }}
         >
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <Link to="/" style={{marginTop: 7}} >
+            <Link to="/" style={{ marginTop: 7 }} >
               <Logo alt="BC Gov Logo" src={logoImage} width="50" />
             </Link>
-
             <p style={{ fontWeight: "300", fontSize: 20 }}>
               BC Platform Services&nbsp;
             </p>
             <p style={{ fontWeight: "500", fontSize: 20 }}>Project Registry</p>
           </div>
-          <DropDownLoginMenu 
-           setMode = {setMode}
-           />  
+          <DropDownLoginMenu />
         </Toolbar>
       </AppBar>
     </Box>

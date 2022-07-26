@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState, createContext } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "./App.css";
 import DenseAppBar from "./components/AppBar";
@@ -24,26 +24,33 @@ const theme = createTheme({
   },
 });
 
+export const ModeContext = createContext()
+
 function App() {
+
   const [mode, setMode] = useState(localStorage.getItem('appMode') || 'light')
   theme.palette.mode = mode
 
   useEffect(() => {
     theme.palette.mode = mode
-    console.log(mode)
   }, [mode])
+
+  const toggleMode = () => {
+    setMode(mode === 'light' ? 'dark' : 'light')
+  }
 
   return (
     <ThemeProvider theme={theme}>
-      <AdminProvider>
-        <div>
-          <DenseAppBar 
-          setMode={setMode}
-          />
-          <AppRouter />
-          {/* <Footer /> */}
-        </div>
-      </AdminProvider>
+      <ModeContext.Provider value={{ mode: mode, toggleMode: toggleMode }}>
+        <AdminProvider>
+          <div>
+            <DenseAppBar
+            />
+            <AppRouter />
+            {/* <Footer /> */}
+          </div>
+        </AdminProvider>
+      </ModeContext.Provider>
     </ThemeProvider>
   );
 }
