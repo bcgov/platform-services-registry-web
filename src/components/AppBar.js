@@ -34,7 +34,7 @@ export default function DenseAppBar() {
             <Link to="/" style={{ marginTop: 7 }} >
               <Logo alt="BC Gov Logo" src={logoImage} width="50" />
             </Link>
-            <p style={{ fontWeight: "300", fontSize: 20 }}>
+            <p style={{ fontWeight: "300", fontSize: 20, font: "roboto" }}>
               BC Platform Services&nbsp;
             </p>
             <p style={{ fontWeight: "500", fontSize: 20 }}>Project Registry</p>
