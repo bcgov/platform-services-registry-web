@@ -77,12 +77,12 @@ export default function Progress({ formState, handleChange }) {
         <>
           {/* Form components go here */}
           <div>
-            <Typography sx={{ mt: 2, mb: 1 }} variant="h6">
+            <Typography sx={{ mt: 1, mb: 2 ,fontSize: 23, fontWeight: 500}}>
               {steps[activeStep]}
             </Typography>
             {getStepContent(activeStep)}
           </div>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "row", pt: 2, width: "50%" }}>
             <Button
               color="inherit"
               disabled={activeStep === 0}
