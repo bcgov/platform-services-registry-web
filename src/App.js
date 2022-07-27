@@ -33,6 +33,7 @@ function App() {
 
   useEffect(() => {
     theme.palette.mode = mode
+    localStorage.setItem('appMode', mode)
   }, [mode])
 
   const toggleMode = () => {
