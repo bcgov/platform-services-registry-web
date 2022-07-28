@@ -9,6 +9,7 @@ import Requests from "../pages/Requests";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Create from "../pages/Create";
+import Project from "../pages/Project";
 
 export const AppRouter = () => {
   const { initialized } = useKeycloak();
@@ -53,12 +54,21 @@ export const AppRouter = () => {
             </RequireAuth>
           }
         />
-         <Route
+        <Route
           path="private-cloud/create"
           roles={[]}
           element={
             <RequireAuth>
               <Create />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="private-cloud/project"
+          roles={[]}
+          element={
+            <RequireAuth>
+              <Project />
             </RequireAuth>
           }
         />
