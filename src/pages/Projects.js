@@ -63,6 +63,7 @@ const ALL_PROJECTS = gql`
 `;
 
 const projectsToRows = ({
+  id,
   name,
   description,
   projectOwner,
@@ -71,6 +72,7 @@ const projectsToRows = ({
   cluster,
   licencePlate,
 }) => ({
+  id,
   name: <span style={{ fontSize: 16, fontWeight: "450" }}>{name}</span>,
   description: (
     <span style={{ fontSize: 14 }}> {truncate(description, 130)}</span>
@@ -148,6 +150,8 @@ export default function Projects() {
   );
 
   if (errors) return `Error! ${errors.message}`;
+
+  console.log("TEST");
 
   return (
     <div>

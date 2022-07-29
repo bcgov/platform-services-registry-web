@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import Home from "../pages/Home";
@@ -9,10 +9,34 @@ import Requests from "../pages/Requests";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Create from "../pages/Create";
+import Project from "../pages/Project";
+import { useMutation,  gql } from "@apollo/client";
+
+const SIGN_UP = gql`
+  mutation Mutation {
+    signUp {
+      id
+      firstName
+      lastName
+    }
+  }
+`;
 
 export const AppRouter = () => {
-  const { initialized } = useKeycloak();
-  if (!initialized) {
+  const { keycloak, initialized } = useKeycloak();
+
+  const [signUp, { loading, error, data }] = useMutation(SIGN_UP);
+
+  useEffect(() => {
+
+    if(keycloak.authenticated) {
+      signUp()
+    }
+   }, [keycloak])
+
+  if (error) return `Sign up Error! ${error.message} authenticated: ${keycloak.authenticated}`;
+
+  if (!keycloak.authenticated || loading || !initialized) {
     return (
       <Box sx={{ height: "100%", width: "100%" }}>
         <CircularProgress
@@ -53,12 +77,21 @@ export const AppRouter = () => {
             </RequireAuth>
           }
         />
-         <Route
+        <Route
           path="private-cloud/create"
           roles={[]}
           element={
             <RequireAuth>
               <Create />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="private-cloud/project"
+          roles={[]}
+          element={
+            <RequireAuth>
+              <Project />
             </RequireAuth>
           }
         />
