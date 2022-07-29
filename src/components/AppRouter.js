@@ -3,7 +3,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import Home from "../pages/Home";
 import LogIn from "../pages/LogIn";
-import RequireAuth from "./utilities/RequireAuth";
+import RequireAuth from "./Utilities/RequireAuth";
 import Projects from "../pages/Projects";
 import Requests from "../pages/Requests";
 import CircularProgress from "@mui/material/CircularProgress";

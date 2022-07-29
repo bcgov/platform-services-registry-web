@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
 import { useQuery, useLazyQuery, gql } from "@apollo/client";
-import StickyTable from "../components/common/Table";
+import StickyTable from "../components/Common/Table";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
