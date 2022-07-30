@@ -9,6 +9,7 @@ import Requests from "../pages/Requests";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Create from "../pages/Create";
+import EditProject from "../pages/EditProject";
 import Project from "../pages/Project";
 import { useMutation,  gql } from "@apollo/client";
 
@@ -83,6 +84,15 @@ export const AppRouter = () => {
           element={
             <RequireAuth>
               <Create />
+            </RequireAuth>
+          }
+        />
+            <Route
+          path="private-cloud/edit"
+          roles={[]}
+          element={
+            <RequireAuth>
+              <EditProject />
             </RequireAuth>
           }
         />

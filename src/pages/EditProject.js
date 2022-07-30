@@ -1,0 +1,282 @@
+import React, { useState } from "react";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Paper from "@mui/material/Paper";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import NavToolbar from "../components/NavToolbar";
+import Button from "@mui/material/Button";
+import { ministries, clusters, defaultCpuOptions, defaultMemoryOptions, defaultStorageOptions } from "../components/common/Constants";
+
+const mockData = {
+  name: 'the best ever',
+  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+  ministry: 'BCPC',
+  projectOwner: 'projectOwner@email.com',
+  technicalLeads: [
+    {
+      technicalLead: 'technicalLead1@email.com',
+      key: 0,
+    }, {
+      technicalLead: 'technicalLead2@email.com',
+      key: 1,
+    },
+    {
+      technicalLead: 'technicalLead3@email.com',
+      key: 2,
+    },
+  ],
+  cluster: 'SILVER',
+  defaultCpuOption: 'CPU_REQUEST_0_5_LIMIT_1_5',
+  defaultMemoryOption: 'MEMORY_REQUEST_2_LIMIT_4',
+  defaultStorageOption: 'STORAGE_1'
+}
+
+export default function EditProject() {
+  const [technicalLeads, setTechnicalLeads] = useState(mockData.technicalLeads);
+  const [submitButtonState, setSubmitButtonState] = useState(true);
+  const formPrevState = {
+    name: mockData.name,
+    description: mockData.description,
+    projectOwner: mockData.projectOwner,
+    ministry: mockData.ministry,
+    technicalLeads: mockData.technicalLeads,
+    cluster: mockData.cluster,
+    defaultCpuOption: mockData.defaultCpuOption,
+    defaultMemoryOption: mockData.defaultMemoryOption,
+    defaultStorageOption: mockData.defaultStorageOption,
+  }
+
+  const [formEditedState, setFormEditedState] = useState({
+    name: mockData.name,
+    description: mockData.description,
+    projectOwner: mockData.projectOwner,
+    ministry: mockData.ministry,
+    technicalLeads: mockData.technicalLeads,
+    cluster: mockData.cluster,
+    defaultCpuOption: mockData.defaultCpuOption,
+    defaultMemoryOption: mockData.defaultMemoryOption,
+    defaultStorageOption: mockData.defaultStorageOption,
+  });
+
+  const handleChange = (input) => (event) => {
+    setFormEditedState({ ...formEditedState, [input]: event.target.value });
+    console.log(formEditedState[input] !== formPrevState[input])
+    setSubmitButtonState(formEditedState[input] !== formPrevState[input])
+  };
+
+  const addTechnicalLead = () =>
+    setTechnicalLeads(technicalLeads => [...technicalLeads, [{
+      technicalLead: 'technicalLead3@email.com',
+      key: technicalLeads.length + 1,
+    }]])
+
+  const removeTechnicalLead = (key) =>
+    setTechnicalLeads(technicalLeads => technicalLeads.filter(technicalLead => {
+      return technicalLead.key !== key
+    }))
+
+  const handleTechnicalLeadsChange = (key, value) => {
+    setTechnicalLeads({ ...technicalLeads, [key]: value });
+  };
+
+
+  return (
+    <div>
+      <NavToolbar title={"Edit Project"} />
+      <Box
+        component="form"
+        sx={{
+          "& .MuiTextField-root": { m: 0, mb: 3, width: "45ch" },
+          width: "50%",
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        <div>
+          <TextField
+            size="small"
+            style={{ width: "100%" }}
+            value={formEditedState.name}
+            required
+            id="name"
+            onChange={handleChange("name")}
+            label="Name"
+          />
+        </div>
+        <div>
+          <TextField
+            size="small"
+            style={{ width: "100%" }}
+            value={formEditedState.description}
+            id="description"
+            onChange={handleChange("description")}
+            label="Description"
+            multiline
+            rows={4}
+          />
+        </div>
+        <div>
+          <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
+            <InputLabel id="demo-simple-select-required-label">
+              Ministry
+            </InputLabel>
+            <Select
+              size="medium"
+              labelId="select-ministry"
+              id="select-ministry"
+              value={formEditedState.ministry}
+              label="Ministry *"
+              onChange={handleChange("ministry")}
+            >
+              {ministries.map((ministryOption) => (
+                <MenuItem key={ministryOption} value={ministryOption}>
+                  {ministryOption}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+        <Paper sx={{ p: 2 }}>
+          <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }} >
+            Project Owner
+          </Typography>
+          <TextField
+            size="small"
+            value={formEditedState.projectOwner}
+            onChange={handleChange("projectOwner")}
+            required
+            id="project-owner"
+            label="Email"
+          />
+          <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }}>
+            Technical Leads
+          </Typography>
+          {technicalLeads.map(({ technicalLead, key }, index) => (
+            <div key={index}>
+              <TextField
+                size="small" ß
+                value={technicalLead}
+                onChange={(event) =>
+                  handleTechnicalLeadsChange(index, event.target.value)
+                }
+                required={index === 0}
+                id={"technical-lead" + index}
+                label="Email"
+              />
+              {index === technicalLeads.length - 1 ? (
+                <IconButton
+                  sx={{ mt: 0, ml: 0.5 }}
+                  onClick={addTechnicalLead}
+                  aria-label="add-technical-lead"
+                >
+                  <AddCircleIcon />
+                </IconButton>
+              ) : (technicalLeads.length > 1 && <IconButton
+                sx={{ mt: 0, ml: 0.5 }}
+                onClick={() => removeTechnicalLead(key)}
+                aria-label="add-technical-lead"
+              >
+                <RemoveCircleIcon />
+              </IconButton>
+              )}
+            </div>
+          ))}
+        </Paper>
+        <div>
+          <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
+            <InputLabel id="demo-simple-select-required-label">
+              Cluster
+            </InputLabel>
+            <Select
+              size="medium"
+              labelId="select-cluster"
+              id="select-cluster"
+              value={formEditedState.cluster}
+              label="Cluster *"
+              onChange={handleChange("cluster")}
+            >
+              {clusters.map((clusterOption) => (
+                <MenuItem key={clusterOption} value={clusterOption}>
+                  {clusterOption}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+        <div>
+          <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
+            <InputLabel id="demo-simple-select-required-label">
+              DefaultCpuOptions
+            </InputLabel>
+            <Select
+              size="medium"
+              labelId="select-defaultCpuOptions"
+              id="select-defaultCpuOptions"
+              value={formEditedState.defaultCpuOption}
+              label="DefaultCpuOptions *"
+              onChange={handleChange("defaultCpuOption")}
+            >
+              {defaultCpuOptions.map((defaultCpuOption) => (
+                <MenuItem key={defaultCpuOption} value={defaultCpuOption}>
+                  {defaultCpuOption}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+        <div>
+          <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
+            <InputLabel id="demo-simple-select-required-label">
+              DefaultMemoryOptions
+            </InputLabel>
+            <Select
+              size="medium"
+              labelId="select-defaultMemoryOptions"
+              id="select-defaultMemoryOptions"
+              value={formEditedState.defaultMemoryOption}
+              label="DefaultMemoryOptions *"
+              onChange={handleChange("defaultMemoryOption")}
+            >
+              {defaultMemoryOptions.map((defaultMemoryOption) => (
+                <MenuItem key={defaultMemoryOption} value={defaultMemoryOption}>
+                  {defaultMemoryOption}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+        <div>
+          <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
+            <InputLabel id="demo-simple-select-required-label">
+              DefaultStorageOptions
+            </InputLabel>
+            <Select
+              size="medium"
+              labelId="select-defaultStorageOptions"
+              id="select-defaultStorageOptions"
+              value={formEditedState.defaultStorageOption}
+              label="DefaultStorageOptions *"
+              onChange={handleChange("defaultStorageOption")}
+            >
+              {defaultStorageOptions.map((defaultStorageOption) => (
+                <MenuItem key={defaultStorageOption} value={defaultStorageOption}>
+                  {defaultStorageOption}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+        <Button size="large" disabled={submitButtonState}>
+          Submit
+        </Button>
+      </Box>
+    </div>
+  );
+}
