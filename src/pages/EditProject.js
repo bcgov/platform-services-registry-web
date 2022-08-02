@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
@@ -12,6 +13,8 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import NavToolbar from "../components/NavToolbar";
 import Button from "@mui/material/Button";
+import Input from '@mui/material/Input';
+
 import { ministries, clusters, defaultCpuOptions, defaultMemoryOptions, defaultStorageOptions } from "../components/common/Constants";
 
 const mockData = {
@@ -41,6 +44,8 @@ const mockData = {
 export default function EditProject() {
   const [technicalLeads, setTechnicalLeads] = useState(mockData.technicalLeads);
   const [submitButtonState, setSubmitButtonState] = useState(false);
+
+
   const initialState = {
     name: mockData.name,
     description: mockData.description,
@@ -52,7 +57,6 @@ export default function EditProject() {
     defaultMemoryOption: mockData.defaultMemoryOption,
     defaultStorageOption: mockData.defaultStorageOption,
   }
-
   const [formEditedState, setFormEditedState] = useState({
     name: mockData.name,
     description: mockData.description,
@@ -64,9 +68,18 @@ export default function EditProject() {
     defaultMemoryOption: mockData.defaultMemoryOption,
     defaultStorageOption: mockData.defaultStorageOption,
   });
+  const { register, handleSubmit, setValue, control, watch, formState: { errors } } = useForm({
+    defaultValues: {
+      name: formEditedState.name,
+      description: formEditedState.description,
+      ministry: formEditedState.ministry
+    }
+  });
 
-  const handleChange = (input) => (event) => {
-    setFormEditedState({ ...formEditedState, [input]: event.target.value });
+
+  const handleChange = (name, value) => {
+
+    // setFormEditedState({ ...formEditedState, [input]: event.target.value });
   };
 
   useEffect(() => {
@@ -89,7 +102,7 @@ export default function EditProject() {
   formEditedState.name,
   formEditedState.projectOwner,
   ])
-  
+
   const addTechnicalLead = () =>
     setTechnicalLeads(technicalLeads => [...technicalLeads, [{
       technicalLead: '',
@@ -105,58 +118,80 @@ export default function EditProject() {
     setTechnicalLeads({ ...technicalLeads, [key]: value });
   };
 
-  const handleSubmit = () => {
+  const onSubmit = () => {
     console.log(formEditedState)
   }
 
   return (
     <div>
       <NavToolbar title={"Edit Project"} />
-      <Box
+      <form
         component="form"
         sx={{
           "& .MuiTextField-root": { m: 0, mb: 3, width: "45ch" },
           width: "50%",
         }}
+        style={{ width: "50%" }}
         noValidate
         autoComplete="off"
-        onSubmit={handleSubmit}
-      >
-        <div>
-          <TextField
-            size="small"
-            style={{ width: "100%" }}
-            value={formEditedState.name}
+        onSubmit={handleSubmit(onSubmit)}>
+        <Controller
+          name="name"
+          control={control}
+          rules={{ required: true, maxLength: 45 }}
+          render={({ field }) => <TextField
+            {...field}
+            sx={{ mt: 4 }}
             required
-            id="name"
-            onChange={handleChange("name")}
             label="Name"
-          />
-        </div>
-        <div>
-          <TextField
+            size="small"
+            onChange={e => {
+              setValue(field.name, e.target.value);
+              setFormEditedState({ ...formEditedState, [field.name]: e.target.value })
+            }}
+          />}
+        />
+        <Typography variant="body1" style={{ color: 'red', fontSize: '10px' }}>
+          {errors.name?.type === 'required' && "Name is required"}
+          {errors.name?.type === 'maxLength' && "too long"}
+        </Typography>
+        <Controller
+          name="description"
+          control={control}
+          rules={{ maxLength: 504 }}
+          render={({ field }) => <TextField
+            {...field}
+            sx={{ mt: 4 }}
+            label="Description"
             size="small"
             style={{ width: "100%" }}
-            value={formEditedState.description}
-            id="description"
-            onChange={handleChange("description")}
-            label="Description"
             multiline
             rows={4}
-          />
-        </div>
-        <div>
-          <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
-            <InputLabel id="demo-simple-select-required-label">
+            onChange={e => {
+              setValue(field.name, e.target.value);
+              setFormEditedState({ ...formEditedState, [field.name]: e.target.value })
+            }}
+          />}
+        />
+        <Typography variant="body1" style={{ color: 'red', fontSize: '10px' }}>
+          {errors.description?.type === 'maxLength' && "too long"}
+        </Typography>
+        <Controller
+          name="ministry"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => <FormControl sx={{ mt: 0, mt:4, mb: 2, minWidth: 250 }}>
+            <InputLabel >
               Ministry
             </InputLabel>
             <Select
               size="medium"
-              labelId="select-ministry"
-              id="select-ministry"
               value={formEditedState.ministry}
               label="Ministry *"
-              onChange={handleChange("ministry")}
+              onChange={e => {
+                setValue(field.name, e.target.value);
+                setFormEditedState({ ...formEditedState, [field.name]: e.target.value })
+              }}
             >
               {ministries.map((ministryOption) => (
                 <MenuItem key={ministryOption} value={ministryOption}>
@@ -164,9 +199,12 @@ export default function EditProject() {
                 </MenuItem>
               ))}
             </Select>
-          </FormControl>
-        </div>
-        <Paper sx={{ p: 2, mb: 4 }} >
+          </FormControl>}
+        />
+        <Typography variant="body1" style={{ color: 'red', fontSize: '10px' }}>
+          {errors.ministry?.type === 'required' && "is required"}
+        </Typography>
+              <Paper sx={{ p: 2, mb: 4 }} >
           <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }} >
             Project Owner
           </Typography>
@@ -296,10 +334,11 @@ export default function EditProject() {
             </Select>
           </FormControl>
         </div>
-        <Button size="large" disabled={!submitButtonState} onClick={handleSubmit}>
-          Submit
-        </Button>
-      </Box>
+        <Input
+          type="submit"
+          disabled={!submitButtonState}
+        />
+      </form>
     </div>
   );
 }
