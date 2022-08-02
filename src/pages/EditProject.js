@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
@@ -40,8 +40,8 @@ const mockData = {
 
 export default function EditProject() {
   const [technicalLeads, setTechnicalLeads] = useState(mockData.technicalLeads);
-  const [submitButtonState, setSubmitButtonState] = useState(true);
-  const formPrevState = {
+  const [submitButtonState, setSubmitButtonState] = useState(false);
+  const initialState = {
     name: mockData.name,
     description: mockData.description,
     projectOwner: mockData.projectOwner,
@@ -67,13 +67,32 @@ export default function EditProject() {
 
   const handleChange = (input) => (event) => {
     setFormEditedState({ ...formEditedState, [input]: event.target.value });
-    console.log(formEditedState[input] !== formPrevState[input])
-    setSubmitButtonState(formEditedState[input] !== formPrevState[input])
   };
 
+  useEffect(() => {
+    setSubmitButtonState(
+      formEditedState.cluster !== initialState.cluster
+      || formEditedState.defaultCpuOption !== initialState.defaultCpuOption
+      || formEditedState.defaultMemoryOption !== initialState.defaultMemoryOption
+      || formEditedState.defaultStorageOption !== initialState.defaultStorageOption
+      || formEditedState.description !== initialState.description
+      || formEditedState.ministry !== initialState.ministry
+      || formEditedState.name !== initialState.name
+      || formEditedState.projectOwner !== initialState.projectOwner
+    )
+  }, [formEditedState.cluster,
+  formEditedState.defaultCpuOption,
+  formEditedState.defaultMemoryOption,
+  formEditedState.defaultStorageOption,
+  formEditedState.description,
+  formEditedState.ministry,
+  formEditedState.name,
+  formEditedState.projectOwner,
+  ])
+  
   const addTechnicalLead = () =>
     setTechnicalLeads(technicalLeads => [...technicalLeads, [{
-      technicalLead: 'technicalLead3@email.com',
+      technicalLead: '',
       key: technicalLeads.length + 1,
     }]])
 
@@ -86,6 +105,9 @@ export default function EditProject() {
     setTechnicalLeads({ ...technicalLeads, [key]: value });
   };
 
+  const handleSubmit = () => {
+    console.log(formEditedState)
+  }
 
   return (
     <div>
@@ -98,6 +120,7 @@ export default function EditProject() {
         }}
         noValidate
         autoComplete="off"
+        onSubmit={handleSubmit}
       >
         <div>
           <TextField
@@ -143,7 +166,7 @@ export default function EditProject() {
             </Select>
           </FormControl>
         </div>
-        <Paper sx={{ p: 2 }}>
+        <Paper sx={{ p: 2, mb: 4 }} >
           <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }} >
             Project Owner
           </Typography>
@@ -273,7 +296,7 @@ export default function EditProject() {
             </Select>
           </FormControl>
         </div>
-        <Button size="large" disabled={submitButtonState}>
+        <Button size="large" disabled={!submitButtonState} onClick={handleSubmit}>
           Submit
         </Button>
       </Box>
