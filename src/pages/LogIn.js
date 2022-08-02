@@ -1,20 +1,29 @@
-import React from "react";
+import React, {useCallback} from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
+import LoginOld from "./LoginOld";
 
-function LogIn() {
+function Login() {
   let location = useLocation();
   const { keycloak } = useKeycloak();
+
 
   const currentLocationState = location.state || {
     from: { pathname: '/' },
   }  
 
+  const loginHandler = useCallback(() => {
+    keycloak?.login({ idpHint: "idir" });
+  }, [keycloak]);
+
   if (keycloak?.authenticated) {
     return <Navigate to={currentLocationState?.from} />
   }
 
-  return; // LogIn page - can put old login page here (use this as a hoc)
+
+
+
+  return <LoginOld loginHandler={loginHandler} />
 }
 
-export default LogIn;
+export default Login;

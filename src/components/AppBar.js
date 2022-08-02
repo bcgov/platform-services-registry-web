@@ -11,6 +11,7 @@ import styled from "styled-components";
 import { useKeycloak } from "@react-keycloak/web";
 import logoImage from "./assets/bcid-symbol-rev.svg";
 import AdminContext from "../context/admin";
+import { useNavigate } from 'react-router-dom';
 
 const Logo = styled.img`
   max-width: 75px;
@@ -21,10 +22,17 @@ const Logo = styled.img`
 
 export default function DenseAppBar({ title }) {
   const { keycloak } = useKeycloak();
+  const navigate = useNavigate();
+
 
   const login = useCallback(() => {
     keycloak?.login({ idpHint: "idir" });
   }, [keycloak]);
+
+  const logout = useCallback(() => {
+    navigate("/login")
+    keycloak.logout()
+  })
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -56,7 +64,7 @@ export default function DenseAppBar({ title }) {
           >
             <div style={{ marginLeft: 75 }}>
               {!!keycloak?.authenticated ? (
-                <Button color="inherit" onClick={() => keycloak.logout()}>
+                <Button color="inherit" onClick={logout}>
                   Logout
                 </Button>
               ) : (
