@@ -13,8 +13,15 @@ import Project from "../pages/Project";
 import { useMutation, gql } from "@apollo/client";
 import DenseAppBar from "./AppBar";
 import Layout from "./Layout";
+import LoadingSpinner from "./common/LoadingSpinner";
 
 export const AppRouter = () => {
+  const { initialized } = useKeycloak();
+
+  if(!initialized) {
+    return <LoadingSpinner />
+  }
+
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
