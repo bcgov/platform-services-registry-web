@@ -72,7 +72,7 @@ const StyledList = styled.ul`
   padding-left: 15px;
 `;
 
-const Login = ({loginHandler}) => {
+const Login = () => {
   const { keycloak } = useKeycloak();
   const [isAttendedSession, SetIsAttendedSession] = useState(false);
   const [showWarningMessage, setShowWarningMessage] = useState(false);
