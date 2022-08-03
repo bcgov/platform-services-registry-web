@@ -8,6 +8,7 @@ import { useKeycloak } from "@react-keycloak/web";
 import logoImage from "./assets/bcid-symbol-rev.svg";
 import AdminContext from "../context/admin";
 import DropDownLoginMenu from "./DropDownLoginMenu";
+import { useNavigate } from 'react-router-dom';
 
 const Logo = styled.img`
   max-width: 75px;
@@ -17,8 +18,6 @@ const Logo = styled.img`
 `;
 
 export default function DenseAppBar() {
-  const { keycloak } = useKeycloak();
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" style={{ borderBottom: "2px solid #fcba19" }}>

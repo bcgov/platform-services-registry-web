@@ -15,6 +15,8 @@ export default function StickyTable({ columns, rows, loading }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
+  const handleRowClick = (id) => console.log(id);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -48,15 +50,16 @@ export default function StickyTable({ columns, rows, loading }) {
             </TableRow>
           </TableHead>
           {loading ? (
-            [...Array(8)].map((_) => (
+            [...Array(8)].map((_, i) => (
               <TableRow
+                key={"row" + i}
                 style={{ marginLeft: 24, marginRight: 24 }}
                 sx={{
                   width: "100%",
                 }}
               >
-                {columns.map((__) => (
-                  <TableCell>
+                {columns.map((__, j) => (
+                  <TableCell key={"col" + j}>
                     <Skeleton height="70px" animation="wave" />
                   </TableCell>
                 ))}
@@ -70,6 +73,7 @@ export default function StickyTable({ columns, rows, loading }) {
                   return (
                     <TableRow
                       hover
+                      onClick={() => handleRowClick(row.id)}
                       role="checkbox"
                       tabIndex={-1}
                       key={row.code}

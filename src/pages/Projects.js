@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
 import { useQuery, useLazyQuery, gql } from "@apollo/client";
-import StickyTable from "../components/Common/Table";
+import StickyTable from "../components/common/Table";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -63,6 +63,7 @@ const ALL_PROJECTS = gql`
 `;
 
 const projectsToRows = ({
+  id,
   name,
   description,
   projectOwner,
@@ -71,6 +72,7 @@ const projectsToRows = ({
   cluster,
   licencePlate,
 }) => ({
+  id,
   name: <span style={{ fontSize: 16, fontWeight: "450" }}>{name}</span>,
   description: (
     <span style={{ fontSize: 14 }}> {truncate(description, 130)}</span>

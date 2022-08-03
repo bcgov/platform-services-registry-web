@@ -12,10 +12,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { ministries } from "./common/Constants";
 
-export default function MetaDataInput({
-  formState,
-  handleChange,
-}) {
+export default function MetaDataInput({ formState, handleChange }) {
   const [technicalLeads, setTechnicalLeads] = useState({ 0: "" });
 
   const addTechnicalLead = () =>
@@ -31,7 +28,6 @@ export default function MetaDataInput({
     setTechnicalLeads({ ...technicalLeads, [key]: value });
   };
 
-
   const technicalLeadsSize = Object.keys(technicalLeads).length;
 
   return (
@@ -39,13 +35,14 @@ export default function MetaDataInput({
       component="form"
       sx={{
         "& .MuiTextField-root": { m: 0, mb: 3, width: "45ch" },
-        width: "60%",
+        width: "50%",
       }}
       noValidate
       autoComplete="off"
     >
       <div>
         <TextField
+          size="small"
           style={{ width: "100%" }}
           value={formState["name"]}
           required
@@ -56,6 +53,7 @@ export default function MetaDataInput({
       </div>
       <div>
         <TextField
+          size="small"
           style={{ width: "100%" }}
           value={formState["description"]}
           id="description"
@@ -71,6 +69,7 @@ export default function MetaDataInput({
             Ministry
           </InputLabel>
           <Select
+            size="medium"
             labelId="select-ministry"
             id="select-ministry"
             value={formState["ministry"]}
@@ -86,22 +85,24 @@ export default function MetaDataInput({
         </FormControl>
       </div>
       <Paper sx={{ p: 2 }}>
-        <Typography sx={{ mt: 0, mb: 2 }} variant="h6">
+        <Typography sx={{ mt: 0, mb: 1, fontSize: 17}} >
           Project Owner
         </Typography>
         <TextField
+          size="small"
           value={formState["projectOwner"]}
           onChange={handleChange("projectOwner")}
           required
           id="project-owner"
           label="Email"
         />
-        <Typography sx={{ mt: 0, mb: 2 }} variant="h6">
+        <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }}>
           Technical Leads
         </Typography>
         {Object.values(technicalLeads).map((technicalLead, key) => (
           <div key={key}>
             <TextField
+              size="small"ß
               value={technicalLead}
               onChange={(event) =>
                 handleTechnicalLeadsChange(key, event.target.value)
@@ -112,7 +113,7 @@ export default function MetaDataInput({
             />
             {key === technicalLeadsSize - 1 ? (
               <IconButton
-                sx={{ mt: 1, ml: 1 }}
+                sx={{ mt: 0, ml: 0.5 }}
                 onClick={addTechnicalLead}
                 aria-label="add-technical-lead"
               >
@@ -120,7 +121,7 @@ export default function MetaDataInput({
               </IconButton>
             ) : (
               <IconButton
-                sx={{ mt: 1, ml: 1 }}
+                sx={{ mt: 0, ml: 0.5 }}
                 onClick={() => removeTechnicalLead(key)}
                 aria-label="add-technical-lead"
               >
