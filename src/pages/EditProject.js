@@ -135,10 +135,14 @@ export default function EditProject() {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}>
-          {/* <CustomController
-          name={}
-           rules, control, setFormEditedState
-          /> */}
+        <CustomController
+          name="Name"
+          rules={{ required: true, maxLength: 45 }}
+          control={control}
+          setFormEditedState={setFormEditedState}
+          formEditedState={formEditedState}
+          setValue={setValue}
+        />
         <Controller
           name="name"
           control={control}
@@ -184,7 +188,7 @@ export default function EditProject() {
           name="ministry"
           control={control}
           rules={{ required: true }}
-          render={({ field }) => <FormControl sx={{ mt: 0, mt:4, mb: 2, minWidth: 250 }}>
+          render={({ field }) => <FormControl sx={{ mt: 0, mt: 4, mb: 2, minWidth: 250 }}>
             <InputLabel >
               Ministry
             </InputLabel>
@@ -208,7 +212,7 @@ export default function EditProject() {
         <Typography variant="body1" style={{ color: 'red', fontSize: '10px' }}>
           {errors.ministry?.type === 'required' && "is required"}
         </Typography>
-              <Paper sx={{ p: 2, mb: 4 }} >
+        <Paper sx={{ p: 2, mb: 4 }} >
           <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }} >
             Project Owner
           </Typography>

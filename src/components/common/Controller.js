@@ -4,7 +4,8 @@ import TextField from "@mui/material/TextField";
 
 
 
-export default function CustomController({ name, rules, control, setFormEditedState }) {
+export default function CustomController({ name, rules, control, setFormEditedState, formEditedState, setValue, defaultValue }) {
+  
     return (
         <Controller
             name={name}
