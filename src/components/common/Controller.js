@@ -1,27 +1,42 @@
 import React from "react";
-import { Controller } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import TextField from "@mui/material/TextField";
+import { width } from "@mui/system";
 
 
 
-export default function CustomController({ name, rules, control, setFormEditedState, formEditedState, setValue, defaultValue }) {
-  
+export default function CustomController({ name, control, setFormEditedState, errors, formEditedState, setValue, check, multiline=false,
+    rows=1 }) {
+
     return (
+        <div >
         <Controller
+        
             name={name}
             control={control}
-            rules={rules}
             render={({ field }) => <TextField
                 {...field}
                 sx={{ mt: 4 }}
+                style={{width: '100%'}}
                 required
                 label={name.charAt(0).toUpperCase() + name.slice(1)}
                 size="small"
+                multiline={multiline}
+                rows={rows}
+                error={!!(errors[`${name}required`] ||
+                    errors[`${name}maxLength`] ||
+                    errors[`${name}pattern`] 
+                )}
+                helperText={(errors[`${name}required`] && errors[`${name}required`].message) ||
+                (errors[`${name}maxLength`] && errors[`${name}maxLength`].message) ||
+                (errors[`${name}pattern`] && errors[`${name}pattern`].message) }
                 onChange={e => {
+                    check(e.target.value)
                     setValue(field.name, e.target.value);
                     setFormEditedState({ ...formEditedState, [field.name]: e.target.value })
                 }}
             />}
         />
+        </div>
     );
 }

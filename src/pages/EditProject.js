@@ -68,7 +68,7 @@ export default function EditProject() {
     defaultMemoryOption: mockData.defaultMemoryOption,
     defaultStorageOption: mockData.defaultStorageOption,
   });
-  const { register, handleSubmit, setValue, control, watch, formState: { errors } } = useForm({
+  const { clearErrors, handleSubmit, setValue, control, setError, formState: { errors } } = useForm({
     defaultValues: {
       name: formEditedState.name,
       description: formEditedState.description,
@@ -76,11 +76,6 @@ export default function EditProject() {
     }
   });
 
-
-  const handleChange = (name, value) => {
-
-    // setFormEditedState({ ...formEditedState, [input]: event.target.value });
-  };
 
   useEffect(() => {
     setSubmitButtonState(
@@ -117,6 +112,9 @@ export default function EditProject() {
   const handleTechnicalLeadsChange = (key, value) => {
     setTechnicalLeads({ ...technicalLeads, [key]: value });
   };
+  const handleChange = () => {
+
+  }
 
   const onSubmit = () => {
     console.log(formEditedState)
@@ -129,44 +127,51 @@ export default function EditProject() {
         component="form"
         sx={{
           "& .MuiTextField-root": { m: 0, mb: 3, width: "45ch" },
-          width: "50%",
+          width: "50%"
         }}
         style={{ width: "50%" }}
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}>
         <CustomController
-          name="Name"
-          rules={{ required: true, maxLength: 45 }}
+          name={'name'}
+          errors={errors}
+          setError={setError}
           control={control}
           setFormEditedState={setFormEditedState}
           formEditedState={formEditedState}
           setValue={setValue}
+          maxLength={40}
+          check={(str) => {
+            str.match(/^[a-zA-Z][a-zA-Z0-9. ,$;]*$/gi) === null ? setError("namepattern", { type: "pattern", message: 'Must be alphanumetic starting with a letter', pattern: /^[a-zA-Z][a-zA-Z0-9. ,$;]*$/gi }) :
+              clearErrors("namepattern")
+            str.length === 0 ? setError("namerequired", { type: "required", required: true, message: 'Name is required' }, {}) :
+              clearErrors("namerequired")
+            str.length > 40 ? setError("namemaxLength", { type: "maxLength", maxLength: 40, message: 'Max 40 characters' }) :
+              clearErrors("namemaxLength")
+          }}
         />
-        <Controller
-          name="name"
+        <CustomController
+          name={'description'}
+          errors={errors}
+          setError={setError}
           control={control}
-          rules={{ required: true, maxLength: 45 }}
-          render={({ field }) => <TextField
-            {...field}
-            sx={{ mt: 4 }}
-            required
-            label="Name"
-            size="small"
-            onChange={e => {
-              setValue(field.name, e.target.value);
-              setFormEditedState({ ...formEditedState, [field.name]: e.target.value })
-            }}
-          />}
+          setFormEditedState={setFormEditedState}
+          formEditedState={formEditedState}
+          setValue={setValue}
+          maxLength={40}
+          multiline={true}
+          rows={4}
+          check={(str) => {
+            str.length === 0 ? setError("descriptionrequired", { type: "required", required: true, message: 'Description is required' }, {}) :
+              clearErrors("descriptionrequired")
+            str.length > 40 ? setError("descriptionmaxLength", { type: "maxLength", maxLength: 512, message: 'Max 512 characters' }) :
+              clearErrors("descriptionmaxLength")
+          }}
         />
-        <Typography variant="body1" style={{ color: 'red', fontSize: '10px' }}>
-          {errors.name?.type === 'required' && "Name is required"}
-          {errors.name?.type === 'maxLength' && "too long"}
-        </Typography>
         <Controller
           name="description"
           control={control}
-          rules={{ maxLength: 504 }}
           render={({ field }) => <TextField
             {...field}
             sx={{ mt: 4 }}
@@ -175,28 +180,33 @@ export default function EditProject() {
             style={{ width: "100%" }}
             multiline
             rows={4}
+            error={!!errors.maxLength}
+            helperText={(errors.required && "Name is required") || (errors.maxLength && "No more than 500 characters")}
             onChange={e => {
+              e.target.value.length === 0 ? setError("required", { type: "required" }, { required: true }) :
+                clearErrors("required")
+              e.target.value.length > 500 ? setError("maxLength", { type: "maxLength" }, { maxLength: 500 }) :
+                clearErrors("maxLength")
               setValue(field.name, e.target.value);
               setFormEditedState({ ...formEditedState, [field.name]: e.target.value })
             }}
           />}
         />
-        <Typography variant="body1" style={{ color: 'red', fontSize: '10px' }}>
-          {errors.description?.type === 'maxLength' && "too long"}
-        </Typography>
-        <Controller
-          name="ministry"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => <FormControl sx={{ mt: 0, mt: 4, mb: 2, minWidth: 250 }}>
-            <InputLabel >
-              Ministry
-            </InputLabel>
-            <Select
+        <FormControl sx={{ mt: 0, mt: 4, mb: 2, minWidth: 250 }}>
+          <InputLabel >
+            Ministry *
+          </InputLabel>
+          <Controller
+            name="ministry"
+            control={control}
+            render={({ field }) => <Select
               size="medium"
               value={formEditedState.ministry}
               label="Ministry *"
+              error={!!errors.required}
               onChange={e => {
+                e.target.value.length === 0 ? setError("required", { type: "required" }, { required: true }) :
+                  clearErrors("required")
                 setValue(field.name, e.target.value);
                 setFormEditedState({ ...formEditedState, [field.name]: e.target.value })
               }}
@@ -206,12 +216,9 @@ export default function EditProject() {
                   {ministryOption}
                 </MenuItem>
               ))}
-            </Select>
-          </FormControl>}
-        />
-        <Typography variant="body1" style={{ color: 'red', fontSize: '10px' }}>
-          {errors.ministry?.type === 'required' && "is required"}
-        </Typography>
+            </Select>}
+          />
+        </FormControl>
         <Paper sx={{ p: 2, mb: 4 }} >
           <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }} >
             Project Owner
