@@ -4,7 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { defaultCpuOptions, defaultMemoryOptions, defaultStorageOptions } from "./Common/Constants";
+import { defaultCpuOptions, defaultMemoryOptions, defaultStorageOptions } from "./common/Constants";
 
 export default function QuotaInput({ formState, handleChange }) {
 
