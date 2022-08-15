@@ -6,7 +6,8 @@ import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import MetaDataInput from "./MetaDataInput";
-
+import Cluster from "./ClusterInput";
+import QuotaInput from "./QuotaInput";
 const steps = ["Meta Data", "Cluster", "Quota"];
 
 export default function Progress({ formState, handleChange }) {
@@ -19,9 +20,9 @@ export default function Progress({ formState, handleChange }) {
           <MetaDataInput formState={formState} handleChange={handleChange} />
         );
       case 1:
-        return <div>TEST</div>;
+        return <Cluster  formState={formState} handleChange={handleChange}/>;
       case 2:
-        return <div>TEST</div>;
+        return <QuotaInput  formState={formState} handleChange={handleChange}/>;
       default:
         throw new Error("Unknown step");
     }

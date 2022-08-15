@@ -151,8 +151,6 @@ export default function Projects() {
 
   if (errors) return `Error! ${errors.message}`;
 
-  console.log("TEST");
-
   return (
     <div>
       <TabsToolbar />

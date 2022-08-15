@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import NavToolbar from "../components/NavToolbar";
 import Progress from "../components/Progress";
-import { ministries } from "../components/common/Constants";
+import { ministries, clusters, defaultCpuOptions, defaultMemoryOptions, defaultStorageOptions } from "../components/common/Constants";
 
 export default function Create() {
   const [formState, setFormState] = useState({
@@ -9,6 +9,10 @@ export default function Create() {
     description: "",
     projectOwner: "",
     ministry: ministries[0],
+    cluster: clusters[0],
+    defaultCpuOption: defaultCpuOptions[0],
+    defaultMemoryOption: defaultMemoryOptions[0],
+    defaultStorageOption: defaultStorageOptions[0],
   });
 
   const handleChange = (input) => (event) => {

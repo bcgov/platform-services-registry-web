@@ -28,7 +28,6 @@ const ministries = [
   "TRAN",
 ];
 
-
 const clusters = [
   'CLAB',
   'KLAB',

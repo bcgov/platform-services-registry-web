@@ -42,7 +42,7 @@ const Button = (props) => {
 
   return (
     <StyledButton onClick={actionForCurrentState(keycloak)}>
-      {titleForAuthenticationState(keycloak)}
+     LOGIN 
       {props.children}
     </StyledButton>
   );
@@ -77,17 +77,6 @@ const Login = () => {
   const [isAttendedSession, SetIsAttendedSession] = useState(false);
   const [showWarningMessage, setShowWarningMessage] = useState(false);
 
-  if (!keycloak) {
-    return null;
-  }
-
-  if (keycloak?.authenticated) {
-    return (
-      <Navigate
-        to="/home"
-      />
-    );
-  }
 
   return (
     <Flex
