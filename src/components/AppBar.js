@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from "react";
+import React, {  useCallback } from "react";
 import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -6,9 +6,8 @@ import Toolbar from "@mui/material/Toolbar";
 import styled from "styled-components";
 import { useKeycloak } from "@react-keycloak/web";
 import logoImage from "./assets/bcid-symbol-rev.svg";
-import AdminContext from "../context/admin";
 import DropDownLoginMenu from "./DropDownLoginMenu";
-import { useNavigate } from 'react-router-dom';
+import Button from "@mui/material/Button";
 
 const Logo = styled.img`
   max-width: 75px;
@@ -18,6 +17,13 @@ const Logo = styled.img`
 `;
 
 export default function DenseAppBar() {
+  const { keycloak } = useKeycloak();
+
+
+  const login = useCallback(() => {
+    keycloak?.login({ idpHint: "idir" });
+  }, [keycloak]);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" style={{ borderBottom: "2px solid #fcba19" }}>
@@ -38,7 +44,10 @@ export default function DenseAppBar() {
             </p>
             <p style={{ fontWeight: "500", fontSize: 20 }}>Project Registry</p>
           </div>
-          <DropDownLoginMenu />
+          {keycloak?.authenticated ? <DropDownLoginMenu />
+            : <Button onClick={login} style={{ color: '#fff' }}>
+              Login
+            </Button>}
         </Toolbar>
       </AppBar>
     </Box>

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, {  useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { useKeycloak } from "@react-keycloak/web";
@@ -30,11 +30,6 @@ export default function DropDownLoginMenu() {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    const login = useCallback(() => {
-        keycloak?.login({ idpHint: "idir" });
-    }, [keycloak]);
-   
 
     return (
         <Box>
@@ -92,21 +87,12 @@ export default function DropDownLoginMenu() {
                     </ListItemIcon>
                     Settings
                 </MenuItem> */}
-                {!!keycloak?.authenticated ? (
-                    <MenuItem onClick={() => keycloak.logout()}>
+                 <MenuItem onClick={() => keycloak.logout()}>
                         <ListItemIcon>
                             <Logout fontSize="small" />
                         </ListItemIcon>
                         Logout
                     </MenuItem>
-                ) : (
-                    <MenuItem onClick={login}>
-                        <ListItemIcon>
-                            <Logout fontSize="small" />
-                        </ListItemIcon>
-                        Login
-                    </MenuItem>
-                )}
             </Menu>
         </Box>
     );
