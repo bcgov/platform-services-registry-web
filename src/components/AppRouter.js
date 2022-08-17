@@ -18,8 +18,8 @@ import LoadingSpinner from "./common/LoadingSpinner";
 export const AppRouter = () => {
   const { initialized } = useKeycloak();
 
-  if(!initialized) {
-    return <LoadingSpinner />
+  if (!initialized) {
+    return <LoadingSpinner />;
   }
 
   return (
@@ -59,7 +59,7 @@ export const AppRouter = () => {
           }
         />
         <Route
-          path="private-cloud/project"
+          path="private-cloud/projects/:id"
           roles={[]}
           element={
             <RequireAuth>

@@ -4,7 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { clusters } from "./Common/Constants";
+import { clusters } from "./common/Constants";
 
 export default function ClusterInput({ formState, handleChange }) {
 
@@ -13,7 +13,7 @@ export default function ClusterInput({ formState, handleChange }) {
       component="form"
       sx={{
         "& .MuiTextField-root": { m: 0, mb: 3, width: "45ch" },
-        width: "50%",
+        width: "500px",
       }}
       noValidate
       autoComplete="off"

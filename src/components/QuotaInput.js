@@ -4,7 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { defaultCpuOptions, defaultMemoryOptions, defaultStorageOptions } from "./Common/Constants";
+import { defaultCpuOptions, defaultMemoryOptions, defaultStorageOptions } from "./common/Constants";
 
 export default function QuotaInput({ formState, handleChange }) {
 
@@ -13,7 +13,7 @@ export default function QuotaInput({ formState, handleChange }) {
       component="form"
       sx={{
         "& .MuiTextField-root": { m: 0, mb: 3, width: "45ch" },
-        width: "50%",
+        width: "500px",
       }}
       noValidate
       autoComplete="off"

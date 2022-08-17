@@ -11,7 +11,7 @@ import Grid from "@mui/material/Grid";
 import Skeleton from "@mui/material/Skeleton";
 import Box from "@mui/material/Box";
 
-export default function StickyTable({ columns, rows, loading }) {
+export default function StickyTable({ columns, rows, loading, onClick }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -73,7 +73,7 @@ export default function StickyTable({ columns, rows, loading }) {
                   return (
                     <TableRow
                       hover
-                      onClick={() => handleRowClick(row.id)}
+                      onClick={() => onClick(row.id)}
                       role="checkbox"
                       tabIndex={-1}
                       key={row.code}
