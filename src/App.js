@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, createContext } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "./App.css";
-import DenseAppBar from "./components/AppBar";
 import { AppRouter } from "./components/AppRouter";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -27,7 +26,10 @@ const theme = createTheme({
   },
 });
 
-const SIGN_UP = gql`
+export const ModeContext = createContext()
+
+function App() {
+  const SIGN_UP = gql`
   mutation Mutation {
     signUp {
       id
@@ -37,7 +39,18 @@ const SIGN_UP = gql`
   }
 `;
 
-function App() {
+  const [mode, setMode] = useState(localStorage.getItem('appMode') || 'light')
+  theme.palette.mode = mode
+
+  useEffect(() => {
+    theme.palette.mode = mode
+    localStorage.setItem('appMode', mode)
+  }, [mode])
+
+  const toggleMode = () => {
+    setMode(mode === 'light' ? 'dark' : 'light')
+  }
+
   const {
     keycloak: { authenticated },
     initialized,
@@ -55,15 +68,17 @@ function App() {
   if (error)
     return `Sign up Error! ${error.message} authenticated: ${authenticated}`;
 
+
   return (
     <ThemeProvider theme={theme}>
-      <UserProvider user={data}>
-        <AdminProvider>
-          <AppRouter />
-        </AdminProvider>
-      </UserProvider>
+      <ModeContext.Provider value={{ mode: mode, toggleMode: toggleMode }}>
+        <UserProvider user={data}>
+          <AdminProvider>
+            <AppRouter />
+          </AdminProvider>
+        </UserProvider>
+      </ModeContext.Provider>
     </ThemeProvider>
-  );
+  )
 }
-
 export default App;

@@ -1,17 +1,13 @@
-import React, { useContext, useCallback } from "react";
+import React, {  useCallback } from "react";
 import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import Button from "@mui/material/Button";
 import styled from "styled-components";
 import { useKeycloak } from "@react-keycloak/web";
 import logoImage from "./assets/bcid-symbol-rev.svg";
-import AdminContext from "../context/admin";
-import { useNavigate } from 'react-router-dom';
+import DropDownLoginMenu from "./DropDownLoginMenu";
+import Button from "@mui/material/Button";
 
 const Logo = styled.img`
   max-width: 75px;
@@ -20,19 +16,13 @@ const Logo = styled.img`
   margin-bottom: 6px;
 `;
 
-export default function DenseAppBar({ title }) {
+export default function DenseAppBar() {
   const { keycloak } = useKeycloak();
-  const navigate = useNavigate();
 
 
   const login = useCallback(() => {
     keycloak?.login({ idpHint: "idir" });
   }, [keycloak]);
-
-  const logout = useCallback(() => {
-    navigate("/login")
-    keycloak.logout()
-  })
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -46,36 +36,18 @@ export default function DenseAppBar({ title }) {
           }}
         >
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <Link to="/" style={{marginTop: 7}} >
+            <Link to="/" style={{ marginTop: 7 }} >
               <Logo alt="BC Gov Logo" src={logoImage} width="50" />
             </Link>
-
             <p style={{ fontWeight: "300", fontSize: 20, font: "roboto" }}>
               BC Platform Services&nbsp;
             </p>
             <p style={{ fontWeight: "500", fontSize: 20 }}>Project Registry</p>
           </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <div style={{ marginLeft: 75 }}>
-              {!!keycloak?.authenticated ? (
-                <Button color="inherit" onClick={logout}>
-                  Logout
-                </Button>
-              ) : (
-                <div>
-                  <Button type="button" color="inherit" onClick={login}>
-                    Login
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
+          {keycloak?.authenticated ? <DropDownLoginMenu />
+            : <Button onClick={login} style={{ color: '#fff' }}>
+              Login
+            </Button>}
         </Toolbar>
       </AppBar>
     </Box>
