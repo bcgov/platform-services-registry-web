@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
@@ -12,7 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import NavToolbar from "../components/NavToolbar";
-import CustomController from "../components/common/Controller";
+import CustomController from "../components/common/CustomController";
 import Input from '@mui/material/Input';
 
 import { ministries, clusters, defaultCpuOptions, defaultMemoryOptions, defaultStorageOptions } from "../components/common/Constants";
@@ -24,15 +22,12 @@ const mockData = {
   projectOwner: 'projectOwner@email.com',
   technicalLeads: [
     {
-      technicalLead: 'technicalLead1@email.com',
-      key: 0,
-    }, {
-      technicalLead: 'technicalLead2@email.com',
-      key: 1,
+      email: 'technicalLead1@email.com',
+      id: 0,
     },
     {
-      technicalLead: 'technicalLead3@email.com',
-      key: 2,
+      email: 'technicalLead221@email.com',
+      id: 1,
     },
   ],
   cluster: 'SILVER',
@@ -42,10 +37,6 @@ const mockData = {
 }
 
 export default function EditProject() {
-  const [technicalLeads, setTechnicalLeads] = useState(mockData.technicalLeads);
-  const [submitButtonState, setSubmitButtonState] = useState(false);
-
-
   const initialState = {
     name: mockData.name,
     description: mockData.description,
@@ -57,45 +48,47 @@ export default function EditProject() {
     defaultMemoryOption: mockData.defaultMemoryOption,
     defaultStorageOption: mockData.defaultStorageOption,
   }
-  const [formEditedState, setFormEditedState] = useState({
-    name: mockData.name,
-    description: mockData.description,
-    projectOwner: mockData.projectOwner,
-    ministry: mockData.ministry,
-    technicalLeads: mockData.technicalLeads,
-    cluster: mockData.cluster,
-    defaultCpuOption: mockData.defaultCpuOption,
-    defaultMemoryOption: mockData.defaultMemoryOption,
-    defaultStorageOption: mockData.defaultStorageOption,
-  });
+
+  const [technicalLeads, setTechnicalLeads] = useState(mockData.technicalLeads);
+  const [projectName, setProjectName] = useState(mockData.name);
+  const [description, setDescription] = useState(mockData.description)
+  const [projectOwner, setProjectOwner] = useState(mockData.projectOwner)
+  const [ministry, setMinistry] = useState(mockData.ministry)
+  const [cluster, setCluster] = useState(mockData.cluster)
+  const [defaultCpuOption, setDefaultCpuOption] = useState(mockData.defaultCpuOption)
+  const [defaultMemoryOption, setDefaultMemoryOption] = useState(mockData.defaultMemoryOption)
+  const [defaultStorageOption, setDefaultStorageOption] = useState(mockData.defaultStorageOption)
+  const [submitButtonState, setSubmitButtonState] = useState(false);
+
   const { clearErrors, handleSubmit, setValue, control, setError, formState: { errors } } = useForm({
     defaultValues: {
-      name: formEditedState.name,
-      description: formEditedState.description,
-      ministry: formEditedState.ministry
+      name: initialState.name,
+      description: initialState.description,
+      projectOwner: initialState.projectOwner,
+      techleadPrimary: initialState.technicalLeads[0].email,
+      techleadSecondary: initialState.technicalLeads[1] ? initialState.technicalLeads[1].email : '',
     }
   });
 
-
   useEffect(() => {
     setSubmitButtonState(
-      formEditedState.cluster !== initialState.cluster
-      || formEditedState.defaultCpuOption !== initialState.defaultCpuOption
-      || formEditedState.defaultMemoryOption !== initialState.defaultMemoryOption
-      || formEditedState.defaultStorageOption !== initialState.defaultStorageOption
-      || formEditedState.description !== initialState.description
-      || formEditedState.ministry !== initialState.ministry
-      || formEditedState.name !== initialState.name
-      || formEditedState.projectOwner !== initialState.projectOwner
+      cluster !== initialState.cluster
+      || defaultCpuOption !== initialState.defaultCpuOption
+      || defaultMemoryOption !== initialState.defaultMemoryOption
+      || defaultStorageOption !== initialState.defaultStorageOption
+      || description !== initialState.description
+      || ministry !== initialState.ministry
+      || projectName !== initialState.name
+      || projectOwner !== initialState.projectOwner
     )
-  }, [formEditedState.cluster,
-  formEditedState.defaultCpuOption,
-  formEditedState.defaultMemoryOption,
-  formEditedState.defaultStorageOption,
-  formEditedState.description,
-  formEditedState.ministry,
-  formEditedState.name,
-  formEditedState.projectOwner,
+  }, [cluster,
+    defaultCpuOption,
+    defaultMemoryOption,
+    defaultStorageOption,
+    description,
+    ministry,
+    projectName,
+    projectOwner,
   ])
 
   const addTechnicalLead = () =>
@@ -106,18 +99,40 @@ export default function EditProject() {
 
   const removeTechnicalLead = (key) =>
     setTechnicalLeads(technicalLeads => technicalLeads.filter(technicalLead => {
-      return technicalLead.key !== key
+      return technicalLead.id !== key
     }))
 
-  const handleTechnicalLeadsChange = (key, value) => {
-    setTechnicalLeads({ ...technicalLeads, [key]: value });
-  };
-  const handleChange = () => {
+  const handleTechnicalLeads = (key, value) => {
+    console.log(key, value, technicalLeads)
+    
+    // setTechnicalLeads({ ...technicalLeads, [key]: {email: value, id: key} });
 
+
+    // setTechnicalLeads(current  =>{
+    //   current.map(obj => {
+    //     if (obj.id === key) {
+    //       console.log(key)
+    //       return {...obj, email: value, id: key}
+    //     }
+    //     return obj;
+    //   })})
+    //   debugger
+    // console.log(technicalLeads)
   }
 
+
+
   const onSubmit = () => {
-    console.log(formEditedState)
+    console.log({
+      name: projectName,
+      description: description,
+      projectOwner: projectOwner,
+      ministry: ministry,
+      technicalLeads: technicalLeads,
+      cluster: cluster,
+      defaultCpuOption: defaultCpuOption,
+      defaultMemoryOption: defaultMemoryOption,
+    })
   }
 
   return (
@@ -134,12 +149,12 @@ export default function EditProject() {
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}>
         <CustomController
+          width='50%'
           name={'name'}
           errors={errors}
           setError={setError}
           control={control}
-          setFormEditedState={setFormEditedState}
-          formEditedState={formEditedState}
+          setFormEditedState={setProjectName}
           setValue={setValue}
           maxLength={40}
           check={(str) => {
@@ -156,8 +171,7 @@ export default function EditProject() {
           errors={errors}
           setError={setError}
           control={control}
-          setFormEditedState={setFormEditedState}
-          formEditedState={formEditedState}
+          setFormEditedState={setDescription}
           setValue={setValue}
           maxLength={40}
           multiline={true}
@@ -165,32 +179,9 @@ export default function EditProject() {
           check={(str) => {
             str.length === 0 ? setError("descriptionrequired", { type: "required", required: true, message: 'Description is required' }, {}) :
               clearErrors("descriptionrequired")
-            str.length > 40 ? setError("descriptionmaxLength", { type: "maxLength", maxLength: 512, message: 'Max 512 characters' }) :
+            str.length > 512 ? setError("descriptionmaxLength", { type: "maxLength", maxLength: 512, message: 'Max 512 characters' }) :
               clearErrors("descriptionmaxLength")
           }}
-        />
-        <Controller
-          name="description"
-          control={control}
-          render={({ field }) => <TextField
-            {...field}
-            sx={{ mt: 4 }}
-            label="Description"
-            size="small"
-            style={{ width: "100%" }}
-            multiline
-            rows={4}
-            error={!!errors.maxLength}
-            helperText={(errors.required && "Name is required") || (errors.maxLength && "No more than 500 characters")}
-            onChange={e => {
-              e.target.value.length === 0 ? setError("required", { type: "required" }, { required: true }) :
-                clearErrors("required")
-              e.target.value.length > 500 ? setError("maxLength", { type: "maxLength" }, { maxLength: 500 }) :
-                clearErrors("maxLength")
-              setValue(field.name, e.target.value);
-              setFormEditedState({ ...formEditedState, [field.name]: e.target.value })
-            }}
-          />}
         />
         <FormControl sx={{ mt: 0, mt: 4, mb: 2, minWidth: 250 }}>
           <InputLabel >
@@ -201,14 +192,14 @@ export default function EditProject() {
             control={control}
             render={({ field }) => <Select
               size="medium"
-              value={formEditedState.ministry}
+              value={ministry}
               label="Ministry *"
               error={!!errors.required}
               onChange={e => {
                 e.target.value.length === 0 ? setError("required", { type: "required" }, { required: true }) :
                   clearErrors("required")
                 setValue(field.name, e.target.value);
-                setFormEditedState({ ...formEditedState, [field.name]: e.target.value })
+                setMinistry(e.target.value)
               }}
             >
               {ministries.map((ministryOption) => (
@@ -220,44 +211,63 @@ export default function EditProject() {
           />
         </FormControl>
         <Paper sx={{ p: 2, mb: 4 }} >
-          <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }} >
+          <Typography sx={{ mt: 0, fontSize: 17 }} >
             Project Owner
           </Typography>
-          <TextField
-            size="small"
-            value={formEditedState.projectOwner}
-            onChange={handleChange("projectOwner")}
-            required
-            id="project-owner"
-            label="Email"
+          <CustomController
+            width='50%'
+            name={'projectOwner'}
+            errors={errors}
+            setError={setError}
+            control={control}
+            setFormEditedState={setProjectOwner}
+            setValue={setValue}
+            maxLength={40}
+            check={(str) => {
+              str.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/gi) === null ?
+                setError("projectOwnerpattern", { type: "pattern", message: 'Must meet the pattern xxxxxx@xxxxx.xxx', pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/gi }) :
+                clearErrors("projectOwnerpattern")
+              str.length === 0 ? setError("projectOwnerrequired", { type: "required", required: true, message: 'Email is required' }, {}) :
+                clearErrors("projectOwnerrequired")
+              str.length > 40 ? setError("projectOwnermaxLength", { type: "maxLength", maxLength: 40, message: 'Max 40 characters' }) :
+                clearErrors("projectOwnermaxLength")
+            }}
           />
+
           <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }}>
             Technical Leads
           </Typography>
-          {technicalLeads.map(({ technicalLead, key }, index) => (
-            <div key={index}>
-              <TextField
-                size="small" ß
-                value={technicalLead}
-                onChange={(event) =>
-                  handleTechnicalLeadsChange(index, event.target.value)
-                }
-                required={index === 0}
-                id={"technical-lead" + index}
-                label="Email"
+          {technicalLeads.map((item, index) => (
+            <div key={index} style={{ display: 'flex', alignItems: 'end' }}>
+              <CustomController
+                width='50%'
+                name={`techlead${index === 0 ? "Primary" : "Secondary"}`}
+                errors={errors}
+                setError={setError}
+                control={control}
+                setFormEditedState={(value) => handleTechnicalLeads(item.id, value)}
+                setValue={setValue}
+                maxLength={40}
+                check={(str) => {
+                  str.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/gi) === null ?
+                    setError(`techlead${index === 0 ? "Primary" : "Secondary"}pattern`, { type: "pattern", message: 'Must meet the pattern xxxxxx@xxxxx.xxx', pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/gi }) :
+                    clearErrors(`techlead${index === 0 ? "Primary" : "Secondary"}pattern`)
+                  str.length === 0 ? setError(`techlead${index === 0 ? "Primary" : "Secondary"}required`, { type: "required", required: true, message: 'Email is required' }, {}) :
+                    clearErrors("projectOwnerrequired")
+                  str.length > 40 ? setError(`techlead${index === 0 ? "Primary" : "Secondary"}maxLength`, { type: "maxLength", maxLength: 40, message: 'Max 40 characters' }) :
+                    clearErrors(`techlead${index === 0 ? "Primary" : "Secondary"}maxLength`)
+                }}
               />
-              {index === technicalLeads.length - 1 ? (
+              {technicalLeads.length === 1 ? (
                 <IconButton
                   sx={{ mt: 0, ml: 0.5 }}
                   onClick={addTechnicalLead}
-                  aria-label="add-technical-lead"
                 >
                   <AddCircleIcon />
                 </IconButton>
-              ) : (technicalLeads.length > 1 && <IconButton
+              ) : (index === 1 && <IconButton
                 sx={{ mt: 0, ml: 0.5 }}
-                onClick={() => removeTechnicalLead(key)}
-                aria-label="add-technical-lead"
+                onClick={() => removeTechnicalLead(item.id)}
               >
                 <RemoveCircleIcon />
               </IconButton>
@@ -266,87 +276,119 @@ export default function EditProject() {
           ))}
         </Paper>
         <div>
-          <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
-            <InputLabel id="demo-simple-select-required-label">
-              Cluster
+          <FormControl sx={{ mt: 0, mt: 4, mb: 2, minWidth: 250 }}>
+            <InputLabel >
+              Cluster *
             </InputLabel>
-            <Select
-              size="medium"
-              labelId="select-cluster"
-              id="select-cluster"
-              value={formEditedState.cluster}
-              label="Cluster *"
-              onChange={handleChange("cluster")}
-            >
-              {clusters.map((clusterOption) => (
-                <MenuItem key={clusterOption} value={clusterOption}>
-                  {clusterOption}
-                </MenuItem>
-              ))}
-            </Select>
+            <Controller
+              name="cluster"
+              control={control}
+              render={({ field }) => <Select
+                size="medium"
+                value={cluster}
+                label="Cluster *"
+                error={!!errors.required}
+                onChange={e => {
+                  e.target.value.length === 0 ? setError("required", { type: "required" }, { required: true }) :
+                    clearErrors("required")
+                  setValue(field.name, e.target.value);
+                  setCluster(e.target.value)
+                }}
+              >
+                {clusters.map((clusterOption) => (
+                  <MenuItem key={clusterOption} value={clusterOption}>
+                    {clusterOption}
+                  </MenuItem>
+                ))}
+              </Select>}
+            />
           </FormControl>
         </div>
         <div>
-          <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
-            <InputLabel id="demo-simple-select-required-label">
+          <FormControl sx={{ mt: 0, mt: 4, mb: 2, minWidth: 250 }}>
+            <InputLabel >
               DefaultCpuOptions
             </InputLabel>
-            <Select
-              size="medium"
-              labelId="select-defaultCpuOptions"
-              id="select-defaultCpuOptions"
-              value={formEditedState.defaultCpuOption}
-              label="DefaultCpuOptions *"
-              onChange={handleChange("defaultCpuOption")}
-            >
-              {defaultCpuOptions.map((defaultCpuOption) => (
-                <MenuItem key={defaultCpuOption} value={defaultCpuOption}>
-                  {defaultCpuOption}
-                </MenuItem>
-              ))}
-            </Select>
+            <Controller
+              name="defaultCpuOption"
+              control={control}
+              render={({ field }) => <Select
+                size="medium"
+                value={defaultCpuOption}
+                label="DefaultCpuOption"
+                error={!!errors.required}
+                onChange={e => {
+                  e.target.value.length === 0 ? setError("required", { type: "required" }, { required: true }) :
+                    clearErrors("required")
+                  setValue(field.name, e.target.value);
+                  setDefaultCpuOption(e.target.value)
+                }}
+              >
+                {defaultCpuOptions.map((defaultCpuOption) => (
+                  <MenuItem key={defaultCpuOption} value={defaultCpuOption}>
+                    {defaultCpuOption}
+                  </MenuItem>
+                ))}
+              </Select>}
+            />
           </FormControl>
         </div>
         <div>
-          <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
-            <InputLabel id="demo-simple-select-required-label">
+          <FormControl sx={{ mt: 0, mt: 4, mb: 2, minWidth: 250 }}>
+            <InputLabel >
               DefaultMemoryOptions
             </InputLabel>
-            <Select
-              size="medium"
-              labelId="select-defaultMemoryOptions"
-              id="select-defaultMemoryOptions"
-              value={formEditedState.defaultMemoryOption}
-              label="DefaultMemoryOptions *"
-              onChange={handleChange("defaultMemoryOption")}
-            >
-              {defaultMemoryOptions.map((defaultMemoryOption) => (
-                <MenuItem key={defaultMemoryOption} value={defaultMemoryOption}>
-                  {defaultMemoryOption}
-                </MenuItem>
-              ))}
-            </Select>
+            <Controller
+              name="defaultMemoryOption"
+              control={control}
+              render={({ field }) => <Select
+                size="medium"
+                value={defaultMemoryOption}
+                label="DefaultMemoryOption"
+                error={!!errors.required}
+                onChange={e => {
+                  e.target.value.length === 0 ? setError("required", { type: "required" }, { required: true }) :
+                    clearErrors("required")
+                  setValue(field.name, e.target.value);
+                  setDefaultMemoryOption(e.target.value)
+                }}
+              >
+                {defaultMemoryOptions.map((defaultMemoryOption) => (
+                  <MenuItem key={defaultMemoryOption} value={defaultMemoryOption}>
+                    {defaultMemoryOption}
+                  </MenuItem>
+                ))}
+              </Select>}
+            />
           </FormControl>
         </div>
         <div>
-          <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
-            <InputLabel id="demo-simple-select-required-label">
+          <FormControl sx={{ mt: 0, mt: 4, mb: 2, minWidth: 250 }}>
+            <InputLabel >
               DefaultStorageOptions
             </InputLabel>
-            <Select
-              size="medium"
-              labelId="select-defaultStorageOptions"
-              id="select-defaultStorageOptions"
-              value={formEditedState.defaultStorageOption}
-              label="DefaultStorageOptions *"
-              onChange={handleChange("defaultStorageOption")}
-            >
-              {defaultStorageOptions.map((defaultStorageOption) => (
-                <MenuItem key={defaultStorageOption} value={defaultStorageOption}>
-                  {defaultStorageOption}
-                </MenuItem>
-              ))}
-            </Select>
+            <Controller
+              name="defaultStorageOption"
+              control={control}
+              render={({ field }) => <Select
+                size="medium"
+                value={defaultStorageOption}
+                label="defaultStorageOption"
+                error={!!errors.required}
+                onChange={e => {
+                  e.target.value.length === 0 ? setError("required", { type: "required" }, { required: true }) :
+                    clearErrors("required")
+                  setValue(field.name, e.target.value);
+                  setDefaultStorageOption(e.target.value)
+                }}
+              >
+                {defaultStorageOptions.map((defaultStorageOption) => (
+                  <MenuItem key={defaultStorageOption} value={defaultStorageOption}>
+                    {defaultStorageOption}
+                  </MenuItem>
+                ))}
+              </Select>}
+            />
           </FormControl>
         </div>
         <Input

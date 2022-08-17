@@ -5,13 +5,12 @@ import { width } from "@mui/system";
 
 
 
-export default function CustomController({ name, control, setFormEditedState, errors, formEditedState, setValue, check, multiline=false,
+export default function CustomController({ name, control, setFormEditedState, errors,  setValue, check, width='100%', multiline=false,
     rows=1 }) {
 
     return (
-        <div >
-        <Controller
-        
+        <div style={width={width}}>
+        <Controller        
             name={name}
             control={control}
             render={({ field }) => <TextField
@@ -32,8 +31,8 @@ export default function CustomController({ name, control, setFormEditedState, er
                 (errors[`${name}pattern`] && errors[`${name}pattern`].message) }
                 onChange={e => {
                     check(e.target.value)
-                    setValue(field.name, e.target.value);
-                    setFormEditedState({ ...formEditedState, [field.name]: e.target.value })
+                    setValue(field.name, e.target.value)
+                    setFormEditedState(e.target.value)
                 }}
             />}
         />
