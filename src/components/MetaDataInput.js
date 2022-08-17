@@ -10,7 +10,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { ministries } from "./Common/Constants";
+import { ministries } from "./common/Constants";
 
 export default function MetaDataInput({ formState, handleChange }) {
   const [technicalLeads, setTechnicalLeads] = useState({ 0: "" });

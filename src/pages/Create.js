@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import NavToolbar from "../components/NavToolbar";
 import Progress from "../components/Progress";
-import { ministries, clusters, defaultCpuOptions, defaultMemoryOptions, defaultStorageOptions } from "../components/Common/Constants";
+import { ministries, clusters, defaultCpuOptions, defaultMemoryOptions, defaultStorageOptions } from "../components/common/Constants";
 
 export default function Create() {
   const [formState, setFormState] = useState({

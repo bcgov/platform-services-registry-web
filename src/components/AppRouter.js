@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import Home from "../pages/Home";
-import Login from "../pages/Login";
 import RequireAuth from "./utilities/RequireAuth";
+import Login from "../pages/Login";
 import Projects from "../pages/Projects";
 import Requests from "../pages/Requests";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -18,7 +18,7 @@ import LoadingSpinner from "./common/LoadingSpinner";
 export const AppRouter = () => {
   const { initialized } = useKeycloak();
 
-  if(!initialized) {
+  if (!initialized) {
     return <LoadingSpinner />
   }
 

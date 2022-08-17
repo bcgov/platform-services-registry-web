@@ -4,7 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { clusters } from "./Common/Constants";
+import { clusters } from "./common/Constants";
 
 export default function ClusterInput({ formState, handleChange }) {
 
