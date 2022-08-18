@@ -35,7 +35,7 @@ export const AppRouter = () => {
           path="private-cloud/projects"
           roles={[]}
           element={
-            <RequireAuth>
+            <RequireAuth >
               <Projects />
             </RequireAuth>
           }

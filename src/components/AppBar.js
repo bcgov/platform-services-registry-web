@@ -25,7 +25,7 @@ export default function DenseAppBar() {
   }, [keycloak]);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, }}>
       <AppBar position="static" style={{ borderBottom: "2px solid #fcba19" }}>
         <Toolbar
           variant="dense"

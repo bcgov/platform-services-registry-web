@@ -27,11 +27,11 @@ export default function StickyTable({ columns, rows, loading }) {
   };
 
   return (
-    <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
-      <TableContainer sx={{ height: "calc(100vh - 182px)" }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow style={{ marginLeft: 110, marginRight: 11 }}>
+    <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }} backgroundColor='primary'>
+      <TableContainer sx={{ height: "calc(100vh - 182px)" }} backgroundColor='primary'>
+        <Table stickyHeader aria-label="sticky table" backgroundColor='primary'>
+          <TableHead backgroundColor='primary'>
+            <TableRow style={{ marginLeft: 110, marginRight: 11 }} backgroundColor='primary'>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
@@ -39,7 +39,7 @@ export default function StickyTable({ columns, rows, loading }) {
                   style={{
                     minWidth: column.minWidth,
                     fontSize: 17,
-                    color: "#3c4043",
+                    // color: "#3c4043",
                     paddingLeft: 24,
                     paddingRight: 24,
                   }}

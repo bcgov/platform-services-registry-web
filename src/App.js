@@ -1,5 +1,6 @@
 import React, { useEffect, useState, createContext } from "react";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import themeDefault from './providers/themeDefault'
 import "./App.css";
 import { AppRouter } from "./components/AppRouter";
 import "@fontsource/roboto/300.css";
@@ -12,19 +13,7 @@ import { useKeycloak } from "@react-keycloak/web";
 import { useMutation, gql } from "@apollo/client";
 import UserProvider from "./providers/user";
 
-const theme = createTheme({
-  typography: {
-    fontFamily: ["Roboto"].join(","),
-  },
-  tablecell: {
-    fontSize: "200px",
-  },
-  palette: {
-    primary: {
-      main: "#003366",
-    },
-  },
-});
+
 
 export const ModeContext = createContext()
 
@@ -40,10 +29,10 @@ function App() {
 `;
 
   const [mode, setMode] = useState(localStorage.getItem('appMode') || 'light')
-  theme.palette.mode = mode
+  themeDefault.palette.mode = mode
 
   useEffect(() => {
-    theme.palette.mode = mode
+    themeDefault.palette.mode = mode
     localStorage.setItem('appMode', mode)
   }, [mode])
 
@@ -70,7 +59,7 @@ function App() {
 
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themeDefault}>
       <ModeContext.Provider value={{ mode: mode, toggleMode: toggleMode }}>
         <UserProvider user={data}>
           <AdminProvider>

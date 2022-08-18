@@ -35,16 +35,16 @@ export default function TabsToolbar() {
   };
 
   return (
-    <Toolbar style={{ width: "93.7%" }}>
+    <Toolbar style={{ width: "93.7%" }} backgroundColor='primary'>
       <Typography
         variant="button"
-        color="inherit"
+        // color="inherit"
         component="div"
         noWrap={true}
         sx={{
           flexGrow: 1,
           fontWeight: 400,
-          color: "rgba(0, 0, 0, 0.6)",
+          // color: "rgba(0, 0, 0, 0.6)",
           fontSize: 20,
           minWidth: 170,
         }}
