@@ -1,6 +1,8 @@
 import React, { useEffect, useState, createContext } from "react";
 import { ThemeProvider } from "@mui/material/styles";
-import themeDefault from './providers/themeDefault'
+import themeLightDefault from './providers/themeLightDefault'
+
+import themeDarkDefault from './providers/themeDarkDefault'
 import "./App.css";
 import { AppRouter } from "./components/AppRouter";
 import "@fontsource/roboto/300.css";
@@ -28,11 +30,15 @@ function App() {
   }
 `;
 
-  const [mode, setMode] = useState(localStorage.getItem('appMode') || 'light')
-  themeDefault.palette.mode = mode
+  const [mode, setMode] = useState('')
+  // themeLightDefault.palette.mode = mode
+  useEffect(() => {
+   setMode(localStorage.getItem('appMode') || 'light')
+  }, [])
+
 
   useEffect(() => {
-    themeDefault.palette.mode = mode
+    console.log(mode)
     localStorage.setItem('appMode', mode)
   }, [mode])
 
@@ -59,7 +65,7 @@ function App() {
 
 
   return (
-    <ThemeProvider theme={themeDefault}>
+    <ThemeProvider theme={mode === 'light' ? themeLightDefault:themeDarkDefault}>
       <ModeContext.Provider value={{ mode: mode, toggleMode: toggleMode }}>
         <UserProvider user={data}>
           <AdminProvider>
