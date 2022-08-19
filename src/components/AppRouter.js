@@ -6,6 +6,7 @@ import Login from "../pages/Login";
 import Projects from "../pages/Projects";
 import Requests from "../pages/Requests";
 import Create from "../pages/Create";
+import EditProject from "../pages/EditProject";
 import Project from "../pages/Project";
 import Layout from "./Layout";
 import LoadingSpinner from "./common/LoadingSpinner";
@@ -50,6 +51,15 @@ export const AppRouter = () => {
           element={
             <RequireAuth>
               <Create />
+            </RequireAuth>
+          }
+        />
+            <Route
+          path="private-cloud/edit"
+          roles={[]}
+          element={
+            <RequireAuth>
+              <EditProject />
             </RequireAuth>
           }
         />
