@@ -26,37 +26,25 @@ const theme = createTheme({
   },
 });
 
-export const ModeContext = createContext()
+export const ModeContext = createContext();
 
-function App() {
-  const SIGN_UP = gql`
+const SIGN_UP = gql`
   mutation Mutation {
     signUp {
       id
       firstName
       lastName
+      githubId
     }
   }
 `;
 
-  const [mode, setMode] = useState(localStorage.getItem('appMode') || 'light')
-  theme.palette.mode = mode
-
-  useEffect(() => {
-    theme.palette.mode = mode
-    localStorage.setItem('appMode', mode)
-  }, [mode])
-
-  const toggleMode = () => {
-    setMode(mode === 'light' ? 'dark' : 'light')
-  }
-
+function App() {
   const {
     keycloak: { authenticated },
     initialized,
   } = useKeycloak();
 
-  // Do this in app.js
   const [signUp, { loading, error, data }] = useMutation(SIGN_UP);
 
   useEffect(() => {
@@ -65,20 +53,32 @@ function App() {
     }
   }, [authenticated]);
 
+  const [mode, setMode] = useState(localStorage.getItem("appMode") || "light");
+  theme.palette.mode = mode;
+
+  useEffect(() => {
+    theme.palette.mode = mode;
+    localStorage.setItem("appMode", mode);
+  }, [mode]);
+
+  const toggleMode = (e) => {
+    e.preventDefault()
+    setMode(mode === "light" ? "dark" : "light");
+  };
+
   if (error)
     return `Sign up Error! ${error.message} authenticated: ${authenticated}`;
-
 
   return (
     <ThemeProvider theme={theme}>
       <ModeContext.Provider value={{ mode: mode, toggleMode: toggleMode }}>
-        <UserProvider user={data}>
+        <UserProvider user={data?.signUp}>
           <AdminProvider>
             <AppRouter />
           </AdminProvider>
         </UserProvider>
       </ModeContext.Provider>
     </ThemeProvider>
-  )
+  );
 }
 export default App;
