@@ -1,17 +1,12 @@
-import React, { useEffect } from "react";
-import { Route, Routes, Navigate, useLocation } from "react-router-dom";
+import React from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
-import Home from "../pages/Home";
 import RequireAuth from "./utilities/RequireAuth";
 import Login from "../pages/Login";
 import Projects from "../pages/Projects";
 import Requests from "../pages/Requests";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import Create from "../pages/Create";
 import Project from "../pages/Project";
-import { useMutation, gql } from "@apollo/client";
-import DenseAppBar from "./AppBar";
 import Layout from "./Layout";
 import LoadingSpinner from "./common/LoadingSpinner";
 
@@ -19,7 +14,7 @@ export const AppRouter = () => {
   const { initialized } = useKeycloak();
 
   if (!initialized) {
-    return <LoadingSpinner />
+    return <LoadingSpinner />;
   }
 
   return (
@@ -59,7 +54,7 @@ export const AppRouter = () => {
           }
         />
         <Route
-          path="private-cloud/project"
+          path="private-cloud/projects/:id"
           roles={[]}
           element={
             <RequireAuth>

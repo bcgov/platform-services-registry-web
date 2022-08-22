@@ -5,11 +5,11 @@ import UserContext from "../context/user";
 import LoadingSpinner from "./common/LoadingSpinner";
 
 export default function Layout() {
-  const context = useContext(UserContext);
+  const user = useContext(UserContext);
   return (
     <>
       <DenseAppBar />
-      {context?.signUp ? <Outlet /> : <LoadingSpinner />}
+      {user ? <Outlet /> : <LoadingSpinner />}
     </>
   );
 }

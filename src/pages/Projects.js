@@ -8,6 +8,7 @@ import AdminContext from "../context/admin";
 import { useKeycloak } from "@react-keycloak/web";
 import TabsToolbar from "../components/TabsToolbar";
 import Typography from "@mui/material/Typography";
+import { useNavigate } from "react-router-dom";
 
 function truncate(str, n) {
   return str.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -120,6 +121,11 @@ export default function Projects() {
   const { admin } = useContext(AdminContext);
   const { keycloak } = useKeycloak();
   const [privateCloudProjects, setPrivateCloudProjects] = useState([]);
+  const navigate = useNavigate();
+
+  const onClickHandler = (id) => {
+    navigate(id)
+  }
 
   const allProjects = useQuery(ALL_PROJECTS, {
     skip: !keycloak.hasResourceRole("admin", "registry-api"),
@@ -155,6 +161,7 @@ export default function Projects() {
     <div>
       <TabsToolbar />
       <StickyTable
+        onClick={onClickHandler}
         loading={loadingProjects}
         title={"Private Cloud Projects"}
         columns={columns}

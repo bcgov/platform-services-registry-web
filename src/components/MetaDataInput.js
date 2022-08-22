@@ -35,7 +35,7 @@ export default function MetaDataInput({ formState, handleChange }) {
       component="form"
       sx={{
         "& .MuiTextField-root": { m: 0, mb: 3, width: "45ch" },
-        width: "50%",
+        width: "500px",
       }}
       noValidate
       autoComplete="off"
@@ -84,7 +84,7 @@ export default function MetaDataInput({ formState, handleChange }) {
           </Select>
         </FormControl>
       </div>
-      <Paper sx={{ p: 2 }}>
+      <Paper sx={{ p: 2, mb: 3 }}>
         <Typography sx={{ mt: 0, mb: 1, fontSize: 17}} >
           Project Owner
         </Typography>

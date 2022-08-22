@@ -1,7 +1,6 @@
 import React, { useEffect, useState, createContext } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import themeLightDefault from './providers/themeLightDefault'
-
 import themeDarkDefault from './providers/themeDarkDefault'
 import "./App.css";
 import { AppRouter } from "./components/AppRouter";
@@ -9,17 +8,12 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import Footer from "./components/Footer";
+// import Footer from "./components/Footer";
 import AdminProvider from "./providers/admin";
 import { useKeycloak } from "@react-keycloak/web";
 import { useMutation, gql } from "@apollo/client";
 import UserProvider from "./providers/user";
 
-
-
-export const ModeContext = createContext()
-
-function App() {
   const SIGN_UP = gql`
   mutation Mutation {
     signUp {
@@ -30,15 +24,16 @@ function App() {
   }
 `;
 
+export const ModeContext = createContext()
+
+function App() {
   const [mode, setMode] = useState('')
-  // themeLightDefault.palette.mode = mode
   useEffect(() => {
    setMode(localStorage.getItem('appMode') || 'light')
   }, [])
 
 
   useEffect(() => {
-    console.log(mode)
     localStorage.setItem('appMode', mode)
   }, [mode])
 
