@@ -4,13 +4,14 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import FormHelperText from "@mui/material/FormHelperText";
 import { clusters } from "./common/Constants";
+import { Controller, useFormContext } from "react-hook-form";
 
-export default function ClusterInput({ formState, handleChange }) {
-
+export default function ClusterInput() {
+  const { control, errors, isDisabled } = useFormContext();
   return (
     <Box
-      component="form"
       sx={{
         "& .MuiTextField-root": { m: 0, mb: 3, width: "45ch" },
         width: "500px",
@@ -19,24 +20,35 @@ export default function ClusterInput({ formState, handleChange }) {
       autoComplete="off"
     >
       <div>
-        <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
+        <FormControl sx={{ mt: 0, mb: 2, minWidth: 250 }}>
           <InputLabel id="demo-simple-select-required-label">
             Cluster
           </InputLabel>
-          <Select
-            size="medium"
-            labelId="select-cluster"
-            id="select-cluster"
-            value={formState["cluster"]}
-            label="Cluster *"
-            onChange={handleChange("cluster")}
-          >
-            {clusters.map((clusterOption) => (
-              <MenuItem key={clusterOption} value={clusterOption}>
-                {clusterOption}
-              </MenuItem>
-            ))}
-          </Select>
+          <Controller
+            name="cluster"
+            defaultValue={""}
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <Select
+                {...field}
+                disabled={isDisabled}
+                size="medium"
+                labelId="select-cluster"
+                id="select-cluster"
+                label="Cluster"
+              >
+                {clusters.map((clusterOption) => (
+                  <MenuItem key={clusterOption} value={clusterOption}>
+                    {clusterOption}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+          />
+          <FormHelperText>
+            {errors.cluster ? errors.cluster?.message : ""}
+          </FormHelperText>
         </FormControl>
       </div>
     </Box>

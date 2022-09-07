@@ -7,15 +7,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Grid from "@mui/material/Grid";
 import Skeleton from "@mui/material/Skeleton";
-import Box from "@mui/material/Box";
 
 export default function StickyTable({ columns, rows, loading, onClick }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-  const handleRowClick = (id) => console.log(id);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -50,7 +46,7 @@ export default function StickyTable({ columns, rows, loading, onClick }) {
             </TableRow>
           </TableHead>
           {loading ? (
-            [...Array(8)].map((_, i) => (
+            columns.map((_, i) => (
               <TableRow
                 key={"row" + i}
                 style={{ marginLeft: 24, marginRight: 24 }}

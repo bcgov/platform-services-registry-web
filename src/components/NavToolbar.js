@@ -5,10 +5,10 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-export default function NavToolbar({ title }) {
-  const navigate = useNavigate()
+export default function NavToolbar({ title, children }) {
+  const navigate = useNavigate();
 
   return (
     <Toolbar style={{ width: "93.7%" }}>
@@ -29,7 +29,11 @@ export default function NavToolbar({ title }) {
       </Typography>
       <Divider orientation="vertical" variant="middle" flexItem />
       <Box sx={{ display: "flex", flexDirection: "row", width: "100%" }}>
-        <IconButton onClick={() => navigate(-1)} aria-label="back" color="primary">
+        <IconButton
+          onClick={() => navigate(-1)}
+          aria-label="back"
+          color="primary"
+        >
           <ArrowBackIcon />
         </IconButton>
         <Typography
@@ -48,6 +52,7 @@ export default function NavToolbar({ title }) {
         >
           {title}
         </Typography>
+        {children}
       </Box>
     </Toolbar>
   );

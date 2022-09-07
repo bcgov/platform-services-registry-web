@@ -10,19 +10,19 @@ import Cluster from "./ClusterInput";
 import QuotaInput from "./QuotaInput";
 const steps = ["Meta Data", "Cluster", "Quota"];
 
-export default function Progress({ formState, handleChange }) {
+export default function Progress() {
   const [activeStep, setActiveStep] = useState(0);
 
   function getStepContent(step) {
     switch (step) {
       case 0:
         return (
-          <MetaDataInput formState={formState} handleChange={handleChange} />
+          <MetaDataInput />
         );
       case 1:
-        return <Cluster  formState={formState} handleChange={handleChange}/>;
+        return <Cluster  />;
       case 2:
-        return <QuotaInput  formState={formState} handleChange={handleChange}/>;
+        return <QuotaInput />;
       default:
         throw new Error("Unknown step");
     }

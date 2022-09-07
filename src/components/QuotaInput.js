@@ -4,83 +4,126 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { defaultCpuOptions, defaultMemoryOptions, defaultStorageOptions } from "./common/Constants";
+import FormHelperText from "@mui/material/FormHelperText";
+import { Controller, useFormContext } from "react-hook-form";
+import {
+  defaultCpuOptions,
+  defaultMemoryOptions,
+  defaultStorageOptions,
+} from "./common/Constants";
 
-export default function QuotaInput({ formState, handleChange }) {
+export default function QuotaInput({ nameSpace }) {
+  const { control, errors, isDisabled, initialValues } = useFormContext();
 
   return (
     <Box
-      component="form"
       sx={{
-        "& .MuiTextField-root": { m: 0, mb: 3, width: "45ch" },
-        width: "500px",
+        "& .MuiTextField-root": { m: 0, mb: 3 },
+        minWidth: 350,
       }}
       noValidate
       autoComplete="off"
     >
-      <div>
-        <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
-          <InputLabel id="demo-simple-select-required-label">
-            DefaultCpuOptions
-          </InputLabel>
-          <Select
-            size="medium"
-            labelId="select-defaultCpuOptions"
-            id="select-defaultCpuOptions"
-            value={formState.defaultCpuOption}
-            label="DefaultCpuOptions *"
-            onChange={handleChange("defaultCpuOption")}
-          >
-            {defaultCpuOptions.map((defaultCpuOption) => (
-              <MenuItem key={defaultCpuOption} value={defaultCpuOption}>
-                {defaultCpuOption}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </div>
-      <div>
-        <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
-          <InputLabel id="demo-simple-select-required-label">
-            DefaultMemoryOptions
-          </InputLabel>
-          <Select
-            size="medium"
-            labelId="select-defaultMemoryOptions"
-            id="select-defaultMemoryOptions"
-            value={formState.defaultMemoryOption}
-            label="DefaultMemoryOptions *"
-            onChange={handleChange("defaultMemoryOption")}
-          >
-            {defaultMemoryOptions.map((defaultMemoryOption) => (
-              <MenuItem key={defaultMemoryOption} value={defaultMemoryOption}>
-                {defaultMemoryOption}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </div>
-      <div>
-        <FormControl required sx={{ mt: 0, mb: 2, minWidth: 250 }}>
-          <InputLabel id="demo-simple-select-required-label">
-            DefaultStorageOptions
-          </InputLabel>
-          <Select
-            size="medium"
-            labelId="select-defaultStorageOptions"
-            id="select-defaultStorageOptions"
-            value={formState.defaultStorageOption}
-            label="DefaultStorageOptions *"
-            onChange={handleChange("defaultStorageOption")}
-          >
-            {defaultStorageOptions.map((defaultStorageOption) => (
-              <MenuItem key={defaultStorageOption} value={defaultStorageOption}>
-                {defaultStorageOption}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </div>
+      <FormControl sx={{ mt: 1, mb: 2, minWidth: 250 }}>
+        <InputLabel id="demo-simple-select-required-label">Cpu</InputLabel>
+        <Controller
+          name={nameSpace + "Cpu"}
+          defaultValue={""}
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <Select
+              {...field}
+              disabled={isDisabled}
+              size="medium"
+              labelId="select-defaultCpuOptions"
+              id="select-defaultCpuOptions"
+              label="Cpu"
+            >
+              {[
+                ...new Set([
+                  initialValues[nameSpace + "Cpu"],
+                  ...defaultCpuOptions,
+                ]),
+              ].map((cpuOption) => (
+                <MenuItem key={cpuOption} value={cpuOption}>
+                  {cpuOption}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+        />
+        <FormHelperText>{errors.cpu ? errors.cpu?.message : ""}</FormHelperText>
+      </FormControl>
+      <FormControl sx={{ mt: 1, mb: 2, minWidth: 250 }}>
+        <Controller
+          name={nameSpace + "Memory"}
+          defaultValue={""}
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <Select
+              {...field}
+              disabled={isDisabled}
+              size="medium"
+              labelId="select-defaultMemoryOptions"
+              id="select-defaultMemoryOptions"
+              label="Memory Options"
+            >
+              {[
+                ...new Set([
+                  ...defaultMemoryOptions,
+                  initialValues[nameSpace + "Memory"],
+                ]),
+              ].map((defaultMemoryOption) => (
+                <MenuItem key={defaultMemoryOption} value={defaultMemoryOption}>
+                  {defaultMemoryOption}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+        />
+        <FormHelperText>
+          {errors.memory ? errors.memory?.message : ""}
+        </FormHelperText>
+        <InputLabel id="demo-simple-select-required-label">Memory</InputLabel>
+      </FormControl>
+      <FormControl sx={{ mt: 1, mb: 2, minWidth: 250 }}>
+        <InputLabel id="demo-simple-select-required-label">Storage</InputLabel>
+        <Controller
+          name={nameSpace + "Storage"}
+          defaultValue={""}
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <Select
+              {...field}
+              disabled={isDisabled}
+              size="medium"
+              labelId="select-defaultStorageOptions"
+              id="select-defaultStorageOptions"
+              label="DefaultStorageOptions"
+            >
+              {[
+                ...new Set([
+                  initialValues[nameSpace + "Storage"],
+                  ...defaultStorageOptions,
+                ]),
+              ].map((defaultStorageOption) => (
+                <MenuItem
+                  key={defaultStorageOption}
+                  value={defaultStorageOption}
+                >
+                  {defaultStorageOption}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+        />
+        <FormHelperText>
+          {errors.storage ? errors.storage?.message : ""}
+        </FormHelperText>
+      </FormControl>
     </Box>
   );
 }

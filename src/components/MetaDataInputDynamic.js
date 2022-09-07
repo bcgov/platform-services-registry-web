@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -12,12 +15,32 @@ import { ministries } from "./common/Constants";
 import { Controller, useFormContext } from "react-hook-form";
 
 export default function MetaDataInput() {
-  const { control, errors, isDisabled } = useFormContext();
+  const [technicalLeads, setTechnicalLeads] = useState({ 0: "" });
+
+  const addTechnicalLead = () =>
+    setTechnicalLeads({ ...technicalLeads, [technicalLeadsSize]: "" });
+
+  const removeTechnicalLead = (key) => {
+    const values = Object.values(technicalLeads).filter((e, i) => i !== key);
+    const newObj = Object.fromEntries(values.map((e, i) => [i, e]));
+    setTechnicalLeads(newObj);
+  };
+
+  const handleTechnicalLeadsChange = (key, value) => {
+    setTechnicalLeads({ ...technicalLeads, [key]: value });
+  };
+
+  const technicalLeadsSize = Object.keys(technicalLeads).length;
+
+
+  const { control, errors } = useFormContext();
+
 
   return (
     <Box
+      // component="form"
       sx={{
-        "& .MuiTextField-root": { m: 0, mb: 3, mt:1, width: "45ch" },
+        "& .MuiTextField-root": { m: 0, mb: 3, width: "45ch" },
         width: "550px",
       }}
       noValidate
@@ -32,7 +55,6 @@ export default function MetaDataInput() {
           render={({ field }) => (
             <TextField
               {...field}
-              disabled={isDisabled}
               size="small"
               style={{ width: "100%" }}
               helperText={errors.name ? errors.name?.message : ""}
@@ -51,7 +73,6 @@ export default function MetaDataInput() {
           render={({ field }) => (
             <TextField
               {...field}
-              disabled={isDisabled}
               size="small"
               style={{ width: "100%" }}
               helperText={errors.description ? errors.description?.message : ""}
@@ -75,10 +96,11 @@ export default function MetaDataInput() {
             rules={{ required: true }}
             render={({ field }) => (
               <Select
+                // defaultValue=""
                 {...field}
-                disabled={isDisabled}
                 size="medium"
                 labelId="select-ministry"
+                // helperText={errors.ministry ? errors.ministry?.message : ""}
                 id="select-ministry"
                 label="Ministry"
               >
@@ -107,7 +129,6 @@ export default function MetaDataInput() {
           render={({ field }) => (
             <TextField
               {...field}
-              disabled={isDisabled}
               size="small"
               helperText={
                 errors.projectOwner ? errors.projectOwner?.message : ""
@@ -117,50 +138,53 @@ export default function MetaDataInput() {
             />
           )}
         />
+
         <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }}>
-          Primary Technical Lead
+          Technical Leads
         </Typography>
-        <Controller
-          name="primaryTechnicalLead"
-          defaultValue={""}
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              disabled={isDisabled}
-              size="small"
-              helperText={
-                errors.primaryTechnicalLead
-                  ? errors.primaryTechnicalLead?.message
-                  : ""
-              }
-              label="Email"
+        {Object.values(technicalLeads).map((technicalLead, key) => (
+          <div key={key}>
+            <Controller
+              name="technicalLead"
+              defaultValue={""}
+              control={control}
+              rules={{ required: key === 0 }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  size="small"
+                  helperText={
+                    errors.technicalLead ? errors.technicalLead?.message : ""
+                  }
+                  // onChange={(event) =>
+                  //   handleTechnicalLeadsChange(key, event.target.value)
+                  // }
+                  // required={key === 0}
+                  id={"technical-lead" + key}
+                  label="Email"
+                />
+              )}
             />
-          )}
-        />
-        <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }}>
-          Secondary Technical Lead
-        </Typography>
-        <Controller
-          name="secondaryTechnicalLead"
-          defaultValue={""}
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              disabled={isDisabled}
-              size="small"
-              helperText={
-                errors.secondaryTechnicalLead
-                  ? errors.secondaryTechnicalLead?.message
-                  : ""
-              }
-              label="Email"
-            />
-          )}
-        />
+
+            {key === technicalLeadsSize - 1 ? (
+              <IconButton
+                sx={{ mt: 0, ml: 0.5 }}
+                onClick={addTechnicalLead}
+                aria-label="add-technical-lead"
+              >
+                <AddCircleIcon />
+              </IconButton>
+            ) : (
+              <IconButton
+                sx={{ mt: 0, ml: 0.5 }}
+                onClick={() => removeTechnicalLead(key)}
+                aria-label="add-technical-lead"
+              >
+                <RemoveCircleIcon />
+              </IconButton>
+            )}
+          </div>
+        ))}
       </Paper>
     </Box>
   );
