@@ -6,9 +6,38 @@ import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import MetaDataInput from "./MetaDataInput";
-import Cluster from "./ClusterInput";
+import ClusterInput from "./ClusterInput";
 import QuotaInput from "./QuotaInput";
-const steps = ["Meta Data", "Cluster", "Quota"];
+import { useForm, FormProvider } from "react-hook-form";
+
+const steps = [
+  "Project Description and Contact Information",
+  "Cluster",
+  "Quota",
+];
+
+const TitleTypography = (props) => (
+  <Typography variant="h6" sx={{ mt: 0, mb: 1 }}>
+    {props.children}
+  </Typography>
+);
+
+const QuotaForm = () => (
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <div>
+      <TitleTypography>Production Quota</TitleTypography>
+      <QuotaInput nameSpace={"production"} />
+      <TitleTypography>Test Quota</TitleTypography>
+      <QuotaInput nameSpace={"test"} />
+    </div>
+    <div>
+      <TitleTypography>Tools Quota</TitleTypography>
+      <QuotaInput nameSpace={"tools"} />
+      <TitleTypography>Development Quota</TitleTypography>
+      <QuotaInput nameSpace={"development"} />
+    </div>
+  </div>
+);
 
 export default function Progress() {
   const [activeStep, setActiveStep] = useState(0);
@@ -18,9 +47,24 @@ export default function Progress() {
       case 0:
         return <MetaDataInput />;
       case 1:
-        return <Cluster />;
+        return <ClusterInput />;
       case 2:
-        return <QuotaInput />;
+        return (
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <div>
+              <TitleTypography>Production Quota</TitleTypography>
+              <QuotaInput nameSpace={"production"} />
+              <TitleTypography>Test Quota</TitleTypography>
+              <QuotaInput nameSpace={"test"} />
+            </div>
+            <div>
+              <TitleTypography>Tools Quota</TitleTypography>
+              <QuotaInput nameSpace={"tools"} />
+              <TitleTypography>Development Quota</TitleTypography>
+              <QuotaInput nameSpace={"development"} />
+            </div>
+          </div>
+        );
       default:
         throw new Error("Unknown step");
     }

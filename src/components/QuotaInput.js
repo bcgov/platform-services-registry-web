@@ -15,6 +15,8 @@ import {
 export default function QuotaInput({ nameSpace }) {
   const { control, errors, isDisabled, initialValues } = useFormContext();
 
+  console.log(control);
+
   return (
     <Box
       sx={{
@@ -42,10 +44,10 @@ export default function QuotaInput({ nameSpace }) {
             >
               {[
                 ...new Set([
-                  initialValues[nameSpace + "Cpu"],
+                  initialValues?.[nameSpace + "Cpu"],
                   ...defaultCpuOptions,
                 ]),
-              ].map((cpuOption) => (
+              ].filter(Boolean).map((cpuOption) => (
                 <MenuItem key={cpuOption} value={cpuOption}>
                   {cpuOption}
                 </MenuItem>
@@ -73,9 +75,9 @@ export default function QuotaInput({ nameSpace }) {
               {[
                 ...new Set([
                   ...defaultMemoryOptions,
-                  initialValues[nameSpace + "Memory"],
+                  initialValues?.[nameSpace + "Memory"],
                 ]),
-              ].map((defaultMemoryOption) => (
+              ].filter(Boolean).map((defaultMemoryOption) => (
                 <MenuItem key={defaultMemoryOption} value={defaultMemoryOption}>
                   {defaultMemoryOption}
                 </MenuItem>
@@ -106,10 +108,10 @@ export default function QuotaInput({ nameSpace }) {
             >
               {[
                 ...new Set([
-                  initialValues[nameSpace + "Storage"],
+                  initialValues?.[nameSpace + "Storage"],
                   ...defaultStorageOptions,
                 ]),
-              ].map((defaultStorageOption) => (
+              ].filter(Boolean).map((defaultStorageOption) => (
                 <MenuItem
                   key={defaultStorageOption}
                   value={defaultStorageOption}

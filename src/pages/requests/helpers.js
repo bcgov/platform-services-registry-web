@@ -2,7 +2,12 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 
+const typeLookup = {
+  CREATE: "CREATE",
+};
+
 const requestsToRows = ({
+  id,
   status,
   type,
   requestedProject: {
@@ -15,6 +20,7 @@ const requestsToRows = ({
     cluster,
   },
 }) => ({
+  id,
   name: <span style={{ fontSize: 16, fontWeight: "500" }}>{name}</span>,
   description: (
     <span style={{ fontSize: 14 }}> {truncate(description, 130)}</span>
@@ -80,10 +86,6 @@ const statusColourLookup = {
   APPROVED: "success",
   PENDING_DECISION: "secondary",
   REJECTED: "error",
-};
-
-const typeLookup = {
-  CREATE: "CREATE",
 };
 
 const columns = [

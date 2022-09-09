@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
-import MetaDataInput from "../components/MetaDataInput";
-import ClusterInput from "../components/ClusterInput";
-import QuotaInput from "../components/QuotaInput";
-import NavToolbar from "../components/NavToolbar";
+import MetaDataInput from "../../components/MetaDataInput";
+import ClusterInput from "../../components/ClusterInput";
+import QuotaInput from "../../components/QuotaInput";
+import NavToolbar from "../../components/NavToolbar";
 import {
   userProjectToFormData,
   formDataToUserProject,
-} from "../components/common/FormHelpers";
+} from "../../components/common/FormHelpers";
 import Typography from "@mui/material/Typography";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { Button, IconButton, ButtonGroup } from "@mui/material";
@@ -217,9 +217,6 @@ export default function Project() {
       },
     });
   };
-
-  console.log(userPrivateCloudProject)
-  console.log(userPrivateCloudProject?.activeRequest?.active)
 
   if (userProjectLoading) return null;
   if (userProjectError || editProjectError)

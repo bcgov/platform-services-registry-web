@@ -8,7 +8,8 @@ import UserRequests from "../pages/requests/UserRequests";
 import AdminProjects from "../pages/projects/AdminProjects";
 import AdminRequests from "../pages/requests/AdminRequests";
 import Create from "../pages/Create";
-import Project from "../pages/Project";
+import Project from "../pages/project/Project";
+import Request from "../pages/request/Request";
 import Layout from "./Layout";
 import LoadingSpinner from "./common/LoadingSpinner";
 import TabsToolbar from "./TabsToolbar";
@@ -67,6 +68,8 @@ export const AppRouter = () => {
               <Route path="requests" element={<AdminRequests />} />
             </Route>
             <Route path="project/:id" element={<Project />} />
+            <Route path="request/:id" element={<Request />} />
+
             <Route path="create" element={<Create />} />
           </Route>
           <Route
@@ -93,6 +96,7 @@ export const AppRouter = () => {
               <Route path="requests" element={<UserRequests />} />
             </Route>
             <Route path="project/:id" element={<Project />} />
+            <Route path="request/:id" element={<Request />} />
             <Route path="create" element={<Create />} />
           </Route>
         </Route>
