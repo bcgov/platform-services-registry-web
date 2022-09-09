@@ -49,6 +49,7 @@ const USER_PROJECT = gql`
       name
       description
       activeRequest {
+        id
         active
       }
       projectOwner {
@@ -216,6 +217,9 @@ export default function Project() {
       },
     });
   };
+
+  console.log(userPrivateCloudProject)
+  console.log(userPrivateCloudProject?.activeRequest?.active)
 
   if (userProjectLoading) return null;
   if (userProjectError || editProjectError)
