@@ -8,10 +8,13 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Skeleton from "@mui/material/Skeleton";
+import { useNavigate } from "react-router-dom";
 
-export default function StickyTable({ columns, rows, loading, onClick }) {
+export default function StickyTable({ columns, rows, loading, onClickPath }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const navigate = useNavigate();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -20,6 +23,10 @@ export default function StickyTable({ columns, rows, loading, onClick }) {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const handleRowClick = (id) => {
+    navigate(onClickPath + id);
   };
 
   return (
@@ -69,7 +76,7 @@ export default function StickyTable({ columns, rows, loading, onClick }) {
                   return (
                     <TableRow
                       hover
-                      onClick={() => onClick(row.id)}
+                      onClick={() => handleRowClick(row.id)}
                       role="checkbox"
                       tabIndex={-1}
                       key={row.code}

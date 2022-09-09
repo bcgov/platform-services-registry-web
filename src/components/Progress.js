@@ -16,11 +16,9 @@ export default function Progress() {
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return (
-          <MetaDataInput />
-        );
+        return <MetaDataInput />;
       case 1:
-        return <Cluster  />;
+        return <Cluster />;
       case 2:
         return <QuotaInput />;
       default:
@@ -71,19 +69,22 @@ export default function Progress() {
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
             <Box sx={{ flex: "1 1 auto" }} />
-            <Button onClick={handleReset} size="large">Reset</Button>
+            <Button onClick={handleReset} size="large">
+              Reset
+            </Button>
           </Box>
         </>
       ) : (
         <>
-          {/* Form components go here */}
           <div>
-            <Typography sx={{ mt: 1, mb: 2 ,fontSize: 23, fontWeight: 500}}>
+            <Typography sx={{ mt: 1, mb: 2, fontSize: 23, fontWeight: 500 }}>
               {steps[activeStep]}
             </Typography>
             {getStepContent(activeStep)}
           </div>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2, width: "50%" }}>
+          <Box
+            sx={{ display: "flex", flexDirection: "row", pt: 2, width: "50%" }}
+          >
             <Button
               color="inherit"
               disabled={activeStep === 0}

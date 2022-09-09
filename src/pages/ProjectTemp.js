@@ -189,7 +189,6 @@ export default function Project() {
   const [defaultValues, setDefaultValues] = useState({});
 
   const { id } = useParams();
-  console.log(id);
 
   const { loading, error, data } = useQuery(USER_PROJECT, {
     variables: { projectId: id },
@@ -205,7 +204,6 @@ export default function Project() {
         projectOwner: userPrivateCloudProject.projectOwner.email,
         primaryTechnicalLead: userPrivateCloudProject.technicalLeads[0].email,
         secondaryTechnicalLead: userPrivateCloudProject.technicalLeads[1].email,
-       
       });
     }
   }, [loading, error, userPrivateCloudProject]);

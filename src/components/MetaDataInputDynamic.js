@@ -32,9 +32,7 @@ export default function MetaDataInput() {
 
   const technicalLeadsSize = Object.keys(technicalLeads).length;
 
-
   const { control, errors } = useFormContext();
-
 
   return (
     <Box

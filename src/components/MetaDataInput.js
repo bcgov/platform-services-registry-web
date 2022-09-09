@@ -17,7 +17,7 @@ export default function MetaDataInput() {
   return (
     <Box
       sx={{
-        "& .MuiTextField-root": { m: 0, mb: 3, mt:1, width: "45ch" },
+        "& .MuiTextField-root": { m: 0, mb: 3, mt: 1, width: "45ch" },
         width: "550px",
       }}
       noValidate

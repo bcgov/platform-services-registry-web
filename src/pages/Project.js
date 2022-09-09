@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useQuery, useLazyQuery, gql } from "@apollo/client";
+import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../components/MetaDataInput";
 import ClusterInput from "../components/ClusterInput";
 import QuotaInput from "../components/QuotaInput";
 import NavToolbar from "../components/NavToolbar";
+import {
+  userProjectToFormData,
+  formDataToUserProject,
+} from "../components/common/FormHelpers";
 import Typography from "@mui/material/Typography";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import { Button, IconButton } from "@mui/material";
+import { Button, IconButton, ButtonGroup } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -38,26 +42,15 @@ const schema = yup.object().shape({
   toolsStorage: yup.string().required(),
 });
 
-const TitleTypography = (props) => (
-  <Typography variant="h6" sx={{ mt: 0, mb: 1 }}>
-    {props.children}
-  </Typography>
-);
-
-const StyledForm = styled.form`
-  width: 550px;
-  margin-left: 24px;
-  margin-top: 30px;
-  display: flex;
-  flex-direction: row;
-`;
-
 const USER_PROJECT = gql`
   query Query($projectId: ID!) {
     userPrivateCloudProject(projectId: $projectId) {
       id
       name
       description
+      activeRequest {
+        active
+      }
       projectOwner {
         email
       }
@@ -76,11 +69,7 @@ const USER_PROJECT = gql`
           limits
         }
         storage {
-          block
           file
-          backup
-          capacity
-          pvcCount
         }
         snapshot {
           count
@@ -96,11 +85,7 @@ const USER_PROJECT = gql`
           limits
         }
         storage {
-          block
           file
-          backup
-          capacity
-          pvcCount
         }
         snapshot {
           count
@@ -116,11 +101,7 @@ const USER_PROJECT = gql`
           limits
         }
         storage {
-          block
           file
-          backup
-          capacity
-          pvcCount
         }
         snapshot {
           count
@@ -136,11 +117,7 @@ const USER_PROJECT = gql`
           limits
         }
         storage {
-          block
           file
-          backup
-          capacity
-          pvcCount
         }
         snapshot {
           count
@@ -150,104 +127,105 @@ const USER_PROJECT = gql`
   }
 `;
 
-const userProjectToFormData = (userPrivateCloudProject) => {
-  const productionQuota = userPrivateCloudProject?.productionQuota;
-  const testQuota = userPrivateCloudProject?.testQuota;
-  const developmentQuota = userPrivateCloudProject?.developmentQuota;
-  const toolsQuota = userPrivateCloudProject?.toolsQuota;
+const UPDATE_USER_PROJECT = gql`
+  mutation Mutation(
+    $projectId: ID!
+    $metaData: EditProjectMetaDataInput
+    $productionQuota: QuotaInput
+    $developmentQuota: QuotaInput
+    $testQuota: QuotaInput
+    $toolsQuota: QuotaInput
+  ) {
+    privateCloudProjectEditRequest(
+      projectId: $projectId
+      metaData: $metaData
+      productionQuota: $productionQuota
+      developmentQuota: $developmentQuota
+      testQuota: $testQuota
+      toolsQuota: $toolsQuota
+    ) {
+      id
+      active
+    }
+  }
+`;
 
-  return {
-    ...userPrivateCloudProject,
-    projectOwner: userPrivateCloudProject.projectOwner.email,
-    primaryTechnicalLead: userPrivateCloudProject.technicalLeads[0]?.email,
-    secondaryTechnicalLead: userPrivateCloudProject.technicalLeads[1]?.email,
-    productionCpu:
-      `CPU_REQUEST_${productionQuota.cpu.requests}_LIMIT_${productionQuota.cpu.limits}`.replaceAll(
-        ".",
-        "_"
-      ),
-    productionMemory:
-      `MEMORY_REQUEST_${productionQuota.memory.requests}_LIMIT_${productionQuota.memory.limits}`.replaceAll(
-        ".",
-        "_"
-      ),
-    productionStorage: `STORAGE_${productionQuota.storage.file}`.replaceAll(
-      ".",
-      "_"
-    ),
-    developmentCpu:
-      `CPU_REQUEST_${developmentQuota.cpu.requests}_LIMIT_${developmentQuota.cpu.limits}`.replaceAll(
-        ".",
-        "_"
-      ),
-    developmentMemory:
-      `MEMORY_REQUEST_${developmentQuota.memory.requests}_LIMIT_${developmentQuota.memory.limits}`.replaceAll(
-        ".",
-        "_"
-      ),
-    developmentStorage: `STORAGE_${developmentQuota.storage.file}`.replaceAll(
-      ".",
-      "_"
-    ),
-    testCpu:
-      `CPU_REQUEST_${testQuota.cpu.requests}_LIMIT_${testQuota.cpu.limits}`.replaceAll(
-        ".",
-        "_"
-      ),
-    testMemory:
-      `MEMORY_REQUEST_${testQuota.memory.requests}_LIMIT_${testQuota.memory.limits}`.replaceAll(
-        ".",
-        "_"
-      ),
-    testStorage: `STORAGE_${testQuota.storage.file}`.replaceAll(".", "_"),
-    toolsCpu:
-      `CPU_REQUEST_${toolsQuota.cpu.requests}_LIMIT_${toolsQuota.cpu.limits}`.replaceAll(
-        ".",
-        "_"
-      ),
-    toolsMemory:
-      `MEMORY_REQUEST_${toolsQuota.memory.requests}_LIMIT_${toolsQuota.memory.limits}`.replaceAll(
-        ".",
-        "_"
-      ),
-    toolsStorage: `STORAGE_${toolsQuota.storage.file}`.replaceAll(".", "_"),
-  };
-};
+const TitleTypography = (props) => (
+  <Typography variant="h6" sx={{ mt: 0, mb: 1 }}>
+    {props.children}
+  </Typography>
+);
+
+const StyledForm = styled.form`
+  width: 550px;
+  margin-left: 24px;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: row;
+`;
 
 export default function Project() {
   const { id } = useParams();
 
-  const { loading, error, data } = useQuery(USER_PROJECT, {
+  const {
+    loading: userProjectLoading,
+    data: userProjectData,
+    error: userProjectError,
+  } = useQuery(USER_PROJECT, {
     variables: { projectId: id },
   });
 
-  const userPrivateCloudProject = data?.userPrivateCloudProject;
+  const [
+    createPrivateCloudProjectEditRequest,
+    {
+      data: editProjectData,
+      loading: editProjectLoading,
+      error: editProjectError,
+    },
+  ] = useMutation(UPDATE_USER_PROJECT);
+
+  const userPrivateCloudProject = userProjectData?.userPrivateCloudProject;
 
   useEffect(() => {
-    if (!loading && !error) {
+    if (!userProjectLoading && !userProjectError) {
       reset(userProjectToFormData(userPrivateCloudProject));
     }
-  }, [loading, error, userPrivateCloudProject]);
+  }, [userProjectLoading, userProjectError, userPrivateCloudProject]);
 
   const {
     control,
     handleSubmit,
     reset,
-    formState: { isDirty, errors },
+    formState: { isDirty, dirtyFields, errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => console.log("data submitted: ", data);
+  const onSubmit = (data) => {
+    const changedFields = Object.keys(dirtyFields).reduce((acc, key) => {
+      acc[key] = data[key];
+      return acc;
+    }, {});
 
-  if (loading) return null;
-  if (error) return `Error! ${error}`;
+    const userProject = formDataToUserProject(changedFields);
+
+    createPrivateCloudProjectEditRequest({
+      variables: { projectId: id, ...userProject },
+      onCompleted: () => {
+        console.log("COMPLETED");
+      },
+    });
+  };
+
+  if (userProjectLoading) return null;
+  if (userProjectError || editProjectError)
+    return `Error! ${userProjectError} ${editProjectError}`;
 
   return (
     <div>
       <NavToolbar title={userPrivateCloudProject?.name}>
-        <IconButton 
-          sx={{ mr: 1 }}
+        <IconButton
+          sx={{ mr: 2 }}
           disabled={!isDirty}
           onClick={() => reset(userProjectToFormData(userPrivateCloudProject))}
           aria-label="delete"
@@ -255,12 +233,13 @@ export default function Project() {
           <RestartAltIcon />
         </IconButton>
         <Button
+          sx={{ mr: 1 }}
           // style={{ border: "none" }}
           disabled={!isDirty}
           onClick={handleSubmit(onSubmit)}
           variant="outlined"
         >
-          SUBMIT REQUEST
+          SUBMIT EDIT REQUEST
         </Button>
       </NavToolbar>
       <FormProvider
@@ -268,6 +247,7 @@ export default function Project() {
           control,
           errors,
           initialValues: userProjectToFormData(userPrivateCloudProject),
+          isDisabled: userPrivateCloudProject?.activeRequest?.active,
         }}
       >
         <StyledForm>
