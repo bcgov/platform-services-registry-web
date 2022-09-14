@@ -137,7 +137,6 @@ const TitleTypography = (props) => (
 const StyledForm = styled.form`
   width: 550px;
   margin-left: 24px;
-  margin-top: 30px;
   display: flex;
   flex-direction: row;
 `;
@@ -245,19 +244,21 @@ export default function Project() {
           SUBMIT EDIT REQUEST
         </Button>
       </NavToolbar>
-      {userPrivateCloudProject?.activeRequest?.active && (
-        <Typography
-          variant="body"
-          sx={{ mt: 1, mb: 1, ml: 3, color: "rgba(0, 0, 0, 0.6)" }}
-        >
-          This project cannot be edited as it has an{" "}
-          <StyledLink
-            to={`/private-cloud/user/request/${userPrivateCloudProject?.activeRequest?.id}`}
+      <div style={{minHeight: 50}}>
+        {userPrivateCloudProject?.activeRequest?.active && (
+          <Typography
+            variant="body"
+            sx={{ mb: 0, ml: 3, color: "rgba(0, 0, 0, 0.6)" }}
           >
-            <i>active request</i>
-          </StyledLink>
-        </Typography>
-      )}
+            This project cannot be edited as it has an{" "}
+            <StyledLink
+              to={`/private-cloud/user/request/${userPrivateCloudProject?.activeRequest?.id}`}
+            >
+              <i>active request</i>
+            </StyledLink>
+          </Typography>
+        )}
+      </div>
       {editProjectLoading ? (
         <LoadingSpinner />
       ) : (
