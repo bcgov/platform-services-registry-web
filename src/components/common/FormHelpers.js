@@ -1,5 +1,7 @@
 const userProjectToFormData = (userPrivateCloudProject) => {
-  console.log(userPrivateCloudProject);
+
+  if (userPrivateCloudProject === undefined) return {};
+
   const productionQuota = userPrivateCloudProject?.productionQuota;
   const testQuota = userPrivateCloudProject?.testQuota;
   const developmentQuota = userPrivateCloudProject?.developmentQuota;

@@ -16,8 +16,6 @@ export default function StickyTable({ columns, rows, loading, onClickPath }) {
 
   const navigate = useNavigate();
 
-  console.log(rows)
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };

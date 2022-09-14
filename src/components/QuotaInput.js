@@ -15,8 +15,6 @@ import {
 export default function QuotaInput({ nameSpace }) {
   const { control, errors, isDisabled, initialValues } = useFormContext();
 
-  console.log(control);
-
   return (
     <Box
       sx={{
@@ -69,7 +67,7 @@ export default function QuotaInput({ nameSpace }) {
               disabled={isDisabled}
               size="medium"
               labelId="select-defaultMemoryOptions"
-              id="select-defaultMemoryOptions"
+              id={`select-${nameSpace}-memory`}
               label="Memory Options"
             >
               {[

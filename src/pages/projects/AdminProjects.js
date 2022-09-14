@@ -34,7 +34,7 @@ export default function Projects() {
 
   const rows = useMemo(() => {
     if (!loading && !error && data) {
-      return data.privateCloudProjects.map(projectsToRows);
+      return data.privateCloudProjects.map(projectsToRows).reverse();
     } else {
       return [];
     }

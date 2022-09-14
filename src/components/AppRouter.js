@@ -7,9 +7,10 @@ import UserProjects from "../pages/projects/UserProjects";
 import UserRequests from "../pages/requests/UserRequests";
 import AdminProjects from "../pages/projects/AdminProjects";
 import AdminRequests from "../pages/requests/AdminRequests";
+import AdminRequest from "../pages/request/AdminRequest";
+import UserRequest from "../pages/request/UserRequest";
 import Create from "../pages/Create";
 import Project from "../pages/project/Project";
-import Request from "../pages/request/Request";
 import Layout from "./Layout";
 import LoadingSpinner from "./common/LoadingSpinner";
 import TabsToolbar from "./TabsToolbar";
@@ -40,7 +41,7 @@ export const AppRouter = () => {
       <Route path="/" element={<Layout />}>
         <Route
           index
-          element={<Navigate to="/private-cloud/user/projects" replace />}
+          element={<Navigate to="/private-cloud/user/dashboard/projects" replace />}
         />
         <Route path="*" element={<NoMatch />} />
         <Route path="private-cloud">
@@ -68,7 +69,7 @@ export const AppRouter = () => {
               <Route path="requests" element={<AdminRequests />} />
             </Route>
             <Route path="project/:id" element={<Project />} />
-            <Route path="request/:id" element={<Request />} />
+            <Route path="request/:id" element={<AdminRequest />} />
 
             <Route path="create" element={<Create />} />
           </Route>
@@ -96,7 +97,7 @@ export const AppRouter = () => {
               <Route path="requests" element={<UserRequests />} />
             </Route>
             <Route path="project/:id" element={<Project />} />
-            <Route path="request/:id" element={<Request />} />
+            <Route path="request/:id" element={<UserRequest />} />
             <Route path="create" element={<Create />} />
           </Route>
         </Route>

@@ -40,7 +40,7 @@ export default function Requests() {
 
   const rows = useMemo(() => {
     if (!loading && !error && data) {
-      return data.privateCloudActiveRequests.map(requestsToRows);
+      return data.privateCloudActiveRequests.map(requestsToRows).reverse();
     } else {
       return [];
     }

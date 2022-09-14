@@ -14,33 +14,10 @@ import { Button, IconButton, ButtonGroup } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useParams } from "react-router-dom";
+import StyledLink from "../../components/common/StyledLink";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-
-const schema = yup.object().shape({
-  name: yup.string().required(),
-  description: yup.string().required(),
-  projectOwner: yup.string().email("Must be a valid email address").required(),
-  primaryTechnicalLead: yup
-    .string()
-    .email("Must be a valid email address")
-    .required(),
-  secondaryTechnicalLead: yup.string().email("Must be a valid email address"),
-  ministry: yup.string().required(),
-  cluster: yup.string().required(),
-  productionCpu: yup.string().required(),
-  productionMemory: yup.string().required(),
-  productionStorage: yup.string().required(),
-  developmentCpu: yup.string().required(),
-  developmentMemory: yup.string().required(),
-  developmentStorage: yup.string().required(),
-  testCpu: yup.string().required(),
-  testMemory: yup.string().required(),
-  testStorage: yup.string().required(),
-  toolsCpu: yup.string().required(),
-  toolsMemory: yup.string().required(),
-  toolsStorage: yup.string().required(),
-});
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 
 const USER_PROJECT = gql`
   query Query($projectId: ID!) {
@@ -165,8 +142,34 @@ const StyledForm = styled.form`
   flex-direction: row;
 `;
 
+const schema = yup.object().shape({
+  name: yup.string().required(),
+  description: yup.string().required(),
+  projectOwner: yup.string().email("Must be a valid email address").required(),
+  primaryTechnicalLead: yup
+    .string()
+    .email("Must be a valid email address")
+    .required(),
+  secondaryTechnicalLead: yup.string().email("Must be a valid email address"),
+  ministry: yup.string().required(),
+  cluster: yup.string().required(),
+  productionCpu: yup.string().required(),
+  productionMemory: yup.string().required(),
+  productionStorage: yup.string().required(),
+  developmentCpu: yup.string().required(),
+  developmentMemory: yup.string().required(),
+  developmentStorage: yup.string().required(),
+  testCpu: yup.string().required(),
+  testMemory: yup.string().required(),
+  testStorage: yup.string().required(),
+  toolsCpu: yup.string().required(),
+  toolsMemory: yup.string().required(),
+  toolsStorage: yup.string().required(),
+});
+
 export default function Project() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const {
     loading: userProjectLoading,
@@ -214,11 +217,11 @@ export default function Project() {
       variables: { projectId: id, ...userProject },
       onCompleted: () => {
         console.log("COMPLETED");
+        navigate(-1);
       },
     });
   };
 
-  if (userProjectLoading) return null;
   if (userProjectError || editProjectError)
     return `Error! ${userProjectError} ${editProjectError}`;
 
@@ -235,7 +238,6 @@ export default function Project() {
         </IconButton>
         <Button
           sx={{ mr: 1 }}
-          // style={{ border: "none" }}
           disabled={!isDirty}
           onClick={handleSubmit(onSubmit)}
           variant="outlined"
@@ -243,41 +245,58 @@ export default function Project() {
           SUBMIT EDIT REQUEST
         </Button>
       </NavToolbar>
-      <FormProvider
-        {...{
-          control,
-          errors,
-          initialValues: userProjectToFormData(userPrivateCloudProject),
-          isDisabled: userPrivateCloudProject?.activeRequest?.active,
-        }}
-      >
-        <StyledForm>
-          <div>
-            <TitleTypography>
-              Project Description and Contact Information
-            </TitleTypography>
-            <MetaDataInput />
-          </div>
-          <div style={{ marginLeft: 70 }}>
-            <TitleTypography>Cluster</TitleTypography>
-            <ClusterInput />
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <div>
-                <TitleTypography>Production Quota</TitleTypography>
-                <QuotaInput nameSpace={"production"} />
-                <TitleTypography>Test Quota</TitleTypography>
-                <QuotaInput nameSpace={"test"} />
-              </div>
-              <div>
-                <TitleTypography>Tools Quota</TitleTypography>
-                <QuotaInput nameSpace={"tools"} />
-                <TitleTypography>Development Quota</TitleTypography>
-                <QuotaInput nameSpace={"development"} />
+      {userPrivateCloudProject?.activeRequest?.active && (
+        <Typography
+          variant="body"
+          sx={{ mt: 1, mb: 1, ml: 3, color: "rgba(0, 0, 0, 0.6)" }}
+        >
+          This project cannot be edited as it has an{" "}
+          <StyledLink
+            to={`/private-cloud/user/request/${userPrivateCloudProject?.activeRequest?.id}`}
+          >
+            <i>active request</i>
+          </StyledLink>
+        </Typography>
+      )}
+      {editProjectLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <FormProvider
+          {...{
+            control,
+            errors,
+            initialValues: userProjectToFormData(userPrivateCloudProject),
+            isDisabled: userPrivateCloudProject?.activeRequest?.active,
+          }}
+        >
+          <StyledForm>
+            <div>
+              <TitleTypography>
+                Project Description and Contact Information
+              </TitleTypography>
+              <MetaDataInput />
+            </div>
+            <div style={{ marginLeft: 70 }}>
+              <TitleTypography>Cluster</TitleTypography>
+              <ClusterInput />
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                <div>
+                  <TitleTypography>Production Quota</TitleTypography>
+                  <QuotaInput nameSpace={"production"} />
+                  <TitleTypography>Test Quota</TitleTypography>
+                  <QuotaInput nameSpace={"test"} />
+                </div>
+                <div>
+                  <TitleTypography>Tools Quota</TitleTypography>
+                  <QuotaInput nameSpace={"tools"} />
+                  <TitleTypography>Development Quota</TitleTypography>
+                  <QuotaInput nameSpace={"development"} />
+                </div>
               </div>
             </div>
-          </div>
-        </StyledForm>
-      </FormProvider>
+          </StyledForm>
+        </FormProvider>
+      )}
     </div>
   );
 }

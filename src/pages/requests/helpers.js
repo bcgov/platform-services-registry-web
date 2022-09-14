@@ -2,10 +2,6 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 
-const typeLookup = {
-  CREATE: "CREATE",
-};
-
 const requestsToRows = ({
   id,
   status,
@@ -70,7 +66,7 @@ const requestsToRows = ({
       label={statusLookup[status]}
     />
   ),
-  type: <Chip style={{ borderRadius: 7 }} label={typeLookup[type]} />,
+  type: <Chip style={{ borderRadius: 7 }} label={type} />,
 });
 
 function truncate(str, n) {

@@ -5,9 +5,22 @@ import {
   HttpLink,
   ApolloLink,
   InMemoryCache,
+  from,
   concat,
 } from "@apollo/client";
 import { useKeycloak } from "@react-keycloak/web";
+import { onError } from "@apollo/client/link/error";
+
+// Log any GraphQL errors or network error that occurred
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors)
+    graphQLErrors.forEach(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+      )
+    );
+  if (networkError) console.log(`[Network error]: ${networkError}`);
+});
 
 export default function ApolloAuthProvider({ children }) {
   const { initialized, keycloak } = useKeycloak();
@@ -30,7 +43,7 @@ export default function ApolloAuthProvider({ children }) {
 
   const client = new ApolloClient({
     cache: new InMemoryCache(),
-    link: concat(authMiddleware, httpLink),
+    link: from([authMiddleware, errorLink, httpLink]),
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

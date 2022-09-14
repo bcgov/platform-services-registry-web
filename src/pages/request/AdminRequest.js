@@ -14,8 +14,9 @@ import { Button, IconButton, ButtonGroup } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 
 const schema = yup.object().shape({
   name: yup.string().required(),
@@ -42,7 +43,7 @@ const schema = yup.object().shape({
   toolsStorage: yup.string().required(),
 });
 
-const USER_REQUEST = gql`
+const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
     privateCloudActiveRequest(requestId: $requestId) {
       id
@@ -150,6 +151,15 @@ const USER_REQUEST = gql`
   }
 `;
 
+const MAKE_REQUEST_DECISION = gql`
+  mutation MakePrivateCloudRequestDecision(
+    $requestId: ID!
+    $decision: RequestDecision!
+  ) {
+    makePrivateCloudRequestDecision(requestId: $requestId, decision: $decision)
+  }
+`;
+
 const TitleTypography = (props) => (
   <Typography variant="h6" sx={{ mt: 0, mb: 1 }}>
     {props.children}
@@ -166,84 +176,119 @@ const StyledForm = styled.form`
 
 export default function Request() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const {
-    loading: userRequestLoading,
-    data: userRequestData,
-    error: userRequestError,
-  } = useQuery(USER_REQUEST, {
+    loading: adminRequestLoading,
+    data: adminRequestData,
+    error: adminRequestError,
+  } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id },
   });
 
-  const userPrivateCloudRequest = userRequestData?.privateCloudActiveRequest;
+  const [
+    createPrivateCloudProjectEditRequest,
+    { data: decisionData, loading: decisionLoading, error: decisionError },
+  ] = useMutation(MAKE_REQUEST_DECISION);
+
+  const makeDecisionOnClick = (decision) => {
+    console.log(decision);
+    console.log(id);
+    createPrivateCloudProjectEditRequest({
+      variables: { requestId: id, decision },
+      onCompleted: () => {
+        console.log("MAKE REQUEST DECISION COMPLETED");
+        navigate(-1);
+      },
+    });
+  };
+
+  const adminPrivateCloudRequest = adminRequestData?.privateCloudActiveRequest;
 
   useEffect(() => {
-    if (!userRequestLoading && !userRequestError) {
-      reset(userProjectToFormData(userPrivateCloudRequest.requestedProject));
+    if (!adminRequestLoading && !adminRequestError) {
+      reset(userProjectToFormData(adminPrivateCloudRequest.requestedProject));
     }
-  }, [userRequestLoading, userRequestError, userPrivateCloudRequest]);
+  }, [adminRequestLoading, adminRequestError, adminPrivateCloudRequest]);
 
   const {
     control,
-    handleSubmit,
     reset,
-    formState: { isDirty, dirtyFields, errors },
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => {
-    const changedFields = Object.keys(dirtyFields).reduce((acc, key) => {
-      acc[key] = data[key];
-      return acc;
-    }, {});
+  if (adminRequestError) return `Error! ${adminRequestError}`;
 
-    const userProject = formDataToUserProject(changedFields);
-  };
-
-  if (userRequestLoading) return null;
-  if (userRequestError) return `Error! ${userRequestError}`;
+  const name =
+    adminPrivateCloudRequest?.type === "CREATE"
+      ? adminPrivateCloudRequest?.requestedProject?.name
+      : adminPrivateCloudRequest?.project?.name;
 
   return (
     <div>
-      <NavToolbar title={userPrivateCloudRequest?.project?.name} />
-      <FormProvider
-        {...{
-          control,
-          errors,
-          initialValues: userProjectToFormData(
-            userPrivateCloudRequest.requestedProject
-          ),
-          isDisabled: userPrivateCloudRequest?.active,
-        }}
-      >
-        <StyledForm>
-          <div>
-            <TitleTypography>
-              Project Description and Contact Information
-            </TitleTypography>
-            <MetaDataInput />
-          </div>
-          <div style={{ marginLeft: 70 }}>
-            <TitleTypography>Cluster</TitleTypography>
-            <ClusterInput />
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <div>
-                <TitleTypography>Production Quota</TitleTypography>
-                <QuotaInput nameSpace={"production"} />
-                <TitleTypography>Test Quota</TitleTypography>
-                <QuotaInput nameSpace={"test"} />
-              </div>
-              <div>
-                <TitleTypography>Tools Quota</TitleTypography>
-                <QuotaInput nameSpace={"tools"} />
-                <TitleTypography>Development Quota</TitleTypography>
-                <QuotaInput nameSpace={"development"} />
+      <NavToolbar title={name}>
+        <div>
+          <Button
+            disabled={adminPrivateCloudRequest?.status !== "PENDING_DECISION"}
+            sx={{ mr: 1 }}
+            onClick={() => makeDecisionOnClick("APPROVE")}
+            variant="outlined"
+          >
+            Approve
+          </Button>
+          <Button
+            disabled={adminPrivateCloudRequest?.status !== "PENDING_DECISION"}
+            sx={{ mr: 1 }}
+            onClick={() => makeDecisionOnClick("REJECT")}
+            variant="outlined"
+          >
+            Reject
+          </Button>
+        </div>
+      </NavToolbar>
+      {decisionLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <FormProvider
+          {...{
+            control,
+            errors,
+            initialValues: userProjectToFormData(
+              adminPrivateCloudRequest?.requestedProject
+            ),
+            isDisabled: adminPrivateCloudRequest?.active,
+          }}
+        >
+          <StyledForm>
+            <div>
+              <TitleTypography>
+                Project Description and Contact Information
+              </TitleTypography>
+              <MetaDataInput />
+            </div>
+            <div style={{ marginLeft: 70 }}>
+              <TitleTypography>Cluster</TitleTypography>
+              <ClusterInput />
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                <div>
+                  <TitleTypography>Production Quota</TitleTypography>
+                  <QuotaInput nameSpace={"production"} />
+                  <TitleTypography>Test Quota</TitleTypography>
+                  <QuotaInput nameSpace={"test"} />
+                </div>
+                <div>
+                  <TitleTypography>Tools Quota</TitleTypography>
+                  <QuotaInput nameSpace={"tools"} />
+                  <TitleTypography>Development Quota</TitleTypography>
+                  <QuotaInput nameSpace={"development"} />
+                </div>
               </div>
             </div>
-          </div>
-        </StyledForm>
-      </FormProvider>
+          </StyledForm>
+        </FormProvider>
+      )}
     </div>
   );
 }

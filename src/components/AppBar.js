@@ -1,4 +1,4 @@
-import React, {  useCallback } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -19,7 +19,6 @@ const Logo = styled.img`
 export default function DenseAppBar() {
   const { keycloak } = useKeycloak();
 
-
   const login = useCallback(() => {
     keycloak?.login({ idpHint: "idir" });
   }, [keycloak]);
@@ -36,7 +35,10 @@ export default function DenseAppBar() {
           }}
         >
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <Link to="/" style={{ marginTop: 7 }} >
+            <Link
+              to="/private-cloud/user/dashboard/projects"
+              style={{ marginTop: 7 }}
+            >
               <Logo alt="BC Gov Logo" src={logoImage} width="50" />
             </Link>
             <p style={{ fontWeight: "300", fontSize: 20, font: "roboto" }}>
@@ -44,10 +46,13 @@ export default function DenseAppBar() {
             </p>
             <p style={{ fontWeight: "500", fontSize: 20 }}>Project Registry</p>
           </div>
-          {keycloak?.authenticated ? <DropDownLoginMenu />
-            : <Button onClick={login} style={{ color: '#fff' }}>
+          {keycloak?.authenticated ? (
+            <DropDownLoginMenu />
+          ) : (
+            <Button onClick={login} style={{ color: "#fff" }}>
               Login
-            </Button>}
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </Box>
