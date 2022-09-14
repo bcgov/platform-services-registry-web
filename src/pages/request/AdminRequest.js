@@ -17,6 +17,8 @@ import * as yup from "yup";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import StyledForm from "../../components/common/StyledForm";
+import TitleTypography from "../../components/common/TitleTypography";
 
 const schema = yup.object().shape({
   name: yup.string().required(),
@@ -158,20 +160,6 @@ const MAKE_REQUEST_DECISION = gql`
   ) {
     makePrivateCloudRequestDecision(requestId: $requestId, decision: $decision)
   }
-`;
-
-const TitleTypography = (props) => (
-  <Typography variant="h6" sx={{ mt: 0, mb: 1 }}>
-    {props.children}
-  </Typography>
-);
-
-const StyledForm = styled.form`
-  width: 550px;
-  margin-left: 24px;
-  margin-top: 30px;
-  display: flex;
-  flex-direction: row;
 `;
 
 export default function Request() {

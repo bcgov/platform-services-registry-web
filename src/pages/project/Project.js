@@ -16,8 +16,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import StyledLink from "../../components/common/StyledLink";
 import { useParams, useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import StyledForm from "../../components/common/StyledForm";
+import TitleTypography from "../../components/common/TitleTypography";
 
 const USER_PROJECT = gql`
   query Query($projectId: ID!) {
@@ -128,19 +129,6 @@ const UPDATE_USER_PROJECT = gql`
   }
 `;
 
-const TitleTypography = (props) => (
-  <Typography variant="h6" sx={{ mt: 0, mb: 1 }}>
-    {props.children}
-  </Typography>
-);
-
-const StyledForm = styled.form`
-  width: 550px;
-  margin-left: 24px;
-  display: flex;
-  flex-direction: row;
-`;
-
 const schema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
@@ -244,7 +232,7 @@ export default function Project() {
           SUBMIT EDIT REQUEST
         </Button>
       </NavToolbar>
-      <div style={{minHeight: 50}}>
+      <div style={{ minHeight: 50 }}>
         {userPrivateCloudProject?.activeRequest?.active && (
           <Typography
             variant="body"

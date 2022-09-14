@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useQuery, useMutation, gql } from "@apollo/client";
+import { useQuery, gql } from "@apollo/client";
 import MetaDataInput from "../../components/MetaDataInput";
 import ClusterInput from "../../components/ClusterInput";
 import QuotaInput from "../../components/QuotaInput";
 import NavToolbar from "../../components/NavToolbar";
-import {
-  userProjectToFormData,
-  formDataToUserProject,
-} from "../../components/common/FormHelpers";
-import Typography from "@mui/material/Typography";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import { Button, IconButton, ButtonGroup } from "@mui/material";
+import { userProjectToFormData } from "../../components/common/FormHelpers";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useParams } from "react-router-dom";
-import styled from "styled-components";
+import TitleTypography from "../../components/common/TitleTypography";
+import StyledForm from "../../components/common/StyledForm";
 
 const schema = yup.object().shape({
   name: yup.string().required(),
@@ -148,20 +143,6 @@ const USER_REQUEST = gql`
       }
     }
   }
-`;
-
-const TitleTypography = (props) => (
-  <Typography variant="h6" sx={{ mt: 0, mb: 1 }}>
-    {props.children}
-  </Typography>
-);
-
-const StyledForm = styled.form`
-  width: 550px;
-  margin-left: 24px;
-  margin-top: 30px;
-  display: flex;
-  flex-direction: row;
 `;
 
 export default function Request() {
