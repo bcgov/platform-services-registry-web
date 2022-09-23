@@ -36,7 +36,7 @@ export default function DenseAppBar() {
         >
           <div style={{ display: "flex", flexDirection: "row" }}>
             <Link
-              to="/private-cloud/user/dashboard/projects"
+              to="/"
               style={{ marginTop: 7 }}
             >
               <Logo alt="BC Gov Logo" src={logoImage} width="50" />

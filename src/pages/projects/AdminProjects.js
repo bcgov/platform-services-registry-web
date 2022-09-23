@@ -2,51 +2,58 @@ import React, { useContext, useEffect, useState, useMemo } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
-import AdminContext from "../../context/admin";
 
 const ALL_PROJECTS = gql`
-  query PrivateCloudProjects {
-    privateCloudProjects {
-      id
-      name
-      description
-      cluster
-      ministry
-      licencePlate
-      projectOwner {
-        firstName
-        lastName
-        githubId
-      }
-      technicalLeads {
-        firstName
-        lastName
-        githubId
+  query PrivateCloudProjectsPaginated($offset: Int, $limit: Int) {
+    privateCloudProjectsPaginated(offset: $offset, limit: $limit) {
+      count
+      projects {
+        ... on PrivateCloudProject {
+          id
+          name
+          description
+          cluster
+          ministry
+          licencePlate
+          projectOwner {
+            firstName
+            lastName
+            githubId
+          }
+          technicalLeads {
+            firstName
+            lastName
+            githubId
+          }
+        }
       }
     }
   }
 `;
 
 export default function Projects() {
-  const { admin } = useContext(AdminContext);
-
-  const { loading, error, data } = useQuery(ALL_PROJECTS);
-
-  const rows = useMemo(() => {
-    if (!loading && !error && data) {
-      return data.privateCloudProjects.map(projectsToRows).reverse();
-    } else {
-      return [];
-    }
-  }, [data]);
+  const { loading, data, fetchMore, error } = useQuery(ALL_PROJECTS, {
+    variables: {
+      offset: 0,
+      limit: 10,
+    },
+  });
 
   if (error) return `Error! ${error.message}`;
 
   return (
     <StickyTable
       onClickPath={"/private-cloud/admin/project/"}
+      onNextPage={(page, pageSize) =>
+        fetchMore({ variables: { offset: page * pageSize, limit: pageSize } })
+      }
       columns={columns}
-      rows={rows}
+      rows={
+        loading
+          ? []
+          : data.privateCloudProjectsPaginated.projects.map(projectsToRows)
+      }
+      count={loading ? 0 : data.privateCloudProjectsPaginated.count}
       title="Projects"
       loading={loading}
     />

@@ -32,21 +32,13 @@ export default function Projects() {
 
   const { loading, error, data } = useQuery(USER_PROJECTS);
 
-  const rows = useMemo(() => {
-    if (!loading && !error && data) {
-      return data.userPrivateCloudProjects.map(projectsToRows).reverse();
-    } else {
-      return [];
-    }
-  }, [data]);
-
   if (error) return `Error! ${error.message}`;
 
   return (
     <StickyTable
       onClickPath={"/private-cloud/user/project/"}
       columns={columns}
-      rows={rows}
+      rows={loading ? [] : data.userPrivateCloudProjects.map(projectsToRows)}
       title="Projects"
       loading={loading}
     />

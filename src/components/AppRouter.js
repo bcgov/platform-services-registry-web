@@ -17,10 +17,10 @@ import TabsToolbar from "./TabsToolbar";
 
 const NoMatch = () => {
   return (
-    <div>
+    <div style={{marginLeft: 24, marginTop: 20}}>
       <h2>Nothing to see here!</h2>
       <p>
-        <Link to="/private-cloud/user/dashboard/projects">
+        <Link to="/">
           Go to the home page
         </Link>
       </p>
@@ -29,7 +29,8 @@ const NoMatch = () => {
 };
 
 export const AppRouter = () => {
-  const { initialized } = useKeycloak();
+  const { initialized, keycloak } = useKeycloak();
+  const isAdmin = keycloak.hasResourceRole("administrator");
 
   if (!initialized) {
     return <LoadingSpinner />;
@@ -41,7 +42,13 @@ export const AppRouter = () => {
       <Route path="/" element={<Layout />}>
         <Route
           index
-          element={<Navigate to="/private-cloud/user/dashboard/projects" replace />}
+          element={
+            isAdmin ? (
+              <Navigate to="/private-cloud/admin/dashboard/projects" replace />
+            ) : (
+              <Navigate to="/private-cloud/user/dashboard/requests" replace />
+            )
+          }
         />
         <Route path="*" element={<NoMatch />} />
         <Route path="private-cloud">

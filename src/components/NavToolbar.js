@@ -6,8 +6,9 @@ import Typography from "@mui/material/Typography";
 import { IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
 
-export default function NavToolbar({ title, children }) {
+export default function NavToolbar({ title, path, children }) {
   const navigate = useNavigate();
 
   return (
@@ -36,22 +37,33 @@ export default function NavToolbar({ title, children }) {
         >
           <ArrowBackIcon />
         </IconButton>
-        <Typography
-          variant="body1"
-          color="black"
-          component="div"
-          noWrap={true}
-          sx={{
+        <div
+          style={{
             marginLeft: "14px",
-            marginTop: "4.8px",
+            marginTop: "5px",
             color: "#212121",
             flexGrow: 1,
             minWidth: 170,
-            fontSize: 20,
+            // fontSize: 20,
           }}
         >
-          {title}
-        </Typography>
+          {path ? (
+            <Breadcrumbs aria-label="breadcrumb">
+              <Typography sx={{ fontSize: 18 }} variant="body">
+                {path}
+              </Typography>
+              <Typography
+                sx={{ fontSize: 18 }}
+                variant="body"
+                color="text.primary"
+              >
+                {title}
+              </Typography>
+            </Breadcrumbs>
+          ) : (
+            path
+          )}
+        </div>
         {children}
       </Box>
     </Toolbar>

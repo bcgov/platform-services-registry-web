@@ -214,7 +214,7 @@ export default function Project() {
 
   return (
     <div>
-      <NavToolbar title={userPrivateCloudProject?.name}>
+      <NavToolbar path={"project"} title={userPrivateCloudProject?.name}>
         <IconButton
           sx={{ mr: 2 }}
           disabled={!isDirty}

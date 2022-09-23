@@ -180,8 +180,6 @@ export default function Request() {
   ] = useMutation(MAKE_REQUEST_DECISION);
 
   const makeDecisionOnClick = (decision) => {
-    console.log(decision);
-    console.log(id);
     createPrivateCloudProjectEditRequest({
       variables: { requestId: id, decision },
       onCompleted: () => {
@@ -216,7 +214,7 @@ export default function Request() {
 
   return (
     <div>
-      <NavToolbar title={name}>
+      <NavToolbar path={"request"} title={name}>
         <div>
           <Button
             disabled={adminPrivateCloudRequest?.status !== "PENDING_DECISION"}

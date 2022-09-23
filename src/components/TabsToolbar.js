@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, navigate} from "react-router-dom";
 import Divider from "@mui/material/Divider";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -20,12 +20,7 @@ import { Outlet } from "react-router-dom";
 
 export default function TabsToolbar({ routes, createButtonRoute }) {
   const { pathname } = useLocation();
-  const { keycloak } = useKeycloak();
-  const { admin, toggleAdmin } = useContext(AdminContext);
 
-  const handleSwitchChange = (event) => {
-    toggleAdmin(event.target.checked);
-  };
 
   return (
     <>
@@ -47,30 +42,11 @@ export default function TabsToolbar({ routes, createButtonRoute }) {
         </Typography>
         <Divider orientation="vertical" variant="middle" flexItem />
         <Box sx={{ width: "100%" }}>
-          <Tabs
-            value={routes.indexOf(pathname)}
-            aria-label="nav tabs"
-          >
+          <Tabs value={routes.indexOf(pathname)} aria-label="nav tabs">
             <Tab component={Link} label="Requests" to={routes[0]} />
             <Tab component={Link} label="Projects" to={routes[1]} />
           </Tabs>
         </Box>
-        {!!keycloak.hasResourceRole("admin", "registry-api") && (
-          <FormGroup>
-            <FormControlLabel
-              style={{ whiteSpace: "nowrap", marginRight: 14 }}
-              control={
-                <Switch
-                  onClick={handleSwitchChange}
-                  sx={{ m: 0 }}
-                  checked={admin}
-                />
-              }
-              labelPlacement="start"
-              label="show all"
-            />
-          </FormGroup>
-        )}
         <Button
           component={Link}
           to={createButtonRoute}

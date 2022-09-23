@@ -8,6 +8,11 @@ import {
   from,
   concat,
 } from "@apollo/client";
+import {
+  offsetLimitPagination,
+  relayStylePagination,
+} from "@apollo/client/utilities";
+
 import { useKeycloak } from "@react-keycloak/web";
 import { onError } from "@apollo/client/link/error";
 
@@ -41,8 +46,37 @@ export default function ApolloAuthProvider({ children }) {
     return forward(operation);
   });
 
+  const cache = new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          privateCloudProjectsPaginated: {
+            keyArgs: false,
+            merge(existing, incoming, { args }) {
+              const merged = existing ? existing.projects.slice(0) : [];
+              const { offset = 0 } = args;
+
+              if (incoming) {
+                if (args) {
+                  for (let i = 0; i < incoming.projects.length; ++i) {
+                    merged[offset + i] = incoming.projects[i];
+                  }
+                } else {
+                  throw Error("args not defined");
+                }
+              }
+
+              return { ...incoming, projects: merged };
+            },
+          },
+        },
+      },
+    },
+  });
+
   const client = new ApolloClient({
-    cache: new InMemoryCache(),
+    cache,
+    connectToDevTools: true,
     link: from([authMiddleware, errorLink, httpLink]),
   });
 

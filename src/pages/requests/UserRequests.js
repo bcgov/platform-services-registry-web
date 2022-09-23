@@ -38,13 +38,7 @@ export default function Requests() {
 
   const { loading, error, data } = useQuery(USER_ACTIVE_REQUESTS);
 
-  const rows = useMemo(() => {
-    if (!loading && !error && data) {
-      return data.userPrivateCloudActiveRequests.map(requestsToRows).reverse();
-    } else {
-      return [];
-    }
-  }, [data]);
+
 
   if (error) return `Error! ${error.message}`;
 
@@ -52,7 +46,7 @@ export default function Requests() {
     <StickyTable
       onClickPath={"/private-cloud/user/request/"}
       columns={columns}
-      rows={rows}
+      rows={loading ? [] : data.userPrivateCloudActiveRequests.map(requestsToRows).reverse()}
       title="Active Requests"
       loading={loading}
     />
