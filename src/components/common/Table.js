@@ -15,7 +15,7 @@ export default function StickyTable({
   rows,
   loading,
   onClickPath,
-  onNextPage,
+  onNextPage = () => "",
   count = rows.length,
 }) {
   const [page, setPage] = useState(0);
