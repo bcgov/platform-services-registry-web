@@ -35,7 +35,7 @@ export default function Projects() {
   const { loading, data, fetchMore, error } = useQuery(ALL_PROJECTS, {
     variables: {
       offset: 0,
-      limit: 10,
+      limit: 20,
     },
   });
 

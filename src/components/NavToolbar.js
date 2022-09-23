@@ -40,29 +40,27 @@ export default function NavToolbar({ title, path, children }) {
         <div
           style={{
             marginLeft: "14px",
-            marginTop: "5px",
+            marginTop: "7px",
             color: "#212121",
             flexGrow: 1,
             minWidth: 170,
             // fontSize: 20,
           }}
         >
-          {path ? (
-            <Breadcrumbs aria-label="breadcrumb">
+          <Breadcrumbs aria-label="breadcrumb">
+            {path && (
               <Typography sx={{ fontSize: 18 }} variant="body">
                 {path}
               </Typography>
-              <Typography
-                sx={{ fontSize: 18 }}
-                variant="body"
-                color="text.primary"
-              >
-                {title}
-              </Typography>
-            </Breadcrumbs>
-          ) : (
-            path
-          )}
+            )}
+            <Typography
+              sx={{ fontSize: 18 }}
+              variant="body"
+              color="text.primary"
+            >
+              {title}
+            </Typography>
+          </Breadcrumbs>
         </div>
         {children}
       </Box>

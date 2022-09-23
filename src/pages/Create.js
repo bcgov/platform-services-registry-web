@@ -83,20 +83,12 @@ export default function Create() {
     });
   };
 
-  // if (error)
-  //   return (
-  //     <div>
-  //       <NavToolbar title={"Create Project"} />
-  //       {`Submission error! ${error.message}`}
-  //     </div>
-  //   );
-
   return (
     <div>
       <FormProvider {...{ control, errors }}>
-        <NavToolbar title={"Create Project"}>
+        <NavToolbar title="Create Project">
           <Button
-            sx={{ mr: 2, mt: 1 }}
+            sx={{ mr: 2 }}
             onClick={handleSubmit(onSubmit)}
             variant="outlined"
           >

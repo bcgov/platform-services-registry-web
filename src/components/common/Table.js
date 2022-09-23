@@ -1,4 +1,4 @@
-import  React, {useState} from "react";
+import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,7 +10,14 @@ import TableRow from "@mui/material/TableRow";
 import Skeleton from "@mui/material/Skeleton";
 import { useNavigate } from "react-router-dom";
 
-export default function StickyTable({ columns, rows, loading, onClickPath, onNextPage, count }) {
+export default function StickyTable({
+  columns,
+  rows,
+  loading,
+  onClickPath,
+  onNextPage,
+  count = rows.length,
+}) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -18,13 +25,16 @@ export default function StickyTable({ columns, rows, loading, onClickPath, onNex
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    onNextPage(newPage, rowsPerPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  useEffect(() => {
+    onNextPage(page, rowsPerPage);
+  }, [page, rowsPerPage]);
 
   const handleRowClick = (id) => {
     navigate(onClickPath + id);
@@ -113,7 +123,6 @@ export default function StickyTable({ columns, rows, loading, onClickPath, onNex
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        // count={rows.length}
         count={count}
         rowsPerPage={rowsPerPage}
         page={page}
