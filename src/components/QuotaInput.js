@@ -18,7 +18,7 @@ export default function QuotaInput({ nameSpace }) {
   return (
     <Box
       sx={{
-        "& .MuiTextField-root": { m: 0, mb: 3 },
+        "& .MuiTextField-root": { m: 0, mb: 3, },
         minWidth: 350,
       }}
       noValidate
@@ -55,7 +55,7 @@ export default function QuotaInput({ nameSpace }) {
         />
         <FormHelperText>{errors.cpu ? errors.cpu?.message : ""}</FormHelperText>
       </FormControl>
-      <FormControl sx={{ mt: 1, mb: 2, minWidth: 250 }}>
+      <FormControl sx={{ mt: 2, mb: 2, minWidth: 250 }}>
         <Controller
           name={nameSpace + "Memory"}
           defaultValue={""}
@@ -88,7 +88,7 @@ export default function QuotaInput({ nameSpace }) {
         </FormHelperText>
         <InputLabel id="demo-simple-select-required-label">Memory</InputLabel>
       </FormControl>
-      <FormControl sx={{ mt: 1, mb: 2, minWidth: 250 }}>
+      <FormControl sx={{ mt: 2, mb: 2, minWidth: 250 }}>
         <InputLabel id="demo-simple-select-required-label">Storage</InputLabel>
         <Controller
           name={nameSpace + "Storage"}

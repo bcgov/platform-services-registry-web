@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
 import { gql } from "@apollo/client";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import Paper from "@mui/material/Paper";
 import Avatar from "@mui/material/Avatar";
 import { TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 import useDebounce from "./utilities/UseDebounce";
-import { useForm } from "react-hook-form";
 
 const USER_BY_EMAIL = gql`
   query UserByEmail($email: EmailAddress!) {
@@ -23,23 +21,21 @@ const USER_BY_EMAIL = gql`
 export default function UserInput({ name }) {
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL);
 
-  const { control, setValue, errors, isDisabled, watch } = useFormContext();
+  const { control, setValue, errors, isDisabled, watch, isDirty } =
+    useFormContext();
 
-  const email = watch(name)
+  const email = watch(name);
   const debouncedEmail = useDebounce(email, 500);
   const debouncedGithubId = useDebounce(watch(`${name}GithubId`), 500);
 
-  console.log("debouncedGithubId", debouncedGithubId);
-
   useEffect(() => {
-    if (debouncedEmail) {
+    if (debouncedEmail ) {
       getUser({
         errorPolicy: "ignore",
         variables: { email: debouncedEmail },
       });
-
     }
-  }, [debouncedEmail]);
+  }, [debouncedEmail ]);
 
   useEffect(() => {
     setValue(`${name}GithubId`, "", {
@@ -49,7 +45,6 @@ export default function UserInput({ name }) {
 
   useEffect(() => {
     if (!loading && data?.userByEmail?.githubId) {
-      console.log("set value", `${name}GithubId`, data.userByEmail.githubId);
       setValue(`${name}GithubId`, data?.userByEmail?.githubId, {
         shouldValidate: true,
       });
@@ -57,14 +52,24 @@ export default function UserInput({ name }) {
   }, [data, loading, setValue, name]);
 
   return (
-    <Paper sx={{ p: 2, mb: 3, width: "90%", pr: 6, display: "flex", flexDirection: "row", height: 200 }}>
+    <Paper
+      sx={{
+        p: 2,
+        mb: 3,
+        width: "90%",
+        pr: 6,
+        display: "flex",
+        flexDirection: "row",
+        height: 200,
+      }}
+    >
       <Avatar
         sx={{ ml: 1, mr: 3, my: 4, width: 56, height: 56 }}
-        src={`https://github.com/${
-          debouncedGithubId === "" ? undefined : debouncedGithubId
-        }.png`}
+        src={`https://github.com/${debouncedGithubId !== "" ? debouncedGithubId : undefined}.png`}
       />
-      <Box sx={{ display: "flex", flexDirection: "column", ml: 2, width: "100%" }}>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", ml: 2, width: "100%" }}
+      >
         <Controller
           name={name}
           defaultValue={""}
@@ -94,9 +99,7 @@ export default function UserInput({ name }) {
               disabled={isDisabled || !!data?.userByEmail?.githubId}
               size="small"
               helperText={
-                errors[name + "GithubId"]
-                  ? "Github ID is a required field"
-                  : ""
+                errors[name + "GithubId"] ? "Github ID is a required field" : ""
               }
               id={name + "-githubId"}
               label="Github ID"

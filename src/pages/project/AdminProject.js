@@ -20,9 +20,9 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 import StyledForm from "../../components/common/StyledForm";
 import TitleTypography from "../../components/common/TitleTypography";
 
-const USER_PROJECT = gql`
+const PROJECT = gql`
   query Query($projectId: ID!) {
-    userPrivateCloudProject(projectId: $projectId) {
+    privateCloudProject(projectId: $projectId) {
       id
       name
       description
@@ -32,9 +32,11 @@ const USER_PROJECT = gql`
       }
       projectOwner {
         email
+        githubId
       }
       technicalLeads {
         email
+        githubId
       }
       ministry
       cluster
@@ -162,10 +164,10 @@ export default function Project() {
   const navigate = useNavigate();
 
   const {
-    loading: userProjectLoading,
-    data: userProjectData,
-    error: userProjectError,
-  } = useQuery(USER_PROJECT, {
+    loading: projectLoading,
+    data: projectData,
+    error: projectError,
+  } = useQuery(PROJECT, {
     variables: { projectId: id },
   });
 
@@ -178,13 +180,13 @@ export default function Project() {
     },
   ] = useMutation(UPDATE_USER_PROJECT);
 
-  const userPrivateCloudProject = userProjectData?.userPrivateCloudProject;
+  const privateCloudProject = projectData?.privateCloudProject;
 
   useEffect(() => {
-    if (!userProjectLoading && !userProjectError) {
-      reset(userProjectToFormData(userPrivateCloudProject));
+    if (!projectLoading && !projectError) {
+      reset(userProjectToFormData(privateCloudProject));
     }
-  }, [userProjectLoading, userProjectError, userPrivateCloudProject]);
+  }, [projectLoading, projectError, privateCloudProject]);
 
   const {
     control,
@@ -208,22 +210,21 @@ export default function Project() {
     createPrivateCloudProjectEditRequest({
       variables: { projectId: id, ...userProject },
       onCompleted: () => {
-        console.log("COMPLETED");
         navigate(-1);
       },
     });
   };
 
-  if (userProjectError || editProjectError)
-    return `Error! ${userProjectError} ${editProjectError}`;
+  if (projectError || editProjectError)
+    return `Error! ${projectError} ${editProjectError}`;
 
   return (
     <div>
-      <NavToolbar path={"project"} title={userPrivateCloudProject?.name}>
+      <NavToolbar path={"project"} title={privateCloudProject?.name}>
         <IconButton
           sx={{ mr: 2 }}
           disabled={!isDirty}
-          onClick={() => reset(userProjectToFormData(userPrivateCloudProject))}
+          onClick={() => reset(userProjectToFormData(privateCloudProject))}
           aria-label="delete"
         >
           <RestartAltIcon />
@@ -238,14 +239,14 @@ export default function Project() {
         </Button>
       </NavToolbar>
       <div style={{ minHeight: 50 }}>
-        {userPrivateCloudProject?.activeRequest?.active && (
+        {privateCloudProject?.activeRequest?.active && (
           <Typography
             variant="body"
             sx={{ mb: 0, ml: 3, color: "rgba(0, 0, 0, 0.6)" }}
           >
             This project cannot be edited as it has an{" "}
             <StyledLink
-              to={`/private-cloud/user/request/${userPrivateCloudProject?.activeRequest?.id}`}
+              to={`/private-cloud/user/request/${privateCloudProject?.activeRequest?.id}`}
             >
               <i>active request</i>
             </StyledLink>
@@ -261,8 +262,9 @@ export default function Project() {
             errors,
             setValue,
             watch,
-            initialValues: userProjectToFormData(userPrivateCloudProject),
-            isDisabled: userPrivateCloudProject?.activeRequest?.active,
+            isDirty,
+            initialValues: userProjectToFormData(privateCloudProject),
+            isDisabled: privateCloudProject?.activeRequest?.active,
           }}
         >
           <StyledForm>

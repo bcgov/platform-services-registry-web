@@ -7,6 +7,7 @@ import UserProjects from "../pages/projects/UserProjects";
 import UserRequests from "../pages/requests/UserRequests";
 import AdminProjects from "../pages/projects/AdminProjects";
 import AdminRequests from "../pages/requests/AdminRequests";
+import AdminProject from "../pages/project/AdminProject";
 import AdminRequest from "../pages/request/AdminRequest";
 import UserRequest from "../pages/request/UserRequest";
 import Create from "../pages/Create";
@@ -75,7 +76,7 @@ export const AppRouter = () => {
               <Route path="projects" element={<AdminProjects />} />
               <Route path="requests" element={<AdminRequests />} />
             </Route>
-            <Route path="project/:id" element={<Project />} />
+            <Route path="project/:id" element={<AdminProject />} />
             <Route path="request/:id" element={<AdminRequest />} />
 
             <Route path="create" element={<Create />} />

@@ -12,6 +12,9 @@ const userProjectToFormData = (userPrivateCloudProject) => {
     projectOwner: userPrivateCloudProject.projectOwner.email,
     primaryTechnicalLead: userPrivateCloudProject.technicalLeads[0]?.email,
     secondaryTechnicalLead: userPrivateCloudProject.technicalLeads[1]?.email,
+    projectOwnerGithubId: userPrivateCloudProject.projectOwner.githubId,
+    primaryTechnicalLeadGithubId: userPrivateCloudProject.technicalLeads[0]?.githubId,
+    secondaryTechnicalLeadGithubId: userPrivateCloudProject.technicalLeads[1]?.githubId,
     productionCpu:
       `CPU_REQUEST_${productionQuota.cpu.requests}_LIMIT_${productionQuota.cpu.limits}`.replaceAll(
         ".",
@@ -72,6 +75,9 @@ const formDataToUserProject = (formData) => {
     projectOwner,
     primaryTechnicalLead,
     secondaryTechnicalLead,
+    projectOwnerGithubId,
+    primaryTechnicalLeadGithubId,
+    secondaryTechnicalLeadGithubId,
     ministry,
     cluster,
     productionCpu,
@@ -94,6 +100,10 @@ const formDataToUserProject = (formData) => {
       description,
       projectOwner,
       technicalLeads: [primaryTechnicalLead, secondaryTechnicalLead].filter(
+        Boolean
+      ),
+      projectOwnerGithubId,
+      technicalLeadsGithubIds: [ primaryTechnicalLeadGithubId, secondaryTechnicalLeadGithubId].filter(
         Boolean
       ),
       ministry,
