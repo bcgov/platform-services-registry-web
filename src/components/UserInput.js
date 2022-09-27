@@ -29,13 +29,14 @@ export default function UserInput({ name }) {
   const debouncedGithubId = useDebounce(watch(`${name}GithubId`), 500);
 
   useEffect(() => {
-    if (debouncedEmail ) {
+    if (debouncedEmail) {
+      console.log("GET USER");
       getUser({
         errorPolicy: "ignore",
         variables: { email: debouncedEmail },
       });
     }
-  }, [debouncedEmail ]);
+  }, [debouncedEmail]);
 
   useEffect(() => {
     setValue(`${name}GithubId`, "", {
@@ -65,7 +66,9 @@ export default function UserInput({ name }) {
     >
       <Avatar
         sx={{ ml: 1, mr: 3, my: 4, width: 56, height: 56 }}
-        src={`https://github.com/${debouncedGithubId !== "" ? debouncedGithubId : undefined}.png`}
+        src={`https://github.com/${
+          debouncedGithubId !== "" ? debouncedGithubId : undefined
+        }.png`}
       />
       <Box
         sx={{ display: "flex", flexDirection: "column", ml: 2, width: "100%" }}
