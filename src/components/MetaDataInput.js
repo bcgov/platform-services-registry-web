@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
@@ -10,6 +10,9 @@ import Select from "@mui/material/Select";
 import FormHelperText from "@mui/material/FormHelperText";
 import { ministries } from "./common/Constants";
 import { Controller, useFormContext } from "react-hook-form";
+import UserInput from "./UserInput";
+import { useQuery, useMutation, gql } from "@apollo/client";
+import Container from "@mui/material/Container";
 
 export default function MetaDataInput() {
   const { control, errors, isDisabled } = useFormContext();
@@ -17,54 +20,51 @@ export default function MetaDataInput() {
   return (
     <Box
       sx={{
-        "& .MuiTextField-root": { m: 0, mb: 3, mt: 1, width: "45ch" },
+        "& .MuiTextField-root": { m: 0, mb: 3, mt: 1, width: "30ch" },
         width: "550px",
       }}
       noValidate
       autoComplete="off"
     >
+      <Controller
+        name="name"
+        defaultValue={""}
+        control={control}
+        rules={{ required: true }}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            disabled={isDisabled}
+            size="small"
+            style={{ width: "100%", height:59 }}
+            helperText={errors.name ? errors.name?.message : ""}
+            id="name"
+            label="Name"
+          />
+        )}
+      />
+      <Controller
+        name="description"
+        defaultValue={""}
+        control={control}
+        rules={{ required: true }}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            disabled={isDisabled}
+            size="small"
+            style={{ width: "100%", height: 155 }}
+            helperText={errors.description ? errors.description?.message : ""}
+            id="description"
+            label="Description"
+            multiline
+            rows={4}
+          />
+        )}
+      />
+
       <div>
-        <Controller
-          name="name"
-          defaultValue={""}
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              disabled={isDisabled}
-              size="small"
-              style={{ width: "100%" }}
-              helperText={errors.name ? errors.name?.message : ""}
-              id="name"
-              label="Name"
-            />
-          )}
-        />
-      </div>
-      <div>
-        <Controller
-          name="description"
-          defaultValue={""}
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              disabled={isDisabled}
-              size="small"
-              style={{ width: "100%" }}
-              helperText={errors.description ? errors.description?.message : ""}
-              id="description"
-              label="Description"
-              multiline
-              rows={4}
-            />
-          )}
-        />
-      </div>
-      <div>
-        <FormControl sx={{ mt: 0, mb: 2, minWidth: 250 }}>
+        <FormControl sx={{ mt: 0, mb: 1, minWidth: 250, height: 120 }}>
           <InputLabel id="demo-simple-select-required-label">
             Ministry
           </InputLabel>
@@ -78,6 +78,7 @@ export default function MetaDataInput() {
                 {...field}
                 disabled={isDisabled}
                 size="medium"
+
                 labelId="select-ministry"
                 id="select-ministry"
                 label="Ministry"
@@ -95,73 +96,32 @@ export default function MetaDataInput() {
           </FormHelperText>
         </FormControl>
       </div>
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }}>
+      <Box sx={{ p: 0, mb: 3, width: "100%" }}>
+        <Typography variant="body1" sx={{ mt: 0, mb: 1}}>
           Project Owner
         </Typography>
-        <Controller
+        <UserInput
           name="projectOwner"
-          defaultValue={""}
           control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              disabled={isDisabled}
-              size="small"
-              helperText={
-                errors.projectOwner ? errors.projectOwner?.message : ""
-              }
-              id="project-owner"
-              label="Email"
-            />
-          )}
+          isDisabled={isDisabled}
         />
-        <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }}>
+        <Typography variant="body1" sx={{ mt: 0, mb: 1}}>
           Primary Technical Lead
         </Typography>
-        <Controller
+        <UserInput
           name="primaryTechnicalLead"
-          defaultValue={""}
           control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              disabled={isDisabled}
-              size="small"
-              helperText={
-                errors.primaryTechnicalLead
-                  ? errors.primaryTechnicalLead?.message
-                  : ""
-              }
-              label="Email"
-            />
-          )}
+          isDisabled={isDisabled}
         />
-        <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }}>
+        <Typography variant="body1" sx={{ mt: 0, mb: 1}}>
           Secondary Technical Lead
         </Typography>
-        <Controller
+        <UserInput
           name="secondaryTechnicalLead"
-          defaultValue={""}
           control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              disabled={isDisabled}
-              size="small"
-              helperText={
-                errors.secondaryTechnicalLead
-                  ? errors.secondaryTechnicalLead?.message
-                  : ""
-              }
-              label="Email"
-            />
-          )}
+          isDisabled={isDisabled}
         />
-      </Paper>
+      </Box>
     </Box>
   );
 }

@@ -27,9 +27,9 @@ const projectsToRows = ({
   licencePlate,
 }) => ({
   id,
-  name: <span style={{ fontSize: 16, fontWeight: "450" }}>{name}</span>,
+  name: <span style={{ fontSize: 18, fontWeight: "450" }}>{name}</span>,
   description: (
-    <span style={{ fontSize: 14 }}> {truncate(description, 130)}</span>
+    <span style={{ fontSize: 18 }}> {truncate(description, 130)}</span>
   ),
   ministry,
   cluster,

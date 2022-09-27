@@ -35,7 +35,7 @@ export default function QuotaInput({ nameSpace }) {
             <Select
               {...field}
               disabled={isDisabled}
-              size="medium"
+              size="small"
               labelId="select-defaultCpuOptions"
               id="select-defaultCpuOptions"
               label="Cpu"
@@ -65,7 +65,7 @@ export default function QuotaInput({ nameSpace }) {
             <Select
               {...field}
               disabled={isDisabled}
-              size="medium"
+              size="small"
               labelId="select-defaultMemoryOptions"
               id={`select-${nameSpace}-memory`}
               label="Memory Options"
@@ -99,7 +99,7 @@ export default function QuotaInput({ nameSpace }) {
             <Select
               {...field}
               disabled={isDisabled}
-              size="medium"
+              size="small"
               labelId="select-defaultStorageOptions"
               id="select-defaultStorageOptions"
               label="DefaultStorageOptions"

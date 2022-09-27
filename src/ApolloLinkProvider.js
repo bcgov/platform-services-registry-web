@@ -8,11 +8,6 @@ import {
   from,
   concat,
 } from "@apollo/client";
-import {
-  offsetLimitPagination,
-  relayStylePagination,
-} from "@apollo/client/utilities";
-
 import { useKeycloak } from "@react-keycloak/web";
 import { onError } from "@apollo/client/link/error";
 

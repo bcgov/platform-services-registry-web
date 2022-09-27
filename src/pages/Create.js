@@ -31,12 +31,14 @@ const schema = yup.object().shape({
     .email("Must be a valid email address")
     .required(),
   secondaryTechnicalLead: yup.string().email("Must be a valid email address"),
+  projectOwnerGithubId: yup.string().required(),
+  primaryTechnicalLeadGithubId: yup.string().required(),
+  secondaryTechnicalLeadGithubId: yup.string().required(),
   ministry: yup.string().required(),
   cluster: yup.string().required(),
 });
 
 const FormContainer = styled.div`
-  width: 550px;
   margin-left: 24px;
   margin-top: 30px;
   display: flex;
@@ -56,9 +58,12 @@ export default function Create() {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isDirty },
   } = useForm({
     resolver: yupResolver(schema),
+    // shouldUnregister: false,
+
   });
 
   const [privateCloudProjectRequest, { data, loading, error }] =
@@ -85,7 +90,7 @@ export default function Create() {
 
   return (
     <div>
-      <FormProvider {...{ control, errors }}>
+      <FormProvider {...{ control, errors, setValue, watch }}>
         <NavToolbar title="Create Project">
           <Button
             sx={{ mr: 2 }}
@@ -98,9 +103,8 @@ export default function Create() {
         {loading ? (
           <LoadingSpinner />
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Box sx={{ mb: 3 }} style={{ width: "50%" }}>
-              <>
+          <form onSubmit={handleSubmit(onSubmit)} >
+            <Box sx={{ mb: 3 }} >
                 <FormContainer>
                   <div>
                     <TitleTypography>
@@ -113,7 +117,6 @@ export default function Create() {
                     <ClusterInput />
                   </div>
                 </FormContainer>
-              </>
             </Box>
           </form>
         )}

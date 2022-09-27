@@ -187,6 +187,8 @@ export default function Project() {
     control,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { isDirty, dirtyFields, errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -254,6 +256,8 @@ export default function Project() {
           {...{
             control,
             errors,
+            setValue,
+            watch,
             initialValues: userProjectToFormData(userPrivateCloudProject),
             isDisabled: userPrivateCloudProject?.activeRequest?.active,
           }}

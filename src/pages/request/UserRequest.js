@@ -167,6 +167,8 @@ export default function Request() {
   const {
     control,
     reset,
+    setValue,
+    watch,
     formState: { isDirty, dirtyFields, errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -186,6 +188,8 @@ export default function Request() {
         {...{
           control,
           errors,
+          setValue,
+          watch,
           initialValues: userProjectToFormData(
             userPrivateCloudRequest?.requestedProject
           ),
