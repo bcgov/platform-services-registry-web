@@ -1,5 +1,4 @@
 const userProjectToFormData = (userPrivateCloudProject) => {
-
   if (userPrivateCloudProject === undefined) return {};
 
   const productionQuota = userPrivateCloudProject?.productionQuota;
@@ -12,9 +11,12 @@ const userProjectToFormData = (userPrivateCloudProject) => {
     projectOwner: userPrivateCloudProject.projectOwner.email,
     primaryTechnicalLead: userPrivateCloudProject.technicalLeads[0]?.email,
     secondaryTechnicalLead: userPrivateCloudProject.technicalLeads[1]?.email,
-    projectOwnerGithubId: userPrivateCloudProject.projectOwner.githubId,
-    primaryTechnicalLeadGithubId: userPrivateCloudProject.technicalLeads[0]?.githubId,
-    secondaryTechnicalLeadGithubId: userPrivateCloudProject.technicalLeads[1]?.githubId,
+    projectOwnerGithubId:
+      userPrivateCloudProject.projectOwner.githubId || undefined,
+    primaryTechnicalLeadGithubId:
+      userPrivateCloudProject.technicalLeads[0]?.githubId || undefined,
+    secondaryTechnicalLeadGithubId:
+      userPrivateCloudProject.technicalLeads[1]?.githubId || undefined,
     productionCpu:
       `CPU_REQUEST_${productionQuota.cpu.requests}_LIMIT_${productionQuota.cpu.limits}`.replaceAll(
         ".",
@@ -103,9 +105,10 @@ const formDataToUserProject = (formData) => {
         Boolean
       ),
       projectOwnerGithubId,
-      technicalLeadsGithubIds: [ primaryTechnicalLeadGithubId, secondaryTechnicalLeadGithubId].filter(
-        Boolean
-      ),
+      technicalLeadsGithubIds: [
+        primaryTechnicalLeadGithubId,
+        secondaryTechnicalLeadGithubId,
+      ].filter(Boolean),
       ministry,
       cluster,
     },
