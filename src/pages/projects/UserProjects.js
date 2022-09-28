@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useMemo } from "react";
+import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
@@ -28,8 +28,6 @@ const USER_PROJECTS = gql`
 `;
 
 export default function Projects() {
-  const { admin } = useContext(AdminContext);
-
   const { loading, error, data } = useQuery(USER_PROJECTS);
 
   if (error) return `Error! ${error.message}`;

@@ -1,26 +1,17 @@
-import React, { useContext, useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { Link, useLocation, navigate} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Divider from "@mui/material/Divider";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { useKeycloak } from "@react-keycloak/web";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
-import AdminContext from "../context/admin";
-import { Tooltip } from "@mui/material";
-import { IconButton } from "@mui/material";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { Outlet } from "react-router-dom";
 
 export default function TabsToolbar({ routes, createButtonRoute }) {
   const { pathname } = useLocation();
-
 
   return (
     <>

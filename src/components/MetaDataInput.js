@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -11,8 +10,6 @@ import FormHelperText from "@mui/material/FormHelperText";
 import { ministries } from "./common/Constants";
 import { Controller, useFormContext } from "react-hook-form";
 import UserInput from "./UserInput";
-import { useQuery, useMutation, gql } from "@apollo/client";
-import Container from "@mui/material/Container";
 
 export default function MetaDataInput() {
   const { control, errors, isDisabled } = useFormContext();
@@ -36,7 +33,7 @@ export default function MetaDataInput() {
             {...field}
             disabled={isDisabled}
             size="small"
-            style={{ width: "100%", height:59 }}
+            style={{ width: "100%", height: 59 }}
             helperText={errors.name ? errors.name?.message : ""}
             id="name"
             label="Name"
@@ -78,7 +75,6 @@ export default function MetaDataInput() {
                 {...field}
                 disabled={isDisabled}
                 size="medium"
-
                 labelId="select-ministry"
                 id="select-ministry"
                 label="Ministry"
@@ -97,7 +93,7 @@ export default function MetaDataInput() {
         </FormControl>
       </div>
       <Box sx={{ p: 0, mb: 3, width: "100%" }}>
-        <Typography variant="body1" sx={{ mt: 0, mb: 1}}>
+        <Typography variant="body1" sx={{ mt: 0, mb: 1 }}>
           Project Owner
         </Typography>
         <UserInput
@@ -105,7 +101,7 @@ export default function MetaDataInput() {
           control={control}
           isDisabled={isDisabled}
         />
-        <Typography variant="body1" sx={{ mt: 0, mb: 1}}>
+        <Typography variant="body1" sx={{ mt: 0, mb: 1 }}>
           Primary Technical Lead
         </Typography>
         <UserInput
@@ -113,7 +109,7 @@ export default function MetaDataInput() {
           control={control}
           isDisabled={isDisabled}
         />
-        <Typography variant="body1" sx={{ mt: 0, mb: 1}}>
+        <Typography variant="body1" sx={{ mt: 0, mb: 1 }}>
           Secondary Technical Lead
         </Typography>
         <UserInput

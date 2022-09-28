@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState, useMemo } from "react";
+import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import StickyTable from "../../components/common/Table";
 import { requestsToRows, columns } from "./helpers";
-import AdminContext from "../../context/admin";
 
 const USER_ACTIVE_REQUESTS = gql`
   query UserPrivateCloudActiveRequests {
@@ -34,11 +33,7 @@ const USER_ACTIVE_REQUESTS = gql`
 `;
 
 export default function Requests() {
-  const { admin } = useContext(AdminContext);
-
   const { loading, error, data } = useQuery(USER_ACTIVE_REQUESTS);
-
-
 
   if (error) return `Error! ${error.message}`;
 
@@ -46,7 +41,11 @@ export default function Requests() {
     <StickyTable
       onClickPath={"/private-cloud/user/request/"}
       columns={columns}
-      rows={loading ? [] : data.userPrivateCloudActiveRequests.map(requestsToRows).reverse()}
+      rows={
+        loading
+          ? []
+          : data.userPrivateCloudActiveRequests.map(requestsToRows).reverse()
+      }
       title="Active Requests"
       loading={loading}
     />

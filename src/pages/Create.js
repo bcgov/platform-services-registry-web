@@ -59,7 +59,7 @@ export default function Create() {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors, isDirty },
+    formState: { errors  },
   } = useForm({
     resolver: yupResolver(schema),
     // shouldUnregister: false,

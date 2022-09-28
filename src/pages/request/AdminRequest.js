@@ -1,21 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/MetaDataInput";
 import ClusterInput from "../../components/ClusterInput";
 import QuotaInput from "../../components/QuotaInput";
 import NavToolbar from "../../components/NavToolbar";
-import {
-  userProjectToFormData,
-  formDataToUserProject,
-} from "../../components/common/FormHelpers";
-import Typography from "@mui/material/Typography";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { userProjectToFormData } from "../../components/common/FormHelpers";
 import { Button, IconButton, ButtonGroup } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useParams, useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import StyledForm from "../../components/common/StyledForm";
 import TitleTypography from "../../components/common/TitleTypography";
