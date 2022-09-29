@@ -41,8 +41,8 @@ export default function StickyTable({
   };
 
   return (
-    <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
-      <TableContainer sx={{ height: "calc(100vh - 182px)" }}>
+    <Paper sx={{ width: "100%", height: "100%", overflow: "hidden"}}>
+     { count===0?<p style={{paddingLeft: 20}}>Nothing was found, try to change filter conditions</p>:<TableContainer sx={{ height: "calc(100vh - 182px)" }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow style={{ marginLeft: 110, marginRight: 11 }}>
@@ -119,7 +119,7 @@ export default function StickyTable({
             </TableBody>
           )}
         </Table>
-      </TableContainer>
+      </TableContainer>}
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
