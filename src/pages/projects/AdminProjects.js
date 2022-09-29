@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
+import { ministries, clusters } from "../../components/common/Constants";
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
 
 const ALL_PROJECTS = gql`
-  query PrivateCloudProjectsPaginated($offset: Int, $limit: Int) {
-    privateCloudProjectsPaginated(offset: $offset, limit: $limit) {
+  query PrivateCloudProjectsPaginated($offset: Int, $limit: Int, $ministry: String, $cluster: Int, $search: String) {
+    privateCloudProjectsPaginated(offset: $offset, limit: $limit,  ministry: $ministry, cluster: $cluster, search: $search) {
       count
       projects {
         ... on PrivateCloudProject {
@@ -32,30 +39,76 @@ const ALL_PROJECTS = gql`
 `;
 
 export default function Projects() {
-  const { loading, data, fetchMore, error } = useQuery(ALL_PROJECTS, {
+  const [ministry, setMinistry] = useState('')
+  const [cluster, setCluster] = useState()
+  const [search, setSearch] = useState("")
+  const { loading, data, fetchMore, error, refetch } = useQuery(ALL_PROJECTS, {
     variables: {
       offset: 0,
       limit: 20,
+      ministry: ministry,
+      cluster: 0,
+      search: search,
     },
   });
 
   if (error) return `Error! ${error.message}`;
 
   return (
-    <StickyTable
-      onClickPath={"/private-cloud/admin/project/"}
-      onNextPage={(page, pageSize) =>
-        fetchMore({ variables: { offset: page * pageSize, limit: pageSize } })
-      }
-      columns={columns}
-      rows={
-        loading
-          ? []
-          : data.privateCloudProjectsPaginated.projects.map(projectsToRows)
-      }
-      count={loading ? 0 : data.privateCloudProjectsPaginated.count}
-      title="Projects"
-      loading={loading}
-    />
+    <>
+      <Box sx={{ minWidth: 120, pt: 3, pl: 2 }}>
+        <FormControl sx={{ minWidth: 160 }}>
+          <InputLabel >Ministry</InputLabel>
+          <Select
+            value={ministry}
+            label="Ministry"
+            onChange={(event) => {
+              setMinistry(event.target.value)
+              refetch({ ministry: (event.target.value) })
+            }}
+          >
+            <MenuItem value={''}>All Ministries</MenuItem>
+            {ministries.map(ministry => <MenuItem value={ministry}>{ministry}</MenuItem>)}
+          </Select>
+        </FormControl>
+        <FormControl sx={{ minWidth: 160 }}>
+          <InputLabel >Cluster</InputLabel>
+          <Select
+            value={cluster}
+            label="Cluster"
+            onChange={(event) => {
+              setCluster(event.target.value)
+              refetch({ cluster: (event.target.value) })
+            }}
+          >
+            <MenuItem value={null}>All Clusters</MenuItem>
+            {clusters.map((cluster, index) => <MenuItem value={index + 1}>{cluster}</MenuItem>)}
+          </Select>
+        </FormControl>
+        <TextField
+          label="Search"
+          type="search"
+          onChange={(event) => {
+            setSearch(event.target.value)
+            refetch({ search: (event.target.value) })
+          }}
+        />
+      </Box>
+      <StickyTable
+        onClickPath={"/private-cloud/admin/project/"}
+        onNextPage={(page, pageSize) =>
+          fetchMore({ variables: { offset: page * pageSize, limit: pageSize } })
+        }
+        columns={columns}
+        rows={
+          loading
+            ? []
+            : data.privateCloudProjectsPaginated.projects.map(projectsToRows)
+        }
+        count={loading ? 0 : data.privateCloudProjectsPaginated.count}
+        title="Projects"
+        loading={loading}
+      />
+    </>
   );
 }
