@@ -40,14 +40,14 @@ const ALL_PROJECTS = gql`
 
 export default function Projects() {
   const [ministry, setMinistry] = useState('')
-  const [cluster, setCluster] = useState()
+  const [cluster, setCluster] = useState(null)
   const [search, setSearch] = useState("")
   const { loading, data, fetchMore, error, refetch } = useQuery(ALL_PROJECTS, {
     variables: {
       offset: 0,
       limit: 20,
       ministry: ministry,
-      cluster: 0,
+      cluster: cluster,
       search: search,
     },
   });
