@@ -6,10 +6,12 @@ import LoadingSpinner from "./common/LoadingSpinner";
 
 export default function Layout() {
   const user = useContext(UserContext);
+  console.log("USER", user);
   return (
     <>
       <DenseAppBar />
-      {user ? <Outlet /> : <LoadingSpinner />}
+      {/* {user ? <Outlet /> : <LoadingSpinner />} */}
+      <Outlet />
     </>
   );
 }

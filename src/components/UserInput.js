@@ -65,7 +65,9 @@ export default function UserInput({ name }) {
 
   const {
     setValue: parrentSetValue,
+    watch: parrentWatch,
     errors: parrentErrors,
+    initialValues,
     isDisabled,
   } = useFormContext();
 
@@ -73,6 +75,14 @@ export default function UserInput({ name }) {
   const debouncedEmail = useDebounce(email, 500);
   const debouncedGithubId = useDebounce(watch("githubId"), 500);
 
+  // Set the inital email value from the parent form
+  useEffect(() => {
+    if (initialValues[name]) {
+      setValue("email", initialValues[name]);
+    }
+  }, [initialValues, name, setValue]);
+
+  // Update the parent form with the email value
   useEffect(() => {
     if (debouncedEmail) {
       parrentSetValue(name, debouncedEmail);
@@ -83,6 +93,7 @@ export default function UserInput({ name }) {
     }
   }, [debouncedEmail]);
 
+  // Clear rest of the form if email changes
   useEffect(() => {
     setValue("githubId", "", {
       shouldValidate: false,
@@ -95,6 +106,7 @@ export default function UserInput({ name }) {
     });
   }, [email, name, setValue]);
 
+  // If user data exists for the given emial, populate the form
   useEffect(() => {
     if (!loading && data?.userByEmail?.githubId) {
       setValue("githubId", data?.userByEmail?.githubId, {
@@ -198,7 +210,9 @@ export default function UserInput({ name }) {
               <TextField
                 {...field}
                 variant="standard"
-                disabled={isDisabled || !!data?.userByEmail?.firstName || !email}
+                disabled={
+                  isDisabled || !!data?.userByEmail?.firstName || !email
+                }
                 size="small"
                 helperText={
                   errors.firstName ? "First Name is a required field" : ""
