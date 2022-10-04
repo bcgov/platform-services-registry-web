@@ -34,6 +34,12 @@ const schema = yup.object().shape({
   projectOwnerGithubId: yup.string().required(),
   primaryTechnicalLeadGithubId: yup.string().required(),
   secondaryTechnicalLeadGithubId: yup.string().required(),
+  projectOwnerFirstName: yup.string().required(),
+  primaryTechnicalLeadFirstName: yup.string().required(),
+  secondaryTechnicalLeadFirstName: yup.string().required(),
+  projectOwnerLastName: yup.string().required(),
+  primaryTechnicalLeadLastName: yup.string().required(),
+  secondaryTechnicalLeadLastName: yup.string().required(),
   ministry: yup.string().required(),
   cluster: yup.string().required(),
 });
@@ -59,18 +65,23 @@ export default function Create() {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors  },
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
     // shouldUnregister: false,
-
   });
 
   const [privateCloudProjectRequest, { data, loading, error }] =
     useMutation(CREATE_USER_PROJECT);
 
   const onSubmit = (data) => {
-    const { primaryTechnicalLead, secondaryTechnicalLead, ...metaData } = data;
+    const {
+      primaryTechnicalLead,
+      secondaryTechnicalLead,
+      primaryTechnicalLeadGithubId,
+      secondaryTechnicalLeadGithubId,
+      ...metaData
+    } = data;
 
     privateCloudProjectRequest({
       variables: {
@@ -79,6 +90,10 @@ export default function Create() {
           technicalLeads: [primaryTechnicalLead, secondaryTechnicalLead].filter(
             Boolean
           ),
+          technicalLeadsGithubIds: [
+            primaryTechnicalLeadGithubId,
+            secondaryTechnicalLeadGithubId,
+          ].filter(Boolean),
         },
       },
       onCompleted: () => {
@@ -103,20 +118,20 @@ export default function Create() {
         {loading ? (
           <LoadingSpinner />
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} >
-            <Box sx={{ mb: 3 }} >
-                <FormContainer>
-                  <div>
-                    <TitleTypography>
-                      Project Description and Contact Information
-                    </TitleTypography>
-                    <MetaDataInput />
-                  </div>
-                  <div style={{ marginLeft: 70 }}>
-                    <TitleTypography>Cluster</TitleTypography>
-                    <ClusterInput />
-                  </div>
-                </FormContainer>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Box sx={{ mb: 3 }}>
+              <FormContainer>
+                <div>
+                  <TitleTypography>
+                    Project Description and Contact Information
+                  </TitleTypography>
+                  <MetaDataInput />
+                </div>
+                <div style={{ marginLeft: 70 }}>
+                  <TitleTypography>Cluster</TitleTypography>
+                  <ClusterInput />
+                </div>
+              </FormContainer>
             </Box>
           </form>
         )}

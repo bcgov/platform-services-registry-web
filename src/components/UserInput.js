@@ -42,11 +42,23 @@ export default function UserInput({ name }) {
     setValue(`${name}GithubId`, "", {
       shouldValidate: false,
     });
+    setValue(`${name}FirstName`, "", {
+      shouldValidate: false,
+    });
+    setValue(`${name}LastName`, "", {
+      shouldValidate: false,
+    });
   }, [email, name, setValue]);
 
   useEffect(() => {
     if (!loading && data?.userByEmail?.githubId) {
       setValue(`${name}GithubId`, data?.userByEmail?.githubId, {
+        shouldValidate: true,
+      });
+      setValue(`${name}FirstName`, data?.userByEmail?.firstName, {
+        shouldValidate: true,
+      });
+      setValue(`${name}LastName`, data?.userByEmail?.lastName, {
         shouldValidate: true,
       });
     }
@@ -61,7 +73,7 @@ export default function UserInput({ name }) {
         pr: 6,
         display: "flex",
         flexDirection: "row",
-        height: 200,
+        height: "100%",
       }}
     >
       <Avatar
@@ -106,6 +118,46 @@ export default function UserInput({ name }) {
               }
               id={name + "-githubId"}
               label="Github ID"
+            />
+          )}
+        />
+        <Controller
+          name={`${name}FirstName`}
+          defaultValue={""}
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              variant="standard"
+              disabled={isDisabled || !!data?.userByEmail?.firstName}
+              size="small"
+              helperText={
+                errors[name + "FirstName"]
+                  ? "First Name is a required field"
+                  : ""
+              }
+              id={name + "-firstName"}
+              label="First Name"
+            />
+          )}
+        />
+        <Controller
+          name={`${name}LastName`}
+          defaultValue={""}
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              variant="standard"
+              disabled={isDisabled || !!data?.userByEmail?.lastName}
+              size="small"
+              helperText={
+                errors[name + "LastName"] ? "LastName is a required field" : ""
+              }
+              id={name + "-lastName"}
+              label="Last Name"
             />
           )}
         />
