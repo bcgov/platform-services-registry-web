@@ -17,6 +17,7 @@ export default function StickyTable({
   onClickPath,
   onNextPage = () => "",
   count = rows.length,
+  refetch
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -39,10 +40,10 @@ export default function StickyTable({
   const handleRowClick = (id) => {
     navigate(onClickPath + id);
   };
-console.log(loading)
+  console.log(loading)
   return (
-    <Paper sx={{ width: "100%", height: "100%", overflow: "hidden"}}>
-     { count===0&&!loading?<p style={{paddingLeft: 20}}>Nothing was found, try to change filter conditions</p>:<TableContainer sx={{ height: "calc(100vh - 182px)" }}>
+    <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
+      {count === 0 && !loading ? <p style={{ paddingLeft: 20 }}>Nothing was found, try to change filter conditions</p> : <TableContainer sx={{ height: "calc(100vh - 182px)" }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow style={{ marginLeft: 110, marginRight: 11 }}>
@@ -50,12 +51,14 @@ console.log(loading)
                 <TableCell
                   key={column.id}
                   align={column.align}
+                  // onClick={()=>refetch({sortField:column.label, sortOrder:-1})}
                   style={{
                     minWidth: column.minWidth,
                     fontSize: 18,
                     color: "#3c4043",
                     paddingLeft: 24,
                     paddingRight: 24,
+                    
                   }}
                 >
                   {column.label}

@@ -11,8 +11,23 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
 const ALL_PROJECTS = gql`
-  query PrivateCloudProjectsPaginated($offset: Int, $limit: Int, $ministry: String, $cluster: Int, $search: String) {
-    privateCloudProjectsPaginated(offset: $offset, limit: $limit,  ministry: $ministry, cluster: $cluster, search: $search) {
+  query PrivateCloudProjectsPaginated(
+    $offset: Int, 
+    $limit: Int, 
+    $ministry: String,
+     $cluster: Int,
+     $search: String,
+    #  $sortField:String,
+    #   $sortOrder:Int,
+     ) {
+    privateCloudProjectsPaginated(offset: $offset,
+         limit: $limit,
+      ministry: $ministry,
+     cluster: $cluster,
+     search: $search,
+    # sortField: $sortField
+    # sortOrder:$sortOrder
+    ) {
       count
       projects {
         ... on PrivateCloudProject {
@@ -42,6 +57,8 @@ export default function Projects() {
   const [ministry, setMinistry] = useState('')
   const [cluster, setCluster] = useState(null)
   const [search, setSearch] = useState("")
+  const [sortField, setSortField] = useState("name")
+  const [sortOrder, setSortOrder] = useState(1)
   const { loading, data, fetchMore, error, refetch } = useQuery(ALL_PROJECTS, {
     variables: {
       offset: 0,
@@ -49,6 +66,8 @@ export default function Projects() {
       ministry: ministry,
       cluster: cluster,
       search: search,
+      // sortField:sortField,
+      // sortOrder:sortOrder,
     },
   });
 
@@ -68,7 +87,7 @@ export default function Projects() {
             }}
           >
             <MenuItem value={''}>All Ministries</MenuItem>
-            {ministries.map(ministry => <MenuItem value={ministry}>{ministry}</MenuItem>)}
+            {ministries.map((ministry, index) => <MenuItem key={index} value={ministry}>{ministry}</MenuItem>)}
           </Select>
         </FormControl>
         <FormControl sx={{ minWidth: 160 }}>
@@ -82,7 +101,7 @@ export default function Projects() {
             }}
           >
             <MenuItem value={null}>All Clusters</MenuItem>
-            {clusters.map((cluster, index) => <MenuItem value={index + 1}>{cluster}</MenuItem>)}
+            {clusters.map((cluster, index) => <MenuItem key={index} value={index + 1}>{cluster}</MenuItem>)}
           </Select>
         </FormControl>
         <TextField
@@ -108,6 +127,7 @@ export default function Projects() {
         count={loading ? 0 : data.privateCloudProjectsPaginated.count}
         title="Projects"
         loading={loading}
+        // refetch={refetch}
       />
     </>
   );
