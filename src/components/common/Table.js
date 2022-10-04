@@ -48,10 +48,11 @@ export default function StickyTable({
           <TableHead>
             <TableRow style={{ marginLeft: 110, marginRight: 11 }}>
               {columns.map((column) => (
+
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  // onClick={()=>refetch({sortField:column.label, sortOrder:-1})}
+                  onClick={()=>refetch({sortField:column.label, sortOrder:-1})}
                   style={{
                     minWidth: column.minWidth,
                     fontSize: 18,

@@ -17,17 +17,16 @@ const ALL_PROJECTS = gql`
     $ministry: String,
      $cluster: Int,
      $search: String,
-    #  $sortField:String,
-    #   $sortOrder:Int,
+     $sortField:String,
+      $sortOrder:Int,
      ) {
     privateCloudProjectsPaginated(offset: $offset,
          limit: $limit,
       ministry: $ministry,
      cluster: $cluster,
      search: $search,
-    # sortField: $sortField
-    # sortOrder:$sortOrder
-    ) {
+    sortField: $sortField
+    sortOrder:$sortOrder) {
       count
       projects {
         ... on PrivateCloudProject {
@@ -66,8 +65,8 @@ export default function Projects() {
       ministry: ministry,
       cluster: cluster,
       search: search,
-      // sortField:sortField,
-      // sortOrder:sortOrder,
+      sortField:sortField,
+      sortOrder:sortOrder,
     },
   });
 
@@ -127,7 +126,7 @@ export default function Projects() {
         count={loading ? 0 : data.privateCloudProjectsPaginated.count}
         title="Projects"
         loading={loading}
-        // refetch={refetch}
+        refetch={refetch}
       />
     </>
   );
