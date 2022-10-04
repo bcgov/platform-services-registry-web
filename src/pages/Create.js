@@ -31,15 +31,6 @@ const schema = yup.object().shape({
     .email("Must be a valid email address")
     .required(),
   secondaryTechnicalLead: yup.string().email("Must be a valid email address"),
-  projectOwnerGithubId: yup.string().required(),
-  primaryTechnicalLeadGithubId: yup.string().required(),
-  secondaryTechnicalLeadGithubId: yup.string().required(),
-  projectOwnerFirstName: yup.string().required(),
-  primaryTechnicalLeadFirstName: yup.string().required(),
-  secondaryTechnicalLeadFirstName: yup.string().required(),
-  projectOwnerLastName: yup.string().required(),
-  primaryTechnicalLeadLastName: yup.string().required(),
-  secondaryTechnicalLeadLastName: yup.string().required(),
   ministry: yup.string().required(),
   cluster: yup.string().required(),
 });
@@ -75,13 +66,7 @@ export default function Create() {
     useMutation(CREATE_USER_PROJECT);
 
   const onSubmit = (data) => {
-    const {
-      primaryTechnicalLead,
-      secondaryTechnicalLead,
-      primaryTechnicalLeadGithubId,
-      secondaryTechnicalLeadGithubId,
-      ...metaData
-    } = data;
+    const { primaryTechnicalLead, secondaryTechnicalLead, ...metaData } = data;
 
     privateCloudProjectRequest({
       variables: {
@@ -90,10 +75,6 @@ export default function Create() {
           technicalLeads: [primaryTechnicalLead, secondaryTechnicalLead].filter(
             Boolean
           ),
-          technicalLeadsGithubIds: [
-            primaryTechnicalLeadGithubId,
-            secondaryTechnicalLeadGithubId,
-          ].filter(Boolean),
         },
       },
       onCompleted: () => {
