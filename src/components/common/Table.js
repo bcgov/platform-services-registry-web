@@ -9,7 +9,10 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Skeleton from "@mui/material/Skeleton";
 import { useNavigate } from "react-router-dom";
-
+import IconButton from '@mui/material/IconButton';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import HideSourceIcon from '@mui/icons-material/HideSource';
 export default function StickyTable({
   columns,
   rows,
@@ -21,7 +24,7 @@ export default function StickyTable({
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
+  const [sortOrders, setSortOrders] = useState(Array(columns.length).fill(0));
   const navigate = useNavigate();
 
   const handleChangePage = (event, newPage) => {
@@ -40,29 +43,42 @@ export default function StickyTable({
   const handleRowClick = (id) => {
     navigate(onClickPath + id);
   };
-  console.log(loading)
+
+  useEffect(() => {
+    sortOrders.forEach((order, index) => {
+      order !== 0 && refetch({ sortField: columns[index].id, sortOrder: order })
+    })
+  }, [JSON.stringify(sortOrders)]);
+
   return (
     <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
       {count === 0 && !loading ? <p style={{ paddingLeft: 20 }}>Nothing was found, try to change filter conditions</p> : <TableContainer sx={{ height: "calc(100vh - 182px)" }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow style={{ marginLeft: 110, marginRight: 11 }}>
-              {columns.map((column) => (
-
+              {columns.map((column, index) => (
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  onClick={()=>refetch({sortField:column.label, sortOrder:-1})}
+                  onClick={() => {
+                    setSortOrders(sortOrders => sortOrders.map((order, innerIndex) => innerIndex === index ? order === 0 ? 1 : order === 1 ? -1 : 1 : 0
+                    ))
+                  }}
                   style={{
                     minWidth: column.minWidth,
                     fontSize: 18,
                     color: "#3c4043",
                     paddingLeft: 24,
                     paddingRight: 24,
-                    
                   }}
-                >
-                  {column.label}
+                >{column.label}
+                  {index !== 4 && index !== 5 && <IconButton size="small">
+                    {sortOrders[index] === 0 ?
+                      <HideSourceIcon style={{ fontSize: '15px' }} /> :
+                      sortOrders[index] === 1 ?
+                        <ArrowDownwardIcon style={{ fontSize: '15px' }} /> :
+                        <ArrowUpwardIcon style={{ fontSize: '15px' }} />}
+                  </IconButton>}
                 </TableCell>
               ))}
             </TableRow>
