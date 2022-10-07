@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
+import DownloadDBtoCSV from "../../components/common/DownloadDBtoCSV"
 import { ministries, clusters } from "../../components/common/Constants";
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -72,6 +73,7 @@ export default function Projects() {
 
   return (
     <>
+   
       <Box sx={{ minWidth: 120, pt: 3, pl: 2 }}>
         <FormControl sx={{ minWidth: 160 }}>
           <InputLabel >Ministry</InputLabel>
@@ -109,6 +111,7 @@ export default function Projects() {
             refetch({ search: (event.target.value) })
           }}
         />
+         <DownloadDBtoCSV/>
       </Box>
       <StickyTable
         onClickPath={"/private-cloud/admin/project/"}

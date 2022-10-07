@@ -48,7 +48,7 @@ export default function StickyTable({
     sortOrders.forEach((order, index) => {
       order !== 0 && refetch({ sortField: columns[index].id, sortOrder: order })
     })
-  }, [JSON.stringify(sortOrders)]);
+  }, [columns, refetch, sortOrders]);
 
   return (
     <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
