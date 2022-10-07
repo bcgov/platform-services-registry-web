@@ -46,9 +46,7 @@ function App() {
     initialized,
   } = useKeycloak();
 
-  const { loading, error, data } = useQuery(ME);
-
-  console.log(data);
+  const { loading, error, data } = useQuery(ME, { errorPolicy: "ignore" });
 
   const [mode, setMode] = useState(localStorage.getItem("appMode") || "light");
   theme.palette.mode = mode;
@@ -63,14 +61,13 @@ function App() {
     setMode(mode === "light" ? "dark" : "light");
   };
 
-  // if (error)
-  //   return `Sign up Error! ${error.message} authenticated: ${authenticated}`;
+  if (error)
+    return `Sign up Error! ${error.message} authenticated: ${authenticated}`;
 
   return (
     <ThemeProvider theme={theme}>
       <ModeContext.Provider value={{ mode: mode, toggleMode: toggleMode }}>
         <UserProvider user={data?.me}>
-        {/* <UserProvider user={{ firstName: "test", lastName: "test" }}> */}
           <AdminProvider>
             <AppRouter />
           </AdminProvider>

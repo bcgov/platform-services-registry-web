@@ -140,9 +140,6 @@ const schema = yup.object().shape({
     .email("Must be a valid email address")
     .required(),
   secondaryTechnicalLead: yup.string().email("Must be a valid email address"),
-  projectOwnerGithubId: yup.string().required(),
-  primaryTechnicalLeadGithubId: yup.string().required(),
-  secondaryTechnicalLeadGithubId: yup.string().required(),
   ministry: yup.string().required(),
   cluster: yup.string().required(),
   productionCpu: yup.string().required(),
@@ -181,6 +178,7 @@ export default function Project() {
   ] = useMutation(UPDATE_USER_PROJECT);
 
   const privateCloudProject = projectData?.privateCloudProject;
+  const initialFormData = userProjectToFormData(privateCloudProject);
 
   useEffect(() => {
     if (!projectLoading && !projectError) {
@@ -195,11 +193,10 @@ export default function Project() {
     watch,
     setValue,
     formState: { isDirty, dirtyFields, errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = (data) => {
+    console.log("SUBMIT");
     const changedFields = Object.keys(dirtyFields).reduce((acc, key) => {
       acc[key] = data[key];
       return acc;
@@ -220,54 +217,55 @@ export default function Project() {
 
   return (
     <div>
-      <NavToolbar path={"project"} title={privateCloudProject?.name}>
-        <IconButton
-          sx={{ mr: 2 }}
-          disabled={!isDirty}
-          onClick={() => reset(userProjectToFormData(privateCloudProject))}
-          aria-label="delete"
-        >
-          <RestartAltIcon />
-        </IconButton>
-        <Button
-          sx={{ mr: 1 }}
-          disabled={!isDirty}
-          onClick={handleSubmit(onSubmit)}
-          variant="outlined"
-        >
-          SUBMIT EDIT REQUEST
-        </Button>
-      </NavToolbar>
-      <div style={{ minHeight: 50 }}>
-        {privateCloudProject?.activeRequest?.active && (
-          <Typography
-            variant="body"
-            sx={{ mb: 0, ml: 3, color: "rgba(0, 0, 0, 0.6)" }}
+      <FormProvider
+        {...{
+          control,
+          errors,
+          setValue,
+          watch,
+          isDirty,
+          // initialValues: userProjectToFormData(privateCloudProject),
+          initialValues: initialFormData,
+          isDisabled: privateCloudProject?.activeRequest?.active,
+        }}
+      >
+        <NavToolbar path={"project"} title={privateCloudProject?.name}>
+          <IconButton
+            sx={{ mr: 2 }}
+            disabled={!isDirty}
+            onClick={() => reset(initialFormData)}
+            aria-label="delete"
           >
-            This project cannot be edited as it has an{" "}
-            <StyledLink
-              to={`/private-cloud/user/request/${privateCloudProject?.activeRequest?.id}`}
+            <RestartAltIcon />
+          </IconButton>
+          <Button
+            sx={{ mr: 1 }}
+            disabled={!isDirty}
+            onClick={handleSubmit(onSubmit)}
+            variant="outlined"
+          >
+            SUBMIT EDIT REQUEST
+          </Button>
+        </NavToolbar>
+        <div style={{ minHeight: 50 }}>
+          {privateCloudProject?.activeRequest?.active && (
+            <Typography
+              variant="body"
+              sx={{ mb: 0, ml: 3, color: "rgba(0, 0, 0, 0.6)" }}
             >
-              <i>active request</i>
-            </StyledLink>
-          </Typography>
-        )}
-      </div>
-      {editProjectLoading ? (
-        <LoadingSpinner />
-      ) : (
-        <FormProvider
-          {...{
-            control,
-            errors,
-            setValue,
-            watch,
-            isDirty,
-            initialValues: userProjectToFormData(privateCloudProject),
-            isDisabled: privateCloudProject?.activeRequest?.active,
-          }}
-        >
-          <StyledForm>
+              This project cannot be edited as it has an{" "}
+              <StyledLink
+                to={`/private-cloud/user/request/${privateCloudProject?.activeRequest?.id}`}
+              >
+                <i>active request</i>
+              </StyledLink>
+            </Typography>
+          )}
+        </div>
+        {editProjectLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <StyledForm onSubmit={handleSubmit(onSubmit)}>
             <div>
               <TitleTypography>
                 Project Description and Contact Information
@@ -293,8 +291,8 @@ export default function Project() {
               </div>
             </div>
           </StyledForm>
-        </FormProvider>
-      )}
+        )}
+      </FormProvider>
     </div>
   );
 }

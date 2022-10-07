@@ -42,7 +42,6 @@ const schema = yup.object().shape({
 });
 
 export default function UserInput({ name }) {
-  const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL);
   const [
     createUser,
     {
@@ -57,6 +56,7 @@ export default function UserInput({ name }) {
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -64,36 +64,50 @@ export default function UserInput({ name }) {
   });
 
   const {
-    setValue: parrentSetValue,
-    watch: parrentWatch,
-    errors: parrentErrors,
+    setValue: parentSetValue,
+    watch: parentWatch,
+    errors: parentErrors,
     initialValues,
     isDisabled,
   } = useFormContext();
 
+  const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {errorPolicy: "ignore"});
+
+  const parentEmail = parentWatch(name);
   const email = watch("email");
   const debouncedEmail = useDebounce(email, 500);
   const debouncedGithubId = useDebounce(watch("githubId"), 500);
 
-  // Set the inital email value from the parent form
+  // Update form with user data when it is returned from the API
   useEffect(() => {
-    if (initialValues[name]) {
+    setValue("githubId", data?.userByEmail?.githubId, {
+      shouldValidate: false,
+    });
+    setValue("firstName", data?.userByEmail?.firstName, {
+      shouldValidate: false,
+    });
+    setValue("lastName", data?.userByEmail?.lastName, {
+      shouldValidate: false,
+    });
+  }, [loading, data, setValue]);
+
+  // Reset the email to the initial value when the parent email is reset
+  useEffect(() => {
+    if (initialValues && parentEmail === initialValues[name]) {
       setValue("email", initialValues[name]);
     }
-  }, [initialValues, name, setValue]);
+  }, [parentEmail, initialValues, name]);
 
-  // Update the parent form with the email value
+  // // Update the parent form with the email value and fetch new data when debouncedEmail changes
   useEffect(() => {
-    if (debouncedEmail) {
-      parrentSetValue(name, debouncedEmail);
-      getUser({
-        errorPolicy: "ignore",
-        variables: { email: debouncedEmail },
-      });
-    }
-  }, [debouncedEmail]);
+    parentSetValue(name, debouncedEmail, { shouldDirty: true });
+    getUser({
+      errorPolicy: "ignore",
+      variables: { email: debouncedEmail },
+    });
+  }, [debouncedEmail, data, name]);
 
-  // Clear rest of the form if email changes
+  // // Clear rest of the form if email changes
   useEffect(() => {
     setValue("githubId", "", {
       shouldValidate: false,
@@ -104,22 +118,7 @@ export default function UserInput({ name }) {
     setValue("lastName", "", {
       shouldValidate: false,
     });
-  }, [email, name, setValue]);
-
-  // If user data exists for the given emial, populate the form
-  useEffect(() => {
-    if (!loading && data?.userByEmail?.githubId) {
-      setValue("githubId", data?.userByEmail?.githubId, {
-        shouldValidate: false,
-      });
-      setValue("firstName", data?.userByEmail?.firstName, {
-        shouldValidate: false,
-      });
-      setValue("lastName", data?.userByEmail?.lastName, {
-        shouldValidate: false,
-      });
-    }
-  }, [data, loading, setValue, name]);
+  }, [email, setValue]);
 
   const onSubmit = (data) => {
     createUser({
@@ -173,7 +172,7 @@ export default function UserInput({ name }) {
                 disabled={isDisabled}
                 size="small"
                 helperText={
-                  parrentErrors[name] || errors.email
+                  parentErrors[name] || errors.email
                     ? "Email is a required field"
                     : ""
                 }
