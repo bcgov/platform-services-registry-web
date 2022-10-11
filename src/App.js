@@ -43,10 +43,9 @@ const ME = gql`
 function App() {
   const {
     keycloak: { authenticated },
-    initialized,
   } = useKeycloak();
 
-  const { loading, error, data } = useQuery(ME, { errorPolicy: "ignore" });
+  const { error, data } = useQuery(ME, { errorPolicy: "ignore" });
 
   const [mode, setMode] = useState(localStorage.getItem("appMode") || "light");
   theme.palette.mode = mode;
