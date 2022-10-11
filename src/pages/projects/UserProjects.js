@@ -2,7 +2,6 @@ import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
-import AdminContext from "../../context/admin";
 
 const USER_PROJECTS = gql`
   query UserProjects {

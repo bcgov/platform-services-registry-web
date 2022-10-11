@@ -8,7 +8,7 @@ import {
   userProjectToFormData,
   projectFormSchema as schema,
 } from "../../components/common/FormHelpers";
-import { Button, IconButton, ButtonGroup } from "@mui/material";
+import { Button } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useParams, useNavigate } from "react-router-dom";
@@ -160,14 +160,6 @@ export default function Request() {
     });
   };
 
-  const adminPrivateCloudRequest = adminRequestData?.privateCloudActiveRequest;
-
-  useEffect(() => {
-    if (!adminRequestLoading && !adminRequestError) {
-      reset(userProjectToFormData(adminPrivateCloudRequest.requestedProject));
-    }
-  }, [adminRequestLoading, adminRequestError, adminPrivateCloudRequest]);
-
   const {
     control,
     reset,
@@ -177,6 +169,14 @@ export default function Request() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const adminPrivateCloudRequest = adminRequestData?.privateCloudActiveRequest;
+
+  useEffect(() => {
+    if (!adminRequestLoading && !adminRequestError) {
+      reset(userProjectToFormData(adminPrivateCloudRequest.requestedProject));
+    }
+  }, [adminRequestLoading, adminRequestError, adminPrivateCloudRequest, reset]);
 
   if (adminRequestError) return `Error! ${adminRequestError}`;
 

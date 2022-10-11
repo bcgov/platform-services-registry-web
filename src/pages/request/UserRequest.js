@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
 import MetaDataInput from "../../components/MetaDataInput";
 import ClusterInput from "../../components/ClusterInput";
@@ -133,23 +133,23 @@ export default function Request() {
     variables: { requestId: id },
   });
 
+  const {
+    control,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
   const userPrivateCloudRequest = userRequestData?.privateCloudActiveRequest;
 
   useEffect(() => {
     if (!userRequestLoading && !userRequestError) {
       reset(userProjectToFormData(userPrivateCloudRequest.requestedProject));
     }
-  }, [userRequestLoading, userRequestError, userPrivateCloudRequest]);
-
-  const {
-    control,
-    reset,
-    setValue,
-    watch,
-    formState: { isDirty, dirtyFields, errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  }, [userRequestLoading, userRequestError, userPrivateCloudRequest, reset]);
 
   if (userRequestError) return `Error! ${userRequestError}`;
 

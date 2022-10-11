@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
@@ -8,7 +8,7 @@ import Avatar from "@mui/material/Avatar";
 import { TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 import useDebounce from "./utilities/UseDebounce";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -56,7 +56,6 @@ export default function UserInput({ name }) {
     handleSubmit,
     watch,
     setValue,
-    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -71,7 +70,9 @@ export default function UserInput({ name }) {
     isDisabled,
   } = useFormContext();
 
-  const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {errorPolicy: "ignore"});
+  const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
+    errorPolicy: "ignore",
+  });
 
   const parentEmail = parentWatch(name);
   const email = watch("email");
@@ -96,7 +97,7 @@ export default function UserInput({ name }) {
     if (initialValues && parentEmail === initialValues[name]) {
       setValue("email", initialValues[name]);
     }
-  }, [parentEmail, initialValues, name]);
+  }, [parentEmail, initialValues, name, setValue]);
 
   // // Update the parent form with the email value and fetch new data when debouncedEmail changes
   useEffect(() => {
@@ -105,7 +106,7 @@ export default function UserInput({ name }) {
       errorPolicy: "ignore",
       variables: { email: debouncedEmail },
     });
-  }, [debouncedEmail, data, name]);
+  }, [debouncedEmail, data, name, getUser, parentSetValue]);
 
   // // Clear rest of the form if email changes
   useEffect(() => {

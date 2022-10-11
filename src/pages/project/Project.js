@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/MetaDataInput";
 import ClusterInput from "../../components/ClusterInput";
@@ -150,14 +150,6 @@ export default function Project() {
     },
   ] = useMutation(UPDATE_USER_PROJECT);
 
-  const userPrivateCloudProject = userProjectData?.userPrivateCloudProject;
-
-  useEffect(() => {
-    if (!userProjectLoading && !userProjectError) {
-      reset(userProjectToFormData(userPrivateCloudProject));
-    }
-  }, [userProjectLoading, userProjectError, userPrivateCloudProject]);
-
   const {
     control,
     handleSubmit,
@@ -168,6 +160,14 @@ export default function Project() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const userPrivateCloudProject = userProjectData?.userPrivateCloudProject;
+
+  useEffect(() => {
+    if (!userProjectLoading && !userProjectError) {
+      reset(userProjectToFormData(userPrivateCloudProject));
+    }
+  }, [userProjectLoading, userProjectError, userPrivateCloudProject, reset]);
 
   const onSubmit = (data) => {
     const changedFields = Object.keys(dirtyFields).reduce((acc, key) => {

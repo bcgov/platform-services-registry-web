@@ -18,8 +18,7 @@ import StyledLink from "../../components/common/StyledLink";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import StyledForm from "../../components/common/StyledForm";
-import TitleTypography from "../../components/common/TitleTypography"
-
+import TitleTypography from "../../components/common/TitleTypography";
 
 const PROJECT = gql`
   query Query($projectId: ID!) {
