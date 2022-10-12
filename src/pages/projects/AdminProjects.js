@@ -111,7 +111,11 @@ export default function Projects() {
             refetch({ search: (event.target.value) })
           }}
         />
-         <DownloadDBtoCSV/>
+         <DownloadDBtoCSV
+             ministry={ministry}
+             cluster={cluster}
+             search={search}
+         />
       </Box>
       <StickyTable
         onClickPath={"/private-cloud/admin/project/"}
