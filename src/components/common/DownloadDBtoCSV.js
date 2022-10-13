@@ -15,13 +15,11 @@ import { Box } from "@mui/material";
 
 const DB_TO_CSV = gql`
   query privateCloudProjectsCSV(
-    $ministry: String, 
-    $cluster: Int,
+    $filter: FilterPrivateCloudProjectsInput,
     $search: String,
      ) {
         privateCloudProjectsCSV(        
-        ministry:$ministry, 
-        cluster:$cluster,
+          filter:$filter,
         search:$search,
     ) {
        
@@ -98,12 +96,19 @@ export default function DownloadDBtoCSV({
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", "my_data.csv");
     document.body.appendChild(link).click();
+    document.body.removeChild(link)
   }
 
   const [loadCollection, { data, error }] = useLazyQuery(DB_TO_CSV, {
     variables: {
-      ministry: ministry,
-      cluster: cluster,
+      filter:ministry&&cluster?{
+        ministry:ministry,
+        cluster:cluster,
+      }:ministry?{
+        ministry:ministry,
+      }:cluster?{
+        cluster:cluster,
+      }:null,
       search: search
     },
   });
@@ -113,7 +118,7 @@ export default function DownloadDBtoCSV({
 
   return (
     <Box sx={{ ml: "auto", display: 'inline-flex', alignItems: 'center', p: 0 }}>
-      <FormControl sx={{ m: 1, width: 300 }}>
+      <FormControl sx={{ m: 0, width: 300 }}>
         <InputLabel>Fields</InputLabel>
         <Select
           labelId="demo-multiple-checkbox-label"

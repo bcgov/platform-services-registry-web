@@ -46,7 +46,7 @@ export default function StickyTable({
 
   useEffect(() => {
     sortOrders.forEach((order, index) => {
-      order !== 0 && refetch({ sortField: columns[index].id, sortOrder: order })
+      order !== 0 && refetch({ sort: columns[index].id, sortOrder: order===1? "ASCENDING":"DESCENDING"})
     })
   }, [columns, refetch, sortOrders]);
 

@@ -13,21 +13,21 @@ import TextField from '@mui/material/TextField';
 
 const ALL_PROJECTS = gql`
   query PrivateCloudProjectsPaginated(
-    $offset: Int, 
-    $limit: Int, 
-    $ministry: String,
-     $cluster: Int,
-     $search: String,
-     $sortField:String,
-      $sortOrder:Int,
+    $offset: Int!, 
+    $limit: Int!, 
+    $filter: FilterPrivateCloudProjectsInput,
+    $search: String,
+    $sort: String,
+    $sortOrder: SortOrder,
      ) {
-    privateCloudProjectsPaginated(offset: $offset,
-         limit: $limit,
-      ministry: $ministry,
-     cluster: $cluster,
-     search: $search,
-    sortField: $sortField
-    sortOrder:$sortOrder) {
+    privateCloudProjectsPaginated(
+      offset:$offset 
+      limit:$limit 
+      filter:$filter
+      search:$search
+      sort:$sort
+      sortOrder:$sortOrder
+    ) {
       count
       projects {
         ... on PrivateCloudProject {
@@ -54,18 +54,24 @@ const ALL_PROJECTS = gql`
 `;
 
 export default function Projects() {
-  const [ministry, setMinistry] = useState('')
+  const [ministry, setMinistry] = useState(null)
   const [cluster, setCluster] = useState(null)
   const [search, setSearch] = useState("")
   const { loading, data, fetchMore, error, refetch } = useQuery(ALL_PROJECTS, {
     variables: {
-      offset: 0,
+      offset:0,
       limit: 20,
-      ministry: ministry,
-      cluster: cluster,
+      filter:ministry&&cluster?{
+        ministry:ministry,
+        cluster:cluster,
+      }:ministry?{
+        ministry:ministry,
+      }:cluster?{
+        cluster:cluster,
+      }:null,
       search: search,
-      sortField: "created",
-      sortOrder: 1,
+      sort: "created",
+      sortOrder: "ASCENDING",
     },
   });
 
@@ -73,7 +79,6 @@ export default function Projects() {
 
   return (
     <>
-   
       <Box sx={{ minWidth: 120, pt: 3, pl: 2 }}>
         <FormControl sx={{ minWidth: 160 }}>
           <InputLabel >Ministry</InputLabel>
@@ -82,11 +87,11 @@ export default function Projects() {
             label="Ministry"
             onChange={(event) => {
               setMinistry(event.target.value)
-              refetch({ ministry: (event.target.value) })
+              refetch({ filter: {ministry: (event.target.value) }})
             }}
           >
-            <MenuItem value={''}>All Ministries</MenuItem>
-            {ministries.map((ministry, index) => <MenuItem key={index} value={ministry}>{ministry}</MenuItem>)}
+            <MenuItem value={null}>All Ministries</MenuItem>
+            {ministries.map((ministry) => <MenuItem key={ministry} value={ministry}>{ministry}</MenuItem>)}
           </Select>
         </FormControl>
         <FormControl sx={{ minWidth: 160 }}>
@@ -96,11 +101,11 @@ export default function Projects() {
             label="Cluster"
             onChange={(event) => {
               setCluster(event.target.value)
-              refetch({ cluster: (event.target.value) })
+              refetch({ filter: {cluster:(event.target.value) }})
             }}
           >
             <MenuItem value={null}>All Clusters</MenuItem>
-            {clusters.map((cluster, index) => <MenuItem key={index} value={index + 1}>{cluster}</MenuItem>)}
+            {clusters.map((cluster) => <MenuItem key={cluster} value={cluster}>{cluster}</MenuItem>)}
           </Select>
         </FormControl>
         <TextField
@@ -111,11 +116,11 @@ export default function Projects() {
             refetch({ search: (event.target.value) })
           }}
         />
-         <DownloadDBtoCSV
-             ministry={ministry}
-             cluster={cluster}
-             search={search}
-         />
+        <DownloadDBtoCSV
+          ministry={ministry}
+          cluster={cluster}
+          search={search}
+        />
       </Box>
       <StickyTable
         onClickPath={"/private-cloud/admin/project/"}
