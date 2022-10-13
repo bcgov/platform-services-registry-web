@@ -59,16 +59,12 @@ export default function Projects() {
   const [search, setSearch] = useState("")
   const { loading, data, fetchMore, error, refetch } = useQuery(ALL_PROJECTS, {
     variables: {
-      offset:0,
+      offset: 0,
       limit: 20,
-      filter:ministry&&cluster?{
-        ministry:ministry,
-        cluster:cluster,
-      }:ministry?{
-        ministry:ministry,
-      }:cluster?{
-        cluster:cluster,
-      }:null,
+      filter: {
+        ministry: ministry,
+        cluster: cluster,
+      },
       search: search,
       sort: "created",
       sortOrder: "ASCENDING",
@@ -79,36 +75,36 @@ export default function Projects() {
 
   return (
     <>
-      <Box sx={{ minWidth: 120, pt: 3, pl: 2 }}>
-        <FormControl sx={{ minWidth: 160 }}>
+      <Box sx={{ minWidth: 120, pt: 3, pl: 2, display: 'flex', justifyContent: "flex-end" }}>
+        <FormControl sx={{ minWidth: 160, pr: 2 }}>
           <InputLabel >Ministry</InputLabel>
           <Select
             value={ministry}
             label="Ministry"
             onChange={(event) => {
               setMinistry(event.target.value)
-              refetch({ filter: {ministry: (event.target.value) }})
+              refetch({ filter: { ministry: (event.target.value), cluster: cluster } })
             }}
           >
             <MenuItem value={null}>All Ministries</MenuItem>
             {ministries.map((ministry) => <MenuItem key={ministry} value={ministry}>{ministry}</MenuItem>)}
           </Select>
         </FormControl>
-        <FormControl sx={{ minWidth: 160 }}>
+        <FormControl sx={{ minWidth: 160, pr: 2 }}>
           <InputLabel >Cluster</InputLabel>
           <Select
             value={cluster}
             label="Cluster"
             onChange={(event) => {
               setCluster(event.target.value)
-              refetch({ filter: {cluster:(event.target.value) }})
+              refetch({ filter: { cluster: (event.target.value), ministry: ministry } })
             }}
           >
             <MenuItem value={null}>All Clusters</MenuItem>
             {clusters.map((cluster) => <MenuItem key={cluster} value={cluster}>{cluster}</MenuItem>)}
           </Select>
         </FormControl>
-        <TextField
+        <TextField sx={{ minWidth: 160, pr: 2 }}
           label="Search"
           type="search"
           onChange={(event) => {

@@ -65,10 +65,10 @@ export default function DownloadDBtoCSV({
   const createCSVString = (fileData) => {
     let subFields = `${Object.keys(fileData[0]).filter(field => fields.indexOf(field) !== -1).join(',')}\n`
 
-    fileData.map((item) => {
-      Object.keys(item).map((key) => {
+    fileData.forEach((item) => {
+      Object.keys(item).forEach((key) => {
         if ((Array.isArray(item[key]))) {
-          item[key].map((lead) => {
+          item[key].forEach((lead) => {
             if (fields.indexOf(key) !== -1) {
               subFields += `${lead.firstName} ${lead.lastName} `
             }
@@ -90,25 +90,23 @@ export default function DownloadDBtoCSV({
   }
 
   const createFile = (fileData) => {
+    console.log("hhh")
     let csvContent = "data:text/csv;charset=utf-8," + createCSVString(fileData);
     let encodedUri = encodeURI(csvContent);
     let link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "my_data.csv");
-    document.body.appendChild(link).click();
-    document.body.removeChild(link)
+    link.setAttribute("download", `${new Date()}collection.csv`);
+    const elem = document.getElementById('csv-download-box')
+    elem.appendChild(link).click();
+    elem.removeChild(link)
   }
 
   const [loadCollection, { data, error }] = useLazyQuery(DB_TO_CSV, {
     variables: {
-      filter:ministry&&cluster?{
-        ministry:ministry,
-        cluster:cluster,
-      }:ministry?{
-        ministry:ministry,
-      }:cluster?{
-        cluster:cluster,
-      }:null,
+      filter: {
+        ministry: ministry,
+        cluster: cluster,
+      },
       search: search
     },
   });
@@ -117,7 +115,7 @@ export default function DownloadDBtoCSV({
   data && createFile(data.privateCloudProjectsCSV.projects)
 
   return (
-    <Box sx={{ ml: "auto", display: 'inline-flex', alignItems: 'center', p: 0 }}>
+    <Box sx={{ display: 'inline-flex', alignItems: 'center', p: 0 }} id='csv-download-box'>
       <FormControl sx={{ m: 0, width: 300 }}>
         <InputLabel>Fields</InputLabel>
         <Select

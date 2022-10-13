@@ -24,7 +24,7 @@ export default function StickyTable({
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sortOrders, setSortOrders] = useState(Array(columns.length).fill(0));
+  const [sortOrders, setSortOrders] = useState(Array(columns.length).fill("NOORDER"));
   const navigate = useNavigate();
 
   const handleChangePage = (event, newPage) => {
@@ -46,7 +46,7 @@ export default function StickyTable({
 
   useEffect(() => {
     sortOrders.forEach((order, index) => {
-      order !== 0 && refetch({ sort: columns[index].id, sortOrder: order===1? "ASCENDING":"DESCENDING"})
+      order !== "NOORDER" && refetch({ sort: columns[index].id, sortOrder: order === "ASCENDING" ? "ASCENDING" : "DESCENDING" })
     })
   }, [columns, refetch, sortOrders]);
 
@@ -61,7 +61,11 @@ export default function StickyTable({
                   key={column.id}
                   align={column.align}
                   onClick={() => {
-                    setSortOrders(sortOrders => sortOrders.map((order, innerIndex) => innerIndex === index ? order === 0 ? 1 : order === 1 ? -1 : 1 : 0
+                    setSortOrders(sortOrders => sortOrders.map((order, innerIndex) =>
+                      innerIndex === index ?
+                        order === "NOORDER" ?
+                          "ASCENDING" : order === "ASCENDING" ?
+                            "DESCENDING" : "ASCENDING" : "NOORDER"
                     ))
                   }}
                   style={{
@@ -73,9 +77,9 @@ export default function StickyTable({
                   }}
                 >{column.label}
                   {index !== 4 && index !== 5 && <IconButton size="small">
-                    {sortOrders[index] === 0 ?
+                    {sortOrders[index] === "NOORDER" ?
                       <HideSourceIcon style={{ fontSize: '15px' }} /> :
-                      sortOrders[index] === 1 ?
+                      sortOrders[index] === "ASCENDING" ?
                         <ArrowDownwardIcon style={{ fontSize: '15px' }} /> :
                         <ArrowUpwardIcon style={{ fontSize: '15px' }} />}
                   </IconButton>}
