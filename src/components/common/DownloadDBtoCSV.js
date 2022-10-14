@@ -90,7 +90,6 @@ export default function DownloadDBtoCSV({
   }
 
   const createFile = (fileData) => {
-    console.log("hhh")
     let csvContent = "data:text/csv;charset=utf-8," + createCSVString(fileData);
     let encodedUri = encodeURI(csvContent);
     let link = document.createElement("a");
