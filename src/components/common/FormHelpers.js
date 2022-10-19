@@ -128,9 +128,10 @@ const formDataToUserProject = (formData) => {
       name,
       description,
       projectOwner,
-      technicalLeads: [primaryTechnicalLead, secondaryTechnicalLead].filter(
-        Boolean
-      ),
+      technicalLeads:
+        primaryTechnicalLead || secondaryTechnicalLead
+          ? [primaryTechnicalLead, secondaryTechnicalLead].filter(Boolean)
+          : undefined,
       ministry,
       cluster,
     },
