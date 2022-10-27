@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-const projectFormSchema = yup.object().shape({
+const metaDataSchema = {
   name: yup.string().required(),
   description: yup.string().required(),
   projectOwner: yup.string().email("Must be a valid email address").required(),
@@ -11,6 +11,22 @@ const projectFormSchema = yup.object().shape({
   secondaryTechnicalLead: yup.string().email("Must be a valid email address"),
   ministry: yup.string().required(),
   cluster: yup.string().required(),
+};
+
+const customQuotaSchema = {
+  cpuRequests: yup.number().required().positive(),
+  cpuLimits: yup.number().required().positive(),
+  memoryRequests: yup.number().required().positive().integer(),
+  memoryLimits: yup.number().required().positive().integer(),
+  storageBlock: yup.number().required().positive().integer(),
+  storageFile: yup.number().required().positive().integer(),
+  storageBackup: yup.number().required().positive().integer(),
+  storageCapacity: yup.number().required().positive().integer(),
+  storagePvcCount: yup.number().required().positive().integer(),
+  snapshotCount: yup.number().required().positive().integer(),
+};
+
+const quotaSchema = {
   productionCpu: yup.string().required(),
   productionMemory: yup.string().required(),
   productionStorage: yup.string().required(),
@@ -23,7 +39,29 @@ const projectFormSchema = yup.object().shape({
   toolsCpu: yup.string().required(),
   toolsMemory: yup.string().required(),
   toolsStorage: yup.string().required(),
-});
+};
+
+const commonComponentsSchema = {
+  addressAndGeolocation: yup.string(),
+  workflowManagement: yup.string(),
+  formDesignAndSubmission: yup.string(),
+  identityManagement: yup.string(),
+  paymentServices: yup.string(),
+  documentManagement: yup.string(),
+  endUserNotificationAndSubscription: yup.string(),
+  publishing: yup.string(),
+  businessIntelligence: yup.string(),
+  other: yup.string(),
+  noServices: yup.boolean().required(),
+};
+
+const projectFormSchema = yup
+  .object()
+  .shape({ ...metaDataSchema, ...quotaSchema, ...commonComponentsSchema });
+
+const createProjectFormSchema = yup
+  .object()
+  .shape({ ...metaDataSchema, ...commonComponentsSchema });
 
 const userProjectToFormData = (userPrivateCloudProject) => {
   if (userPrivateCloudProject === undefined) return {};
@@ -37,6 +75,7 @@ const userProjectToFormData = (userPrivateCloudProject) => {
     description,
     ministry,
     cluster,
+    commonComponents,
   } = userPrivateCloudProject;
 
   return {
@@ -44,9 +83,10 @@ const userProjectToFormData = (userPrivateCloudProject) => {
     description,
     ministry,
     cluster,
+    commonComponents,
     projectOwner: userPrivateCloudProject?.projectOwner.email,
-    primaryTechnicalLead: userPrivateCloudProject.technicalLeads[0]?.email,
-    secondaryTechnicalLead: userPrivateCloudProject.technicalLeads[1]?.email,
+    primaryTechnicalLead: userPrivateCloudProject.primaryTechnicalLead?.email,
+    secondaryTechnicalLead: userPrivateCloudProject.secondaryTechnicalLead?.email,
     productionCpu:
       `CPU_REQUEST_${productionQuota.cpu.requests}_LIMIT_${productionQuota.cpu.limits}`.replaceAll(
         ".",
@@ -100,7 +140,14 @@ const userProjectToFormData = (userPrivateCloudProject) => {
   };
 };
 
-const formDataToUserProject = (formData) => {
+const formDataToUserProject = (data, dirtyFields) => {
+  const changedFields = dirtyFields
+    ? Object.keys(dirtyFields).reduce((acc, key) => {
+        acc[key] = data[key];
+        return acc;
+      }, {})
+    : data;
+
   const {
     name,
     description,
@@ -121,20 +168,49 @@ const formDataToUserProject = (formData) => {
     toolsCpu,
     toolsMemory,
     toolsStorage,
-  } = formData;
+    addressAndGeolocation,
+    workflowManagement,
+    formDesignAndSubmission,
+    identityManagement,
+    paymentServices,
+    documentManagement,
+    endUserNotificationAndSubscription,
+    publishing,
+    businessIntelligence,
+    other,
+  } = changedFields;
 
-  return {
-    metaData: {
-      name,
-      description,
-      projectOwner,
-      technicalLeads:
-        primaryTechnicalLead || secondaryTechnicalLead
-          ? [primaryTechnicalLead, secondaryTechnicalLead].filter(Boolean)
-          : undefined,
-      ministry,
-      cluster,
-    },
+  console.log("CHANGED FIELDS");
+  console.log(changedFields);
+
+  // const selectedCommonComponents = Object.fromEntries(
+  //   Object.entries(commonComponents).filter(([_, v]) => v != null)
+  // );
+
+  const metaData = {
+    name,
+    description,
+    projectOwner,
+    primaryTechnicalLead,
+    secondaryTechnicalLead,
+    ministry,
+    cluster,
+  };
+
+  const commonComponents = {
+    addressAndGeolocation,
+    workflowManagement,
+    formDesignAndSubmission,
+    identityManagement,
+    paymentServices,
+    documentManagement,
+    endUserNotificationAndSubscription,
+    publishing,
+    businessIntelligence,
+    other,
+  };
+
+  const quota = {
     productionQuota: {
       cpu: productionCpu,
       memory: productionMemory,
@@ -156,6 +232,17 @@ const formDataToUserProject = (formData) => {
       storage: toolsStorage,
     },
   };
+
+  return {
+    metaData,
+    quota,
+    commonComponents,
+  };
 };
 
-export { userProjectToFormData, formDataToUserProject, projectFormSchema };
+export {
+  userProjectToFormData,
+  formDataToUserProject,
+  projectFormSchema,
+  createProjectFormSchema,
+};

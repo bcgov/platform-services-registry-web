@@ -17,7 +17,13 @@ const ALL_ACTIVE_REQUESTS = gql`
           lastName
           githubId
         }
-        technicalLeads {
+
+        primaryTechnicalLead {
+          firstName
+          lastName
+          githubId
+        }
+        secondaryTechnicalLead {
           firstName
           lastName
           githubId

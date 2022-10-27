@@ -9,6 +9,7 @@ import {
   formDataToUserProject,
   projectFormSchema as schema,
 } from "../../components/common/FormHelpers";
+import CommonComponents from "../../components/CommonComponents";
 import Typography from "@mui/material/Typography";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { Button, IconButton } from "@mui/material";
@@ -26,7 +27,7 @@ const PROJECT = gql`
       id
       name
       description
-      activeRequest {
+      activeEditRequest {
         id
         active
       }
@@ -34,7 +35,11 @@ const PROJECT = gql`
         email
         githubId
       }
-      technicalLeads {
+      primaryTechnicalLead {
+        email
+        githubId
+      }
+      secondaryTechnicalLead {
         email
         githubId
       }
@@ -172,12 +177,8 @@ export default function Project() {
 
   const onSubmit = (data) => {
     console.log("SUBMIT");
-    const changedFields = Object.keys(dirtyFields).reduce((acc, key) => {
-      acc[key] = data[key];
-      return acc;
-    }, {});
 
-    const userProject = formDataToUserProject(changedFields);
+    const userProject = formDataToUserProject(data, dirtyFields);
 
     createPrivateCloudProjectEditRequest({
       variables: { projectId: id, ...userProject },
@@ -201,7 +202,7 @@ export default function Project() {
           isDirty,
           // initialValues: userProjectToFormData(privateCloudProject),
           initialValues: initialFormData,
-          isDisabled: privateCloudProject?.activeRequest?.active,
+          isDisabled: privateCloudProject?.activeEditRequest?.active,
         }}
       >
         <NavToolbar path={"project"} title={privateCloudProject?.name}>
@@ -264,6 +265,7 @@ export default function Project() {
                   <QuotaInput nameSpace={"development"} />
                 </div>
               </div>
+              <CommonComponents />
             </div>
           </StyledForm>
         )}

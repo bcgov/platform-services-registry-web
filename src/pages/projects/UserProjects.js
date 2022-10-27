@@ -17,7 +17,12 @@ const USER_PROJECTS = gql`
         lastName
         githubId
       }
-      technicalLeads {
+      primaryTechnicalLead {
+        firstName
+        lastName
+        githubId
+      }
+      secondaryTechnicalLead {
         firstName
         lastName
         githubId

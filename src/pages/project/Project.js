@@ -26,14 +26,17 @@ const USER_PROJECT = gql`
       id
       name
       description
-      activeRequest {
+      activeEditRequest {
         id
         active
       }
       projectOwner {
         email
       }
-      technicalLeads {
+      primaryTechnicalLead {
+        email
+      }
+      secondaryTechnicalLead {
         email
       }
       ministry
@@ -170,12 +173,8 @@ export default function Project() {
   }, [userProjectLoading, userProjectError, userPrivateCloudProject, reset]);
 
   const onSubmit = (data) => {
-    const changedFields = Object.keys(dirtyFields).reduce((acc, key) => {
-      acc[key] = data[key];
-      return acc;
-    }, {});
-
-    const userProject = formDataToUserProject(changedFields);
+  
+    const userProject = formDataToUserProject(data, dirtyFields);
 
     createPrivateCloudProjectEditRequest({
       variables: { projectId: id, ...userProject },

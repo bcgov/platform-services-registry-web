@@ -47,7 +47,10 @@ const USER_REQUEST = gql`
           projectOwner {
             email
           }
-          technicalLeads {
+          primaryTechnicalLead {
+            email
+          }
+          secondaryTechnicalLead {
             email
           }
           ministry

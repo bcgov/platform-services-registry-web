@@ -11,8 +11,9 @@ const requestsToRows = ({
     description,
     licencePlate,
     projectOwner,
-    technicalLeads,
-    ministry,
+    primaryTechnicalLead,
+    secondaryTechnicalLead,
+     ministry,
     cluster,
   },
 }) => ({
@@ -42,7 +43,7 @@ const requestsToRows = ({
   ),
   technicalLeads: (
     <Stack direction="column" spacing={1}>
-      {technicalLeads.map(({ firstName, lastName, githubId }) => (
+      {[primaryTechnicalLead, secondaryTechnicalLead].filter(Boolean).map(({ firstName, lastName, githubId }) => (
         <Chip
           key={githubId}
           style={{ width: "fit-content" }}
