@@ -1,9 +1,8 @@
 import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 
 function RequireAuth({ roles, children }) {
-  const location = useLocation();
   const { keycloak } = useKeycloak();
 
   const isAuthenticated = keycloak.authenticated;

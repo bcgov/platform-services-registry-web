@@ -42,7 +42,12 @@ const ALL_PROJECTS = gql`
             lastName
             githubId
           }
-          technicalLeads {
+          primaryTechnicalLead {
+            firstName
+            lastName
+            githubId
+          }
+          secondaryTechnicalLead {
             firstName
             lastName
             githubId
@@ -72,6 +77,8 @@ export default function Projects() {
   });
 
   if (error) return `Error! ${error.message}`;
+
+  console.log(data)
 
   return (
     <>

@@ -21,7 +21,8 @@ const projectsToRows = ({
   name,
   description,
   projectOwner,
-  technicalLeads,
+  primaryTechnicalLead,
+  secondaryTechnicalLead,
   ministry,
   cluster,
   licencePlate,
@@ -52,9 +53,9 @@ const projectsToRows = ({
   ),
   technicalLeads: (
     <Stack direction="column" spacing={1}>
-      {technicalLeads.map(({ firstName, lastName, githubId }, i) => (
+      {[primaryTechnicalLead, secondaryTechnicalLead].filter(Boolean).map(({ firstName, lastName, githubId }, i) => (
         <Chip
-          key={projectOwner.githubId + licencePlate + i}
+          key={firstName + i + "project"}
           style={{ width: "fit-content" }}
           avatar={
             <Avatar

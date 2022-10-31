@@ -11,32 +11,26 @@ import styled from "styled-components";
 import { useForm, FormProvider } from "react-hook-form";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
-import * as yup from "yup";
+import CommonComponents from "../components/CommonComponents";
+import {
+  createProjectFormSchema as schema,
+  formDataToUserProject,
+} from "../components/common/FormHelpers";
 
 const CREATE_USER_PROJECT = gql`
-  mutation Mutation($metaData: ProjectMetaDataInput!) {
-    privateCloudProjectRequest(metaData: $metaData) {
+  mutation Mutation(
+    $metaData: ProjectMetaDataInput!
+    $commonComponents: CommonComponentsInput
+  ) {
+    privateCloudProjectRequest(
+      metaData: $metaData
+      commonComponents: $commonComponents
+    ) {
       active
       status
     }
   }
 `;
-
-const schema = yup.object().shape({
-  name: yup.string().required(),
-  description: yup.string().required(),
-  projectOwner: yup.string().email("Must be a valid email address").required(),
-  primaryTechnicalLead: yup
-    .string()
-    .email("Must be a valid email address")
-    .required(),
-  secondaryTechnicalLead: yup.string().email("Must be a valid email address"),
-  projectOwnerGithubId: yup.string().required(),
-  primaryTechnicalLeadGithubId: yup.string().required(),
-  secondaryTechnicalLeadGithubId: yup.string().required(),
-  ministry: yup.string().required(),
-  cluster: yup.string().required(),
-});
 
 const FormContainer = styled.div`
   margin-left: 24px;
@@ -59,27 +53,24 @@ export default function Create() {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors  },
+    formState: { errors, dirtyFields },
   } = useForm({
     resolver: yupResolver(schema),
     // shouldUnregister: false,
-
   });
 
   const [privateCloudProjectRequest, { data, loading, error }] =
     useMutation(CREATE_USER_PROJECT);
 
   const onSubmit = (data) => {
-    const { primaryTechnicalLead, secondaryTechnicalLead, ...metaData } = data;
+    const userProject = formDataToUserProject(data);
+
+    console.log("USER PROJECT");
+    console.log(userProject);
 
     privateCloudProjectRequest({
       variables: {
-        metaData: {
-          ...metaData,
-          technicalLeads: [primaryTechnicalLead, secondaryTechnicalLead].filter(
-            Boolean
-          ),
-        },
+        ...userProject,
       },
       onCompleted: () => {
         console.log("SUBMITTED PROJECT CREATE REQUEST");
@@ -87,6 +78,8 @@ export default function Create() {
       },
     });
   };
+
+  console.log(watch());
 
   return (
     <div>
@@ -103,20 +96,22 @@ export default function Create() {
         {loading ? (
           <LoadingSpinner />
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} >
-            <Box sx={{ mb: 3 }} >
-                <FormContainer>
-                  <div>
-                    <TitleTypography>
-                      Project Description and Contact Information
-                    </TitleTypography>
-                    <MetaDataInput />
-                  </div>
-                  <div style={{ marginLeft: 70 }}>
-                    <TitleTypography>Cluster</TitleTypography>
-                    <ClusterInput />
-                  </div>
-                </FormContainer>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Box sx={{ mb: 3 }}>
+              <FormContainer>
+                <div>
+                  <TitleTypography>
+                    Project Description and Contact Information
+                  </TitleTypography>
+                  <MetaDataInput />
+                </div>
+                <div style={{ marginLeft: 70 }}>
+                  <TitleTypography>Cluster</TitleTypography>
+                  <ClusterInput />
+                  <TitleTypography>Common Components</TitleTypography>
+                  <CommonComponents />
+                </div>
+              </FormContainer>
             </Box>
           </form>
         )}

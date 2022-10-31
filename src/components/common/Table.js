@@ -38,7 +38,7 @@ export default function StickyTable({
 
   useEffect(() => {
     onNextPage(page, rowsPerPage);
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, onNextPage]);
 
   const handleRowClick = (id) => {
     navigate(onClickPath + id);

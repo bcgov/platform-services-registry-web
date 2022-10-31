@@ -4,40 +4,17 @@ import MetaDataInput from "../../components/MetaDataInput";
 import ClusterInput from "../../components/ClusterInput";
 import QuotaInput from "../../components/QuotaInput";
 import NavToolbar from "../../components/NavToolbar";
-import { userProjectToFormData } from "../../components/common/FormHelpers";
-import { Button, IconButton, ButtonGroup } from "@mui/material";
+import {
+  userProjectToFormData,
+  projectFormSchema as schema,
+} from "../../components/common/FormHelpers";
+import { Button } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import StyledForm from "../../components/common/StyledForm";
 import TitleTypography from "../../components/common/TitleTypography";
-
-const schema = yup.object().shape({
-  name: yup.string().required(),
-  description: yup.string().required(),
-  projectOwner: yup.string().email("Must be a valid email address").required(),
-  primaryTechnicalLead: yup
-    .string()
-    .email("Must be a valid email address")
-    .required(),
-  secondaryTechnicalLead: yup.string().email("Must be a valid email address"),
-  ministry: yup.string().required(),
-  cluster: yup.string().required(),
-  productionCpu: yup.string().required(),
-  productionMemory: yup.string().required(),
-  productionStorage: yup.string().required(),
-  developmentCpu: yup.string().required(),
-  developmentMemory: yup.string().required(),
-  developmentStorage: yup.string().required(),
-  testCpu: yup.string().required(),
-  testMemory: yup.string().required(),
-  testStorage: yup.string().required(),
-  toolsCpu: yup.string().required(),
-  toolsMemory: yup.string().required(),
-  toolsStorage: yup.string().required(),
-});
 
 const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
@@ -72,9 +49,13 @@ const ADMIN_REQUEST = gql`
           projectOwner {
             email
           }
-          technicalLeads {
+          primaryTechnicalLead {
             email
           }
+          secondaryTechnicalLead {
+            email
+          }
+ 
           ministry
           cluster
           productionQuota {
@@ -183,14 +164,6 @@ export default function Request() {
     });
   };
 
-  const adminPrivateCloudRequest = adminRequestData?.privateCloudActiveRequest;
-
-  useEffect(() => {
-    if (!adminRequestLoading && !adminRequestError) {
-      reset(userProjectToFormData(adminPrivateCloudRequest.requestedProject));
-    }
-  }, [adminRequestLoading, adminRequestError, adminPrivateCloudRequest]);
-
   const {
     control,
     reset,
@@ -200,6 +173,14 @@ export default function Request() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const adminPrivateCloudRequest = adminRequestData?.privateCloudActiveRequest;
+
+  useEffect(() => {
+    if (!adminRequestLoading && !adminRequestError) {
+      reset(userProjectToFormData(adminPrivateCloudRequest.requestedProject));
+    }
+  }, [adminRequestLoading, adminRequestError, adminPrivateCloudRequest, reset]);
 
   if (adminRequestError) return `Error! ${adminRequestError}`;
 

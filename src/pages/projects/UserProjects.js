@@ -2,7 +2,6 @@ import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
-import AdminContext from "../../context/admin";
 
 const USER_PROJECTS = gql`
   query UserProjects {
@@ -18,7 +17,12 @@ const USER_PROJECTS = gql`
         lastName
         githubId
       }
-      technicalLeads {
+      primaryTechnicalLead {
+        firstName
+        lastName
+        githubId
+      }
+      secondaryTechnicalLead {
         firstName
         lastName
         githubId

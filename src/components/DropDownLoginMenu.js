@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from "react";
+import React, { useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { useKeycloak } from "@react-keycloak/web";
@@ -32,10 +32,10 @@ export default function DropDownLoginMenu() {
     setAnchorEl(null);
   };
 
-  const logout = useCallback(() => {
+  const logout = () => {
     navigate("/login");
     keycloak.logout();
-  });
+  };
 
   return (
     <React.Fragment>

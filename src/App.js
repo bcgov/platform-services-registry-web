@@ -9,7 +9,7 @@ import "@fontsource/roboto/700.css";
 import Footer from "./components/Footer";
 import AdminProvider from "./providers/admin";
 import { useKeycloak } from "@react-keycloak/web";
-import { useMutation, gql } from "@apollo/client";
+import { useQuery, gql } from "@apollo/client";
 import UserProvider from "./providers/user";
 
 const theme = createTheme({
@@ -28,12 +28,13 @@ const theme = createTheme({
 
 export const ModeContext = createContext();
 
-const SIGN_UP = gql`
-  mutation Mutation {
-    signUp {
+const ME = gql`
+  query Query {
+    me {
       id
       firstName
       lastName
+      email
       githubId
     }
   }
@@ -42,16 +43,9 @@ const SIGN_UP = gql`
 function App() {
   const {
     keycloak: { authenticated },
-    initialized,
   } = useKeycloak();
 
-  const [signUp, { loading, error, data }] = useMutation(SIGN_UP);
-
-  useEffect(() => {
-    if (authenticated) {
-      signUp();
-    }
-  }, [authenticated]);
+  const { error, data } = useQuery(ME, { errorPolicy: "ignore" });
 
   const [mode, setMode] = useState(localStorage.getItem("appMode") || "light");
   theme.palette.mode = mode;
@@ -62,7 +56,7 @@ function App() {
   }, [mode]);
 
   const toggleMode = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     setMode(mode === "light" ? "dark" : "light");
   };
 
@@ -72,7 +66,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <ModeContext.Provider value={{ mode: mode, toggleMode: toggleMode }}>
-        <UserProvider user={data?.signUp}>
+        <UserProvider user={data?.me}>
           <AdminProvider>
             <AppRouter />
           </AdminProvider>
