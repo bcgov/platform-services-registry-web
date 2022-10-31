@@ -11,6 +11,7 @@ import {
   defaultMemoryOptions,
   defaultStorageOptions,
 } from "./common/Constants";
+import TitleTypography from "./common/TitleTypography";
 
 export default function QuotaInput({ nameSpace }) {
   const { control, errors, isDisabled, initialValues } = useFormContext();
@@ -18,12 +19,13 @@ export default function QuotaInput({ nameSpace }) {
   return (
     <Box
       sx={{
-        "& .MuiTextField-root": { m: 0, mb: 3, },
-        minWidth: 350,
+        "& .MuiTextField-root": { m: 0, mb: 3 },
+        width: 400,
       }}
       noValidate
       autoComplete="off"
     >
+      <TitleTypography>{nameSpace} Quota</TitleTypography>
       <FormControl sx={{ mt: 1, mb: 2, minWidth: 250 }}>
         <InputLabel id="demo-simple-select-required-label">Cpu</InputLabel>
         <Controller
@@ -45,11 +47,13 @@ export default function QuotaInput({ nameSpace }) {
                   initialValues?.[nameSpace + "Cpu"],
                   ...defaultCpuOptions,
                 ]),
-              ].filter(Boolean).map((cpuOption) => (
-                <MenuItem key={cpuOption} value={cpuOption}>
-                  {cpuOption}
-                </MenuItem>
-              ))}
+              ]
+                .filter(Boolean)
+                .map((cpuOption) => (
+                  <MenuItem key={cpuOption} value={cpuOption}>
+                    {cpuOption}
+                  </MenuItem>
+                ))}
             </Select>
           )}
         />
@@ -75,11 +79,16 @@ export default function QuotaInput({ nameSpace }) {
                   ...defaultMemoryOptions,
                   initialValues?.[nameSpace + "Memory"],
                 ]),
-              ].filter(Boolean).map((defaultMemoryOption) => (
-                <MenuItem key={defaultMemoryOption} value={defaultMemoryOption}>
-                  {defaultMemoryOption}
-                </MenuItem>
-              ))}
+              ]
+                .filter(Boolean)
+                .map((defaultMemoryOption) => (
+                  <MenuItem
+                    key={defaultMemoryOption}
+                    value={defaultMemoryOption}
+                  >
+                    {defaultMemoryOption}
+                  </MenuItem>
+                ))}
             </Select>
           )}
         />
@@ -109,14 +118,16 @@ export default function QuotaInput({ nameSpace }) {
                   initialValues?.[nameSpace + "Storage"],
                   ...defaultStorageOptions,
                 ]),
-              ].filter(Boolean).map((defaultStorageOption) => (
-                <MenuItem
-                  key={defaultStorageOption}
-                  value={defaultStorageOption}
-                >
-                  {defaultStorageOption}
-                </MenuItem>
-              ))}
+              ]
+                .filter(Boolean)
+                .map((defaultStorageOption) => (
+                  <MenuItem
+                    key={defaultStorageOption}
+                    value={defaultStorageOption}
+                  >
+                    {defaultStorageOption}
+                  </MenuItem>
+                ))}
             </Select>
           )}
         />
