@@ -51,7 +51,7 @@ export default function DownloadDBtoCSV({
   cluster,
   search,
 }) {
-  const [fields, setFields] = useState(['description', 'name', 'projectOwner', 'ministry', 'cluster', 'technicalLeads', 'licencePlate']);
+  const [fields, setFields] = useState(columns.map(column => column.id))
 
   const handleChange = (event) => {
     const {
