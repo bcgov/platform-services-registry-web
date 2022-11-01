@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - deploy.yaml
+  - configmap.platsrv-registry-web-config.yaml
+  - service.platsrv-registry-web.yaml
+  - route.web.yaml
+  # - configmap.env-variable.yaml

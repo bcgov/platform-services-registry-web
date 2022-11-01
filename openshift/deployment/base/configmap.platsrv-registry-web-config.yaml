@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  Caddyfile: "# Where caddy should listen\n:2015\n# Turn on the Web/file server\nfile_server\ntemplates {\n  mime  \"text/javascript\" \"application/javascript\"\n}\n# The site root\nroot * /opt/app-root/src\nheader {\n    # enable HSTS\n    Strict-Transport-Security max-age=31536000;\n\n   # disable clients from sniffing the media type\n   X-Content-Type-Options nosniff\n\n   # clickjacking protection\n   X-Frame-Options DENY\n}\n# Because we should\nencode zstd gzip\n# This rewrite rule may be required to get React apps\n# to deal with trailing slashes properly.\n#@filter {\n#\tnot path_regexp ^\\/0.0.0.0\n#\tfile {\n#\t\ttry_files {path} {path}/ /?url={uri}\n#\t}\n#}\n#rewrite @try_files {http.matchers.file.relative}\n# static object if needed. file in static will all be cached\nhandle /static/* {\n  header Cache-Control \"max-age=31536000\"\n}\n# prevent index.html from being cached\nhandle {\n  header Cache-Control \"no-cache, no-store, must-revalidate\"\n}\n# This properly deals with react routes.\ntry_files {path} {path}/ /index.html\n# On OCP we should log to stdout so Prometheus can\n# slurp up the logs for human consumption.\nlog {\n  #errors stdout\n  output stdout \n  format single_field common_log\n  level info\n}\n"
+kind: ConfigMap
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  labels:
+    app: platsrv-registry
+  name: registry-web-config
