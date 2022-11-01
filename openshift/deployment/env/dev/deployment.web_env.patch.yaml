@@ -8,11 +8,11 @@ spec:
       containers:
         - name: platsrv-registry-web
           env:
-            - name: REACT_APP_SSO_URL
-              value: https://dev.oidc.gov.bc.ca/auth/
-            - name: REACT_APP_SSO_REALM
-              value: "devhub"
-            - name: REACT_APP_SSO_CLIENT_ID
-              value: "registry-web"
-            - name: REACT_APP_API_URL
+            - name: SSO_URL
+              value: 'https://dev.oidc.gov.bc.ca/auth/'
+            - name: SSO_REALM
+              value: devhub
+            - name: CLIENT_ID
+              value: registry-web
+            - name: API_BASE_URL
               value: https://registry-new-api-platform-registry-dev.apps.silver.devops.gov.bc.ca/graphql
