@@ -83,7 +83,7 @@ const userProjectToFormData = (userPrivateCloudProject) => {
     description,
     ministry,
     cluster,
-    commonComponents,
+    ...commonComponents,
     projectOwner: userPrivateCloudProject?.projectOwner.email,
     primaryTechnicalLead: userPrivateCloudProject.primaryTechnicalLead?.email,
     secondaryTechnicalLead: userPrivateCloudProject.secondaryTechnicalLead?.email,

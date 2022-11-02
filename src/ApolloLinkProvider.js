@@ -10,7 +10,7 @@ import {
 } from "@apollo/client";
 import { useKeycloak } from "@react-keycloak/web";
 import { onError } from "@apollo/client/link/error";
-
+import config from './config'
 // Log any GraphQL errors or network error that occurred
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
@@ -25,7 +25,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 export default function ApolloAuthProvider({ children }) {
   const { initialized, keycloak } = useKeycloak();
   const httpLink = new HttpLink({
-    uri: process.env.REACT_APP_API_URL,
+    uri: config.API_BASE_URL,
   });
 
   const authMiddleware = new ApolloLink((operation, forward) => {

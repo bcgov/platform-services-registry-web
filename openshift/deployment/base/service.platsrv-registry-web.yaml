@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: platsrv-registry-web
+  name: platsrv-registry-web
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  ports:
+    - name: 2015-tcp
+      port: 2015
+      protocol: TCP
+      targetPort: 2015
+  selector:
+    deployment: platsrv-registry-web
+  sessionAffinity: None
+  type: ClusterIP

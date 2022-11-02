@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: 101ed4-dev
+bases:
+  - ../../base
+patches:
+  - deployment.web_env.patch.yaml
+  - route.photo-sharing-web.yaml
+images:
+  - name: platsrv-registry-web-main-build
+    newName: image-registry.openshift-image-registry.svc:5000/101ed4-tools/platsrv-registry-web
+    newTag: "latest"

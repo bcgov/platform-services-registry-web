@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platsrv-registry-web
+spec:
+  template:
+    spec:
+      containers:
+        - name: platsrv-registry-web
+          env:
+            - name: SSO_URL
+              value: 'https://dev.oidc.gov.bc.ca/auth/'
+            - name: SSO_REALM
+              value: devhub
+            - name: CLIENT_ID
+              value: registry-web
+            - name: API_BASE_URL
+              value: https://registry-new-api-platform-registry-dev.apps.silver.devops.gov.bc.ca/graphql

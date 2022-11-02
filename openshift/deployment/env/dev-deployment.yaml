@@ -1,0 +1,144 @@
+apiVersion: v1
+data:
+  Caddyfile: "# Where caddy should listen\n:2015\n# Turn on the Web/file server\nfile_server\ntemplates
+    {\n  mime  \"text/javascript\" \"application/javascript\"\n}\n# The site root\nroot
+    * /opt/app-root/src\nheader {\n    # enable HSTS\n    Strict-Transport-Security
+    max-age=31536000;\n\n   # disable clients from sniffing the media type\n   X-Content-Type-Options
+    nosniff\n\n   # clickjacking protection\n   X-Frame-Options DENY\n}\n# Because
+    we should\nencode zstd gzip\n# This rewrite rule may be required to get React
+    apps\n# to deal with trailing slashes properly.\n#@filter {\n#\tnot path_regexp
+    ^\\/0.0.0.0\n#\tfile {\n#\t\ttry_files {path} {path}/ /?url={uri}\n#\t}\n#}\n#rewrite
+    @try_files {http.matchers.file.relative}\n# static object if needed. file in static
+    will all be cached\nhandle /static/* {\n  header Cache-Control \"max-age=31536000\"\n}\n#
+    prevent index.html from being cached\nhandle {\n  header Cache-Control \"no-cache,
+    no-store, must-revalidate\"\n}\n# This properly deals with react routes.\ntry_files
+    {path} {path}/ /index.html\n# On OCP we should log to stdout so Prometheus can\n#
+    slurp up the logs for human consumption.\nlog {\n  #errors stdout\n  output stdout
+    \n  format single_field common_log\n  level info\n}\n"
+kind: ConfigMap
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  labels:
+    app: platsrv-registry
+  name: registry-web-config
+  namespace: 101ed4-dev
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  labels:
+    app: platsrv-registry-web
+  name: platsrv-registry-web
+  namespace: 101ed4-dev
+spec:
+  ports:
+  - name: 2015-tcp
+    port: 2015
+    protocol: TCP
+    targetPort: 2015
+  selector:
+    deployment: platsrv-registry-web
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: platsrv-registry-web
+    deployment: platsrv-registry-web
+  name: platsrv-registry-web
+  namespace: 101ed4-dev
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: platsrv-registry
+      deployment: platsrv-registry-web
+      role: frontend
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 2
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: platsrv-registry
+        deployment: platsrv-registry-web
+        role: frontend
+      name: platsrv-registry-web
+    spec:
+      containers:
+      - env:
+        - name: REACT_APP_SSO_URL
+          value: https://dev.oidc.gov.bc.ca/auth/
+        - name: REACT_APP_SSO_REALM
+          value: devhub
+        - name: REACT_APP_SSO_CLIENT_ID
+          value: registry-web
+        - name: REACT_APP_API_URL
+          value: https://registry-new-api-platform-registry-dev.apps.silver.devops.gov.bc.ca/graphql
+        image: image-registry.openshift-image-registry.svc:5000/101ed4-tools/platsrv-registry-web:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 2015
+            scheme: HTTP
+          initialDelaySeconds: 180
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+        name: platsrv-registry-web
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 200m
+            memory: 92Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/app-root/etc/Caddyfile
+          name: config-vol
+          subPath: Caddyfile
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: registry-web-config
+        name: config-vol
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: photo-sharing
+  name: platsrv-registry-web
+  namespace: 101ed4-dev
+spec:
+  host: platsrv-registry-web-platform-registry-dev.apps.silver.devops.gov.bc.ca
+  port:
+    targetPort: 2015-tcp
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: platsrv-registry-web
+    weight: 100
+  wildcardPolicy: None

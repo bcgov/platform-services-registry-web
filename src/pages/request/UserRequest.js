@@ -8,10 +8,10 @@ import {
   userProjectToFormData,
   projectFormSchema as schema,
 } from "../../components/common/FormHelpers";
+import CommonComponents from "../../components/CommonComponents";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useParams } from "react-router-dom";
-import TitleTypography from "../../components/common/TitleTypography";
 import StyledForm from "../../components/common/StyledForm";
 
 const USER_REQUEST = gql`
@@ -55,6 +55,18 @@ const USER_REQUEST = gql`
           }
           ministry
           cluster
+          commonComponents {
+            addressAndGeolocation
+            workflowManagement
+            formDesignAndSubmission
+            identityManagement
+            paymentServices
+            documentManagement
+            endUserNotificationAndSubscription
+            publishing
+            businessIntelligence
+            other
+          }
           productionQuota {
             cpu {
               requests
@@ -177,29 +189,20 @@ export default function Request() {
         }}
       >
         <StyledForm>
-          <div>
-            <TitleTypography>
-              Project Description and Contact Information
-            </TitleTypography>
-            <MetaDataInput />
-          </div>
+          <MetaDataInput />
           <div style={{ marginLeft: 70 }}>
-            <TitleTypography>Cluster</TitleTypography>
             <ClusterInput />
             <div style={{ display: "flex", flexDirection: "row" }}>
               <div>
-                <TitleTypography>Production Quota</TitleTypography>
                 <QuotaInput nameSpace={"production"} />
-                <TitleTypography>Test Quota</TitleTypography>
                 <QuotaInput nameSpace={"test"} />
               </div>
               <div>
-                <TitleTypography>Tools Quota</TitleTypography>
                 <QuotaInput nameSpace={"tools"} />
-                <TitleTypography>Development Quota</TitleTypography>
                 <QuotaInput nameSpace={"development"} />
               </div>
             </div>
+            <CommonComponents />
           </div>
         </StyledForm>
       </FormProvider>
