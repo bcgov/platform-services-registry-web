@@ -78,8 +78,6 @@ export default function Projects() {
 
   if (error) return `Error! ${error.message}`;
 
-  console.log(data)
-
   return (
     <>
       <Box sx={{ minWidth: 120, pt: 3, pl: 2, display: 'flex', justifyContent: "flex-end" }}>

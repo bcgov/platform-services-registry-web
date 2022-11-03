@@ -36,7 +36,12 @@ const DB_TO_CSV = gql`
             lastName
             githubId
           }
-          technicalLeads {
+          primaryTechnicalLead {
+            firstName
+            lastName
+            githubId
+          }
+          secondaryTechnicalLead {
             firstName
             lastName
             githubId
@@ -63,23 +68,16 @@ export default function DownloadDBtoCSV({
   };
 
   const createCSVString = (fileData) => {
-    let subFields = `${Object.keys(fileData[0]).filter(field => fields.indexOf(field) !== -1).join(',')}\n`
-
+    let tmpFields = Object.keys(fileData[0]).filter(field => fields.indexOf(field) !== -1 ||
+      ((field === 'primaryTechnicalLead' || field === 'secondaryTechnicalLead') && fields.indexOf('technicalLeads') !== -1))
+    let subFields = `${tmpFields.join(',')}\n`
     fileData.forEach((item) => {
       Object.keys(item).forEach((key) => {
-        if ((Array.isArray(item[key]))) {
-          item[key].forEach((lead) => {
-            if (fields.indexOf(key) !== -1) {
-              subFields += `${lead.firstName} ${lead.lastName} `
-            }
-          })
-          subFields += ','
-        }
-        else if (typeof (item[key]) !== 'object' && !Array.isArray(item[key])) {
-          if (fields.indexOf(key) !== -1) { subFields += `${item[key]},` }
+        if (typeof (item[key]) !== 'object' && !Array.isArray(item[key])) {
+          if (tmpFields.indexOf(key) !== -1) { subFields += `${item[key]},` }
         }
         else {
-          if (fields.indexOf(key) !== -1) {
+          if (tmpFields.indexOf(key) !== -1) {
             subFields += `${item[key].firstName} ${item[key].lastName},`
           }
         }
@@ -90,6 +88,7 @@ export default function DownloadDBtoCSV({
   }
 
   const createFile = (fileData) => {
+    createCSVString(fileData)
     let csvContent = "data:text/csv;charset=utf-8," + createCSVString(fileData);
     let encodedUri = encodeURI(csvContent);
     let link = document.createElement("a");
@@ -99,6 +98,7 @@ export default function DownloadDBtoCSV({
     elem.appendChild(link).click();
     elem.removeChild(link)
   }
+
 
   const [loadCollection, { data, error }] = useLazyQuery(DB_TO_CSV, {
     variables: {
