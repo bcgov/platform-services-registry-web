@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
+import Alert from "../../components/common/Alert";
 
 const ALL_PROJECTS = gql`
   query PrivateCloudProjectsPaginated($offset: Int, $limit: Int) {
@@ -44,9 +45,9 @@ export default function Projects() {
     },
   });
 
-  if (error) return `Error! ${error.message}`;
-
-  console.log(data)
+  if (error) {
+    return <Alert error={error} />;
+  }
 
   return (
     <StickyTable

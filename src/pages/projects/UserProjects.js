@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
+import Alert from "../../components/common/Alert";
 
 const USER_PROJECTS = gql`
   query UserProjects {
@@ -34,7 +35,9 @@ const USER_PROJECTS = gql`
 export default function Projects() {
   const { loading, error, data } = useQuery(USER_PROJECTS);
 
-  if (error) return `Error! ${error.message}`;
+  if (error) {
+    return <Alert error={error} />;
+  }
 
   return (
     <StickyTable
