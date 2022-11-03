@@ -18,7 +18,7 @@ import StyledLink from "../../components/common/StyledLink";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import StyledForm from "../../components/common/StyledForm";
-import TitleTypography from "../../components/common/TitleTypography";
+import CommonComponents from "../../components/CommonComponents";
 
 const USER_PROJECT = gql`
   query Query($projectId: ID!) {
@@ -41,6 +41,18 @@ const USER_PROJECT = gql`
       }
       ministry
       cluster
+      commonComponents {
+        addressAndGeolocation
+        workflowManagement
+        formDesignAndSubmission
+        identityManagement
+        paymentServices
+        documentManagement
+        endUserNotificationAndSubscription
+        publishing
+        businessIntelligence
+        other
+      }
       productionQuota {
         cpu {
           requests
@@ -173,7 +185,6 @@ export default function Project() {
   }, [userProjectLoading, userProjectError, userPrivateCloudProject, reset]);
 
   const onSubmit = (data) => {
-  
     const userProject = formDataToUserProject(data, dirtyFields);
 
     createPrivateCloudProjectEditRequest({
@@ -237,29 +248,20 @@ export default function Project() {
           }}
         >
           <StyledForm>
-            <div>
-              <TitleTypography>
-                Project Description and Contact Information
-              </TitleTypography>
-              <MetaDataInput />
-            </div>
+            <MetaDataInput />
             <div style={{ marginLeft: 70 }}>
-              <TitleTypography>Cluster</TitleTypography>
               <ClusterInput />
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <div>
-                  <TitleTypography>Production Quota</TitleTypography>
                   <QuotaInput nameSpace={"production"} />
-                  <TitleTypography>Test Quota</TitleTypography>
                   <QuotaInput nameSpace={"test"} />
                 </div>
                 <div>
-                  <TitleTypography>Tools Quota</TitleTypography>
                   <QuotaInput nameSpace={"tools"} />
-                  <TitleTypography>Development Quota</TitleTypography>
                   <QuotaInput nameSpace={"development"} />
                 </div>
               </div>
+              <CommonComponents />
             </div>
           </StyledForm>
         </FormProvider>

@@ -10,6 +10,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import { ministries } from "./common/Constants";
 import { Controller, useFormContext } from "react-hook-form";
 import UserInput from "./UserInput";
+import TitleTypography from "./common/TitleTypography";
 
 export default function MetaDataInput() {
   const { control, errors, isDisabled } = useFormContext();
@@ -23,6 +24,9 @@ export default function MetaDataInput() {
       noValidate
       autoComplete="off"
     >
+      <TitleTypography>
+        Project Description
+      </TitleTypography>
       <Controller
         name="name"
         defaultValue={""}
@@ -33,7 +37,7 @@ export default function MetaDataInput() {
             {...field}
             disabled={isDisabled}
             size="small"
-            style={{ width: "100%", height: 59 }}
+            style={{ width: "100%" }}
             helperText={errors.name ? errors.name?.message : ""}
             id="name"
             label="Name"
@@ -50,7 +54,7 @@ export default function MetaDataInput() {
             {...field}
             disabled={isDisabled}
             size="small"
-            style={{ width: "100%", height: 155 }}
+            style={{ width: "100%" }}
             helperText={errors.description ? errors.description?.message : ""}
             id="description"
             label="Description"
@@ -61,7 +65,7 @@ export default function MetaDataInput() {
       />
 
       <div>
-        <FormControl sx={{ mt: 0, mb: 1, minWidth: 250, height: 120 }}>
+        <FormControl sx={{ minWidth: 250, mt: 1 }}>
           <InputLabel id="demo-simple-select-required-label">
             Ministry
           </InputLabel>
@@ -93,25 +97,19 @@ export default function MetaDataInput() {
         </FormControl>
       </div>
       <Box sx={{ p: 0, mb: 3, width: "100%" }}>
-        <Typography variant="body1" sx={{ mt: 0, mb: 1 }}>
-          Project Owner
-        </Typography>
+        <TitleTypography>Project Owner</TitleTypography>
         <UserInput
           name="projectOwner"
           control={control}
           isDisabled={isDisabled}
         />
-        <Typography variant="body1" sx={{ mt: 0, mb: 1 }}>
-          Primary Technical Lead
-        </Typography>
+        <TitleTypography>Primary Technical Lead </TitleTypography>
         <UserInput
           name="primaryTechnicalLead"
           control={control}
           isDisabled={isDisabled}
         />
-        <Typography variant="body1" sx={{ mt: 0, mb: 1 }}>
-          Secondary Technical Lead
-        </Typography>
+        <TitleTypography>Secondary Technical Lead </TitleTypography>
         <UserInput
           name="secondaryTechnicalLead"
           control={control}

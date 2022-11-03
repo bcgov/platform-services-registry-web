@@ -10,6 +10,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormHelperText from "@mui/material/FormHelperText";
 import { Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
+import TitleTypography from "./common/TitleTypography";
 
 const StyledCheckboxContainer = styled.div`
   min-width: 400px;
@@ -100,7 +101,7 @@ function CheckBoxRow({ name, description }) {
     <StyledContainer>
       <Typography
         variant="body1"
-        color={noServices && "rgba(0, 0, 0, 0.38)"}
+        color={(noServices || isDisabled) && "rgba(0, 0, 0, 0.38)"}
         sx={{ marginTop: 0.5 }}
       >
         {description}
@@ -109,7 +110,6 @@ function CheckBoxRow({ name, description }) {
         <StyledControler
           name={name}
           control={control}
-          // defaultValue={""}
           render={({ field }) => (
             <RadioGroup
               row
@@ -124,7 +124,7 @@ function CheckBoxRow({ name, description }) {
                   <Radio
                     onClick={onClick}
                     checked={field.value === "IMPLEMENTED"}
-                    disabled={noServices}
+                    disabled={noServices || isDisabled}
                   />
                 }
                 label="Implemented"
@@ -136,7 +136,7 @@ function CheckBoxRow({ name, description }) {
                   <Radio
                     onClick={onClick}
                     checked={field.value === "PLANNING_TO_USE"}
-                    disabled={noServices}
+                    disabled={noServices || isDisabled}
                   />
                 }
                 label="Planning to use"
@@ -168,60 +168,63 @@ export default function CommonComponents() {
   }, [noServices, isDirty, setValue]);
 
   return (
-    <StyledPaper>
-      <FormGroup>
-        {commonComponents.map(({ name, description }, index) => (
-          <CheckBoxRow name={name} description={description} key={index} />
-        ))}
-        <FormControlLabel
-          sx={{ ml: 2.5, display: "flex", justifyContent: "flex-end", mb: 3 }}
-          labelPlacement="start"
-          label={"Other"}
-          disabled={isDisabled || noServices}
-          control={
-            <Controller
-              name="other"
-              defaultValue={""}
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  sx={{ ml: 5, width: "80%" }}
-                  disabled={isDisabled || noServices}
-                  size="small"
-                  helperText={errors.other ? errors.name?.other : ""}
-                  id="name"
-                  label="please specify"
-                />
-              )}
-            />
-          }
-        />
-        <FormControlLabel
-          sx={{ ml: 1 }}
-          control={
-            <Controller
-              disabled={isDirty}
-              name="noServices"
-              control={control}
-              defaultValue={false}
-              render={({ field }) => (
-                <Checkbox
-                  disabled={isDirty}
-                  required={!isDirty}
-                  checked={isDirty ? false : field.value}
-                  {...field}
-                />
-              )}
-            />
-          }
-          label={"The app does not use any of these services"}
-        />
-        <FormHelperText>
-          {errors.noServices && !isDirty ? "required field" : ""}
-        </FormHelperText>
-      </FormGroup>
-    </StyledPaper>
+    <div>
+      <TitleTypography>Common Components</TitleTypography>
+      <StyledPaper>
+        <FormGroup>
+          {commonComponents.map(({ name, description }, index) => (
+            <CheckBoxRow name={name} description={description} key={index} />
+          ))}
+          <FormControlLabel
+            sx={{ ml: 2.5, display: "flex", justifyContent: "flex-end", mb: 3 }}
+            labelPlacement="start"
+            label={"Other"}
+            disabled={isDisabled || noServices}
+            control={
+              <Controller
+                name="other"
+                defaultValue={""}
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    sx={{ ml: 5, width: "80%" }}
+                    disabled={isDisabled || noServices}
+                    size="small"
+                    helperText={errors.other ? errors.name?.other : ""}
+                    id="name"
+                    label="please specify"
+                  />
+                )}
+              />
+            }
+          />
+          <FormControlLabel
+            sx={{ ml: 1 }}
+            control={
+              <Controller
+                disabled={isDirty || isDisabled}
+                name="noServices"
+                control={control}
+                defaultValue={false}
+                render={({ field }) => (
+                  <Checkbox
+                    disabled={isDirty || isDisabled}
+                    required={!isDirty}
+                    checked={isDirty ? false : field.value}
+                    {...field}
+                  />
+                )}
+              />
+            }
+            label={"The app does not use any of these services"}
+          />
+          <FormHelperText>
+            {errors.noServices && !isDirty ? "required field" : ""}
+          </FormHelperText>
+        </FormGroup>
+      </StyledPaper>
+    </div>
   );
 }

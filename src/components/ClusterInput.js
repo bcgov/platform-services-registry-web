@@ -7,6 +7,7 @@ import Select from "@mui/material/Select";
 import FormHelperText from "@mui/material/FormHelperText";
 import { clusters } from "./common/Constants";
 import { Controller, useFormContext } from "react-hook-form";
+import TitleTypography from "./common/TitleTypography";
 
 export default function ClusterInput() {
   const { control, errors, isDisabled } = useFormContext();
@@ -20,6 +21,8 @@ export default function ClusterInput() {
       autoComplete="off"
     >
       <div>
+      <TitleTypography>Cluster</TitleTypography>
+
         <FormControl sx={{ mt: 0, mb: 2, minWidth: 250 }}>
           <InputLabel id="demo-simple-select-required-label">
             Cluster
