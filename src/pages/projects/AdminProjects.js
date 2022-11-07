@@ -10,6 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import Alert from "../../components/common/Alert";
+
 
 const ALL_PROJECTS = gql`
   query PrivateCloudProjectsPaginated(
@@ -76,9 +78,11 @@ export default function Projects() {
     },
   });
 
-  if (error) return `Error! ${error.message}`;
 
-  console.log(data)
+  if (error) {
+    return <Alert error={error} />;
+  }
+
 
   return (
     <>
