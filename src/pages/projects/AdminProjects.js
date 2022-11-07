@@ -5,7 +5,7 @@ import StickyTable from "../../components/common/Table";
 import Alert from "../../components/common/Alert";
 
 const ALL_PROJECTS = gql`
-  query PrivateCloudProjectsPaginated($offset: Int, $limit: Int) {
+  query PrivateCloudProjectsPaginated($offset: Int!, $limit: Int!) {
     privateCloudProjectsPaginated(offset: $offset, limit: $limit) {
       count
       projects {
