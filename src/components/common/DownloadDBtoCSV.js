@@ -36,7 +36,12 @@ const DB_TO_CSV = gql`
             lastName
             githubId
           }
-          technicalLeads {
+          primaryTechnicalLead {
+            firstName
+            lastName
+            githubId
+          }
+          secondaryTechnicalLead {
             firstName
             lastName
             githubId
@@ -90,6 +95,7 @@ export default function DownloadDBtoCSV({
   }
 
   const createFile = (fileData) => {
+    console.log(fileData)
     let csvContent = "data:text/csv;charset=utf-8," + createCSVString(fileData);
     let encodedUri = encodeURI(csvContent);
     let link = document.createElement("a");
