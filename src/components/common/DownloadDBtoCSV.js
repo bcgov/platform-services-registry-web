@@ -66,7 +66,7 @@ export default function DownloadDBtoCSV({
       typeof value === 'string' ? value.split(',') : value,
     );
   };
-
+console.log('some words')
   const createCSVString = (fileData) => {
     let tmpFields = Object.keys(fileData[0]).filter(field => fields.indexOf(field) !== -1 ||
       ((field === 'primaryTechnicalLead' || field === 'secondaryTechnicalLead') && fields.indexOf('technicalLeads') !== -1))
