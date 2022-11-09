@@ -84,6 +84,8 @@ const Login = () => {
       sx={{
         lineHeight: 2,
         maxHeight: 100,
+        marginTop: 30,
+        marginLeft: 50,
       }}
     >
       <Box mb={3}>

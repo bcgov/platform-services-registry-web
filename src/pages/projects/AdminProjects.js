@@ -14,22 +14,8 @@ import Alert from "../../components/common/Alert";
 
 
 const ALL_PROJECTS = gql`
-  query PrivateCloudProjectsPaginated(
-    $offset: Int!, 
-    $limit: Int!, 
-    $filter: FilterPrivateCloudProjectsInput,
-    $search: String,
-    $sort: String,
-    $sortOrder: SortOrder,
-     ) {
-    privateCloudProjectsPaginated(
-      offset:$offset 
-      limit:$limit 
-      filter:$filter
-      search:$search
-      sort:$sort
-      sortOrder:$sortOrder
-    ) {
+  query PrivateCloudProjectsPaginated($offset: Int!, $limit: Int!) {
+    privateCloudProjectsPaginated(offset: $offset, limit: $limit) {
       count
       projects {
         ... on PrivateCloudProject {
