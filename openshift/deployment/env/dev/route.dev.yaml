@@ -3,4 +3,4 @@ kind: Route
 metadata:
   name: platsrv-registry-web
 spec:
-  host: platsrv-registry-web-platform-registry-dev.apps.silver.devops.gov.bc.ca
+  host: platsrv-registry-web-101ed4.apps.silver.devops.gov.bc.ca

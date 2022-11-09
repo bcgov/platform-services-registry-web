@@ -29,15 +29,15 @@ spec:
       containers:
         - name:  platsrv-registry-web
           env:
-            - name: REACT_APP_SSO_URL
+            - name: SSO_URL
               value: temp
-            - name: REACT_APP_SSO_REALM
+            - name: SSO_REALM
               value: temp
-            - name: REACT_APP_SSO_CLIENT_ID
+            - name: CLIENT_ID
               value: temp
-            - name: REACT_APP_API_URL
+            - name: API_BASE_URL
               value: temp
-          image:  platsrv-registry-web-main-build
+          image: platsrv-registry-web-main-build
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
