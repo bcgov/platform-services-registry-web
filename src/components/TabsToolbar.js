@@ -11,6 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DownloadCsv from "../components/DownloadCsv";
 import Search from "../components/Search";
 import { Outlet } from "react-router-dom";
+import TabForm from "../components/TabForm";
 
 export default function TabsToolbar({ routes, createButtonRoute }) {
   const { pathname } = useLocation();
@@ -40,8 +41,9 @@ export default function TabsToolbar({ routes, createButtonRoute }) {
             <Tab component={Link} label="Projects" to={routes[1]} />
           </Tabs>
         </Box>
-        <Search />
-        <DownloadCsv />
+        {/* <Search />
+        <DownloadCsv /> */}
+        <TabForm />
         <Button
           component={Link}
           to={createButtonRoute}

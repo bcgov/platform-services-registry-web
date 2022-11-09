@@ -8,9 +8,12 @@ import FormControl from "@mui/material/FormControl";
 import ListItemText from "@mui/material/ListItemText";
 import Select from "@mui/material/Select";
 import Checkbox from "@mui/material/Checkbox";
+import Slide from "@mui/material/Slide";
 import { columns } from "../pages/projects/helpers";
 import { Box } from "@mui/material";
 import Papa from "papaparse";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 
 export const USER_FIELDS = gql`
   fragment UserFields on User {
@@ -85,8 +88,7 @@ const dowloadCsv = (csvString) => {
 };
 
 export default function DownloadCsv({ ministry, cluster, search }) {
-
-  // Create shared context for ministry, cluster, search
+  // Create shared context for ministry, cluster, search (instead of passing them down as props)
 
   const [selectedFields, setSelectedFields] = useState(
     columns.map((column) => column.id)
@@ -153,44 +155,29 @@ export default function DownloadCsv({ ministry, cluster, search }) {
   if (error) return `Error! ${error.message}`;
 
   return (
-    <Box
-      sx={{ display: "inline-flex", alignItems: "center", p: 0 }}
-      id="csv-download-box"
+    <Select
+      sx={{ width: 200 }}
+      labelId="demo-multiple-checkbox-label"
+      id="demo-multiple-checkbox"
+      size="small"
+      multiple
+      displayEmpty
+      value={selectedFields}
+      onChange={handleChange}
+      input={<OutlinedInput />}
+      renderValue={(selected) => {
+        if (selected.length === columns.length) {
+          return <em>All Fields</em>;
+        }
+        return selected.join(", ");
+      }}
     >
-      <FormControl sx={{ m: 0, width: 200 }}>
-        <Select
-          labelId="demo-multiple-checkbox-label"
-          id="demo-multiple-checkbox"
-          size="small"
-          multiple
-          displayEmpty
-          value={selectedFields}
-          onChange={handleChange}
-          input={<OutlinedInput />}
-          renderValue={(selected) => {
-            if (selected.length === columns.length) {
-              return <em>All Fields</em>;
-            }
-
-            return selected.join(", ");
-          }}
-        >
-          {columns.map((column) => (
-            <MenuItem key={column.id} value={column.id}>
-              <Checkbox checked={selectedFields.indexOf(column.id) > -1} />
-              <ListItemText primary={column.label} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <IconButton
-        size="large"
-        onClick={() => getCsvData()}
-        disabled={!selectedFields.length > 0}
-      >
-        <CloudDownloadIcon />
-      </IconButton>
-    </Box>
+      {columns.map((column) => (
+        <MenuItem key={column.id} value={column.id}>
+          <Checkbox checked={selectedFields.indexOf(column.id) > -1} />
+          <ListItemText primary={column.label} />
+        </MenuItem>
+      ))}
+    </Select>
   );
 }
