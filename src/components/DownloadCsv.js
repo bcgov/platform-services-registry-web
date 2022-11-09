@@ -85,6 +85,9 @@ const dowloadCsv = (csvString) => {
 };
 
 export default function DownloadCsv({ ministry, cluster, search }) {
+
+  // Create shared context for ministry, cluster, search
+
   const [selectedFields, setSelectedFields] = useState(
     columns.map((column) => column.id)
   );
@@ -111,7 +114,7 @@ export default function DownloadCsv({ ministry, cluster, search }) {
       const flattenedPrivateCloudProjects =
         data.privateCloudProjectsWithFilterSearch.map(flattenProject);
 
-      // Replace the technicalLeads header with the ones below
+      // Replace the project owner header with the ones below
       const columns = [...selectedFields];
       const technicalLeadsIndex = columns.indexOf("technicalLeads");
       const projectOwnerIndex = columns.indexOf("projectOwner");
@@ -125,7 +128,7 @@ export default function DownloadCsv({ ministry, cluster, search }) {
           "projectOwnerGithubId"
         );
       }
-
+      // Replace the technicalLeads header with the ones below
       if (technicalLeadsIndex > -1) {
         columns.splice(
           technicalLeadsIndex,
@@ -154,7 +157,7 @@ export default function DownloadCsv({ ministry, cluster, search }) {
       sx={{ display: "inline-flex", alignItems: "center", p: 0 }}
       id="csv-download-box"
     >
-      <FormControl sx={{ m: 0, width: 250 }}>
+      <FormControl sx={{ m: 0, width: 200 }}>
         <Select
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"

@@ -11,6 +11,7 @@ import AdminProvider from "./providers/admin";
 import { useKeycloak } from "@react-keycloak/web";
 import { useQuery, gql } from "@apollo/client";
 import UserProvider from "./providers/user";
+import SearchProvider from "./providers/search";
 
 const theme = createTheme({
   typography: {
@@ -64,9 +65,11 @@ function App() {
     <ThemeProvider theme={theme}>
       <ModeContext.Provider value={{ mode: mode, toggleMode: toggleMode }}>
         <UserProvider user={data?.me}>
+          <SearchProvider>
           <AdminProvider>
             <AppRouter />
           </AdminProvider>
+          </SearchProvider>
         </UserProvider>
       </ModeContext.Provider>
     </ThemeProvider>

@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadCsv from "../components/DownloadCsv";
+import Search from "../components/Search";
 import { Outlet } from "react-router-dom";
 
 export default function TabsToolbar({ routes, createButtonRoute }) {
@@ -39,6 +40,7 @@ export default function TabsToolbar({ routes, createButtonRoute }) {
             <Tab component={Link} label="Projects" to={routes[1]} />
           </Tabs>
         </Box>
+        <Search />
         <DownloadCsv />
         <Button
           component={Link}
