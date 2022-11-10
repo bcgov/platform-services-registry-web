@@ -39,12 +39,6 @@ const FormContainer = styled.div`
   flex-direction: row;
 `;
 
-const TitleTypography = (props) => (
-  <Typography variant="h6" sx={{ mt: 0, mb: 1 }}>
-    {props.children}
-  </Typography>
-);
-
 export default function Create() {
   const navigate = useNavigate();
 
@@ -79,8 +73,6 @@ export default function Create() {
     });
   };
 
-  console.log(watch());
-
   return (
     <div>
       <FormProvider {...{ control, errors, setValue, watch }}>
@@ -99,16 +91,9 @@ export default function Create() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ mb: 3 }}>
               <FormContainer>
-                <div>
-                  <TitleTypography>
-                    Project Description and Contact Information
-                  </TitleTypography>
-                  <MetaDataInput />
-                </div>
+                <MetaDataInput />
                 <div style={{ marginLeft: 70 }}>
-                  <TitleTypography>Cluster</TitleTypography>
                   <ClusterInput />
-                  <TitleTypography>Common Components</TitleTypography>
                   <CommonComponents />
                 </div>
               </FormContainer>

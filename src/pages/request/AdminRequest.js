@@ -8,13 +8,13 @@ import {
   userProjectToFormData,
   projectFormSchema as schema,
 } from "../../components/common/FormHelpers";
+import CommonComponents from "../../components/CommonComponents";
 import { Button } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import StyledForm from "../../components/common/StyledForm";
-import TitleTypography from "../../components/common/TitleTypography";
 
 const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
@@ -55,9 +55,20 @@ const ADMIN_REQUEST = gql`
           secondaryTechnicalLead {
             email
           }
- 
           ministry
           cluster
+          commonComponents {
+            addressAndGeolocation
+            workflowManagement
+            formDesignAndSubmission
+            identityManagement
+            paymentServices
+            documentManagement
+            endUserNotificationAndSubscription
+            publishing
+            businessIntelligence
+            other
+          }
           productionQuota {
             cpu {
               requests
@@ -175,6 +186,9 @@ export default function Request() {
   });
 
   const adminPrivateCloudRequest = adminRequestData?.privateCloudActiveRequest;
+  const initalFormData = userProjectToFormData(
+    adminPrivateCloudRequest?.requestedProject
+  );
 
   useEffect(() => {
     if (!adminRequestLoading && !adminRequestError) {
@@ -220,36 +234,27 @@ export default function Request() {
             errors,
             setValue,
             watch,
-            initialValues: userProjectToFormData(
-              adminPrivateCloudRequest?.requestedProject
-            ),
+            initialValues: initalFormData,
             isDisabled: adminPrivateCloudRequest?.active,
           }}
         >
           <StyledForm>
             <div>
-              <TitleTypography>
-                Project Description and Contact Information
-              </TitleTypography>
               <MetaDataInput />
             </div>
             <div style={{ marginLeft: 70 }}>
-              <TitleTypography>Cluster</TitleTypography>
               <ClusterInput />
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <div>
-                  <TitleTypography>Production Quota</TitleTypography>
                   <QuotaInput nameSpace={"production"} />
-                  <TitleTypography>Test Quota</TitleTypography>
                   <QuotaInput nameSpace={"test"} />
                 </div>
                 <div>
-                  <TitleTypography>Tools Quota</TitleTypography>
                   <QuotaInput nameSpace={"tools"} />
-                  <TitleTypography>Development Quota</TitleTypography>
                   <QuotaInput nameSpace={"development"} />
                 </div>
               </div>
+              <CommonComponents />
             </div>
           </StyledForm>
         </FormProvider>

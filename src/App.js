@@ -60,9 +60,6 @@ function App() {
     setMode(mode === "light" ? "dark" : "light");
   };
 
-  if (error)
-    return `Sign up Error! ${error.message} authenticated: ${authenticated}`;
-
   return (
     <ThemeProvider theme={theme}>
       <ModeContext.Provider value={{ mode: mode, toggleMode: toggleMode }}>
