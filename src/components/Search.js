@@ -11,6 +11,7 @@ export default function Search() {
       type="search"
       size="small"
       value={search}
+      defaultValue={""}
       onChange={(event) => {
         setSearch(event.target.value);
       }}
