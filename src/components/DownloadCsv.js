@@ -1,19 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { gql, useLazyQuery } from "@apollo/client";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import IconButton from "@mui/material/IconButton";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import ListItemText from "@mui/material/ListItemText";
 import Select from "@mui/material/Select";
 import Checkbox from "@mui/material/Checkbox";
-import Slide from "@mui/material/Slide";
 import { columns } from "../pages/projects/helpers";
-import { Box } from "@mui/material";
 import Papa from "papaparse";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 export const USER_FIELDS = gql`
   fragment UserFields on User {
@@ -89,7 +85,8 @@ const dowloadCsv = (csvString) => {
 
 export default function DownloadCsv({ ministry, cluster, search }) {
   // Create shared context for ministry, cluster, search (instead of passing them down as props)
-
+  const [open, setOpen] = useState(false);
+  const [openFinished, setOpenFinished] = useState(false);
   const [selectedFields, setSelectedFields] = useState(
     columns.map((column) => column.id)
   );
@@ -100,6 +97,20 @@ export default function DownloadCsv({ ministry, cluster, search }) {
     } = event;
     setSelectedFields(typeof value === "string" ? value.split(",") : value);
   };
+
+  const handleMouseLeave = () => {
+    setOpen(false);
+  };
+
+  const handleMouseEnter = () => {
+    setOpen(true);
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setOpenFinished(!open);
+    }, 350);
+  }, [open]);
 
   const [getCsvData, { data, error }] = useLazyQuery(GET_CSV_DATA, {
     variables: {
@@ -152,32 +163,85 @@ export default function DownloadCsv({ ministry, cluster, search }) {
     }
   }, [data]);
 
+  const csvButton = (
+    <IconButton
+      size="small"
+      onClick={() => getCsvData()}
+      onMouseEnter={handleMouseEnter}
+      disabled={!selectedFields.length > 0}
+    >
+      <CloudDownloadIcon />
+    </IconButton>
+  );
+
+  const chevronLeft = (
+    <IconButton
+      style={{
+        overflow: "hidden",
+        transition: "width 0.3s",
+        transitionDelay: "0.3s",
+        transitionTimingFunction: "ease-out",
+        width: !open ? 33 : 0,
+        visibility: !openFinished ? "hidden" : "visible",
+      }}
+      size="small"
+      onMouseEnter={handleMouseEnter}
+    >
+      <ChevronLeftIcon />
+    </IconButton>
+  );
+
   if (error) return `Error! ${error.message}`;
 
   return (
-    <Select
-      sx={{ width: 200 }}
-      labelId="demo-multiple-checkbox-label"
-      id="demo-multiple-checkbox"
-      size="small"
-      multiple
-      displayEmpty
-      value={selectedFields}
-      onChange={handleChange}
-      input={<OutlinedInput />}
-      renderValue={(selected) => {
-        if (selected.length === columns.length) {
-          return <em>All Fields</em>;
-        }
-        return selected.join(", ");
+    <div
+      style={{
+        display: "flex",
+        border: "1px solid #cbcbcb",
+        borderRadius: "5px",
+        marginRight: "10px",
+        height: 38.5,
+        paddingRight: 5,
       }}
+      id="csv-download-box"
+      onMouseLeave={handleMouseLeave}
     >
-      {columns.map((column) => (
-        <MenuItem key={column.id} value={column.id}>
-          <Checkbox checked={selectedFields.indexOf(column.id) > -1} />
-          <ListItemText primary={column.label} />
-        </MenuItem>
-      ))}
-    </Select>
+      {chevronLeft}
+      <div
+        style={{
+          overflow: "hidden",
+          transition: "width 0.8s",
+          transitionTimingFunction: "ease-out",
+          width: open ? 210 : 0,
+        }}
+      >
+        <FormControl variant="standard" sx={{ m: 1 }}>
+          <Select
+            sx={{ width: 200 }}
+            disableUnderline
+            labelId="demo-multiple-checkbox-label"
+            id="demo-multiple-checkbox"
+            size="small"
+            multiple
+            value={selectedFields}
+            onChange={handleChange}
+            renderValue={(selected) => {
+              if (selected.length === columns.length) {
+                return <em>All Fields</em>;
+              }
+              return selected.join(", ");
+            }}
+          >
+            {columns.map((column) => (
+              <MenuItem key={column.id} value={column.id}>
+                <Checkbox checked={selectedFields.indexOf(column.id) > -1} />
+                <ListItemText primary={column.label} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+      {csvButton}
+    </div>
   );
 }
