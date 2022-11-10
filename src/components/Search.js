@@ -3,17 +3,16 @@ import TextField from "@mui/material/TextField";
 import SearchContext from "../context/search";
 
 export default function Search() {
-  const { search, setSearch } = useContext(SearchContext);
+  const { searchValue, setSearchValue } = useContext(SearchContext);
   return (
     <TextField
       sx={{ minWidth: 180, pr: 2 }}
       label="Search"
       type="search"
       size="small"
-      value={search}
-      defaultValue={""}
+      value={searchValue}
       onChange={(event) => {
-        setSearch(event.target.value);
+        setSearchValue(event.target.value);
       }}
     />
   );

@@ -4,17 +4,21 @@ import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
 import Alert from "../../components/common/Alert";
 import SearchContext from "../../context/search";
+import FilterContext from "../../context/filter";
 import useDebounce from "../../components/utilities/UseDebounce";
+
 const ALL_PROJECTS = gql`
   query PrivateCloudProjectsPaginated(
     $offset: Int!
     $limit: Int!
     $search: String
+    $filter: FilterPrivateCloudProjectsInput
   ) {
     privateCloudProjectsPaginated(
       offset: $offset
       limit: $limit
       search: $search
+      filter: $filter
     ) {
       count
       projects {
@@ -48,6 +52,7 @@ const ALL_PROJECTS = gql`
 
 export default function Projects() {
   const { search } = useContext(SearchContext);
+  const { filter } = useContext(FilterContext);
   const debouncedSearch = useDebounce(search, 450);
 
   const { loading, data, fetchMore, refetch, error } = useQuery(ALL_PROJECTS, {
@@ -55,6 +60,10 @@ export default function Projects() {
       offset: 0,
       limit: 10,
       search: null,
+      filter: {
+        cluster: null,
+        ministry: null,
+      },
     },
   });
 
@@ -63,8 +72,9 @@ export default function Projects() {
       search: debouncedSearch,
       offset: 0,
       limit: 10,
+      filter,
     });
-  }, [debouncedSearch, refetch]);
+  }, [filter, debouncedSearch, refetch]);
 
   // useCallback is required to prevet fetchMore from being called on every render
   const getNextPage = useCallback(
@@ -73,10 +83,11 @@ export default function Projects() {
         variables: {
           offset: page * pageSize,
           limit: pageSize,
+          filter,
           search: debouncedSearch,
         },
       }),
-    [debouncedSearch, fetchMore]
+    [filter, debouncedSearch, fetchMore]
   );
 
   if (error) {

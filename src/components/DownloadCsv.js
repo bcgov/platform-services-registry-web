@@ -11,6 +11,7 @@ import { columns } from "../pages/projects/helpers";
 import Papa from "papaparse";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import SearchContext from "../context/search";
+import FilterContext from "../context/filter";
 
 export const USER_FIELDS = gql`
   fragment UserFields on User {
@@ -84,7 +85,7 @@ const dowloadCsv = (csvString) => {
   elem.removeChild(link);
 };
 
-export default function DownloadCsv({ ministry, cluster }) {
+export default function DownloadCsv() {
   const [open, setOpen] = useState(false);
   const [openFinished, setOpenFinished] = useState(false);
   const [selectedFields, setSelectedFields] = useState(
@@ -93,6 +94,7 @@ export default function DownloadCsv({ ministry, cluster }) {
 
   // Create shared context for ministry, cluster, search (instead of passing them down as props)
   const { search } = useContext(SearchContext);
+  const { filter } = useContext(FilterContext);
 
   const handleChange = (event) => {
     const {
@@ -117,11 +119,8 @@ export default function DownloadCsv({ ministry, cluster }) {
 
   const [getCsvData, { data, error }] = useLazyQuery(GET_CSV_DATA, {
     variables: {
-      filter: {
-        ministry: ministry,
-        cluster: cluster,
-      },
-      search: search,
+      filter,
+      search,
     },
   });
 
@@ -168,7 +167,7 @@ export default function DownloadCsv({ ministry, cluster }) {
 
       dowloadCsv(csvString);
     }
-  }, [data]);
+  }, [data, dowloadCsv, selectedFields]);
 
   const csvButton = (
     <IconButton
