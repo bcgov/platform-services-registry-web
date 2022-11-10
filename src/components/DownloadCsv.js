@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { gql, useLazyQuery } from "@apollo/client";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import IconButton from "@mui/material/IconButton";
@@ -10,6 +10,7 @@ import Checkbox from "@mui/material/Checkbox";
 import { columns } from "../pages/projects/helpers";
 import Papa from "papaparse";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import SearchContext from "../context/search";
 
 export const USER_FIELDS = gql`
   fragment UserFields on User {
@@ -83,13 +84,15 @@ const dowloadCsv = (csvString) => {
   elem.removeChild(link);
 };
 
-export default function DownloadCsv({ ministry, cluster, search }) {
-  // Create shared context for ministry, cluster, search (instead of passing them down as props)
+export default function DownloadCsv({ ministry, cluster }) {
   const [open, setOpen] = useState(false);
   const [openFinished, setOpenFinished] = useState(false);
   const [selectedFields, setSelectedFields] = useState(
     columns.map((column) => column.id)
   );
+
+  // Create shared context for ministry, cluster, search (instead of passing them down as props)
+  const { search } = useContext(SearchContext);
 
   const handleChange = (event) => {
     const {
@@ -127,9 +130,9 @@ export default function DownloadCsv({ ministry, cluster, search }) {
       const flattenedPrivateCloudProjects =
         data.privateCloudProjectsWithFilterSearch.map(flattenProject);
 
-      // Replace the project owner header with the ones below
       const columns = [...selectedFields];
-      const technicalLeadsIndex = columns.indexOf("technicalLeads");
+
+      // Replace the project owner header with the ones below
       const projectOwnerIndex = columns.indexOf("projectOwner");
 
       if (projectOwnerIndex > -1) {
@@ -141,6 +144,9 @@ export default function DownloadCsv({ ministry, cluster, search }) {
           "projectOwnerGithubId"
         );
       }
+
+      const technicalLeadsIndex = columns.indexOf("technicalLeads");
+
       // Replace the technicalLeads header with the ones below
       if (technicalLeadsIndex > -1) {
         columns.splice(
@@ -155,6 +161,7 @@ export default function DownloadCsv({ ministry, cluster, search }) {
           "secondaryTechnicalLeadGithubId"
         );
       }
+
       const csvString = Papa.unparse(flattenedPrivateCloudProjects, {
         columns,
       });

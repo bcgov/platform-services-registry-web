@@ -1,9 +1,4 @@
-import React, { useState, useContext } from "react";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+import React, { useContext } from "react";
 import TextField from "@mui/material/TextField";
 import SearchContext from "../context/search";
 
@@ -15,10 +10,7 @@ export default function Search() {
       label="Search"
       type="search"
       size="small"
-      // onChange={(event) => {
-      //   setSearch(event.target.value);
-      //   refetch({ search: event.target.value });
-      // }}
+      value={search}
       onChange={(event) => {
         setSearch(event.target.value);
       }}

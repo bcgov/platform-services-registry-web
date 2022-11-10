@@ -66,7 +66,7 @@ export default function Projects() {
     });
   }, [debouncedSearch, refetch]);
 
-  // useCallback is required to prevet refetch from being called on every render
+  // useCallback is required to prevet fetchMore from being called on every render
   const getNextPage = useCallback(
     (page, pageSize) =>
       fetchMore({
