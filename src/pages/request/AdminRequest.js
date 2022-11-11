@@ -161,12 +161,12 @@ export default function Request() {
   });
 
   const [
-    createPrivateCloudProjectEditRequest,
+    makePrivateCloudRequestDecision,
     { data: decisionData, loading: decisionLoading, error: decisionError },
   ] = useMutation(MAKE_REQUEST_DECISION);
 
   const makeDecisionOnClick = (decision) => {
-    createPrivateCloudProjectEditRequest({
+    makePrivateCloudRequestDecision({
       variables: { requestId: id, decision },
       onCompleted: () => {
         console.log("MAKE REQUEST DECISION COMPLETED");

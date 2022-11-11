@@ -4,7 +4,6 @@ import NavToolbar from "../components/NavToolbar";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import MetaDataInput from "../components/MetaDataInput";
 import ClusterInput from "../components/ClusterInput";
 import styled from "styled-components";
