@@ -53,8 +53,16 @@ export default function Create() {
     // shouldUnregister: false,
   });
 
-  const [privateCloudProjectRequest, { data, loading, error }] =
-    useMutation(CREATE_USER_PROJECT);
+  const [privateCloudProjectRequest, { data, loading, error }] = useMutation(
+    CREATE_USER_PROJECT,
+    {
+      errorPolicy: "ignore", // Query to refetch might not have been called yet, so ignore error
+      refetchQueries: [
+        "PrivateCloudActiveRequests",
+        "UserPrivateCloudActiveRequests",
+      ],
+    }
+  );
 
   const onSubmit = (data) => {
     const userProject = formDataToUserProject(data);
