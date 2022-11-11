@@ -160,6 +160,8 @@ export default function Request() {
     variables: { requestId: id },
   });
 
+  console.log("adminRequestData", adminRequestData);
+
   const [
     makePrivateCloudRequestDecision,
     { data: decisionData, loading: decisionLoading, error: decisionError },

@@ -42,16 +42,16 @@ const quotaSchema = {
 };
 
 const commonComponentsSchema = {
-  addressAndGeolocation: yup.string(),
-  workflowManagement: yup.string(),
-  formDesignAndSubmission: yup.string(),
-  identityManagement: yup.string(),
-  paymentServices: yup.string(),
-  documentManagement: yup.string(),
-  endUserNotificationAndSubscription: yup.string(),
-  publishing: yup.string(),
-  businessIntelligence: yup.string(),
-  other: yup.string(),
+  addressAndGeolocation: yup.string().nullable(),
+  workflowManagement: yup.string().nullable(),
+  formDesignAndSubmission: yup.string().nullable(),
+  identityManagement: yup.string().nullable(),
+  paymentServices: yup.string().nullable(),
+  documentManagement: yup.string().nullable(),
+  endUserNotificationAndSubscription: yup.string().nullable(),
+  publishing: yup.string().nullable(),
+  businessIntelligence: yup.string().nullable(),
+  other: yup.string().nullable(),
   noServices: yup.boolean().required(),
 };
 

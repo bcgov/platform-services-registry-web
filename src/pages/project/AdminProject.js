@@ -128,6 +128,7 @@ const UPDATE_USER_PROJECT = gql`
   mutation Mutation(
     $projectId: ID!
     $metaData: EditProjectMetaDataInput
+    $commonComponents: CommonComponentsInput
     $productionQuota: QuotaInput
     $developmentQuota: QuotaInput
     $testQuota: QuotaInput
@@ -136,6 +137,7 @@ const UPDATE_USER_PROJECT = gql`
     privateCloudProjectEditRequest(
       projectId: $projectId
       metaData: $metaData
+      commonComponents: $commonComponents
       productionQuota: $productionQuota
       developmentQuota: $developmentQuota
       testQuota: $testQuota
@@ -187,6 +189,8 @@ export default function Project() {
     setValue,
     formState: { isDirty, dirtyFields, errors },
   } = useForm({ resolver: yupResolver(schema) });
+
+  console.log("errors", errors);
 
   const onSubmit = (data) => {
     console.log("SUBMIT");

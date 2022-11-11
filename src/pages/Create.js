@@ -66,9 +66,6 @@ export default function Create() {
   const onSubmit = (data) => {
     const userProject = formDataToUserProject(data);
 
-    console.log("USER PROJECT");
-    console.log(userProject);
-
     privateCloudProjectRequest({
       variables: {
         ...userProject,
