@@ -74,6 +74,42 @@ const flattenProject = (project) => {
   };
 };
 
+// Replaces technicalLead or projectOwner with seperate headers for the name, email, and githubId
+const transformSelectedFields = (selectedFields) => {
+  const columns = [...selectedFields];
+  // Replace the project owner header with the ones below
+  const projectOwnerIndex = columns.indexOf("projectOwner");
+
+  if (projectOwnerIndex > -1) {
+    columns.splice(
+      projectOwnerIndex,
+      1,
+      "projectOwnerName",
+      "projectOnwerEmail",
+      "projectOwnerGithubId"
+    );
+  }
+
+  const technicalLeadsIndex = columns.indexOf("technicalLeads");
+
+  // Replace the technicalLeads header with the ones below
+  if (technicalLeadsIndex > -1) {
+    columns.splice(
+      technicalLeadsIndex,
+      1,
+
+      "primaryTechnicalLeadName",
+      "primaryTechnicalLeadEmail",
+      "primaryTechnicalLeadGithubId",
+      "secondaryTechnicalLeadName",
+      "secondaryTechnicalLeadEmail",
+      "secondaryTechnicalLeadGithubId"
+    );
+  }
+
+  return columns;
+};
+
 const downloadCsv = (csvString) => {
   let csvContent = "data:text/csv;charset=utf-8," + csvString;
   let encodedUri = encodeURI(csvContent);
@@ -118,45 +154,16 @@ export default function DownloadCsv() {
   }, [open]);
 
   const [getCsvData, { data, error }] = useLazyQuery(GET_CSV_DATA, {
-    fetchPolicy: "no-cache",
+    fetchPolicy: "no-cache", // Prevents error where query is called on every render
   });
 
+  // Generate and download the csv file when the data is returned from the query
   useEffect(() => {
     if (data) {
       const flattenedPrivateCloudProjects =
         data.privateCloudProjectsWithFilterSearch.map(flattenProject);
 
-      const columns = [...selectedFields];
-
-      // Replace the project owner header with the ones below
-      const projectOwnerIndex = columns.indexOf("projectOwner");
-
-      if (projectOwnerIndex > -1) {
-        columns.splice(
-          projectOwnerIndex,
-          1,
-          "projectOwnerName",
-          "projectOnwerEmail",
-          "projectOwnerGithubId"
-        );
-      }
-
-      const technicalLeadsIndex = columns.indexOf("technicalLeads");
-
-      // Replace the technicalLeads header with the ones below
-      if (technicalLeadsIndex > -1) {
-        columns.splice(
-          technicalLeadsIndex,
-          1,
-
-          "primaryTechnicalLeadName",
-          "primaryTechnicalLeadEmail",
-          "primaryTechnicalLeadGithubId",
-          "secondaryTechnicalLeadName",
-          "secondaryTechnicalLeadEmail",
-          "secondaryTechnicalLeadGithubId"
-        );
-      }
+      const columns = transformSelectedFields(selectedFields);
 
       const csvString = Papa.unparse(flattenedPrivateCloudProjects, {
         columns,
@@ -165,6 +172,21 @@ export default function DownloadCsv() {
       downloadCsv(csvString);
     }
   }, [data, downloadCsv, Papa, selectedFields, flattenProject]);
+
+  const csvDownloadButton = (
+    <IconButton
+      size="small"
+      onClick={() => {
+        getCsvData({
+          variables: { filter, search: debouncedSearch },
+        });
+      }}
+      onMouseEnter={handleMouseEnter}
+      disabled={!selectedFields.length > 0}
+    >
+      <CloudDownloadIcon />
+    </IconButton>
+  );
 
   const chevronLeft = (
     <IconButton
@@ -233,20 +255,7 @@ export default function DownloadCsv() {
           </Select>
         </FormControl>
       </div>
-      <IconButton
-        size="small"
-        onClick={() => {
-          console.log("clicked");
-
-          getCsvData({
-            variables: { filter, search: debouncedSearch },
-          });
-        }}
-        onMouseEnter={handleMouseEnter}
-        disabled={!selectedFields.length > 0}
-      >
-        <CloudDownloadIcon />
-      </IconButton>
+      {csvDownloadButton}
     </div>
   );
 }
