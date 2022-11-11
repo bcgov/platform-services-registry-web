@@ -166,7 +166,9 @@ export default function Project() {
       loading: editProjectLoading,
       error: editProjectError,
     },
-  ] = useMutation(UPDATE_USER_PROJECT);
+  ] = useMutation(UPDATE_USER_PROJECT, {
+    refetchQueries: ["PrivateCloudActiveRequests"],
+  });
 
   const privateCloudProject = projectData?.privateCloudProject;
   const initialFormData = userProjectToFormData(privateCloudProject);

@@ -163,7 +163,9 @@ export default function Project() {
       loading: editProjectLoading,
       error: editProjectError,
     },
-  ] = useMutation(UPDATE_USER_PROJECT);
+  ] = useMutation(UPDATE_USER_PROJECT, {
+    refetchQueries: ["UserPrivateCloudActiveRequests"],
+  });
 
   const {
     control,
