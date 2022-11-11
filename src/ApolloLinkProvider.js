@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 import {
   ApolloClient,
   ApolloProvider,
@@ -52,7 +52,6 @@ export default function ApolloAuthProvider({ children }) {
               const { offset = 0 } = args;
 
               if (incoming) {
-                // console.log(args)
                 if (args) {
                   for (let i = 0; i < incoming.projects.length; ++i) {
                     merged[offset + i] = incoming.projects[i];

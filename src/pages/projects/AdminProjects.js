@@ -5,7 +5,6 @@ import StickyTable from "../../components/common/Table";
 import Alert from "../../components/common/Alert";
 import SearchContext from "../../context/search";
 import FilterContext from "../../context/filter";
-import useDebounce from "../../components/utilities/UseDebounce";
 
 const ALL_PROJECTS = gql`
   query PrivateCloudProjectsPaginated(
@@ -51,9 +50,8 @@ const ALL_PROJECTS = gql`
 `;
 
 export default function Projects() {
-  const { search } = useContext(SearchContext);
+  const { debouncedSearch } = useContext(SearchContext);
   const { filter } = useContext(FilterContext);
-  const debouncedSearch = useDebounce(search, 450);
 
   const { loading, data, fetchMore, refetch, error } = useQuery(ALL_PROJECTS, {
     variables: {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { gql, useLazyQuery } from "@apollo/client";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import IconButton from "@mui/material/IconButton";
@@ -74,12 +74,12 @@ const flattenProject = (project) => {
   };
 };
 
-const dowloadCsv = (csvString) => {
+const downloadCsv = (csvString) => {
   let csvContent = "data:text/csv;charset=utf-8," + csvString;
   let encodedUri = encodeURI(csvContent);
   let link = document.createElement("a");
   link.setAttribute("href", encodedUri);
-  link.setAttribute("download", "platform-registry-products");
+  link.setAttribute("download", "Project_Registry.csv");
   const elem = document.getElementById("csv-download-box");
   elem.appendChild(link).click();
   elem.removeChild(link);
@@ -93,7 +93,7 @@ export default function DownloadCsv() {
   );
 
   // Create shared context for ministry, cluster, search (instead of passing them down as props)
-  const { search } = useContext(SearchContext);
+  const { debouncedSearch } = useContext(SearchContext);
   const { filter } = useContext(FilterContext);
 
   const handleChange = (event) => {
@@ -118,10 +118,7 @@ export default function DownloadCsv() {
   }, [open]);
 
   const [getCsvData, { data, error }] = useLazyQuery(GET_CSV_DATA, {
-    variables: {
-      filter,
-      search,
-    },
+    fetchPolicy: "no-cache",
   });
 
   useEffect(() => {
@@ -165,20 +162,9 @@ export default function DownloadCsv() {
         columns,
       });
 
-      dowloadCsv(csvString);
+      downloadCsv(csvString);
     }
-  }, [data, dowloadCsv, selectedFields]);
-
-  const csvButton = (
-    <IconButton
-      size="small"
-      onClick={() => getCsvData()}
-      onMouseEnter={handleMouseEnter}
-      disabled={!selectedFields.length > 0}
-    >
-      <CloudDownloadIcon />
-    </IconButton>
-  );
+  }, [data, downloadCsv, Papa, selectedFields, flattenProject]);
 
   const chevronLeft = (
     <IconButton
@@ -201,6 +187,7 @@ export default function DownloadCsv() {
 
   return (
     <div
+      id="csv-download-box"
       style={{
         display: "flex",
         border: "1px solid #cbcbcb",
@@ -209,7 +196,6 @@ export default function DownloadCsv() {
         height: 38.5,
         paddingRight: 5,
       }}
-      id="csv-download-box"
       onMouseLeave={handleMouseLeave}
     >
       {chevronLeft}
@@ -247,7 +233,20 @@ export default function DownloadCsv() {
           </Select>
         </FormControl>
       </div>
-      {csvButton}
+      <IconButton
+        size="small"
+        onClick={() => {
+          console.log("clicked");
+
+          getCsvData({
+            variables: { filter, search: debouncedSearch },
+          });
+        }}
+        onMouseEnter={handleMouseEnter}
+        disabled={!selectedFields.length > 0}
+      >
+        <CloudDownloadIcon />
+      </IconButton>
     </div>
   );
 }
