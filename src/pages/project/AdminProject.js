@@ -154,11 +154,28 @@ export default function Project() {
   const navigate = useNavigate();
 
   const {
+    control,
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    formState: { isDirty, dirtyFields, errors },
+  } = useForm({ resolver: yupResolver(schema) });
+
+  const {
     loading: projectLoading,
     data: projectData,
     error: projectError,
+    refetch,
   } = useQuery(PROJECT, {
+    fetchPolicy: "network-only",
     variables: { projectId: id },
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data) => {
+      const project = data.privateCloudProject;
+      const formData = userProjectToFormData(project);
+      reset(formData);
+    },
   });
 
   const [
@@ -173,24 +190,6 @@ export default function Project() {
   });
 
   const privateCloudProject = projectData?.privateCloudProject;
-  const initialFormData = userProjectToFormData(privateCloudProject);
-
-  useEffect(() => {
-    if (!projectLoading && !projectError) {
-      reset(userProjectToFormData(privateCloudProject));
-    }
-  }, [projectLoading, projectError, privateCloudProject]);
-
-  const {
-    control,
-    handleSubmit,
-    reset,
-    watch,
-    setValue,
-    formState: { isDirty, dirtyFields, errors },
-  } = useForm({ resolver: yupResolver(schema) });
-
-  console.log("errors", errors);
 
   const onSubmit = (data) => {
     console.log("SUBMIT");
@@ -217,7 +216,6 @@ export default function Project() {
           setValue,
           watch,
           isDirty,
-          initialValues: initialFormData,
           isDisabled: privateCloudProject?.activeEditRequest?.active,
         }}
       >
@@ -225,7 +223,10 @@ export default function Project() {
           <IconButton
             sx={{ mr: 2 }}
             disabled={!isDirty}
-            onClick={() => reset(initialFormData)}
+            // onClick={() => reset(initialFormData)}
+            onClick={() => {
+              refetch({ projectId: id });
+            }}
             aria-label="delete"
           >
             <RestartAltIcon />

@@ -18,6 +18,7 @@ const USER_BY_EMAIL = gql`
       githubId
       firstName
       lastName
+      email
     }
   }
 `;
@@ -56,7 +57,8 @@ export default function UserInput({ name }) {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
+    reset,
+    formState: { errors, isDirty },
   } = useForm({
     resolver: yupResolver(schema),
     // shouldUnregister: false,
@@ -66,60 +68,48 @@ export default function UserInput({ name }) {
     setValue: parentSetValue,
     watch: parentWatch,
     errors: parentErrors,
-    initialValues,
     isDisabled,
   } = useFormContext();
-
-  const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
-    errorPolicy: "ignore",
-  });
 
   const parentEmail = parentWatch(name);
   const email = watch("email");
   const debouncedEmail = useDebounce(email, 500);
   const debouncedGithubId = useDebounce(watch("githubId"), 500);
 
-  // Update form with user data when it is returned from the API
-  useEffect(() => {
-    setValue("githubId", data?.userByEmail?.githubId, {
-      shouldValidate: false,
-    });
-    setValue("firstName", data?.userByEmail?.firstName, {
-      shouldValidate: false,
-    });
-    setValue("lastName", data?.userByEmail?.lastName, {
-      shouldValidate: false,
-    });
-  }, [loading, data, setValue]);
+  const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
+    errorPolicy: "ignore",
+    onCompleted: (data) => {
+      if (data.userByEmail) {
+        reset(data.userByEmail);
+      }
+    },
+  });
 
-  // Reset the email to the initial value when the parent email is reset
   useEffect(() => {
-    if (initialValues && parentEmail === initialValues[name]) {
-      setValue("email", initialValues[name]);
+    if (parentEmail) {
+      console.log("parentEmail", parentEmail);
+      getUser({
+        errorPolicy: "ignore",
+        variables: { email: parentEmail },
+      });
     }
-  }, [parentEmail, initialValues, name, setValue]);
+  }, [parentEmail]);
 
-  // // Update the parent form with the email value and fetch new data when debouncedEmail changes
   useEffect(() => {
-    parentSetValue(name, debouncedEmail, { shouldDirty: true });
-    getUser({
-      errorPolicy: "ignore",
-      variables: { email: debouncedEmail },
-    });
-  }, [debouncedEmail, data, name, getUser, parentSetValue]);
-
-  // // Clear rest of the form if email changes
-  useEffect(() => {
-    setValue("githubId", "", {
-      shouldValidate: false,
-    });
-    setValue("firstName", "", {
-      shouldValidate: false,
-    });
-    setValue("lastName", "", {
-      shouldValidate: false,
-    });
-  }, [email, setValue]);
+    if (isDirty) {
+      console.log("IS DIRTY");
+      parentSetValue(name, debouncedEmail, { shouldDirty: true });
+      setValue("githubId", "", {
+        shouldValidate: false,
+      });
+      setValue("firstName", "", {
+        shouldValidate: false,
+      });
+      setValue("lastName", "", {
+        shouldValidate: false,
+      });
+    }
+  }, [isDirty, debouncedEmail]);
 
   const onSubmit = (data) => {
     createUser({
