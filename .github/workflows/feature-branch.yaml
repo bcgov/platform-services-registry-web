@@ -11,19 +11,17 @@ on:
       - "src/**/*"
       - "package.json"
       - "public/*"
-
   workflow_dispatch:
-
 
 jobs:
   web_build:
-  runs-on: ubuntu-latest
-  defaults:
-    run:
-     working-directory: .
-  strategy:
-    matrix:
-      node-version: [14.x, 12.x]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+       working-directory: .
+    strategy:
+      matrix:
+        node-version: [14.x, 12.x]
     steps:
       - uses: actions/checkout@v3
         with:
