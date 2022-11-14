@@ -20,7 +20,7 @@ jobs:
   runs-on: ubuntu-latest
   defaults:
     run:
-     working-directory: ./
+     working-directory: .
   strategy:
     matrix:
       node-version: [14.x, 12.x]
@@ -59,7 +59,7 @@ jobs:
           wait-on-timeout: 30
           build: npm i -D cypress
           headless: true
-          working-directory: ./web
+          working-directory: .
 
       - name: Save Cypress video files
         uses: actions/upload-artifact@v2
