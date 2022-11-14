@@ -9,7 +9,7 @@ objects:
   - apiVersion: v1
     kind: ImageStream
     metadata:
-      name: ${NAME}-web
+      name: ${NAME}-web-${GIT_REF}
       labels:
         app: ${NAME}-web
   - apiVersion: v1
@@ -23,7 +23,7 @@ objects:
       output:
         to:
           kind: ImageStreamTag
-          name: ${NAME}-web:${OUTPUT_IMAGE_TAG}
+          name: ${NAME}-web-${GIT_REF}:${OUTPUT_IMAGE_TAG}
       resources:
         limits:
           cpu: ${CPU_LIMIT}
