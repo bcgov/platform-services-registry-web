@@ -180,8 +180,7 @@ const formDataToUserProject = (data, dirtyFields) => {
     other,
   } = changedFields;
 
-  console.log("CHANGED FIELDS");
-  console.log(changedFields);
+
 
   // const selectedCommonComponents = Object.fromEntries(
   //   Object.entries(commonComponents).filter(([_, v]) => v != null)

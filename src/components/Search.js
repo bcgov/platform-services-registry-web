@@ -12,7 +12,6 @@ export default function Search() {
       size="small"
       value={searchValue}
       onChange={(event) => {
-        console.log("CHANGE", event.target.value);
         setSearchValue(event.target.value);
       }}
     />

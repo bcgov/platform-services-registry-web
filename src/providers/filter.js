@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import FilterContext from "../context/filter";
 
 function FilterProvider({ children }) {
@@ -8,11 +8,16 @@ function FilterProvider({ children }) {
   const filter = {
     ministry: ministry !== "" ? ministry : null,
     cluster: cluster !== "" ? cluster : null,
-  }
+  };
+
+  const value = useMemo(
+    () => ({ filter, setMinistry, setCluster }),
+    [filter, setMinistry, setCluster]
+  );
 
   return (
     <FilterContext.Provider
-      value={{ ministry , setMinistry, cluster, setCluster, filter }}
+      value={value}
     >
       {children}
     </FilterContext.Provider>

@@ -13,37 +13,33 @@ const ALL_PROJECTS = gql`
     $search: String
     $filter: FilterPrivateCloudProjectsInput
   ) {
+    privateCloudProjectsCount(search: $search, filter: $filter)
     privateCloudProjectsPaginated(
       offset: $offset
       limit: $limit
       search: $search
       filter: $filter
     ) {
-      count
-      projects {
-        ... on PrivateCloudProject {
-          id
-          name
-          description
-          cluster
-          ministry
-          licencePlate
-          projectOwner {
-            firstName
-            lastName
-            githubId
-          }
-          primaryTechnicalLead {
-            firstName
-            lastName
-            githubId
-          }
-          secondaryTechnicalLead {
-            firstName
-            lastName
-            githubId
-          }
-        }
+      id
+      name
+      description
+      cluster
+      ministry
+      licencePlate
+      projectOwner {
+        firstName
+        lastName
+        githubId
+      }
+      primaryTechnicalLead {
+        firstName
+        lastName
+        githubId
+      }
+      secondaryTechnicalLead {
+        firstName
+        lastName
+        githubId
       }
     }
   }
@@ -54,37 +50,26 @@ export default function Projects() {
   const { filter } = useContext(FilterContext);
 
   const { loading, data, fetchMore, refetch, error } = useQuery(ALL_PROJECTS, {
+    nextFetchPolicy: "cache-first",
     variables: {
       offset: 0,
       limit: 10,
-      search: null,
-      filter: {
-        cluster: null,
-        ministry: null,
-      },
+      search: debouncedSearch,
+      filter,
     },
   });
 
-  useEffect(() => {
-    refetch({
-      search: debouncedSearch,
-      offset: 0,
-      limit: 10,
-      filter,
-    });
-  }, [filter, debouncedSearch, refetch]);
-
-  // useCallback is required to prevet fetchMore from being called on every render
   const getNextPage = useCallback(
-    (page, pageSize) =>
+    (page, pageSize) => {
       fetchMore({
         variables: {
           offset: page * pageSize,
           limit: pageSize,
+          debouncedSearch,
           filter,
-          search: debouncedSearch,
         },
-      }),
+      });
+    },
     [filter, debouncedSearch, fetchMore]
   );
 
@@ -98,11 +83,9 @@ export default function Projects() {
       onNextPage={getNextPage}
       columns={columns}
       rows={
-        loading
-          ? []
-          : data.privateCloudProjectsPaginated.projects.map(projectsToRows)
+        loading ? [] : data.privateCloudProjectsPaginated.map(projectsToRows)
       }
-      count={loading ? 0 : data.privateCloudProjectsPaginated.count}
+      count={loading ? 0 : data.privateCloudProjectsCount}
       title="Projects"
       loading={loading}
     />

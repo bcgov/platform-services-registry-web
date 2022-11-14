@@ -39,7 +39,7 @@ export default function TabsToolbar({ routes, createButtonRoute }) {
             <Tab component={Link} label="Projects" to={routes[1]} />
           </Tabs>
         </Box>
-        <TabForm />
+        {pathname === routes[1] ? <TabForm /> : null}
         <Button
           component={Link}
           to={createButtonRoute}

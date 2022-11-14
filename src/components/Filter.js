@@ -7,8 +7,8 @@ import FilterContext from "../context/filter";
 import { ministries, clusters } from "./common/Constants";
 
 export default function Filter() {
-  const { ministry, setMinistry, cluster, setCluster } =
-    useContext(FilterContext);
+  const { setMinistry, setCluster, filter } = useContext(FilterContext);
+  const { ministry, cluster } = filter;
 
   return (
     <div

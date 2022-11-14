@@ -25,16 +25,13 @@ export default function StickyTable({
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    onNextPage(newPage, rowsPerPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
-  useEffect(() => {
-    onNextPage(page, rowsPerPage);
-  }, [page, rowsPerPage, onNextPage]);
 
   const handleRowClick = (id) => {
     navigate(onClickPath + id);

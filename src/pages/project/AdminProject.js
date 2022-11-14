@@ -192,8 +192,6 @@ export default function Project() {
   const privateCloudProject = projectData?.privateCloudProject;
 
   const onSubmit = (data) => {
-    console.log("SUBMIT");
-
     const userProject = formDataToUserProject(data, dirtyFields);
 
     createPrivateCloudProjectEditRequest({
@@ -223,7 +221,6 @@ export default function Project() {
           <IconButton
             sx={{ mr: 2 }}
             disabled={!isDirty}
-            // onClick={() => reset(initialFormData)}
             onClick={() => {
               refetch({ projectId: id });
             }}

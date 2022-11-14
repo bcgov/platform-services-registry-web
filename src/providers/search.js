@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import SearchContext from "../context/search";
 import useDebounce from "../hooks/useDebounce";
 
@@ -7,9 +7,14 @@ function SearchProvider({ children }) {
   const search = searchValue !== "" ? searchValue : null;
   const debouncedSearch = useDebounce(search, 450);
 
+  const value = useMemo(
+    () => ({ searchValue, setSearchValue, debouncedSearch }),
+    [searchValue, setSearchValue, debouncedSearch]
+  );
+
   return (
     <SearchContext.Provider
-      value={{ search, debouncedSearch, searchValue, setSearchValue }}
+      value={value}
     >
       {children}
     </SearchContext.Provider>

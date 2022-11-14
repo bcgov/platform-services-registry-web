@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React from "react";
 import {
   ApolloClient,
   ApolloProvider,
@@ -8,9 +8,11 @@ import {
   from,
   concat,
 } from "@apollo/client";
+import { offsetLimitPagination } from "@apollo/client/utilities";
 import { useKeycloak } from "@react-keycloak/web";
 import { onError } from "@apollo/client/link/error";
-import config from './config'
+import config from "./config";
+
 // Log any GraphQL errors or network error that occurred
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
@@ -45,25 +47,7 @@ export default function ApolloAuthProvider({ children }) {
     typePolicies: {
       Query: {
         fields: {
-          privateCloudProjectsPaginated: {
-            keyArgs: false,
-            merge(existing, incoming, { args }) {
-              const merged = existing ? existing.projects.slice(0) : [];
-              const { offset = 0 } = args;
-
-              if (incoming) {
-                if (args) {
-                  for (let i = 0; i < incoming.projects.length; ++i) {
-                    merged[offset + i] = incoming.projects[i];
-                  }
-                } else {
-                  throw Error("args not defined");
-                }
-              }
-
-              return { ...incoming, projects: merged };
-            },
-          },
+          privateCloudProjectsPaginated: offsetLimitPagination(["search", "filter"]),
         },
       },
     },
