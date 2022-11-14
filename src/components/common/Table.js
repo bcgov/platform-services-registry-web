@@ -15,8 +15,8 @@ export default function StickyTable({
   rows,
   loading,
   onClickPath,
-  onNextPage = () => "",
-  count = rows.length,
+  onNextPage,
+  count,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -48,7 +48,7 @@ export default function StickyTable({
                   key={column.id}
                   align={column.align}
                   style={{
-                    minWidth: column.minWidth,
+                    width: column.width,
                     fontSize: 18,
                     color: "#3c4043",
                     paddingLeft: 24,
@@ -94,7 +94,7 @@ export default function StickyTable({
                         return (
                           <TableCell
                             style={{
-                              maxWidth: 250,
+                              width: column.width,
                               verticalAlign: "top",
                               fontSize: 18,
                               color: "#3c4043",
