@@ -11,7 +11,6 @@ on:
       - "src/**/*"
       - "package.json"
       - "public/*"
-
   workflow_dispatch:
 
 jobs:
