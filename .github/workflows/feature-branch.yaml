@@ -79,7 +79,7 @@ jobs:
   #         exit 1
 
   web_s2i_build:
-    needs: web_build
+    # needs: web_build
     runs-on: ubuntu-latest
     concurrency: platsrv-registry-web
     defaults:
