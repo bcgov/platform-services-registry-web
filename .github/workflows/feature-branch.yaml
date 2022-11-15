@@ -1,3 +1,4 @@
+name: Dev - build from feature branch
 on:
   # Build for Test when a pull request is merged into master with changes to
   # certain api, db, or web files.
@@ -104,4 +105,26 @@ jobs:
           oc -n 101ed4-tools tag platsrv-registry-web@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:dev
           echo "::set-output name=imagesha::$IMAGESHA"
 
-
+      # Prepare Kustomize and update manifests
+      # --------------------------------------
+      - name: Prepare deploy key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+      - name: Check out manifest repo
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+          repository: ${{ secrets.MANIFEST_REPO }}
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v1
+      - name: Set global git config
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      - name: Update web image ID
+        run: |
+          cd new-platform-registry-app/overlays/dev
+          kustomize edit set image "registry-web-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-web@hiahiahia"
+          git commit -am "Update web image ID for Dev"
+          git push origin
