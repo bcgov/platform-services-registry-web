@@ -93,17 +93,17 @@ jobs:
       # Get the SHA256 signature of the image
       # Tag the image with the commit ID and "test"
       # ---------------------------------------------
-      # - name: Build and tag the image
-      #   id: build-web-image
-      #   run: |
-      #     oc version
-      #     oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
-      #     oc -n 101ed4-tools start-build platsrv-registry-web-feature-branch-build --follow
-      #     export BUILDID="$(oc -n 101ed4-tools get -o=jsonpath="{.status.lastVersion}" buildconfig platsrv-registry-web-feature-branch-build)"
-      #     export COMMITID="$(oc -n 101ed4-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-web-feature-branch-build-$BUILDID | cut -c1-7)"
-      #     export IMAGESHA="$(oc -n 101ed4-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-web-feature-branch-build-$BUILDID)"
-      #     oc -n 101ed4-tools tag platsrv-registry-web@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:dev
-      #     echo "::set-output name=imagesha::$IMAGESHA"
+      - name: Build and tag the image
+        id: build-web-image
+        run: |
+          oc version
+          oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+          oc -n 101ed4-tools start-build platsrv-registry-web-feature-branch-build --follow
+          export BUILDID="$(oc -n 101ed4-tools get -o=jsonpath="{.status.lastVersion}" buildconfig platsrv-registry-web-feature-branch-build)"
+          export COMMITID="$(oc -n 101ed4-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-web-feature-branch-build-$BUILDID | cut -c1-7)"
+          export IMAGESHA="$(oc -n 101ed4-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-web-feature-branch-build-$BUILDID)"
+          oc -n 101ed4-tools tag platsrv-registry-web@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:dev
+          echo "::set-output name=imagesha::$IMAGESHA"
 
       # Prepare Kustomize and update manifests
       # --------------------------------------
