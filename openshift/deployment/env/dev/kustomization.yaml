@@ -5,8 +5,8 @@ bases:
   - ../../base
 patches:
   - deployment.web_env.patch.yaml
-  - route.photo-sharing-web.yaml
+  - route.dev.yaml
 images:
   - name: platsrv-registry-web-main-build
-    newName: image-registry.openshift-image-registry.svc:5000/101ed4-tools/platsrv-registry-web
+    newName: image-registry.openshift-image-registry.svc:5000/101ed4-tools/platsrv-registry-web-main
     newTag: "latest"

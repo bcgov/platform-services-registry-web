@@ -1,0 +1,130 @@
+name: Dev - build from feature branch
+on:
+  # Build for Test when a pull request is merged into master with changes to
+  # certain api, db, or web files.
+  # If triggered manually, run all steps. 
+  # web-devops for now, change it to other branch if needed. 
+  # ------------------------------------------------------------------------
+  push:
+    branches:
+      - web-devops 
+    paths:
+      - "src/**/*"
+      - "package.json"
+      - "public/*"
+  workflow_dispatch:
+
+jobs:
+  # web_build:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #      working-directory: .
+  #   strategy:
+  #     matrix:
+  #       node-version: [14.x, 12.x]
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-node@v1
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #     - name: Cache node modules
+  #       uses: actions/cache@v1
+  #       with:
+  #         path: node_modules
+  #         key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.OS }}-build-${{ env.cache-name }}-
+  #           ${{ runner.OS }}-build-
+  #           ${{ runner.OS }}-
+  #     - name: npm install and build
+  #       run: |
+  #         npm ci
+  #         npm run build --if-present
+  #       env:
+  #         CI: "true"
+
+  #     - name: Check build result
+  #       if: ${{ failure() }}
+  #       run: echo "Error in build step"; exit 1
+
+  #     - name: Run Cypress tests
+  #       uses: cypress-io/github-action@v2
+  #       with:
+  #         start: npm start
+  #         wait-on: 'http://localhost:3000'
+  #         wait-on-timeout: 30
+  #         build: npm i -D cypress
+  #         headless: true
+  #         working-directory: .
+
+  #     - name: Save Cypress video files
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: cypress-videos
+  #         path: web/cypress/videos
+
+  #     - name: Save Cypress screenshots on failure
+  #       #if: ${{ failure() }}
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: cypress-screenshots
+  #         path: web/cypress/screenshots
+
+  #     - name: Check Cypress test result
+  #       if: ${{ failure() }}
+  #       env:
+  #         ROCKETCHAT_MESSAGE: "There was an error in the Cypress test(s) for the registry app during the ${{ github.workflow }} workflow.  View the output and download test output files at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+  #       run: |
+  #         curl -X POST -H 'Content-Type: application/json' --data '{"text":"${{ env.ROCKETCHAT_MESSAGE }}"}' "${{ secrets.ROCKETCHAT_HOOK_URL }}"
+  #         exit 1
+
+  web_s2i_build:
+    # needs: web_build
+    runs-on: ubuntu-latest
+    concurrency: platsrv-registry-web
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      # Build the image using the master build config
+      # Get its build ID
+      # Get the commit ID of that build
+      # Get the SHA256 signature of the image
+      # Tag the image with the commit ID and "test"
+      # ---------------------------------------------
+      # - name: Build and tag the image
+      #   id: build-web-image
+      #   run: |
+      #     oc version
+      #     oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+      #     oc -n 101ed4-tools start-build platsrv-registry-web-feature-branch-build --follow
+      #     export BUILDID="$(oc -n 101ed4-tools get -o=jsonpath="{.status.lastVersion}" buildconfig platsrv-registry-web-feature-branch-build)"
+      #     export COMMITID="$(oc -n 101ed4-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-web-feature-branch-build-$BUILDID | cut -c1-7)"
+      #     export IMAGESHA="$(oc -n 101ed4-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-web-feature-branch-build-$BUILDID)"
+      #     oc -n 101ed4-tools tag platsrv-registry-web@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:dev
+      #     echo "::set-output name=imagesha::$IMAGESHA"
+
+      # Prepare Kustomize and update manifests
+      # --------------------------------------
+      - name: Prepare deploy key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+      - name: Check out manifest repo
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+          repository: ${{ secrets.MANIFEST_REPO }}
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v1
+      - name: Set global git config
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      - name: Update web image ID
+        run: |
+          cd new-platform-registry-app/overlays/dev
+          kustomize edit set image "platsrv-registry-web-main-build=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-web@hiahiahia"
+          git commit -am "Update web image ID for Dev"
+          git push origin

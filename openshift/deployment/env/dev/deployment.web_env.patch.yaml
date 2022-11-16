@@ -15,4 +15,4 @@ spec:
             - name: CLIENT_ID
               value: registry-web
             - name: API_BASE_URL
-              value: https://registry-new-api-platform-registry-dev.apps.silver.devops.gov.bc.ca/graphql
+              value: https://platsrv-registry-api-101ed4.apps.silver.devops.gov.bc.ca/graphql
