@@ -24,7 +24,7 @@ jobs:
   #     matrix:
   #       node-version: [14.x, 12.x]
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@web-devops 
   #     - uses: actions/setup-node@v1
   #       with:
   #         node-version: ${{ matrix.node-version }}
@@ -125,6 +125,6 @@ jobs:
       - name: Update web image ID
         run: |
           cd new-platform-registry-app/overlays/dev
-          kustomize edit set image "platsrv-registry-web-main-build=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-web@hiahiahia"
+          kustomize edit set image "platsrv-registry-web-main-build=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-web@{{ steps.build-web-image.outputs.imagesha }}"
           git commit -am "Update web image ID for Dev"
           git push origin
