@@ -126,7 +126,7 @@ const Login = () => {
       </Box>
       <Box mb={3}>
         <Text as="h3" mb={2}>
-          Before you start
+          Before you start:
         </Text>
         <Text mb={2}>
           This website is for teams who've attended an onboarding session with
