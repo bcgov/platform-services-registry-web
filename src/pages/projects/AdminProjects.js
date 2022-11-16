@@ -79,14 +79,14 @@ export default function Projects() {
 
   return (
     <StickyTable
-      onClickPath={"/private-cloud/admin/project/"}
+      onClickPath={"/private-cloud/admin/product/"}
       onNextPage={getNextPage}
       columns={columns}
       rows={
         loading ? [] : data.privateCloudProjectsPaginated.map(projectsToRows)
       }
       count={loading ? 0 : data.privateCloudProjectsCount}
-      title="Projects"
+      title="Products"
       loading={loading}
     />
   );

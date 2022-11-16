@@ -45,7 +45,7 @@ export const AppRouter = () => {
           index
           element={
             isAdmin ? (
-              <Navigate to="/private-cloud/admin/dashboard/projects" replace />
+              <Navigate to="/private-cloud/admin/dashboard/products" replace />
             ) : (
               <Navigate to="/private-cloud/user/dashboard/requests" replace />
             )
@@ -67,16 +67,16 @@ export const AppRouter = () => {
                 <TabsToolbar
                   routes={[
                     "/private-cloud/admin/dashboard/requests",
-                    "/private-cloud/admin/dashboard/projects",
+                    "/private-cloud/admin/dashboard/products",
                   ]}
                   createButtonRoute={"/private-cloud/admin/create"}
                 />
               }
             >
-              <Route path="projects" element={<AdminProjects />} />
+              <Route path="products" element={<AdminProjects />} />
               <Route path="requests" element={<AdminRequests />} />
             </Route>
-            <Route path="project/:id" element={<AdminProject />} />
+            <Route path="product/:id" element={<AdminProject />} />
             <Route path="request/:id" element={<AdminRequest />} />
 
             <Route path="create" element={<Create />} />
@@ -95,16 +95,16 @@ export const AppRouter = () => {
                 <TabsToolbar
                   routes={[
                     "/private-cloud/user/dashboard/requests",
-                    "/private-cloud/user/dashboard/projects",
+                    "/private-cloud/user/dashboard/products",
                   ]}
                   createButtonRoute={"/private-cloud/user/create"}
                 />
               }
             >
-              <Route path="projects" element={<UserProjects />} />
+              <Route path="products" element={<UserProjects />} />
               <Route path="requests" element={<UserRequests />} />
             </Route>
-            <Route path="project/:id" element={<Project />} />
+            <Route path="product/:id" element={<Project />} />
             <Route path="request/:id" element={<UserRequest />} />
             <Route path="create" element={<Create />} />
           </Route>

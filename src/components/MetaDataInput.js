@@ -97,7 +97,7 @@ export default function MetaDataInput() {
         </FormControl>
       </div>
       <Box sx={{ p: 0, mb: 3, width: "100%" }}>
-        <TitleTypography>Project Owner</TitleTypography>
+        <TitleTypography>Product Owner</TitleTypography>
         <UserInput
           name="projectOwner"
           control={control}

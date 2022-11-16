@@ -12,7 +12,7 @@ const columns = [
   { id: "projectOwner", label: "Project Owner", minWidth: 0 },
   { id: "technicalLeads", label: "Technical Leads", minWidth: 0 },
   { id: "status", label: "Status", minWidth: 0 },
-  { id: "licensePlate", label: "License Place", minWidth: 0 },
+  { id: "licensePlate", label: "License Plate", minWidth: 0 },
 ];
 
 export const PROJECT_FIELDS = gql`

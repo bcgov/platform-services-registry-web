@@ -117,7 +117,7 @@ export default function MetaDataInput() {
       </div>
       <Paper sx={{ p: 2, mb: 3 }}>
         <Typography sx={{ mt: 0, mb: 1, fontSize: 17 }}>
-          Project Owner
+          Product Owner
         </Typography>
         <Controller
           name="projectOwner"

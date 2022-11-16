@@ -94,7 +94,7 @@ const columns = [
   { id: "cluster", label: "Cluster", minWidth: 0 },
   { id: "projectOwner", label: "Project Owner", minWidth: 0 },
   { id: "technicalLeads", label: "Technical Leads", minWidth: 0 },
-  { id: "licencePlate", label: "License Place", minWidth: 0 },
+  { id: "licencePlate", label: "License Plate", minWidth: 0 },
 ];
 
 export { requestsToRows, columns };

@@ -36,7 +36,7 @@ export default function TabsToolbar({ routes, createButtonRoute }) {
         <Box sx={{ width: "100%" }}>
           <Tabs value={routes.indexOf(pathname)} aria-label="nav tabs">
             <Tab component={Link} label="Requests" to={routes[0]} />
-            <Tab component={Link} label="Projects" to={routes[1]} />
+            <Tab component={Link} label="Products" to={routes[1]} />
           </Tabs>
         </Box>
         {pathname === routes[1] ? <TabForm /> : null}

@@ -13,7 +13,7 @@ const columns = [
   { id: "cluster", label: "Cluster", minWidth: 0, width: 100 },
   { id: "projectOwner", label: "Project Owner", minWidth: 0, width: 180 },
   { id: "technicalLeads", label: "Technical Leads", minWidth: 0, width: 180 },
-  { id: "licencePlate", label: "License Place", minWidth: 0, width: 100 },
+  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 },
 ];
 const projectsToRows = ({
   id,

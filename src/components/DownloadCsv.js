@@ -171,7 +171,7 @@ export default function DownloadCsv() {
 
       downloadCsv(csvString);
     }
-  }, [data, downloadCsv, Papa, selectedFields, flattenProject]);
+  }, [data, selectedFields]);
 
   const csvDownloadButton = (
     <IconButton

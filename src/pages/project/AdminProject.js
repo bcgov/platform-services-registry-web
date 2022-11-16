@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/MetaDataInput";
 import ClusterInput from "../../components/ClusterInput";
@@ -237,15 +237,15 @@ export default function Project() {
             SUBMIT EDIT REQUEST
           </Button>
         </NavToolbar>
-        <div style={{ minHeight: 50 }}>
-          {privateCloudProject?.activeRequest?.active && (
+        <div style={{ marginTop: 20, marginBottom: 20 }}>
+          {privateCloudProject?.activeEditRequest?.active && (
             <Typography
               variant="body"
               sx={{ mb: 0, ml: 3, color: "rgba(0, 0, 0, 0.6)" }}
             >
               This project cannot be edited as it has an{" "}
               <StyledLink
-                to={`/private-cloud/user/request/${privateCloudProject?.activeRequest?.id}`}
+                to={`/private-cloud/user/request/${privateCloudProject?.activeEditRequest?.id}`}
               >
                 <i>active request</i>
               </StyledLink>
