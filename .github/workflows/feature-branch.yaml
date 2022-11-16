@@ -127,6 +127,6 @@ jobs:
       - name: Update web image ID
         run: |
           cd new-platform-registry-app/overlays/dev
-          kustomize edit set image "platsrv-registry-web-main-build=registry-web-image=image-registry.openshift-image-registry.svc:5000/101ed4-tools/platsrv-registry-web-feature-branchb@${{ steps.build-web-image.outputs.imagesha }}"
+          kustomize edit set image "platsrv-registry-web-main-build=registry-web-image=image-registry.openshift-image-registry.svc:5000/101ed4-tools/platsrv-registry-web-feature-branch@${{ steps.build-web-image.outputs.imagesha }}"
           git commit -am "Update web image ID for Dev"
           git push origin
