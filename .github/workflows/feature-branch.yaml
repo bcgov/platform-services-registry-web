@@ -102,7 +102,7 @@ jobs:
           export BUILDID="$(oc -n 101ed4-tools get -o=jsonpath="{.status.lastVersion}" buildconfig platsrv-registry-web-feature-branch-build)"
           export COMMITID="$(oc -n 101ed4-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-web-feature-branch-build-$BUILDID | cut -c1-7)"
           export IMAGESHA="$(oc -n 101ed4-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-web-feature-branch-build-$BUILDID)"
-          oc -n 101ed4-tools tag platsrv-registry-web-feature-branch:latest@$IMAGESHA platsrv-registry-web-feature-branch:latest:$COMMITID platsrv-registry-web-feature-branch:latest:dev
+          oc -n 101ed4-tools tag platsrv-registry-web-feature-branch@$IMAGESHA platsrv-registry-web-feature-branch:$COMMITID platsrv-registry-web-feature-branch:dev
           echo "::set-output name=imagesha::$IMAGESHA"
 
       # Prepare Kustomize and update manifests
