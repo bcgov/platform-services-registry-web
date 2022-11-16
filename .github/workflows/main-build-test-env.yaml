@@ -1,13 +1,12 @@
-name: Dev - build from feature branch
+name: Test - build from main
 on:
   # Build for Test when a pull request is merged into master with changes to
   # certain api, db, or web files.
   # If triggered manually, run all steps. 
-  # web-devops for now, change it to other branch if needed. 
   # ------------------------------------------------------------------------
   push:
     branches:
-      - web-devops 
+      - main
     paths:
       - "src/**/*"
       - "package.json"
@@ -26,7 +25,7 @@ jobs:
   #   steps:
       #  - uses: actions/checkout@v3
       #    with:
-      #       ref: web-devops 
+      #       ref: main
   #     - uses: actions/setup-node@v1
   #       with:
   #         node-version: ${{ matrix.node-version }}
@@ -100,11 +99,11 @@ jobs:
         run: |
           oc version
           oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
-          oc -n 101ed4-tools start-build platsrv-registry-web-feature-branch-build --follow
-          export BUILDID="$(oc -n 101ed4-tools get -o=jsonpath="{.status.lastVersion}" buildconfig platsrv-registry-web-feature-branch-build)"
-          export COMMITID="$(oc -n 101ed4-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-web-feature-branch-build-$BUILDID | cut -c1-7)"
-          export IMAGESHA="$(oc -n 101ed4-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-web-feature-branch-build-$BUILDID)"
-          oc -n 101ed4-tools tag platsrv-registry-web-feature-branch@$IMAGESHA platsrv-registry-web-feature-branch:$COMMITID platsrv-registry-web-feature-branch:dev
+          oc -n 101ed4-tools start-build platsrv-registry-web-main-build --follow
+          export BUILDID="$(oc -n 101ed4-tools get -o=jsonpath="{.status.lastVersion}" buildconfig platsrv-registry-web-main-build)"
+          export COMMITID="$(oc -n 101ed4-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-web-main-build-$BUILDID | cut -c1-7)"
+          export IMAGESHA="$(oc -n 101ed4-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-web-main-build-$BUILDID)"
+          oc -n 101ed4-tools tag platsrv-registry-web-main@$IMAGESHA platsrv-registry-web-main:$COMMITID platsrv-registry-web-main:dev
           echo "::set-output name=imagesha::$IMAGESHA"
 
       # Prepare Kustomize and update manifests
@@ -126,7 +125,7 @@ jobs:
           git config --local user.name "GitHub Action"
       - name: Update web image ID
         run: |
-          cd new-platform-registry-app/overlays/dev
-          kustomize edit set image "platsrv-registry-web-main-build=image-registry.openshift-image-registry.svc:5000/101ed4-tools/platsrv-registry-web-feature-branch@${{ steps.build-web-image.outputs.imagesha }}"
+          cd new-platform-registry-app/overlays/test
+          kustomize edit set image "platsrv-registry-web-main-build=image-registry.openshift-image-registry.svc:5000/101ed4-tools/platsrv-registry-web-main@${{ steps.build-web-image.outputs.imagesha }}"
           git commit -am "Update web image ID for Dev"
           git push origin
