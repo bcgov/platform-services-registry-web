@@ -50,7 +50,7 @@ jobs:
 
       - name: Set image IDs in Kustomize manifests
         run: |
-          cd platform-registry-app/overlays/prod
+          cd new-platform-registry-app/overlays/prod
           kustomize edit set image "platsrv-registry-web-main-build=image-registry.openshift-image-registry.svc:5000/101ed4-tools/platsrv-registry-web-main@${{ steps.get-image-ids.outputs.imagesha-web }}"
           git commit -am "Update image IDs for Prod"
           git push origin
