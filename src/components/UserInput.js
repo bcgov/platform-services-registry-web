@@ -97,8 +97,10 @@ export default function UserInput({ name }) {
 
   useEffect(() => {
     if (isDirty) {
-      console.log("IS DIRTY");
       parentSetValue(name, debouncedEmail, { shouldDirty: true });
+      parentSetValue(`${name}GithubId`, debouncedGithubId, {
+        shouldDirty: true,
+      });
       setValue("githubId", "", {
         shouldValidate: false,
       });
@@ -114,7 +116,12 @@ export default function UserInput({ name }) {
   const onSubmit = (data) => {
     createUser({
       variables: {
-        input: { email, ...data },
+        input: {
+          email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          githubId: data.githubId,
+        },
       },
       refetchQueries: [{ query: USER_BY_EMAIL, variables: { email: email } }],
       errorPolicy: "ignore",

@@ -4,11 +4,14 @@ const metaDataSchema = {
   name: yup.string().required(),
   description: yup.string().required(),
   projectOwner: yup.string().email("Must be a valid email address").required(),
+  projectOnwerGithubId: yup.string().required(), // Github Id's not needed by API, but used by form to make sure the user exists 
   primaryTechnicalLead: yup
     .string()
     .email("Must be a valid email address")
     .required(),
+  primaryTechnicalLeadGithubId: yup.string().required(),
   secondaryTechnicalLead: yup.string().email("Must be a valid email address"),
+  secondaryTechnicalLeadGithubId: yup.string(),
   ministry: yup.string().required(),
   cluster: yup.string().required(),
 };
