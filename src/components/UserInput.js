@@ -39,17 +39,13 @@ const schema = yup.object().shape({
   firstName: yup.string().required(),
   lastName: yup.string().required(),
   githubId: yup.string().required(),
-  email: yup.string().email("Must be a valid email address").required(),
+  email: yup.string().email("Must be a valid email address").required()
 });
 
 export default function UserInput({ name }) {
   const [
     createUser,
-    {
-      data: createUserData,
-      loading: createUserLoading,
-      error: createUserError,
-    },
+    { data: createUserData, loading: createUserLoading, error: createUserError }
   ] = useMutation(CREATE_USER);
 
   const {
@@ -58,9 +54,9 @@ export default function UserInput({ name }) {
     watch,
     setValue,
     reset,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty }
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema)
     // shouldUnregister: false,
   });
 
@@ -68,8 +64,10 @@ export default function UserInput({ name }) {
     setValue: parentSetValue,
     watch: parentWatch,
     errors: parentErrors,
-    isDisabled,
+    isDisabled
   } = useFormContext();
+
+  console.log(parentErrors);
 
   const parentEmail = parentWatch(name);
   const email = watch("email");
@@ -82,31 +80,34 @@ export default function UserInput({ name }) {
       if (data.userByEmail) {
         reset(data.userByEmail);
       }
-    },
+    }
   });
 
   useEffect(() => {
+    parentSetValue(`${name}UserExists`, !!data?.userByEmail);
+  }, [data]);
+
+  useEffect(() => {
     if (parentEmail) {
-      console.log("parentEmail", parentEmail);
       getUser({
         errorPolicy: "ignore",
-        variables: { email: parentEmail },
+        variables: { email: parentEmail }
       });
     }
   }, [parentEmail]);
 
   useEffect(() => {
     if (isDirty) {
-      console.log("IS DIRTY");
       parentSetValue(name, debouncedEmail, { shouldDirty: true });
+
       setValue("githubId", "", {
-        shouldValidate: false,
+        shouldValidate: false
       });
       setValue("firstName", "", {
-        shouldValidate: false,
+        shouldValidate: false
       });
       setValue("lastName", "", {
-        shouldValidate: false,
+        shouldValidate: false
       });
     }
   }, [isDirty, debouncedEmail]);
@@ -114,27 +115,34 @@ export default function UserInput({ name }) {
   const onSubmit = (data) => {
     createUser({
       variables: {
-        input: { email, ...data },
+        input: {
+          email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          githubId: data.githubId
+        }
       },
       refetchQueries: [{ query: USER_BY_EMAIL, variables: { email: email } }],
       errorPolicy: "ignore",
       onCompleted: () => {
         console.log("CREATED NEW USER");
-      },
+      }
     });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      {parentErrors?.[`${name}UserExists`] && <span style={{color: "grey"}}>This user does not exist, please create a user or use an existing one</span>}
       <Paper
         sx={{
           p: 2,
           mb: 3,
+          mt: 1,
           width: "90%",
           pr: 6,
           display: "flex",
           flexDirection: "row",
-          height: "100%",
+          height: "100%"
         }}
       >
         <Avatar
@@ -148,7 +156,7 @@ export default function UserInput({ name }) {
             display: "flex",
             flexDirection: "column",
             ml: 2,
-            width: "100%",
+            width: "100%"
           }}
         >
           <Controller

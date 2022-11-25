@@ -1,0 +1,57 @@
+name: PROD - promote from Test
+
+on:
+
+  # Trigger promotion to Prod when a new release is created
+  # -------------------------------------------------------
+  release:
+    types: [ published ]
+
+  # Optionally trigger the promotion to Prod manually
+  # -------------------------------------------------
+  workflow_dispatch:
+
+jobs:
+  tag_for_prod:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Log in to OpenShift
+        run: |
+          oc version
+          oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+
+      # Prepare to update Kustomize files in the manifest repo
+      # ------------------------------------------------------
+      - name: Prepare deploy key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+      - name: Check out manifest repo
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+          repository: ${{ secrets.MANIFEST_REPO }}
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v1
+      - name: Set global git config
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Get the Test image IDs and tag for Prod
+        id: get-image-ids
+        run: |
+
+          export IMAGE_ID_WEB="$(oc -n 101ed4-tools get imagestreamtag platsrv-registry-web-main:test -o custom-columns=id:tag.from.name --no-headers | cut -d '@' -f 2)"
+          echo "::set-output name=imagesha-web::$IMAGE_ID_WEB"
+          
+          oc -n 101ed4-tools tag platsrv-registry-web-main@$IMAGE_ID_WEB platsrv-registry-web-main:prod
+
+      - name: Set image IDs in Kustomize manifests
+        run: |
+          cd new-platform-registry-app/overlays/prod
+          kustomize edit set image "platsrv-registry-web-main-build=image-registry.openshift-image-registry.svc:5000/101ed4-tools/platsrv-registry-web-main@${{ steps.get-image-ids.outputs.imagesha-web }}"
+          git commit -am "Update image IDs for Prod"
+          git push origin
+

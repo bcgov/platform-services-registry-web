@@ -4,13 +4,21 @@ const metaDataSchema = {
   name: yup.string().required(),
   description: yup.string().required(),
   projectOwner: yup.string().email("Must be a valid email address").required(),
+  projectOwnerUserExists: yup.boolean().required().oneOf([true]),
   primaryTechnicalLead: yup
     .string()
     .email("Must be a valid email address")
     .required(),
+  primaryTechnicalLeadUserExists: yup.boolean().required().oneOf([true]),
   secondaryTechnicalLead: yup.string().email("Must be a valid email address"),
+  secondaryTechnicalLeadUserExists: yup
+    .boolean()
+    .when("secondaryTechnicalLead", {
+      is: (val) => val != null,
+      then: yup.boolean().required()
+    }),
   ministry: yup.string().required(),
-  cluster: yup.string().required(),
+  cluster: yup.string().required()
 };
 
 const customQuotaSchema = {
@@ -23,7 +31,7 @@ const customQuotaSchema = {
   storageBackup: yup.number().required().positive().integer(),
   storageCapacity: yup.number().required().positive().integer(),
   storagePvcCount: yup.number().required().positive().integer(),
-  snapshotCount: yup.number().required().positive().integer(),
+  snapshotCount: yup.number().required().positive().integer()
 };
 
 const quotaSchema = {
@@ -38,7 +46,7 @@ const quotaSchema = {
   testStorage: yup.string().required(),
   toolsCpu: yup.string().required(),
   toolsMemory: yup.string().required(),
-  toolsStorage: yup.string().required(),
+  toolsStorage: yup.string().required()
 };
 
 const commonComponentsSchema = {
@@ -52,7 +60,7 @@ const commonComponentsSchema = {
   publishing: yup.string().nullable(),
   businessIntelligence: yup.string().nullable(),
   other: yup.string().nullable(),
-  noServices: yup.boolean().required(),
+  noServices: yup.boolean().required()
 };
 
 const projectFormSchema = yup
@@ -75,7 +83,7 @@ const userProjectToFormData = (userPrivateCloudProject) => {
     description,
     ministry,
     cluster,
-    commonComponents,
+    commonComponents
   } = userPrivateCloudProject;
 
   return {
@@ -86,7 +94,8 @@ const userProjectToFormData = (userPrivateCloudProject) => {
     ...commonComponents,
     projectOwner: userPrivateCloudProject?.projectOwner.email,
     primaryTechnicalLead: userPrivateCloudProject.primaryTechnicalLead?.email,
-    secondaryTechnicalLead: userPrivateCloudProject.secondaryTechnicalLead?.email,
+    secondaryTechnicalLead:
+      userPrivateCloudProject.secondaryTechnicalLead?.email,
     productionCpu:
       `CPU_REQUEST_${productionQuota.cpu.requests}_LIMIT_${productionQuota.cpu.limits}`.replaceAll(
         ".",
@@ -136,7 +145,7 @@ const userProjectToFormData = (userPrivateCloudProject) => {
         ".",
         "_"
       ),
-    toolsStorage: `STORAGE_${toolsQuota.storage.file}`.replaceAll(".", "_"),
+    toolsStorage: `STORAGE_${toolsQuota.storage.file}`.replaceAll(".", "_")
   };
 };
 
@@ -177,10 +186,8 @@ const formDataToUserProject = (data, dirtyFields) => {
     endUserNotificationAndSubscription,
     publishing,
     businessIntelligence,
-    other,
+    other
   } = changedFields;
-
-
 
   // const selectedCommonComponents = Object.fromEntries(
   //   Object.entries(commonComponents).filter(([_, v]) => v != null)
@@ -193,7 +200,7 @@ const formDataToUserProject = (data, dirtyFields) => {
     primaryTechnicalLead,
     secondaryTechnicalLead,
     ministry,
-    cluster,
+    cluster
   };
 
   const commonComponents = {
@@ -206,36 +213,36 @@ const formDataToUserProject = (data, dirtyFields) => {
     endUserNotificationAndSubscription,
     publishing,
     businessIntelligence,
-    other,
+    other
   };
 
   const quota = {
     productionQuota: {
       cpu: productionCpu,
       memory: productionMemory,
-      storage: productionStorage,
+      storage: productionStorage
     },
     developmentQuota: {
       cpu: developmentCpu,
       memory: developmentMemory,
-      storage: developmentStorage,
+      storage: developmentStorage
     },
     testQuota: {
       cpu: testCpu,
       memory: testMemory,
-      storage: testStorage,
+      storage: testStorage
     },
     toolsQuota: {
       cpu: toolsCpu,
       memory: toolsMemory,
-      storage: toolsStorage,
-    },
+      storage: toolsStorage
+    }
   };
 
   return {
     metaData,
     quota,
-    commonComponents,
+    commonComponents
   };
 };
 
@@ -243,5 +250,5 @@ export {
   userProjectToFormData,
   formDataToUserProject,
   projectFormSchema,
-  createProjectFormSchema,
+  createProjectFormSchema
 };

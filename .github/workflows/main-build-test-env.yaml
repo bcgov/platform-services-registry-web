@@ -103,7 +103,7 @@ jobs:
           export BUILDID="$(oc -n 101ed4-tools get -o=jsonpath="{.status.lastVersion}" buildconfig platsrv-registry-web-main-build)"
           export COMMITID="$(oc -n 101ed4-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-web-main-build-$BUILDID | cut -c1-7)"
           export IMAGESHA="$(oc -n 101ed4-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-web-main-build-$BUILDID)"
-          oc -n 101ed4-tools tag platsrv-registry-web-main@$IMAGESHA platsrv-registry-web-main:$COMMITID platsrv-registry-web-main:dev
+          oc -n 101ed4-tools tag platsrv-registry-web-main@$IMAGESHA platsrv-registry-web-main:$COMMITID platsrv-registry-web-main:test
           echo "::set-output name=imagesha::$IMAGESHA"
 
       # Prepare Kustomize and update manifests
@@ -127,5 +127,5 @@ jobs:
         run: |
           cd new-platform-registry-app/overlays/test
           kustomize edit set image "platsrv-registry-web-main-build=image-registry.openshift-image-registry.svc:5000/101ed4-tools/platsrv-registry-web-main@${{ steps.build-web-image.outputs.imagesha }}"
-          git commit -am "Update web image ID for Dev"
+          git commit -am "Update web image ID for Test"
           git push origin
