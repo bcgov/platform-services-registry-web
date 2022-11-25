@@ -17,8 +17,6 @@ const StyledCheckboxContainer = styled.div`
   display: inline-block;
   display: flex;
   flex-direction: row;
-  column-gap: 15px;
-  margin-left: 100px;
   align-items: flex-start;
 `;
 
@@ -28,17 +26,17 @@ const StyledPaper = styled(Paper)`
   max-width: 900px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  margin-right: 20px;
 `;
 
 const StyledContainer = styled.div`
   padding: 20px;
-  margin-bottom: 10px;
-  max-width: 900px;
+  max-width: 850px;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: flex-start;
 `;
 
@@ -102,7 +100,7 @@ function CheckBoxRow({ name, description }) {
       <Typography
         variant="body1"
         color={(noServices || isDisabled) && "rgba(0, 0, 0, 0.38)"}
-        sx={{ marginTop: 0.5 }}
+        sx={{ marginTop: 0.5, fontWeight: 'medium' }}
       >
         {description}
       </Typography>

@@ -138,7 +138,7 @@ export default function UserInput({ name }) {
           p: 2,
           mb: 3,
           mt: 1,
-          width: "90%",
+          width: 400,
           pr: 6,
           display: "flex",
           flexDirection: "row",
@@ -156,7 +156,7 @@ export default function UserInput({ name }) {
             display: "flex",
             flexDirection: "column",
             ml: 2,
-            width: "100%"
+            width: "90%"
           }}
         >
           <Controller

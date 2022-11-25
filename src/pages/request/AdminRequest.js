@@ -6,7 +6,7 @@ import QuotaInput from "../../components/QuotaInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
   userProjectToFormData,
-  projectFormSchema as schema,
+  projectFormSchema as schema
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/CommonComponents";
 import { Button } from "@mui/material";
@@ -155,16 +155,14 @@ export default function Request() {
   const {
     loading: adminRequestLoading,
     data: adminRequestData,
-    error: adminRequestError,
+    error: adminRequestError
   } = useQuery(ADMIN_REQUEST, {
-    variables: { requestId: id },
+    variables: { requestId: id }
   });
-
-  console.log("adminRequestData", adminRequestData);
 
   const [
     makePrivateCloudRequestDecision,
-    { data: decisionData, loading: decisionLoading, error: decisionError },
+    { data: decisionData, loading: decisionLoading, error: decisionError }
   ] = useMutation(MAKE_REQUEST_DECISION);
 
   const makeDecisionOnClick = (decision) => {
@@ -173,7 +171,7 @@ export default function Request() {
       onCompleted: () => {
         console.log("MAKE REQUEST DECISION COMPLETED");
         navigate(-1);
-      },
+      }
     });
   };
 
@@ -182,9 +180,9 @@ export default function Request() {
     reset,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors }
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema)
   });
 
   const adminPrivateCloudRequest = adminRequestData?.privateCloudActiveRequest;
@@ -237,13 +235,11 @@ export default function Request() {
             setValue,
             watch,
             initialValues: initalFormData,
-            isDisabled: adminPrivateCloudRequest?.active,
+            isDisabled: adminPrivateCloudRequest?.active
           }}
         >
           <StyledForm>
-            <div>
               <MetaDataInput />
-            </div>
             <div style={{ marginLeft: 70 }}>
               <ClusterInput />
               <div style={{ display: "flex", flexDirection: "row" }}>
