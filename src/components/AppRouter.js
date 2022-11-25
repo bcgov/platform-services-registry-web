@@ -18,12 +18,10 @@ import TabsToolbar from "./TabsToolbar";
 
 const NoMatch = () => {
   return (
-    <div style={{marginLeft: 24, marginTop: 20}}>
+    <div style={{ marginLeft: 24, marginTop: 20 }}>
       <h2>Nothing to see here!</h2>
       <p>
-        <Link to="/">
-          Go to the home page
-        </Link>
+        <Link to="/">Go to the home page</Link>
       </p>
     </div>
   );
@@ -67,7 +65,7 @@ export const AppRouter = () => {
                 <TabsToolbar
                   routes={[
                     "/private-cloud/admin/dashboard/requests",
-                    "/private-cloud/admin/dashboard/products",
+                    "/private-cloud/admin/dashboard/products"
                   ]}
                   createButtonRoute={"/private-cloud/admin/create"}
                 />
@@ -76,10 +74,20 @@ export const AppRouter = () => {
               <Route path="products" element={<AdminProjects />} />
               <Route path="requests" element={<AdminRequests />} />
             </Route>
-            <Route path="product/:id" element={<AdminProject />} />
+            <Route
+              path="product/:id"
+              element={
+                <AdminProject requestsRoute="/private-cloud/admin/dashboard/requests" />
+              }
+            />
             <Route path="request/:id" element={<AdminRequest />} />
 
-            <Route path="create" element={<Create />} />
+            <Route
+              path="create"
+              element={
+                <Create requestsRoute="/private-cloud/admin/dashboard/requests" />
+              }
+            />
           </Route>
           <Route
             path="user"
@@ -95,7 +103,7 @@ export const AppRouter = () => {
                 <TabsToolbar
                   routes={[
                     "/private-cloud/user/dashboard/requests",
-                    "/private-cloud/user/dashboard/products",
+                    "/private-cloud/user/dashboard/products"
                   ]}
                   createButtonRoute={"/private-cloud/user/create"}
                 />
@@ -104,9 +112,19 @@ export const AppRouter = () => {
               <Route path="products" element={<UserProjects />} />
               <Route path="requests" element={<UserRequests />} />
             </Route>
-            <Route path="product/:id" element={<Project />} />
+            <Route
+              path="product/:id"
+              element={
+                <Project requestsRoute="/private-cloud/admin/dashboard/requests" />
+              }
+            />
             <Route path="request/:id" element={<UserRequest />} />
-            <Route path="create" element={<Create />} />
+            <Route
+              path="create"
+              element={
+                <Create requestsRoute="/private-cloud/user/dashboard/requests" />
+              }
+            />
           </Route>
         </Route>
       </Route>

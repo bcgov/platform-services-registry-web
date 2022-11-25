@@ -158,7 +158,7 @@ const DELETE_USER_PROJECT = gql`
   }
 `;
 
-export default function Project() {
+export default function Project({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -217,7 +217,7 @@ export default function Project() {
     createPrivateCloudProjectEditRequest({
       variables: { projectId: id, ...userProject },
       onCompleted: () => {
-        navigate(-1);
+        navigate(requestsRoute);
       }
     });
   };
@@ -226,7 +226,7 @@ export default function Project() {
     deletePrivateCloudProjectRequest({
       variables: { projectId: id },
       onCompleted: () => {
-        navigate(-1);
+        navigate(requestsRoute);
       }
     });
   };

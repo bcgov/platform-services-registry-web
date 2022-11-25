@@ -7,7 +7,7 @@ import NavToolbar from "../../components/NavToolbar";
 import {
   userProjectToFormData,
   formDataToUserProject,
-  projectFormSchema as schema,
+  projectFormSchema as schema
 } from "../../components/common/FormHelpers";
 import Typography from "@mui/material/Typography";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
@@ -153,16 +153,16 @@ const DELETE_USER_PROJECT = gql`
   }
 `;
 
-export default function Project() {
+export default function Project({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const {
     loading: userProjectLoading,
     data: userProjectData,
-    error: userProjectError,
+    error: userProjectError
   } = useQuery(USER_PROJECT, {
-    variables: { projectId: id },
+    variables: { projectId: id }
   });
 
   const [
@@ -170,10 +170,10 @@ export default function Project() {
     {
       data: editProjectData,
       loading: editProjectLoading,
-      error: editProjectError,
-    },
+      error: editProjectError
+    }
   ] = useMutation(UPDATE_USER_PROJECT, {
-    refetchQueries: ["UserPrivateCloudActiveRequests"],
+    refetchQueries: ["UserPrivateCloudActiveRequests"]
   });
 
   const [
@@ -193,9 +193,9 @@ export default function Project() {
     reset,
     watch,
     setValue,
-    formState: { isDirty, dirtyFields, errors },
+    formState: { isDirty, dirtyFields, errors }
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema)
   });
 
   const userPrivateCloudProject = userProjectData?.userPrivateCloudProject;
@@ -212,9 +212,8 @@ export default function Project() {
     createPrivateCloudProjectEditRequest({
       variables: { projectId: id, ...userProject },
       onCompleted: () => {
-        console.log("COMPLETED");
-        navigate(-1);
-      },
+        navigate(requestsRoute);
+      }
     });
   };
 
@@ -222,7 +221,7 @@ export default function Project() {
     deletePrivateCloudProjectRequest({
       variables: { projectId: id },
       onCompleted: () => {
-        navigate(-1);
+        navigate(requestsRoute);
       }
     });
   };
@@ -251,12 +250,12 @@ export default function Project() {
           SUBMIT EDIT REQUEST
         </Button>
         <IconButton
-            sx={{ mr: 1 }}
-            onClick={handleSubmit(onDeleteSubmit)}
-            aria-label="delete"
-          >
-            <DeleteForeverIcon />
-          </IconButton>
+          sx={{ mr: 1 }}
+          onClick={handleSubmit(onDeleteSubmit)}
+          aria-label="delete"
+        >
+          <DeleteForeverIcon />
+        </IconButton>
       </NavToolbar>
       <div style={{ minHeight: 50 }}>
         {userPrivateCloudProject?.activeRequest?.active && (
@@ -283,7 +282,7 @@ export default function Project() {
             setValue,
             watch,
             initialValues: userProjectToFormData(userPrivateCloudProject),
-            isDisabled: userPrivateCloudProject?.activeRequest?.active,
+            isDisabled: userPrivateCloudProject?.activeRequest?.active
           }}
         >
           <StyledForm>

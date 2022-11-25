@@ -38,7 +38,7 @@ const FormContainer = styled.div`
   flex-direction: row;
 `;
 
-export default function Create() {
+export default function Create({ requestsRoute }) {
   const navigate = useNavigate();
 
   const {
@@ -71,8 +71,7 @@ export default function Create() {
         ...userProject
       },
       onCompleted: () => {
-        console.log("SUBMITTED PROJECT CREATE REQUEST");
-        navigate(-1);
+        navigate(requestsRoute);
       }
     });
   };
