@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import CommonComponents from "../components/CommonComponents";
 import {
   createProjectFormSchema as schema,
-  formDataToUserProject,
+  formDataToUserProject
 } from "../components/common/FormHelpers";
 
 const CREATE_USER_PROJECT = gql`
@@ -46,9 +46,9 @@ export default function Create() {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors, dirtyFields },
+    formState: { errors, dirtyFields }
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema)
     // shouldUnregister: false,
   });
 
@@ -58,8 +58,8 @@ export default function Create() {
       errorPolicy: "ignore", // Query to refetch might not have been called yet, so ignore error
       refetchQueries: [
         "PrivateCloudActiveRequests",
-        "UserPrivateCloudActiveRequests",
-      ],
+        "UserPrivateCloudActiveRequests"
+      ]
     }
   );
 
@@ -68,12 +68,12 @@ export default function Create() {
 
     privateCloudProjectRequest({
       variables: {
-        ...userProject,
+        ...userProject
       },
       onCompleted: () => {
         console.log("SUBMITTED PROJECT CREATE REQUEST");
         navigate(-1);
-      },
+      }
     });
   };
 
