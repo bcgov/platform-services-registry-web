@@ -11,6 +11,7 @@ import {
 } from "../../components/common/FormHelpers";
 import Typography from "@mui/material/Typography";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Button, IconButton } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -144,6 +145,14 @@ const UPDATE_USER_PROJECT = gql`
   }
 `;
 
+const DELETE_USER_PROJECT = gql`
+  mutation Mutation($projectId: ID!) {
+    privateCloudProjectDeleteRequest(projectId: $projectId) {
+      id
+    }
+  }
+`;
+
 export default function Project() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -165,6 +174,17 @@ export default function Project() {
     },
   ] = useMutation(UPDATE_USER_PROJECT, {
     refetchQueries: ["UserPrivateCloudActiveRequests"],
+  });
+
+  const [
+    deletePrivateCloudProjectRequest,
+    {
+      data: deleteProjectData,
+      loading: deleteProjectLoading,
+      error: deleteProjectError
+    }
+  ] = useMutation(DELETE_USER_PROJECT, {
+    refetchQueries: ["PrivateCloudActiveRequests"]
   });
 
   const {
@@ -198,8 +218,18 @@ export default function Project() {
     });
   };
 
-  if (userProjectError || editProjectError)
+  const onDeleteSubmit = () => {
+    deletePrivateCloudProjectRequest({
+      variables: { projectId: id },
+      onCompleted: () => {
+        navigate(-1);
+      }
+    });
+  };
+
+  if (userProjectError || editProjectError || deleteProjectError) {
     return `Error! ${userProjectError} ${editProjectError}`;
+  }
 
   return (
     <div>
@@ -220,6 +250,13 @@ export default function Project() {
         >
           SUBMIT EDIT REQUEST
         </Button>
+        <IconButton
+            sx={{ mr: 1 }}
+            onClick={handleSubmit(onDeleteSubmit)}
+            aria-label="delete"
+          >
+            <DeleteForeverIcon />
+          </IconButton>
       </NavToolbar>
       <div style={{ minHeight: 50 }}>
         {userPrivateCloudProject?.activeRequest?.active && (

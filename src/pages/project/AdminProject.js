@@ -7,11 +7,12 @@ import NavToolbar from "../../components/NavToolbar";
 import {
   userProjectToFormData,
   formDataToUserProject,
-  projectFormSchema as schema,
+  projectFormSchema as schema
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/CommonComponents";
 import Typography from "@mui/material/Typography";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Button, IconButton } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -149,6 +150,14 @@ const UPDATE_USER_PROJECT = gql`
   }
 `;
 
+const DELETE_USER_PROJECT = gql`
+  mutation Mutation($projectId: ID!) {
+    privateCloudProjectDeleteRequest(projectId: $projectId) {
+      id
+    }
+  }
+`;
+
 export default function Project() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -159,14 +168,14 @@ export default function Project() {
     reset,
     watch,
     setValue,
-    formState: { isDirty, dirtyFields, errors },
+    formState: { isDirty, dirtyFields, errors }
   } = useForm({ resolver: yupResolver(schema) });
 
   const {
     loading: projectLoading,
     data: projectData,
     error: projectError,
-    refetch,
+    refetch
   } = useQuery(PROJECT, {
     fetchPolicy: "network-only",
     variables: { projectId: id },
@@ -175,7 +184,7 @@ export default function Project() {
       const project = data.privateCloudProject;
       const formData = userProjectToFormData(project);
       reset(formData);
-    },
+    }
   });
 
   const [
@@ -183,10 +192,21 @@ export default function Project() {
     {
       data: editProjectData,
       loading: editProjectLoading,
-      error: editProjectError,
-    },
+      error: editProjectError
+    }
   ] = useMutation(UPDATE_USER_PROJECT, {
-    refetchQueries: ["PrivateCloudActiveRequests"],
+    refetchQueries: ["PrivateCloudActiveRequests"]
+  });
+
+  const [
+    deletePrivateCloudProjectRequest,
+    {
+      data: deleteProjectData,
+      loading: deleteProjectLoading,
+      error: deleteProjectError
+    }
+  ] = useMutation(DELETE_USER_PROJECT, {
+    refetchQueries: ["PrivateCloudActiveRequests"]
   });
 
   const privateCloudProject = projectData?.privateCloudProject;
@@ -198,12 +218,22 @@ export default function Project() {
       variables: { projectId: id, ...userProject },
       onCompleted: () => {
         navigate(-1);
-      },
+      }
     });
   };
 
-  if (projectError || editProjectError)
+  const onDeleteSubmit = () => {
+    deletePrivateCloudProjectRequest({
+      variables: { projectId: id },
+      onCompleted: () => {
+        navigate(-1);
+      }
+    });
+  };
+
+  if (projectError || editProjectError || deleteProjectError) {
     return `Error! ${projectError} ${editProjectError}`;
+  }
 
   return (
     <div>
@@ -214,7 +244,7 @@ export default function Project() {
           setValue,
           watch,
           isDirty,
-          isDisabled: privateCloudProject?.activeEditRequest?.active,
+          isDisabled: privateCloudProject?.activeEditRequest?.active
         }}
       >
         <NavToolbar path={"project"} title={privateCloudProject?.name}>
@@ -236,6 +266,13 @@ export default function Project() {
           >
             SUBMIT EDIT REQUEST
           </Button>
+          <IconButton
+            sx={{ mr: 1 }}
+            onClick={handleSubmit(onDeleteSubmit)}
+            aria-label="delete"
+          >
+            <DeleteForeverIcon />
+          </IconButton>
         </NavToolbar>
         <div style={{ marginTop: 20, marginBottom: 20 }}>
           {privateCloudProject?.activeEditRequest?.active && (
