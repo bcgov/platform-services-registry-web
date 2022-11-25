@@ -2,7 +2,6 @@ import React from "react";
 import { useMutation, gql } from "@apollo/client";
 import NavToolbar from "../components/NavToolbar";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import MetaDataInput from "../components/MetaDataInput";
 import ClusterInput from "../components/ClusterInput";
@@ -15,6 +14,7 @@ import {
   createProjectFormSchema as schema,
   formDataToUserProject
 } from "../components/common/FormHelpers";
+import StyledForm from "../components/common/StyledForm";
 
 const CREATE_USER_PROJECT = gql`
   mutation Mutation(
@@ -33,7 +33,6 @@ const CREATE_USER_PROJECT = gql`
 
 const FormContainer = styled.div`
   margin-left: 24px;
-  margin-top: 30px;
   display: flex;
   flex-direction: row;
 `;
@@ -91,17 +90,13 @@ export default function Create({ requestsRoute }) {
         {loading ? (
           <LoadingSpinner />
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Box sx={{ mb: 3 }}>
-              <FormContainer>
-                <MetaDataInput />
-                <div style={{ marginLeft: 70 }}>
-                  <ClusterInput />
-                  <CommonComponents />
-                </div>
-              </FormContainer>
-            </Box>
-          </form>
+          <StyledForm onSubmit={handleSubmit(onSubmit)}>
+            <MetaDataInput />
+            <div style={{ marginLeft: 70 }}>
+              <ClusterInput />
+              <CommonComponents />
+            </div>
+          </StyledForm>
         )}
       </FormProvider>
     </div>

@@ -18,10 +18,6 @@ export default function QuotaInput({ nameSpace }) {
 
   return (
     <Box
-      sx={{
-        "& .MuiTextField-root": { m: 0, mb: 3 },
-        width: 400,
-      }}
       noValidate
       autoComplete="off"
     >

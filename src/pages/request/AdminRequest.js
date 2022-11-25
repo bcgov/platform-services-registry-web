@@ -239,8 +239,8 @@ export default function Request() {
           }}
         >
           <StyledForm>
-              <MetaDataInput />
-            <div style={{ marginLeft: 70 }}>
+            <MetaDataInput />
+            <div style={{ marginLeft: 70, }}>
               <ClusterInput />
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <div>

@@ -14,8 +14,7 @@ export default function ClusterInput() {
   return (
     <Box
       sx={{
-        "& .MuiTextField-root": { m: 0, mb: 3, width: "45ch" },
-        width: "500px",
+        "& .MuiTextField-root": { m: 0, mb: 3, width: 250 }
       }}
       noValidate
       autoComplete="off"
