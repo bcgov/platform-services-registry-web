@@ -20,6 +20,11 @@ export default function QuotaInput({ nameSpace }) {
     <Box
       noValidate
       autoComplete="off"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        width: 280
+      }}
     >
       <TitleTypography>{nameSpace} Quota</TitleTypography>
       <FormControl sx={{ mt: 1, mb: 2, minWidth: 250 }}>

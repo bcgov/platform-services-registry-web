@@ -6,7 +6,7 @@ import QuotaInput from "../../components/QuotaInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
   userProjectToFormData,
-  projectFormSchema as schema,
+  projectFormSchema as schema
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/CommonComponents";
 import { useForm, FormProvider } from "react-hook-form";
@@ -143,9 +143,9 @@ export default function Request() {
   const {
     loading: userRequestLoading,
     data: userRequestData,
-    error: userRequestError,
+    error: userRequestError
   } = useQuery(USER_REQUEST, {
-    variables: { requestId: id },
+    variables: { requestId: id }
   });
 
   const {
@@ -153,9 +153,9 @@ export default function Request() {
     reset,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors }
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema)
   });
 
   const userPrivateCloudRequest = userRequestData?.privateCloudActiveRequest;
@@ -185,7 +185,7 @@ export default function Request() {
           initialValues: userProjectToFormData(
             userPrivateCloudRequest?.requestedProject
           ),
-          isDisabled: userPrivateCloudRequest?.active,
+          isDisabled: userPrivateCloudRequest?.active
         }}
       >
         <StyledForm>
@@ -197,7 +197,7 @@ export default function Request() {
                 <QuotaInput nameSpace={"production"} />
                 <QuotaInput nameSpace={"test"} />
               </div>
-              <div>
+              <div style={{ marginLeft: 45 }}>
                 <QuotaInput nameSpace={"tools"} />
                 <QuotaInput nameSpace={"development"} />
               </div>

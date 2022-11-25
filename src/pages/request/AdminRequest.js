@@ -240,14 +240,14 @@ export default function Request() {
         >
           <StyledForm>
             <MetaDataInput />
-            <div style={{ marginLeft: 70, }}>
+            <div style={{ marginLeft: 70 }}>
               <ClusterInput />
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <div>
                   <QuotaInput nameSpace={"production"} />
                   <QuotaInput nameSpace={"test"} />
                 </div>
-                <div>
+                <div style={{marginLeft: 45}}>
                   <QuotaInput nameSpace={"tools"} />
                   <QuotaInput nameSpace={"development"} />
                 </div>
