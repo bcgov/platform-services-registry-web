@@ -1,15 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import { useMutation, gql, useLazyQuery } from "@apollo/client";
-import Paper from "@mui/material/Paper";
 import Avatar from "@mui/material/Avatar";
 import { TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 import useDebounce from "./utilities/UseDebounce";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Card from "@mui/material/Card";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import Edit from "@mui/icons-material/Edit";
+import Divider from "@mui/material/Divider";
+import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import * as yup from "yup";
 
 const USER_BY_EMAIL = gql`
@@ -42,11 +48,13 @@ const schema = yup.object().shape({
   email: yup.string().email("Must be a valid email address").required()
 });
 
-export default function UserInput({ name }) {
+export default function UserInput({ name, label, defaultEditOpen = false }) {
   const [
     createUser,
     { data: createUserData, loading: createUserLoading, error: createUserError }
   ] = useMutation(CREATE_USER);
+
+  const [edit, setEdit] = useState(defaultEditOpen);
 
   const {
     control,
@@ -67,8 +75,6 @@ export default function UserInput({ name }) {
     isDisabled
   } = useFormContext();
 
-  console.log(parentErrors);
-
   const parentEmail = parentWatch(name);
   const email = watch("email");
   const debouncedEmail = useDebounce(email, 500);
@@ -86,6 +92,12 @@ export default function UserInput({ name }) {
   useEffect(() => {
     parentSetValue(`${name}UserExists`, !!data?.userByEmail);
   }, [data]);
+
+  useEffect(() => {
+    if (parentErrors[name]) {
+      setEdit(true);
+    }
+  }, [parentErrors]);
 
   useEffect(() => {
     if (parentEmail) {
@@ -131,138 +143,178 @@ export default function UserInput({ name }) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {parentErrors?.[`${name}UserExists`] && <span style={{color: "grey"}}>This user does not exist, please create a user or use an existing one</span>}
-      <Paper
+    <Card sx={{ mt: 4, mb: 2 }}>
+      <Box
         sx={{
           p: 2,
-          mb: 3,
-          mt: 1,
-          width: 400,
-          pr: 6,
-          display: "flex",
-          flexDirection: "row",
-          height: "100%"
+          display: "flex"
         }}
       >
         <Avatar
-          sx={{ ml: 1, mr: 3, my: 4, width: 56, height: 56 }}
+          variant="rounded"
           src={`https://github.com/${
             debouncedGithubId !== "" ? debouncedGithubId : undefined
           }.png`}
         />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            ml: 2,
-            width: "90%"
-          }}
+        <Stack sx={{ width: "100%", ml: 2 }} spacing={0.5}>
+          <Typography fontWeight={700}>{label}</Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ height: 20 }}
+          >
+            {data?.userByEmail?.firstName} {data?.userByEmail?.lastName}
+          </Typography>
+        </Stack>
+        {!edit ? (
+          <IconButton
+            onClick={() => setEdit(true)}
+            sx={{ width: 40, height: 40, p: 1 }}
+          >
+            <Edit sx={{ fontSize: 17 }} />
+          </IconButton>
+        ) : (
+          <IconButton
+            onClick={() => setEdit(false)}
+            sx={{ width: 40, height: 40, p: 1 }}
+          >
+            <KeyboardArrowUpRoundedIcon sx={{ fontSize: 17 }} />
+          </IconButton>
+        )}
+      </Box>
+      <Divider />
+      {edit ? (
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ px: 2, py: 1, bgcolor: "background.default" }}
         >
-          <Controller
-            name={"email"}
-            defaultValue={""}
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                variant="standard"
-                disabled={isDisabled}
-                size="small"
-                helperText={
-                  parentErrors[name] || errors.email
-                    ? "Email is a required field"
-                    : ""
-                }
-                id={name + "-email"}
-                label="Email"
-              />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {parentErrors?.[`${name}UserExists`] && (
+              <span style={{ color: "grey" }}>
+                This user does not exist, please create a user or use an
+                existing one
+              </span>
             )}
-          />
-          <Controller
-            name={"githubId"}
-            defaultValue={""}
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                variant="standard"
-                disabled={isDisabled || !!data?.userByEmail?.githubId || !email}
-                size="small"
-                helperText={
-                  errors.githubId ? "Github ID is a required field" : ""
-                }
-                id={name + "-githubId"}
-                label="Github ID"
-              />
-            )}
-          />
-          <Controller
-            name={"firstName"}
-            defaultValue={""}
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                variant="standard"
-                disabled={
-                  isDisabled || !!data?.userByEmail?.firstName || !email
-                }
-                size="small"
-                helperText={
-                  errors.firstName ? "First Name is a required field" : ""
-                }
-                id={name + "-firstName"}
-                label="First Name"
-              />
-            )}
-          />
-          <Controller
-            name={"lastName"}
-            defaultValue={""}
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                variant="standard"
-                disabled={isDisabled || !!data?.userByEmail?.lastName || !email}
-                size="small"
-                helperText={
-                  errors.lastName ? "LastName is a required field" : ""
-                }
-                id={name + "-lastName"}
-                label="Last Name"
-              />
-            )}
-          />
-          {email &&
-            (data?.userByEmail ? (
-              <Alert severity="success">
-                {data?.userByEmail?.firstName} {data?.userByEmail?.lastName} is
-                an existing user
-              </Alert>
-            ) : (
-              <Alert
-                severity="info"
-                action={
-                  <Button
-                    color="inherit"
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                ml: 2,
+                width: "90%"
+              }}
+            >
+              <Controller
+                name={"email"}
+                defaultValue={""}
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    variant="standard"
+                    disabled={isDisabled}
                     size="small"
-                    onClick={handleSubmit(onSubmit)}
-                  >
-                    Create
-                  </Button>
-                }
-              >
-                This user does not yet exist
-              </Alert>
-            ))}
-        </Box>
-      </Paper>
-    </form>
+                    helperText={
+                      parentErrors[name] || errors.email
+                        ? "Email is a required field"
+                        : ""
+                    }
+                    id={name + "-email"}
+                    label="Email"
+                  />
+                )}
+              />
+              <Controller
+                name={"githubId"}
+                defaultValue={""}
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    variant="standard"
+                    disabled={
+                      isDisabled || !!data?.userByEmail?.githubId || !email
+                    }
+                    size="small"
+                    helperText={
+                      errors.githubId ? "Github ID is a required field" : ""
+                    }
+                    id={name + "-githubId"}
+                    label="Github ID"
+                  />
+                )}
+              />
+              <Controller
+                name={"firstName"}
+                defaultValue={""}
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    variant="standard"
+                    disabled={
+                      isDisabled || !!data?.userByEmail?.firstName || !email
+                    }
+                    size="small"
+                    helperText={
+                      errors.firstName ? "First Name is a required field" : ""
+                    }
+                    id={name + "-firstName"}
+                    label="First Name"
+                  />
+                )}
+              />
+              <Controller
+                name={"lastName"}
+                defaultValue={""}
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    variant="standard"
+                    disabled={
+                      isDisabled || !!data?.userByEmail?.lastName || !email
+                    }
+                    size="small"
+                    helperText={
+                      errors.lastName ? "LastName is a required field" : ""
+                    }
+                    id={name + "-lastName"}
+                    label="Last Name"
+                  />
+                )}
+              />
+            </Box>
+          </form>
+        </Stack>
+      ) : null}
+      {data?.userByEmail ? (
+        <Alert severity="success">
+          {data?.userByEmail?.firstName} {data?.userByEmail?.lastName} is an
+          existing user
+        </Alert>
+      ) : (
+        <Alert
+          severity="info"
+          action={
+            <Button
+              color="inherit"
+              size="small"
+              onClick={handleSubmit(onSubmit)}
+            >
+              Create
+            </Button>
+          }
+        >
+          This user does not yet exist
+        </Alert>
+      )}
+    </Card>
   );
 }

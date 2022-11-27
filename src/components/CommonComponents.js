@@ -20,19 +20,8 @@ const StyledCheckboxContainer = styled.div`
   align-items: flex-start;
 `;
 
-const StyledPaper = styled(Paper)`
-  padding: 20px;
-  padding-bottom: 50px;
-  max-width: 900px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  margin-right: 20px;
-`;
-
 const StyledContainer = styled.div`
-  padding: 20px;
+  padding-bottom: 25px;
   max-width: 850px;
   display: flex;
   flex-direction: column;
@@ -48,38 +37,38 @@ const commonComponents = [
   { name: "addressAndGeolocation", description: "Address and geolocation" },
   {
     name: "workflowManagement",
-    description: "Workflow Management (similar to Camunda)",
+    description: "Workflow Management (similar to Camunda)"
   },
   {
     name: "formDesignAndSubmission",
     description:
-      "Form Design and Submission (similar to CHEFS, Gravity, Orbeon)",
+      "Form Design and Submission (similar to CHEFS, Gravity, Orbeon)"
   },
   {
     name: "identityManagement",
-    description: "Identity management (user authentication and authorization)",
+    description: "Identity management (user authentication and authorization)"
   },
   {
     name: "paymentServices",
     description:
-      "Payment services (i.e. collection, processing, reconciliation, ledger management)",
+      "Payment services (i.e. collection, processing, reconciliation, ledger management)"
   },
   {
     name: "documentManagement",
     description:
-      "Document Management (file storage and transfer, PDF and other document generation)",
+      "Document Management (file storage and transfer, PDF and other document generation)"
   },
   {
     name: "endUserNotificationAndSubscription",
     description:
-      "End user notification and subscription service (email, text messages, automated phone calls, in-app pop up messages)",
+      "End user notification and subscription service (email, text messages, automated phone calls, in-app pop up messages)"
   },
   { name: "publishing", description: "Publishing (web content management)" },
   {
     name: "businessIntelligence",
     description:
-      "Business Intelligence Dashboard and Metrics reporting (i.e. diagrams and pie charts, report generation)",
-  },
+      "Business Intelligence Dashboard and Metrics reporting (i.e. diagrams and pie charts, report generation)"
+  }
 ];
 
 function CheckBoxRow({ name, description }) {
@@ -100,7 +89,7 @@ function CheckBoxRow({ name, description }) {
       <Typography
         variant="body1"
         color={(noServices || isDisabled) && "rgba(0, 0, 0, 0.38)"}
-        sx={{ marginTop: 0.5, fontWeight: 'medium' }}
+        sx={{ marginTop: 0.5, fontWeight: "medium" }}
       >
         {description}
       </Typography>
@@ -168,61 +157,58 @@ export default function CommonComponents() {
   return (
     <div>
       <TitleTypography>Common Components</TitleTypography>
-      <StyledPaper>
-        <FormGroup>
-          {commonComponents.map(({ name, description }, index) => (
-            <CheckBoxRow name={name} description={description} key={index} />
-          ))}
-          <FormControlLabel
-            sx={{ ml: 2.5, display: "flex", justifyContent: "flex-end", mb: 3 }}
-            labelPlacement="start"
-            label={"Other"}
-            disabled={isDisabled || noServices}
-            control={
-              <Controller
-                name="other"
-                defaultValue={""}
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    sx={{ ml: 5, width: "80%" }}
-                    disabled={isDisabled || noServices}
-                    size="small"
-                    helperText={errors.other ? errors.name?.other : ""}
-                    id="name"
-                    label="please specify"
-                  />
-                )}
-              />
-            }
-          />
-          <FormControlLabel
-            sx={{ ml: 1 }}
-            control={
-              <Controller
-                disabled={isDirty || isDisabled}
-                name="noServices"
-                control={control}
-                defaultValue={false}
-                render={({ field }) => (
-                  <Checkbox
-                    disabled={isDirty || isDisabled}
-                    required={!isDirty}
-                    checked={isDirty ? false : field.value}
-                    {...field}
-                  />
-                )}
-              />
-            }
-            label={"The app does not use any of these services"}
-          />
-          <FormHelperText>
-            {errors.noServices && !isDirty ? "required field" : ""}
-          </FormHelperText>
-        </FormGroup>
-      </StyledPaper>
+      <FormGroup>
+        {commonComponents.map(({ name, description }, index) => (
+          <CheckBoxRow name={name} description={description} key={index} />
+        ))}
+        <FormControlLabel
+          sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}
+          labelPlacement="start"
+          label={"Other"}
+          disabled={isDisabled || noServices}
+          control={
+            <Controller
+              name="other"
+              defaultValue={""}
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  sx={{ ml: 5, width: "80%" }}
+                  disabled={isDisabled || noServices}
+                  size="small"
+                  helperText={errors.other ? errors.name?.other : ""}
+                  id="name"
+                  label="please specify"
+                />
+              )}
+            />
+          }
+        />
+        <FormControlLabel
+          control={
+            <Controller
+              disabled={isDirty || isDisabled}
+              name="noServices"
+              control={control}
+              defaultValue={false}
+              render={({ field }) => (
+                <Checkbox
+                  disabled={isDirty || isDisabled}
+                  required={!isDirty}
+                  checked={isDirty ? false : field.value}
+                  {...field}
+                />
+              )}
+            />
+          }
+          label={"The app does not use any of these services"}
+        />
+        <FormHelperText>
+          {errors.noServices && !isDirty ? "required field" : ""}
+        </FormHelperText>
+      </FormGroup>
     </div>
   );
 }

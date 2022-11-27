@@ -31,11 +31,6 @@ const CREATE_USER_PROJECT = gql`
   }
 `;
 
-const FormContainer = styled.div`
-  margin-left: 24px;
-  display: flex;
-  flex-direction: row;
-`;
 
 export default function Create({ requestsRoute }) {
   const navigate = useNavigate();
@@ -92,7 +87,7 @@ export default function Create({ requestsRoute }) {
         ) : (
           <StyledForm onSubmit={handleSubmit(onSubmit)}>
             <MetaDataInput />
-            <div style={{ marginLeft: 70 }}>
+            <div style={{ marginLeft: 50 }}>
               <ClusterInput />
               <CommonComponents />
             </div>

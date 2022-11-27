@@ -247,7 +247,7 @@ export default function Request() {
                   <QuotaInput nameSpace={"production"} />
                   <QuotaInput nameSpace={"test"} />
                 </div>
-                <div style={{marginLeft: 45}}>
+                <div style={{ marginLeft: 45 }}>
                   <QuotaInput nameSpace={"tools"} />
                   <QuotaInput nameSpace={"development"} />
                 </div>

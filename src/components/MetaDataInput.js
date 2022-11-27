@@ -19,14 +19,12 @@ export default function MetaDataInput() {
     <Box
       sx={{
         "& .MuiTextField-root": { m: 0, mb: 3, mt: 1, width: "30ch" },
-        width: "550px",
+        width: "550px"
       }}
       noValidate
       autoComplete="off"
     >
-      <TitleTypography>
-        Project Description
-      </TitleTypography>
+      <TitleTypography>Project Description</TitleTypography>
       <Controller
         name="name"
         defaultValue={""}
@@ -64,58 +62,52 @@ export default function MetaDataInput() {
         )}
       />
 
-      <div>
-        <FormControl sx={{ minWidth: 250, mt: 1 }}>
-          <InputLabel id="demo-simple-select-required-label">
-            Ministry
-          </InputLabel>
-          <Controller
-            name="ministry"
-            defaultValue={""}
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <Select
-                {...field}
-                disabled={isDisabled}
-                size="medium"
-                labelId="select-ministry"
-                id="select-ministry"
-                label="Ministry"
-              >
-                {ministries.map((ministryOption) => (
-                  <MenuItem key={ministryOption} value={ministryOption}>
-                    {ministryOption}
-                  </MenuItem>
-                ))}
-              </Select>
-            )}
-          />
-          <FormHelperText>
-            {errors.ministry ? errors.ministry?.message : ""}
-          </FormHelperText>
-        </FormControl>
-      </div>
-      <Box sx={{ p: 0, mt: 3, mb: 3, width: "100%" }}>
-        <TitleTypography>Product Owner</TitleTypography>
-        <UserInput
-          name="projectOwner"
+      <FormControl sx={{ minWidth: 250, mt: 1 }}>
+        <InputLabel id="demo-simple-select-required-label">Ministry</InputLabel>
+        <Controller
+          name="ministry"
+          defaultValue={""}
           control={control}
-          isDisabled={isDisabled}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <Select
+              {...field}
+              disabled={isDisabled}
+              size="medium"
+              labelId="select-ministry"
+              id="select-ministry"
+              label="Ministry"
+            >
+              {ministries.map((ministryOption) => (
+                <MenuItem key={ministryOption} value={ministryOption}>
+                  {ministryOption}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
         />
-        <TitleTypography>Primary Technical Lead </TitleTypography>
-        <UserInput
-          name="primaryTechnicalLead"
-          control={control}
-          isDisabled={isDisabled}
-        />
-        <TitleTypography>Secondary Technical Lead </TitleTypography>
-        <UserInput
-          name="secondaryTechnicalLead"
-          control={control}
-          isDisabled={isDisabled}
-        />
-      </Box>
+        <FormHelperText>
+          {errors.ministry ? errors.ministry?.message : ""}
+        </FormHelperText>
+      </FormControl>
+      <UserInput
+        label={"Product Owner"}
+        name="projectOwner"
+        control={control}
+        isDisabled={isDisabled}
+      />
+      <UserInput
+        label={"Primary Technical Lead"}
+        name="primaryTechnicalLead"
+        control={control}
+        isDisabled={isDisabled}
+      />
+      <UserInput
+        label={"Secondary Technical Lead"}
+        name="secondaryTechnicalLead"
+        control={control}
+        isDisabled={isDisabled}
+      />
     </Box>
   );
 }
