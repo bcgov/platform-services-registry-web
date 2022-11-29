@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { Outlet } from "react-router-dom";
-import TabForm from "../components/TabForm";
+import TabForm from "../components/ResponsiveTabForm";
 
 export default function TabsToolbar({ routes, createButtonRoute }) {
   const { pathname } = useLocation();
