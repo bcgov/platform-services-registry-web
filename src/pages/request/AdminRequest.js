@@ -15,6 +15,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import StyledForm from "../../components/common/StyledForm";
+import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
+import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
 
 const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
@@ -163,7 +165,12 @@ export default function Request() {
   const [
     makePrivateCloudRequestDecision,
     { data: decisionData, loading: decisionLoading, error: decisionError }
-  ] = useMutation(MAKE_REQUEST_DECISION);
+  ] = useMutation(MAKE_REQUEST_DECISION, {
+    refetchQueries: [
+      { query: USER_ACTIVE_REQUESTS },
+      { query: ALL_ACTIVE_REQUESTS }
+    ]
+  });
 
   const makeDecisionOnClick = (decision) => {
     makePrivateCloudRequestDecision({

@@ -20,6 +20,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import StyledForm from "../../components/common/StyledForm";
 import CommonComponents from "../../components/CommonComponents";
+import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
+import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
 
 const USER_PROJECT = gql`
   query Query($projectId: ID!) {
@@ -173,7 +175,10 @@ export default function Project({ requestsRoute }) {
       error: editProjectError
     }
   ] = useMutation(UPDATE_USER_PROJECT, {
-    refetchQueries: ["UserPrivateCloudActiveRequests"]
+    refetchQueries: [
+      { query: USER_ACTIVE_REQUESTS },
+      { query: ALL_ACTIVE_REQUESTS }
+    ]
   });
 
   const [
