@@ -4,7 +4,7 @@ import StickyTable from "../../components/common/Table";
 import { requestsToRows, columns } from "./helpers";
 import Alert from "../../components/common/Alert";
 
-const ALL_ACTIVE_REQUESTS = gql`
+export const ALL_ACTIVE_REQUESTS = gql`
   query PrivateCloudActiveRequests {
     privateCloudActiveRequests {
       id

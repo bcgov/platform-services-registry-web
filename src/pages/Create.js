@@ -15,6 +15,8 @@ import {
   formDataToUserProject
 } from "../components/common/FormHelpers";
 import StyledForm from "../components/common/StyledForm";
+import { USER_ACTIVE_REQUESTS } from "./requests/UserRequests";
+import { ALL_ACTIVE_REQUESTS } from "./requests/AdminRequests";
 
 const CREATE_USER_PROJECT = gql`
   mutation Mutation(
@@ -30,7 +32,6 @@ const CREATE_USER_PROJECT = gql`
     }
   }
 `;
-
 
 export default function Create({ requestsRoute }) {
   const navigate = useNavigate();
@@ -51,8 +52,8 @@ export default function Create({ requestsRoute }) {
     {
       errorPolicy: "ignore", // Query to refetch might not have been called yet, so ignore error
       refetchQueries: [
-        "PrivateCloudActiveRequests",
-        "UserPrivateCloudActiveRequests"
+        { query: USER_ACTIVE_REQUESTS },
+        { query: ALL_ACTIVE_REQUESTS }
       ]
     }
   );
