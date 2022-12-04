@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/MetaDataInput";
 import ClusterInput from "../../components/ClusterInput";
@@ -22,6 +22,7 @@ import StyledForm from "../../components/common/StyledForm";
 import CommonComponents from "../../components/CommonComponents";
 import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
+import { toast } from "react-toastify";
 
 const USER_PROJECT = gql`
   query Query($projectId: ID!) {
@@ -158,6 +159,7 @@ const DELETE_USER_PROJECT = gql`
 export default function Project({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const toastId = useRef(null);
 
   const {
     loading: userProjectLoading,
@@ -213,28 +215,59 @@ export default function Project({ requestsRoute }) {
 
   const onSubmit = (data) => {
     const userProject = formDataToUserProject(data, dirtyFields);
+    toastId.current = toast("Your edit request has been submitted", {
+      autoClose: false
+    });
 
     createPrivateCloudProjectEditRequest({
       variables: { projectId: id, ...userProject },
       onCompleted: () => {
         navigate(requestsRoute);
+
+        toast.update(toastId.current, {
+          render: "Request successfuly created",
+          type: toast.TYPE.SUCCESS,
+          autoClose: 5000
+        });
       }
     });
   };
 
   const onDeleteSubmit = () => {
+    toastId.current = toast("Your edit request has been submitted", {
+      autoClose: false
+    });
+
     deletePrivateCloudProjectRequest({
       variables: { projectId: id },
       onCompleted: () => {
         navigate(requestsRoute);
+
+        toast.update(toastId.current, {
+          render: "Delete request successfuly created",
+          type: toast.TYPE.SUCCESS,
+          autoClose: 5000
+        });
       }
     });
   };
 
-  if (userProjectError || editProjectError || deleteProjectError) {
-    return `Error! ${userProjectError} ${editProjectError}`;
+  if (editProjectError && toastId.current) {
+    toast.update(toastId.current, {
+      render: `Error: ${editProjectError.message}`,
+      type: toast.TYPE.SUCCESS,
+      autoClose: 5000
+    });
+  } else if (deleteProjectError && toastId.current) {
+    toast.update(toastId.current, {
+      render: `Error: ${deleteProjectError.message}`,
+      type: toast.TYPE.SUCCESS,
+      autoClose: 5000
+    });
+  } else if (userProjectError) {
+    // Find bettwr way to handle this
+    return `Error! ${userProjectError}`;
   }
-
   return (
     <div>
       <NavToolbar path={"project"} title={userPrivateCloudProject?.name}>

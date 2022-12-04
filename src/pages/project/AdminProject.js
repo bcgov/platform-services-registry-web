@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/MetaDataInput";
 import ClusterInput from "../../components/ClusterInput";
@@ -22,6 +22,7 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 import StyledForm from "../../components/common/StyledForm";
 import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
+import { toast } from "react-toastify";
 
 const PROJECT = gql`
   query Query($projectId: ID!) {
@@ -163,6 +164,7 @@ const DELETE_USER_PROJECT = gql`
 export default function Project({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const toastId = useRef(null);
 
   const {
     control,
@@ -200,7 +202,8 @@ export default function Project({ requestsRoute }) {
     refetchQueries: [
       { query: USER_ACTIVE_REQUESTS },
       { query: ALL_ACTIVE_REQUESTS }
-    ]  });
+    ]
+  });
 
   const [
     deletePrivateCloudProjectRequest,
@@ -217,26 +220,58 @@ export default function Project({ requestsRoute }) {
 
   const onSubmit = (data) => {
     const userProject = formDataToUserProject(data, dirtyFields);
+    toastId.current = toast("Your edit request has been submitted", {
+      autoClose: false
+    });
 
     createPrivateCloudProjectEditRequest({
       variables: { projectId: id, ...userProject },
       onCompleted: () => {
         navigate(requestsRoute);
+
+        toast.update(toastId.current, {
+          render: "Edit request successfuly created",
+          type: toast.TYPE.SUCCESS,
+          autoClose: 5000
+        });
       }
     });
   };
 
   const onDeleteSubmit = () => {
+    toastId.current = toast("Your edit request has been submitted", {
+      autoClose: false
+    });
+
     deletePrivateCloudProjectRequest({
       variables: { projectId: id },
       onCompleted: () => {
         navigate(requestsRoute);
+
+        toast.update(toastId.current, {
+          render: "Delete request successfuly created",
+          type: toast.TYPE.SUCCESS,
+          autoClose: 5000
+        });
       }
     });
   };
 
-  if (projectError || editProjectError || deleteProjectError) {
-    return `Error! ${projectError} ${editProjectError}`;
+  if (editProjectError && toastId.current) {
+    toast.update(toastId.current, {
+      render: `Error: ${editProjectError.message}`,
+      type: toast.TYPE.SUCCESS,
+      autoClose: 5000
+    });
+  } else if (deleteProjectError && toastId.current) {
+    toast.update(toastId.current, {
+      render: `Error: ${deleteProjectError.message}`,
+      type: toast.TYPE.SUCCESS,
+      autoClose: 5000
+    });
+  } else if (projectError) {
+    // Find bettwr way to handle this
+    return `Error! ${projectError}`;
   }
 
   return (

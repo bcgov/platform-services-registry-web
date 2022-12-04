@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/MetaDataInput";
 import ClusterInput from "../../components/ClusterInput";
@@ -17,6 +17,7 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 import StyledForm from "../../components/common/StyledForm";
 import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
+import { toast } from "react-toastify";
 
 const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
@@ -153,6 +154,7 @@ const MAKE_REQUEST_DECISION = gql`
 export default function Request() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const toastId = useRef(null);
 
   const {
     loading: adminRequestLoading,
@@ -173,11 +175,18 @@ export default function Request() {
   });
 
   const makeDecisionOnClick = (decision) => {
+    toastId.current = toast("Your decision has been submitted", {
+      autoClose: false
+    });
     makePrivateCloudRequestDecision({
       variables: { requestId: id, decision },
       onCompleted: () => {
-        console.log("MAKE REQUEST DECISION COMPLETED");
         navigate(-1);
+        toast.update(toastId.current, {
+          render: "Decision successful",
+          type: toast.TYPE.SUCCESS,
+          autoClose: 5000
+        });
       }
     });
   };
@@ -203,7 +212,15 @@ export default function Request() {
     }
   }, [adminRequestLoading, adminRequestError, adminPrivateCloudRequest, reset]);
 
-  if (adminRequestError) return `Error! ${adminRequestError}`;
+  if (decisionError && toastId.current) {
+    toast.update(toastId.current, {
+      render: `Error: ${decisionError.message}`,
+      type: toast.TYPE.SUCCESS,
+      autoClose: 5000
+    });
+  } else if (adminRequestError) {
+    return `Error! ${adminRequestError}`;
+  }
 
   const name =
     adminPrivateCloudRequest?.type === "CREATE"

@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useMutation, gql } from "@apollo/client";
 import NavToolbar from "../components/NavToolbar";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "@mui/material/Button";
 import MetaDataInput from "../components/MetaDataInput";
 import ClusterInput from "../components/ClusterInput";
-import styled from "styled-components";
 import { useForm, FormProvider } from "react-hook-form";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +16,7 @@ import {
 import StyledForm from "../components/common/StyledForm";
 import { USER_ACTIVE_REQUESTS } from "./requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "./requests/AdminRequests";
+import { toast } from "react-toastify";
 
 const CREATE_USER_PROJECT = gql`
   mutation Mutation(
@@ -35,6 +35,7 @@ const CREATE_USER_PROJECT = gql`
 
 export default function Create({ requestsRoute }) {
   const navigate = useNavigate();
+  const toastId = useRef(null);
 
   const {
     control,
@@ -60,6 +61,9 @@ export default function Create({ requestsRoute }) {
 
   const onSubmit = (data) => {
     const userProject = formDataToUserProject(data);
+    toastId.current = toast("Your create request has been submitted", {
+      autoClose: false
+    });
 
     privateCloudProjectRequest({
       variables: {
@@ -67,9 +71,23 @@ export default function Create({ requestsRoute }) {
       },
       onCompleted: () => {
         navigate(requestsRoute);
+
+        toast.update(toastId.current, {
+          render: "Request successfuly created",
+          type: toast.TYPE.SUCCESS,
+          autoClose: 5000
+        });
       }
     });
   };
+
+  if (error && toastId.current) {
+    toast.update(toastId.current, {
+      render: `Error: ${error.message}`,
+      type: toast.TYPE.ERROR,
+      autoClose: 5000
+    });
+  }
 
   return (
     <div>
