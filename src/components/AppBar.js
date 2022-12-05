@@ -8,6 +8,8 @@ import { useKeycloak } from "@react-keycloak/web";
 import logoImage from "./assets/bcid-symbol-rev.svg";
 import DropDownLoginMenu from "./DropDownLoginMenu";
 import Button from "@mui/material/Button";
+import { Typography } from "@mui/material";
+import useWindowSize from "../hooks/useWindowSize";
 
 const Logo = styled.img`
   max-width: 75px;
@@ -18,6 +20,7 @@ const Logo = styled.img`
 
 export default function DenseAppBar() {
   const { keycloak } = useKeycloak();
+  const { width } = useWindowSize();
 
   const login = useCallback(() => {
     keycloak?.login({ idpHint: "idir" });
@@ -32,19 +35,31 @@ export default function DenseAppBar() {
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
+            height: { xs: 10, sm: 60 }
           }}
         >
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <Link
-              to="/"
-              style={{ marginTop: 7 }}
-            >
+            <Link to="/" style={{ marginTop: 7 }}>
               <Logo alt="BC Gov Logo" src={logoImage} width="50" />
             </Link>
-            <p style={{ fontWeight: "300", fontSize: 20, font: "roboto" }}>
-              BC Platform Services&nbsp;
-            </p>
-            <p style={{ fontWeight: "500", fontSize: 20 }}>Project Registry</p>
+            {width > 600 && (
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                <Typography
+                  sx={{
+                    mt: 2,
+                    display: "inline-block",
+                    fontWeight: "300",
+                    fontSize: 20,
+                    font: "roboto"
+                  }}
+                >
+                  BC Platform Services&nbsp;
+                </Typography>
+                <Typography sx={{ mt: 2, fontWeight: "500", fontSize: 20 }}>
+                  Project Registry
+                </Typography>
+              </div>
+            )}
           </div>
           {keycloak?.authenticated ? (
             <DropDownLoginMenu />
