@@ -28,11 +28,18 @@ export default function TabsToolbar({ routes, createButtonRoute }) {
             color: "rgba(0, 0, 0, 0.6)",
             fontSize: 20,
             minWidth: 170,
+            // sm: { display: "none", color: "red"}
+            display: { xs: "none", sm: "block" }
           }}
         >
           PRIVATE CLOUD
         </Typography>
-        <Divider orientation="vertical" variant="middle" flexItem />
+        <Divider
+          orientation="vertical"
+          variant="middle"
+          flexItem
+          sx={{ display: { xs: "none", sm: "block" } }}
+        />
         <Box sx={{ width: "100%" }}>
           <Tabs value={routes.indexOf(pathname)} aria-label="nav tabs">
             <Tab component={Link} label="Requests" to={routes[0]} />

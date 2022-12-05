@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function StickyTable({
   columns,
-  rows,
+  rows = [],
   loading,
   onClickPath,
   onNextPage,

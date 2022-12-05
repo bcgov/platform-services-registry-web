@@ -6,7 +6,7 @@ import { useMutation, gql, useLazyQuery } from "@apollo/client";
 import Avatar from "@mui/material/Avatar";
 import { TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
-import useDebounce from "./utilities/UseDebounce";
+import useDebounce from "../hooks/useDebounce";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Card from "@mui/material/Card";

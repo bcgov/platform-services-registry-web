@@ -1,10 +1,16 @@
 import React, { useContext, useEffect, useCallback } from "react";
 import { useQuery, gql } from "@apollo/client";
-import { columns, projectsToRows } from "./helpers";
+import {
+  columns,
+  columnsXs,
+  projectsToRows,
+  projectsToRowsXs
+} from "./helpers";
 import StickyTable from "../../components/common/Table";
 import Alert from "../../components/common/Alert";
 import SearchContext from "../../context/search";
 import FilterContext from "../../context/filter";
+import useWindowSize from "../../hooks/useWindowSize";
 
 const ALL_PROJECTS = gql`
   query PrivateCloudProjectsPaginated(
@@ -48,6 +54,10 @@ const ALL_PROJECTS = gql`
 export default function Projects() {
   const { debouncedSearch } = useContext(SearchContext);
   const { filter } = useContext(FilterContext);
+  const { width } = useWindowSize();
+  console.log(width);
+
+  console.log(columns);
 
   const { loading, data, fetchMore, refetch, error } = useQuery(ALL_PROJECTS, {
     nextFetchPolicy: "cache-first",
@@ -55,8 +65,8 @@ export default function Projects() {
       offset: 0,
       limit: 10,
       search: debouncedSearch,
-      filter,
-    },
+      filter
+    }
   });
 
   const getNextPage = useCallback(
@@ -66,8 +76,8 @@ export default function Projects() {
           offset: page * pageSize,
           limit: pageSize,
           debouncedSearch,
-          filter,
-        },
+          filter
+        }
       });
     },
     [filter, debouncedSearch, fetchMore]
@@ -81,9 +91,13 @@ export default function Projects() {
     <StickyTable
       onClickPath={"/private-cloud/admin/product/"}
       onNextPage={getNextPage}
-      columns={columns}
+      columns={width >= 900 ? columns : columnsXs}
       rows={
-        loading ? [] : data.privateCloudProjectsPaginated.map(projectsToRows)
+        loading
+          ? []
+          : width >= 900
+          ? data.privateCloudProjectsPaginated.map(projectsToRows)
+          : data.privateCloudProjectsPaginated.map(projectsToRowsXs)
       }
       count={loading ? 0 : data.privateCloudProjectsCount}
       title="Products"
