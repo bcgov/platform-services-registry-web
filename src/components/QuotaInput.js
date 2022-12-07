@@ -23,7 +23,8 @@ export default function QuotaInput({ nameSpace }) {
       sx={{
         display: "flex",
         flexDirection: "column",
-        width: 280
+        width: 280, 
+        mr: 5
       }}
     >
       <TitleTypography>{nameSpace} Quota</TitleTypography>

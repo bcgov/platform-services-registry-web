@@ -16,7 +16,7 @@ export default function StickyTable({
   loading,
   onClickPath,
   onNextPage,
-  count,
+  count
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -52,7 +52,7 @@ export default function StickyTable({
                     fontSize: 18,
                     color: "#3c4043",
                     paddingLeft: 24,
-                    paddingRight: 24,
+                    paddingRight: 24
                   }}
                 >
                   {column.label}
@@ -60,61 +60,44 @@ export default function StickyTable({
               ))}
             </TableRow>
           </TableHead>
-          {loading ? (
-            columns.map((_, i) => (
-              <TableRow
-                key={"row" + i}
-                style={{ marginLeft: 24, marginRight: 24 }}
-                sx={{
-                  width: "100%",
-                }}
-              >
-                {columns.map((__, j) => (
-                  <TableCell key={"col" + j}>
-                    <Skeleton height="70px" animation="wave" />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      onClick={() => handleRowClick(row.id)}
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.code}
-                    >
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell
-                            style={{
-                              width: column.width,
-                              verticalAlign: "top",
-                              fontSize: 18,
-                              color: "#3c4043",
-                              paddingLeft: 24,
-                              paddingRight: 24,
-                            }}
-                            key={column.id}
-                            align={column.align}
-                          >
-                            {column.format && typeof value === "number"
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          )}
+
+          <TableBody>
+            {rows
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row) => {
+                return (
+                  <TableRow
+                    hover
+                    onClick={() => handleRowClick(row.id)}
+                    role="checkbox"
+                    tabIndex={-1}
+                    key={row.code}
+                  >
+                    {columns.map((column) => {
+                      const value = row[column.id];
+                      return (
+                        <TableCell
+                          style={{
+                            width: column.width,
+                            verticalAlign: "top",
+                            fontSize: 18,
+                            color: "#3c4043",
+                            paddingLeft: 24,
+                            paddingRight: 24
+                          }}
+                          key={column.id}
+                          align={column.align}
+                        >
+                          {column.format && typeof value === "number"
+                            ? column.format(value)
+                            : value}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+          </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
@@ -129,3 +112,21 @@ export default function StickyTable({
     </Paper>
   );
 }
+
+
+// Skeleton (if needed in future, but the ui experience is not great as it just flashes)
+  // columns.map((_, i) => (
+  //   <TableRow
+  //     key={"row" + i}
+  //     style={{ marginLeft: 24, marginRight: 24 }}
+  //     sx={{
+  //       width: "100%",
+  //     }}
+  //   >
+  //     {columns.map((__, j) => (
+  //       <TableCell key={"col" + j}>
+  //         <Skeleton height="70px" animation="wave" />
+  //       </TableCell>
+  //     ))}
+  //   </TableRow>
+  // ))

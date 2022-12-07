@@ -55,9 +55,6 @@ export default function Projects() {
   const { debouncedSearch } = useContext(SearchContext);
   const { filter } = useContext(FilterContext);
   const { width } = useWindowSize();
-  console.log(width);
-
-  console.log(columns);
 
   const { loading, data, fetchMore, refetch, error } = useQuery(ALL_PROJECTS, {
     nextFetchPolicy: "cache-first",
@@ -91,13 +88,13 @@ export default function Projects() {
     <StickyTable
       onClickPath={"/private-cloud/admin/product/"}
       onNextPage={getNextPage}
-      columns={width >= 900 ? columns : columnsXs}
+      columns={width < 900 ? columnsXs : columns}
       rows={
         loading
           ? []
-          : width >= 900
-          ? data.privateCloudProjectsPaginated.map(projectsToRows)
-          : data.privateCloudProjectsPaginated.map(projectsToRowsXs)
+          : width < 900
+          ? data.privateCloudProjectsPaginated.map(projectsToRowsXs)
+          : data.privateCloudProjectsPaginated.map(projectsToRows)
       }
       count={loading ? 0 : data.privateCloudProjectsCount}
       title="Products"

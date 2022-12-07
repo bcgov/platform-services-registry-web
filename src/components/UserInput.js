@@ -48,13 +48,13 @@ const schema = yup.object().shape({
   email: yup.string().email("Must be a valid email address").required()
 });
 
-export default function UserInput({ name, label, defaultEditOpen = false }) {
+export default function UserInput({ name, label }) {
   const [
     createUser,
     { data: createUserData, loading: createUserLoading, error: createUserError }
   ] = useMutation(CREATE_USER);
 
-  const [edit, setEdit] = useState(defaultEditOpen);
+  const [edit, setEdit] = useState(true);
 
   const {
     control,
@@ -124,6 +124,12 @@ export default function UserInput({ name, label, defaultEditOpen = false }) {
     }
   }, [isDirty, debouncedEmail]);
 
+  useEffect(() => {
+    if (data?.userByEmail ) {
+      setEdit(false);
+    }
+  }, [data]);
+
   const onSubmit = (data) => {
     createUser({
       variables: {
@@ -166,7 +172,11 @@ export default function UserInput({ name, label, defaultEditOpen = false }) {
             {data?.userByEmail?.firstName} {data?.userByEmail?.lastName}
           </Typography>
         </Stack>
-        {!edit ? (
+        {!data?.userByEmail ? (
+          <Button color="inherit" size="small" onClick={handleSubmit(onSubmit)}>
+            Create
+          </Button>
+        ) : !edit ? (
           <IconButton
             onClick={() => setEdit(true)}
             sx={{ width: 40, height: 40, p: 1 }}
@@ -181,6 +191,21 @@ export default function UserInput({ name, label, defaultEditOpen = false }) {
             <KeyboardArrowUpRoundedIcon sx={{ fontSize: 17 }} />
           </IconButton>
         )}
+        {/* {!edit ? (
+          <IconButton
+            onClick={() => setEdit(true)}
+            sx={{ width: 40, height: 40, p: 1 }}
+          >
+            <Edit sx={{ fontSize: 17 }} />
+          </IconButton>
+        ) : (
+          <IconButton
+            onClick={() => setEdit(false)}
+            sx={{ width: 40, height: 40, p: 1 }}
+          >
+            <KeyboardArrowUpRoundedIcon sx={{ fontSize: 17 }} />
+          </IconButton>
+        )} */}
       </Box>
       <Divider />
       {edit ? (
@@ -300,20 +325,7 @@ export default function UserInput({ name, label, defaultEditOpen = false }) {
           existing user
         </Alert>
       ) : (
-        <Alert
-          severity="info"
-          action={
-            <Button
-              color="inherit"
-              size="small"
-              onClick={handleSubmit(onSubmit)}
-            >
-              Create
-            </Button>
-          }
-        >
-          This user does not yet exist
-        </Alert>
+        <Alert severity="info">This user does not yet exist</Alert>
       )}
     </Card>
   );
