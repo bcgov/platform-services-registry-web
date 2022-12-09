@@ -332,7 +332,7 @@ export default function Project({ requestsRoute }) {
           <LoadingSpinner />
         ) : (
           <StyledForm onSubmit={handleSubmit(onSubmit)}>
-            <MetaDataInput />
+            <MetaDataInput defaultEditOpen={true}/>
             <div style={{ marginLeft: 70 }}>
               <ClusterInput />
               <div style={{ display: "flex", flexDirection: "row" }}>

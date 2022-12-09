@@ -69,25 +69,32 @@ export default function Create({ requestsRoute }) {
       variables: {
         ...userProject
       },
-      onCompleted: () => {
-        navigate(requestsRoute);
-
+      onError: (error) => {
+        console.log(error);
         toast.update(toastId.current, {
-          render: "Request successfuly created",
-          type: toast.TYPE.SUCCESS,
+          render: `Error: ${error.message}`,
+          type: toast.TYPE.ERROR,
           autoClose: 5000
         });
+      },
+
+      onCompleted: (data) => {
+        console.log("onCompleted");
+        console.log(data);
+        navigate(requestsRoute);
+
+        if (data?.privateCloudProjectRequest) {
+          toast.update(toastId.current, {
+            render: "Request successfuly created",
+            type: toast.TYPE.SUCCESS,
+            autoClose: 5000
+          });
+        }
       }
     });
   };
 
-  if (error && toastId.current) {
-    toast.update(toastId.current, {
-      render: `Error: ${error.message}`,
-      type: toast.TYPE.ERROR,
-      autoClose: 5000
-    });
-  }
+  console.log(data);
 
   return (
     <div>

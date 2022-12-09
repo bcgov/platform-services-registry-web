@@ -7,10 +7,10 @@ import {
   projectsToRowsXs
 } from "./helpers";
 import StickyTable from "../../components/common/Table";
-import Alert from "../../components/common/Alert";
 import SearchContext from "../../context/search";
 import FilterContext from "../../context/filter";
 import useWindowSize from "../../hooks/useWindowSize";
+import { EmptyAlert, ErrorAlert } from "../../components/common/Alert";
 
 const ALL_PROJECTS = gql`
   query PrivateCloudProjectsPaginated(
@@ -80,19 +80,19 @@ export default function Projects() {
     [filter, debouncedSearch, fetchMore]
   );
 
-  if (error) {
-    return <Alert error={error} />;
+  if (error && error.message === "Not a user") {
+    return <EmptyAlert />;
+  } else if (error) {
+    return <ErrorAlert error={error} />;
   }
 
-  return (
+  return !loading ? (
     <StickyTable
       onClickPath={"/private-cloud/admin/product/"}
       onNextPage={getNextPage}
       columns={width < 900 ? columnsXs : columns}
       rows={
-        loading
-          ? []
-          : width < 900
+        width < 900
           ? data.privateCloudProjectsPaginated.map(projectsToRowsXs)
           : data.privateCloudProjectsPaginated.map(projectsToRows)
       }
@@ -100,5 +100,5 @@ export default function Projects() {
       title="Products"
       loading={loading}
     />
-  );
+  ) : null;
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
-import Alert from "../../components/common/Alert";
+import { InfoAlert, ErrorAlert } from "../../components/common/Alert";
 
 const USER_PROJECTS = gql`
   query UserProjects {
@@ -35,17 +35,30 @@ const USER_PROJECTS = gql`
 export default function Projects() {
   const { loading, error, data } = useQuery(USER_PROJECTS);
 
-  if (error) {
-    return <Alert error={error} />;
+  if (error && error.message === "Not a user") {
+    return (
+      <InfoAlert
+        title="You don't have any products yet"
+        message={
+          <p>
+            You will see products here once you are assigned as product owner or
+            technical lead. Use the <strong>create</strong> button to create
+            your own product.
+          </p>
+        }
+      />
+    );
+  } else if (error) {
+    return <ErrorAlert error={error} />;
   }
 
-  return (
+  return !loading ? (
     <StickyTable
       onClickPath={"/private-cloud/user/project/"}
       columns={columns}
-      rows={loading ? [] : data.userPrivateCloudProjects.map(projectsToRows)}
+      rows={data.userPrivateCloudProjects.map(projectsToRows)}
       title="Projects"
       loading={loading}
     />
-  );
+  ) : null;
 }

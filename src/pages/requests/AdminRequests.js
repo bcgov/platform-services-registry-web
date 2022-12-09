@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import StickyTable from "../../components/common/Table";
 import { requestsToRows, columns } from "./helpers";
-import Alert from "../../components/common/Alert";
+import { EmptyAlert, ErrorAlert } from "../../components/common/Alert";
 
 export const ALL_ACTIVE_REQUESTS = gql`
   query PrivateCloudActiveRequests {
@@ -42,20 +42,19 @@ export const ALL_ACTIVE_REQUESTS = gql`
 export default function Requests() {
   const { loading, error, data } = useQuery(ALL_ACTIVE_REQUESTS);
 
-  if (error) {
-    return <Alert error={error} />;
+  if (error && error.message === "Not a user") {
+    return <EmptyAlert />;
+  } else if (error) {
+    return <ErrorAlert error={error} />;
   }
-  return (
+
+  return !loading ? (
     <StickyTable
       onClickPath={"/private-cloud/admin/request/"}
       columns={columns}
-      rows={
-        loading
-          ? []
-          : data.privateCloudActiveRequests.map(requestsToRows).reverse()
-      }
+      rows={data.privateCloudActiveRequests.map(requestsToRows).reverse()}
       title="Active Requests"
       loading={loading}
     />
-  );
+  ) : null;
 }

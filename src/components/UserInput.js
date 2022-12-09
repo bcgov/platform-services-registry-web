@@ -48,13 +48,13 @@ const schema = yup.object().shape({
   email: yup.string().email("Must be a valid email address").required()
 });
 
-export default function UserInput({ name, label }) {
+export default function UserInput({ name, label, defaultEditOpen = true }) {
   const [
     createUser,
     { data: createUserData, loading: createUserLoading, error: createUserError }
   ] = useMutation(CREATE_USER);
 
-  const [edit, setEdit] = useState(true);
+  const [edit, setEdit] = useState(defaultEditOpen);
 
   const {
     control,
@@ -124,12 +124,6 @@ export default function UserInput({ name, label }) {
     }
   }, [isDirty, debouncedEmail]);
 
-  useEffect(() => {
-    if (data?.userByEmail ) {
-      setEdit(false);
-    }
-  }, [data]);
-
   const onSubmit = (data) => {
     createUser({
       variables: {
@@ -143,7 +137,7 @@ export default function UserInput({ name, label }) {
       refetchQueries: [{ query: USER_BY_EMAIL, variables: { email: email } }],
       errorPolicy: "ignore",
       onCompleted: () => {
-        console.log("CREATED NEW USER");
+        setEdit(false);
       }
     });
   };
