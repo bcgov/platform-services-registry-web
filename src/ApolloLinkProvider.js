@@ -30,6 +30,8 @@ export default function ApolloAuthProvider({ children }) {
     uri: config.API_BASE_URL,
   });
 
+  console.log(keycloak)
+
   const authMiddleware = new ApolloLink((operation, forward) => {
     const bearerToken = keycloak.authenticated ? keycloak.token : "";
 

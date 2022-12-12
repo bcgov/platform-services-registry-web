@@ -11,9 +11,13 @@ import { ministries } from "./common/Constants";
 import { Controller, useFormContext } from "react-hook-form";
 import UserInput from "./UserInput";
 import TitleTypography from "./common/TitleTypography";
+import { useLocation } from "react-router-dom";
 
 export default function MetaDataInput() {
   const { control, errors, isDisabled } = useFormContext();
+  const { pathname } = useLocation();
+
+  const defaultEditOpen = pathname.includes("create");
 
   return (
     <Box
@@ -95,18 +99,21 @@ export default function MetaDataInput() {
         name="projectOwner"
         control={control}
         isDisabled={isDisabled}
+        defaultEditOpen={defaultEditOpen}
       />
       <UserInput
         label={"Primary Technical Lead"}
         name="primaryTechnicalLead"
         control={control}
         isDisabled={isDisabled}
+        defaultEditOpen={defaultEditOpen}
       />
       <UserInput
         label={"Secondary Technical Lead"}
         name="secondaryTechnicalLead"
         control={control}
         isDisabled={isDisabled}
+        defaultEditOpen={defaultEditOpen}
       />
     </Box>
   );

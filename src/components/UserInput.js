@@ -105,6 +105,7 @@ export default function UserInput({ name, label, defaultEditOpen = true }) {
         errorPolicy: "ignore",
         variables: { email: parentEmail }
       });
+      // setEdit(false);
     }
   }, [parentEmail]);
 
@@ -166,11 +167,12 @@ export default function UserInput({ name, label, defaultEditOpen = true }) {
             {data?.userByEmail?.firstName} {data?.userByEmail?.lastName}
           </Typography>
         </Stack>
-        {!data?.userByEmail ? (
-          <Button color="inherit" size="small" onClick={handleSubmit(onSubmit)}>
+        {edit && !data ? (
+          <Button sx={{mt: -1}} color="inherit" size="small" onClick={handleSubmit(onSubmit)}>
             Create
           </Button>
-        ) : !edit ? (
+        ) : null}
+        {!edit ? (
           <IconButton
             onClick={() => setEdit(true)}
             sx={{ width: 40, height: 40, p: 1 }}
@@ -185,21 +187,6 @@ export default function UserInput({ name, label, defaultEditOpen = true }) {
             <KeyboardArrowUpRoundedIcon sx={{ fontSize: 17 }} />
           </IconButton>
         )}
-        {/* {!edit ? (
-          <IconButton
-            onClick={() => setEdit(true)}
-            sx={{ width: 40, height: 40, p: 1 }}
-          >
-            <Edit sx={{ fontSize: 17 }} />
-          </IconButton>
-        ) : (
-          <IconButton
-            onClick={() => setEdit(false)}
-            sx={{ width: 40, height: 40, p: 1 }}
-          >
-            <KeyboardArrowUpRoundedIcon sx={{ fontSize: 17 }} />
-          </IconButton>
-        )} */}
       </Box>
       <Divider />
       {edit ? (

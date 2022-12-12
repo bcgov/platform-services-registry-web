@@ -18,6 +18,17 @@ const theme = createTheme({
   typography: {
     fontFamily: ["Roboto"].join(","),
   },
+  input: {
+    "& input.Mui-disabled": {
+      color: "red"
+    }
+  },
+  textFields: {
+    "& input.Mui-disabled": {
+      color: "red"
+    },
+    fontSize: "200px",
+  },
   tablecell: {
     fontSize: "200px",
   },

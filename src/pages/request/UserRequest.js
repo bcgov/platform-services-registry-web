@@ -16,7 +16,7 @@ import StyledForm from "../../components/common/StyledForm";
 
 const USER_REQUEST = gql`
   query Query($requestId: ID!) {
-    privateCloudActiveRequest(requestId: $requestId) {
+    userPrivateCloudActiveRequest(requestId: $requestId) {
       id
       createdBy {
         firstName
@@ -158,7 +158,7 @@ export default function Request() {
     resolver: yupResolver(schema)
   });
 
-  const userPrivateCloudRequest = userRequestData?.privateCloudActiveRequest;
+  const userPrivateCloudRequest = userRequestData?.userPrivateCloudActiveRequest;
 
   useEffect(() => {
     if (!userRequestLoading && !userRequestError) {
