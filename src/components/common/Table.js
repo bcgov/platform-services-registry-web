@@ -49,7 +49,7 @@ export default function StickyTable({
                   align={column.align}
                   style={{
                     width: column.width,
-                    fontSize: 18,
+                    fontSize: 16,
                     color: "#3c4043",
                     paddingLeft: 24,
                     paddingRight: 24
