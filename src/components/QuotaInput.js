@@ -16,6 +16,10 @@ import {
 } from "./common/Constants";
 import TitleTypography from "./common/TitleTypography";
 
+String.prototype.capitalizeFirstLetter = function () {
+  return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
 export default function QuotaInput({ nameSpace }) {
   const { control, errors, isDisabled, initialValues } = useFormContext();
 
@@ -30,7 +34,7 @@ export default function QuotaInput({ nameSpace }) {
         mr: 5
       }}
     >
-      <TitleTypography>{nameSpace} Quota</TitleTypography>
+      <TitleTypography>{nameSpace.capitalizeFirstLetter()} Quota</TitleTypography>
       <FormControl sx={{ mt: 1, mb: 2, minWidth: 250 }}>
         <InputLabel id="demo-simple-select-required-label">Cpu</InputLabel>
         <Controller
