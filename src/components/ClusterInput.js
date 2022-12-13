@@ -5,7 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import FormHelperText from "@mui/material/FormHelperText";
-import { clusters } from "./common/Constants";
+import { clusterNames } from "./common/Constants";
 import { Controller, useFormContext } from "react-hook-form";
 import TitleTypography from "./common/TitleTypography";
 
@@ -40,9 +40,9 @@ export default function ClusterInput() {
                 id="select-cluster"
                 label="Cluster"
               >
-                {clusters.map((clusterOption) => (
-                  <MenuItem key={clusterOption} value={clusterOption}>
-                    {clusterOption}
+                {clusterNames.map((clusterOption) => (
+                  <MenuItem key={clusterOption.id} value={clusterOption.name}>
+                    {clusterOption.humanFriendlyName}
                   </MenuItem>
                 ))}
               </Select>

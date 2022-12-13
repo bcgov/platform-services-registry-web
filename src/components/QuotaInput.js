@@ -10,6 +10,9 @@ import {
   defaultCpuOptions,
   defaultMemoryOptions,
   defaultStorageOptions,
+  defaultCpuOptionsLookup,
+  defaultMemoryOptionsLookup,
+  defaultStorageOptionsLookup
 } from "./common/Constants";
 import TitleTypography from "./common/TitleTypography";
 
@@ -23,7 +26,7 @@ export default function QuotaInput({ nameSpace }) {
       sx={{
         display: "flex",
         flexDirection: "column",
-        width: 280, 
+        width: 280,
         mr: 5
       }}
     >
@@ -47,13 +50,13 @@ export default function QuotaInput({ nameSpace }) {
               {[
                 ...new Set([
                   initialValues?.[nameSpace + "Cpu"],
-                  ...defaultCpuOptions,
-                ]),
+                  ...defaultCpuOptions
+                ])
               ]
                 .filter(Boolean)
                 .map((cpuOption) => (
-                  <MenuItem key={cpuOption} value={cpuOption}>
-                    {cpuOption}
+                  <MenuItem key={cpuOption.value} value={cpuOption}>
+                    {defaultCpuOptionsLookup[cpuOption] || cpuOption}
                   </MenuItem>
                 ))}
             </Select>
@@ -79,8 +82,8 @@ export default function QuotaInput({ nameSpace }) {
               {[
                 ...new Set([
                   ...defaultMemoryOptions,
-                  initialValues?.[nameSpace + "Memory"],
-                ]),
+                  initialValues?.[nameSpace + "Memory"]
+                ])
               ]
                 .filter(Boolean)
                 .map((defaultMemoryOption) => (
@@ -88,7 +91,8 @@ export default function QuotaInput({ nameSpace }) {
                     key={defaultMemoryOption}
                     value={defaultMemoryOption}
                   >
-                    {defaultMemoryOption}
+                    {defaultMemoryOptionsLookup[defaultMemoryOption] ||
+                      defaultMemoryOption}
                   </MenuItem>
                 ))}
             </Select>
@@ -118,8 +122,8 @@ export default function QuotaInput({ nameSpace }) {
               {[
                 ...new Set([
                   initialValues?.[nameSpace + "Storage"],
-                  ...defaultStorageOptions,
-                ]),
+                  ...defaultStorageOptions
+                ])
               ]
                 .filter(Boolean)
                 .map((defaultStorageOption) => (
@@ -127,7 +131,8 @@ export default function QuotaInput({ nameSpace }) {
                     key={defaultStorageOption}
                     value={defaultStorageOption}
                   >
-                    {defaultStorageOption}
+                    {defaultStorageOptionsLookup[defaultStorageOption] ||
+                      defaultStorageOption}
                   </MenuItem>
                 ))}
             </Select>
