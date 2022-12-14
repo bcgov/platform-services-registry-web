@@ -167,7 +167,7 @@ export default function UserInput({ name, label, defaultEditOpen = true }) {
             {data?.userByEmail?.firstName} {data?.userByEmail?.lastName}
           </Typography>
         </Stack>
-        {edit && !data ? (
+        {edit && !data?.userByEmail ? (
           <Button sx={{mt: -1}} color="inherit" size="small" onClick={handleSubmit(onSubmit)}>
             Create
           </Button>
