@@ -220,7 +220,7 @@ export default function Project({ requestsRoute }) {
     });
 
     createPrivateCloudProjectEditRequest({
-      variables: { projectId: id, ...userProject },
+      variables: { projectId: id, ...userProject, ...userProject.quota },
       onCompleted: () => {
         navigate(requestsRoute);
 

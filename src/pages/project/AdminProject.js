@@ -225,7 +225,7 @@ export default function Project({ requestsRoute }) {
     });
 
     createPrivateCloudProjectEditRequest({
-      variables: { projectId: id, ...userProject },
+      variables: { projectId: id, ...userProject, ...userProject.quota },
       onCompleted: () => {
         navigate(requestsRoute);
 
@@ -332,7 +332,7 @@ export default function Project({ requestsRoute }) {
           <LoadingSpinner />
         ) : (
           <StyledForm onSubmit={handleSubmit(onSubmit)}>
-            <MetaDataInput defaultEditOpen={true}/>
+            <MetaDataInput defaultEditOpen={true} />
             <div style={{ marginLeft: 70 }}>
               <ClusterInput />
               <div style={{ display: "flex", flexDirection: "row" }}>

@@ -30,6 +30,7 @@ const NoMatch = () => {
 export const AppRouter = () => {
   const { initialized, keycloak } = useKeycloak();
   const isAdmin = keycloak.hasResourceRole("admin");
+  console.log("isAdmin", isAdmin)
 
   if (!initialized) {
     return <LoadingSpinner />;
