@@ -94,8 +94,6 @@ export default function Create({ requestsRoute }) {
     });
   };
 
-  console.log(data);
-
   return (
     <div>
       <FormProvider {...{ control, errors, setValue, watch }}>

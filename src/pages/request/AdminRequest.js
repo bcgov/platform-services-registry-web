@@ -40,6 +40,7 @@ const ADMIN_REQUEST = gql`
       project {
         ... on PrivateCloudProject {
           name
+          id
         }
       }
       requestedProject {
@@ -146,8 +147,12 @@ const MAKE_REQUEST_DECISION = gql`
   mutation MakePrivateCloudRequestDecision(
     $requestId: ID!
     $decision: RequestDecision!
+    $projectId: ID
   ) {
-    makePrivateCloudRequestDecision(requestId: $requestId, decision: $decision)
+    makePrivateCloudRequestDecision(
+      requestId: $requestId, 
+      decision: $decision, 
+      projectId:$projectId)
   }
 `;
 
@@ -174,12 +179,22 @@ export default function Request() {
     ]
   });
 
+  const adminPrivateCloudRequest = adminRequestData?.privateCloudActiveRequest;
+  const initalFormData = userProjectToFormData(
+    adminPrivateCloudRequest?.requestedProject
+  );
+
+  const projectId =
+    adminPrivateCloudRequest?.type !== "CREATE"
+      ? adminPrivateCloudRequest?.project?.id
+      : null;
+
   const makeDecisionOnClick = (decision) => {
     toastId.current = toast("Your decision has been submitted", {
       autoClose: false
     });
     makePrivateCloudRequestDecision({
-      variables: { requestId: id, decision },
+      variables: { requestId: id, decision, projectId: projectId },
       onCompleted: () => {
         navigate(-1);
         toast.update(toastId.current, {
@@ -201,10 +216,6 @@ export default function Request() {
     resolver: yupResolver(schema)
   });
 
-  const adminPrivateCloudRequest = adminRequestData?.privateCloudActiveRequest;
-  const initalFormData = userProjectToFormData(
-    adminPrivateCloudRequest?.requestedProject
-  );
 
   useEffect(() => {
     if (!adminRequestLoading && !adminRequestError) {
@@ -226,6 +237,7 @@ export default function Request() {
     adminPrivateCloudRequest?.type === "CREATE"
       ? adminPrivateCloudRequest?.requestedProject?.name
       : adminPrivateCloudRequest?.project?.name;
+
 
   return (
     <div>
