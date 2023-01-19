@@ -16,7 +16,11 @@ import IconButton from "@mui/material/IconButton";
 import Edit from "@mui/icons-material/Edit";
 import Divider from "@mui/material/Divider";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
-import * as yup from "yup";
+import { ministries } from "./common/Constants";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
 
 const USER_BY_EMAIL = gql`
   query UserByEmail($email: EmailAddress!) {
@@ -25,123 +29,45 @@ const USER_BY_EMAIL = gql`
       firstName
       lastName
       email
+      ministry
     }
   }
 `;
 
-const CREATE_USER = gql`
-  mutation Mutation($input: CreateUserInput!) {
-    createUser(input: $input) {
-      id
-      firstName
-      lastName
-      email
-      githubId
-    }
-  }
-`;
-
-const schema = yup.object().shape({
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
-  githubId: yup.string().required(),
-  email: yup.string().email("Must be a valid email address").required()
-});
-
-export default function UserInput({ name, label, defaultEditOpen = true }) {
-  const [
-    createUser,
-    { data: createUserData, loading: createUserLoading, error: createUserError }
-  ] = useMutation(CREATE_USER);
-
+export default function UserInput({
+  contact,
+  label,
+  defaultEditOpen = true,
+  formik,
+  isDisabled = false
+}) {
   const [edit, setEdit] = useState(defaultEditOpen);
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-    reset,
-    formState: { errors, isDirty }
-  } = useForm({
-    resolver: yupResolver(schema)
-    // shouldUnregister: false,
-  });
-
-  const {
-    setValue: parentSetValue,
-    watch: parentWatch,
-    errors: parentErrors,
-    isDisabled
-  } = useFormContext();
-
-  const parentEmail = parentWatch(name);
-  const email = watch("email");
-  const debouncedEmail = useDebounce(email, 500);
-  const debouncedGithubId = useDebounce(watch("githubId"), 500);
+  const debouncedGithubId = useDebounce(formik.values[contact]?.githubId, 500);
+  const debouncedEmail = useDebounce(formik.values[contact]?.email, 500);
+  const email = formik.values[contact]?.email;
 
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
     onCompleted: (data) => {
       if (data.userByEmail) {
-        reset(data.userByEmail);
+        formik.setFieldValue(contact + ".githubId", data.userByEmail.githubId);
+        formik.setFieldValue(
+          contact + ".firstName",
+          data.userByEmail.firstName
+        );
+        formik.setFieldValue(contact + ".lastName", data.userByEmail.lastName);
+        formik.setFieldValue(contact + ".email", data.userByEmail.email);
+        formik.setFieldValue(contact + ".ministry", data.userByEmail.ministry);
       }
     }
   });
 
   useEffect(() => {
-    parentSetValue(`${name}UserExists`, !!data?.userByEmail);
-  }, [data]);
-
-  useEffect(() => {
-    if (parentErrors[name]) {
-      setEdit(true);
+    if (debouncedEmail) {
+      getUser({ variables: { email: debouncedEmail } });
     }
-  }, [parentErrors]);
-
-  useEffect(() => {
-    if (parentEmail) {
-      getUser({
-        errorPolicy: "ignore",
-        variables: { email: parentEmail }
-      });
-      // setEdit(false);
-    }
-  }, [parentEmail]);
-
-  useEffect(() => {
-    if (isDirty) {
-      parentSetValue(name, debouncedEmail, { shouldDirty: true });
-
-      setValue("githubId", "", {
-        shouldValidate: false
-      });
-      setValue("firstName", "", {
-        shouldValidate: false
-      });
-      setValue("lastName", "", {
-        shouldValidate: false
-      });
-    }
-  }, [isDirty, debouncedEmail]);
-
-  const onSubmit = (data) => {
-    createUser({
-      variables: {
-        input: {
-          email,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          githubId: data.githubId
-        }
-      },
-      refetchQueries: [{ query: USER_BY_EMAIL, variables: { email: email } }],
-      errorPolicy: "ignore",
-      onCompleted: () => {
-        setEdit(false);
-      }
-    });
-  };
+  }, [debouncedEmail]);
 
   return (
     <Card sx={{ mt: 4, mb: 2 }}>
@@ -167,11 +93,6 @@ export default function UserInput({ name, label, defaultEditOpen = true }) {
             {data?.userByEmail?.firstName} {data?.userByEmail?.lastName}
           </Typography>
         </Stack>
-        {edit && !data?.userByEmail ? (
-          <Button sx={{mt: -1}} color="inherit" size="small" onClick={handleSubmit(onSubmit)}>
-            Create
-          </Button>
-        ) : null}
         {!edit ? (
           <IconButton
             onClick={() => setEdit(true)}
@@ -196,13 +117,13 @@ export default function UserInput({ name, label, defaultEditOpen = true }) {
           justifyContent="space-between"
           sx={{ px: 2, py: 1, bgcolor: "background.default" }}
         >
-          <form onSubmit={handleSubmit(onSubmit)}>
-            {parentErrors?.[`${name}UserExists`] && (
+          <div>
+            {/* {parentErrors?.[`${contact}UserExists`] && (
               <span style={{ color: "grey" }}>
                 This user does not exist, please create a user or use an
                 existing one
               </span>
-            )}
+            )} */}
 
             <Box
               sx={{
@@ -212,92 +133,115 @@ export default function UserInput({ name, label, defaultEditOpen = true }) {
                 width: "90%"
               }}
             >
-              <Controller
-                name={"email"}
-                defaultValue={""}
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant="standard"
-                    disabled={isDisabled}
-                    size="small"
-                    helperText={
-                      parentErrors[name] || errors.email
-                        ? "Email is a required field"
-                        : ""
-                    }
-                    id={name + "-email"}
-                    label="Email"
-                  />
-                )}
+              <TextField
+                variant="standard"
+                id={contact + ".email"}
+                name={contact + ".email"}
+                label="Email"
+                disabled={isDisabled}
+                value={formik.values[contact]?.email}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched[contact]?.email &&
+                  Boolean(formik.errors[contact]?.email)
+                }
+                helperText={
+                  formik.touched[contact]?.email &&
+                  formik.errors[contact]?.email
+                }
+                size="small"
               />
-              <Controller
-                name={"githubId"}
-                defaultValue={""}
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant="standard"
-                    disabled={
-                      isDisabled || !!data?.userByEmail?.githubId || !email
-                    }
-                    size="small"
-                    helperText={
-                      errors.githubId ? "Github ID is a required field" : ""
-                    }
-                    id={name + "-githubId"}
-                    label="Github ID"
-                  />
-                )}
+
+              <TextField
+                variant="standard"
+                id={contact + ".githubId"}
+                name={contact + ".githubId"}
+                label="Github ID"
+                disabled={isDisabled || !!data?.userByEmail?.githubId || !email}
+                value={formik.values[contact]?.githubId}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched[contact]?.githubId &&
+                  Boolean(formik.errors[contact]?.githubId)
+                }
+                helperText={
+                  formik.touched[contact]?.githubId &&
+                  formik.errors[contact]?.githubId
+                }
+                size="small"
               />
-              <Controller
-                name={"firstName"}
-                defaultValue={""}
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant="standard"
-                    disabled={
-                      isDisabled || !!data?.userByEmail?.firstName || !email
-                    }
-                    size="small"
-                    helperText={
-                      errors.firstName ? "First Name is a required field" : ""
-                    }
-                    id={name + "-firstName"}
-                    label="First Name"
-                  />
-                )}
+
+              <TextField
+                variant="standard"
+                id={contact + ".firstName"}
+                name={contact + ".firstName"}
+                label="First Name"
+                disabled={
+                  isDisabled || !!data?.userByEmail?.firstName || !email
+                }
+                value={formik.values[contact]?.firstName}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched[contact]?.firstName &&
+                  Boolean(formik.errors[contact]?.firstName)
+                }
+                helperText={
+                  formik.touched[contact]?.firstName &&
+                  formik.errors[contact]?.firstName
+                }
+                size="small"
               />
-              <Controller
-                name={"lastName"}
-                defaultValue={""}
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant="standard"
-                    disabled={
-                      isDisabled || !!data?.userByEmail?.lastName || !email
-                    }
-                    size="small"
-                    helperText={
-                      errors.lastName ? "LastName is a required field" : ""
-                    }
-                    id={name + "-lastName"}
-                    label="Last Name"
-                  />
-                )}
+
+              <TextField
+                variant="standard"
+                id={contact + ".lastName"}
+                name={contact + ".lastName"}
+                label="Last Name"
+                disabled={isDisabled || !!data?.userByEmail?.lastName || !email}
+                value={formik.values[contact]?.lastName}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched[contact]?.lastName &&
+                  Boolean(formik.errors[contact]?.lastName)
+                }
+                helperText={
+                  formik.touched[contact]?.lastName &&
+                  formik.errors[contact]?.lastName
+                }
+                size="small"
               />
+
+              <FormControl sx={{ minWidth: 250, mt: 1, mb: 3 }} size="small">
+                <InputLabel id="demo-simple-select-required-label">
+                  Ministry
+                </InputLabel>
+                <Select
+                  id={contact + ".ministry"}
+                  name={contact + ".ministry"}
+                  label="Ministry"
+                  disabled={
+                    isDisabled || !!data?.userByEmail?.ministry || !email
+                  }
+                  value={formik.values[contact]?.ministry}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched[contact]?.ministry &&
+                    Boolean(formik.errors[contact]?.ministry)
+                  }
+                  helpertext={
+                    formik.touched[contact]?.ministry &&
+                    formik.errors[contact]?.ministry
+                  }
+                >
+                  {ministries.map((ministryOption) => (
+                    <MenuItem key={ministryOption} value={ministryOption}>
+                      {ministryOption}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Box>
-          </form>
+          </div>
         </Stack>
       ) : null}
       {data?.userByEmail ? (
@@ -306,7 +250,7 @@ export default function UserInput({ name, label, defaultEditOpen = true }) {
           existing user
         </Alert>
       ) : (
-        <Alert severity="info">This user does not yet exist</Alert>
+        <Alert severity="info">This user does not exist</Alert>
       )}
     </Card>
   );

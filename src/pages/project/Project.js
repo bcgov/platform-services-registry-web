@@ -26,7 +26,7 @@ import { toast } from "react-toastify";
 
 const USER_PROJECT = gql`
   query Query($projectId: ID!) {
-    userPrivateCloudProject(projectId: $projectId) {
+    userPrivateCloudProjectById(projectId: $projectId) {
       id
       name
       description
@@ -58,68 +58,36 @@ const USER_PROJECT = gql`
         other
       }
       productionQuota {
-        cpu {
-          requests
-          limits
-        }
-        memory {
-          requests
-          limits
-        }
-        storage {
-          file
-        }
-        snapshot {
-          count
-        }
+        cpuRequests
+        cpuLimits
+        memoryRequests
+        memoryLimits
+        storageFile
+        snapshotCount
       }
       testQuota {
-        cpu {
-          limits
-          requests
-        }
-        memory {
-          requests
-          limits
-        }
-        storage {
-          file
-        }
-        snapshot {
-          count
-        }
+        cpuRequests
+        cpuLimits
+        memoryRequests
+        memoryLimits
+        storageFile
+        snapshotCount
       }
       developmentQuota {
-        cpu {
-          requests
-          limits
-        }
-        memory {
-          requests
-          limits
-        }
-        storage {
-          file
-        }
-        snapshot {
-          count
-        }
+        cpuRequests
+        cpuLimits
+        memoryRequests
+        memoryLimits
+        storageFile
+        snapshotCount
       }
       toolsQuota {
-        cpu {
-          requests
-          limits
-        }
-        memory {
-          requests
-          limits
-        }
-        storage {
-          file
-        }
-        snapshot {
-          count
-        }
+        cpuRequests
+        cpuLimits
+        memoryRequests
+        memoryLimits
+        storageFile
+        snapshotCount
       }
     }
   }
@@ -205,11 +173,13 @@ export default function Project({ requestsRoute }) {
     resolver: yupResolver(schema)
   });
 
-  const userPrivateCloudProject = userProjectData?.userPrivateCloudProject;
+  const userPrivateCloudProject = userProjectData?.userPrivateCloudProjectById;
 
   useEffect(() => {
     if (!userProjectLoading && !userProjectError) {
-      reset(userProjectToFormData(userPrivateCloudProject));
+      if (userPrivateCloudProject) {
+        reset(userProjectToFormData(userPrivateCloudProject));
+      }
     }
   }, [userProjectLoading, userProjectError, userPrivateCloudProject, reset]);
 

@@ -1,37 +1,16 @@
-import React, { useEffect, useState } from "react";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import { Controller, useFormContext } from "react-hook-form";
-import Paper from "@mui/material/Paper";
-import styled from "styled-components";
+import React, { useState, useEffect } from "react";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import FormHelperText from "@mui/material/FormHelperText";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import { Typography } from "@mui/material";
-import TextField from "@mui/material/TextField";
+import styled from "styled-components";
+import Box from "@mui/material/Box";
 import TitleTypography from "./common/TitleTypography";
-
-const StyledCheckboxContainer = styled.div`
-  min-width: 400px;
-  display: inline-block;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-`;
-
-const StyledContainer = styled.div`
-  padding-bottom: 25px;
-  max-width: 850px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-`;
-
-const StyledControler = styled(Controller)`
-  align-self: left;
-`;
+import TextField from "@mui/material/TextField";
+import Checkbox from "@mui/material/Checkbox";
+import FormHelperText from "@mui/material/FormHelperText";
 
 const commonComponents = [
   { name: "addressAndGeolocation", description: "Address and geolocation" },
@@ -71,144 +50,124 @@ const commonComponents = [
   }
 ];
 
-function CheckBoxRow({ name, description }) {
-  const { control, errors, isDisabled, initialValues, setValue, watch } =
-    useFormContext();
+const StyledCheckboxContainer = styled.div`
+  min-width: 400px;
+  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
 
-  const selection = watch(name);
-  const noServices = watch("noServices");
+const StyledContainer = styled.div`
+  padding-bottom: 25px;
+  max-width: 850px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+`;
 
-  const onClick = (event) => {
-    if (event.target.value === selection) {
-      setValue(name, undefined);
+export default function CommonComponents({ formik, isDisabled }) {
+  const [dirty, setDirty] = useState(false);
+
+  const noServices = formik.values.commonComponents.noServices;
+
+  const onClick = (name) => (event) => {
+    if (event.target.value === formik.values.commonComponents[name]) {
+      formik.setFieldValue(event.target.name, "");
+    } else {
+      formik.setFieldValue(event.target.name, event.target.value);
     }
   };
 
+  useEffect(() => {
+    const { noServices, ...rest } = formik.values.commonComponents;
+    const values = Object.values(rest).filter((value) => value !== "");
+
+    setDirty(values.length !== 0);
+  }, [formik.values.commonComponents]);
+
   return (
-    <StyledContainer>
-      <Typography
-        variant="body1"
-        color={(noServices || isDisabled) && "rgba(0, 0, 0, 0.38)"}
-        sx={{ marginTop: 0.5, fontWeight: "medium" }}
-      >
-        {description}
-      </Typography>
-      <StyledCheckboxContainer>
-        <StyledControler
-          name={name}
-          control={control}
-          render={({ field }) => (
+    <Box>
+      <TitleTypography>Common Components</TitleTypography>
+      <FormControl>
+        {commonComponents.map(({ name, description }) => (
+          <div key={name} style={{ marginBottom: "10px" }}>
+            <Typography
+              variant="body1"
+              color={isDisabled && "rgba(0, 0, 0, 0.38)"}
+              sx={{ marginTop: 0.5, fontWeight: "medium" }}
+            >
+              {description}
+            </Typography>
             <RadioGroup
               row
               aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-              {...field}
-              value={field.value || ""}
+              onClick={onClick(name)}
+              value={formik.values.commonComponents[name]}
             >
               <FormControlLabel
-                value={"IMPLEMENTED"}
                 control={
                   <Radio
-                    onClick={onClick}
-                    checked={field.value === "IMPLEMENTED"}
-                    disabled={noServices || isDisabled}
+                    id={"commonComponents" + name + "IMPLEMENTED"}
+                    name={"commonComponents." + name}
+                    value="IMPLEMENTED"
+                    disabled={isDisabled || !!noServices}
                   />
                 }
                 label="Implemented"
               />
-
               <FormControlLabel
-                value={"PLANNING_TO_USE"}
                 control={
                   <Radio
-                    onClick={onClick}
-                    checked={field.value === "PLANNING_TO_USE"}
-                    disabled={noServices || isDisabled}
+                    id={"commonComponents" + name + "IMPLEMENTED"}
+                    name={"commonComponents." + name}
+                    value="PLANNING_TO_USE"
+                    disabled={isDisabled || !!noServices}
                   />
                 }
                 label="Planning to use"
               />
             </RadioGroup>
-          )}
-        />
-      </StyledCheckboxContainer>
-    </StyledContainer>
-  );
-}
-
-export default function CommonComponents() {
-  const { control, errors, isDisabled, initialValues, setValue, watch } =
-    useFormContext();
-
-  const isDirty =
-    watch(["other", ...commonComponents.map(({ name }) => name)]).filter(
-      Boolean
-    ).length > 0;
-  const noServices = watch("noServices");
-
-  useEffect(() => {
-    if (!noServices && !isDirty) {
-      setValue("noServices", undefined);
-    } else if (isDirty) {
-      setValue("noServices", false);
-    }
-  }, [noServices, isDirty, setValue]);
-
-  return (
-    <div>
-      <TitleTypography>Common Components</TitleTypography>
-      <FormGroup>
-        {commonComponents.map(({ name, description }, index) => (
-          <CheckBoxRow name={name} description={description} key={index} />
+          </div>
         ))}
-        <FormControlLabel
-          sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}
-          labelPlacement="start"
-          label={"Other"}
-          disabled={isDisabled || noServices}
-          control={
-            <Controller
-              name="other"
-              defaultValue={""}
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  sx={{ ml: 5, width: "80%" }}
-                  disabled={isDisabled || noServices}
-                  size="small"
-                  helperText={errors.other ? errors.name?.other : ""}
-                  id="name"
-                  label="please specify"
-                />
-              )}
-            />
-          }
-        />
+        <div style={{ display: "flex" }}>
+          <Typography
+            variant="body1"
+            color={isDisabled && "rgba(0, 0, 0, 0.38)"}
+            sx={{ marginTop: 0.5, fontWeight: "medium" }}
+          >
+            Other
+          </Typography>
+          <TextField
+            id="other"
+            name="commonComponents.other"
+            label="please specify"
+            onChange={formik.handleChange}
+            value={formik.values.commonComponents.other}
+            sx={{ ml: 3, width: "80%" }}
+            disabled={isDisabled || !!noServices}
+            size="small"
+          />
+        </div>
         <FormControlLabel
           control={
-            <Controller
-              disabled={isDirty || isDisabled}
-              name="noServices"
-              control={control}
-              defaultValue={false}
-              render={({ field }) => (
-                <Checkbox
-                  disabled={isDirty || isDisabled}
-                  required={!isDirty}
-                  checked={isDirty ? false : field.value}
-                  {...field}
-                />
-              )}
+            <Checkbox
+              id="noServices"
+              name="commonComponents.noServices"
+              type="checkbox"
+              onChange={formik.handleChange}
+              disabled={isDisabled || dirty}
+              checked={Boolean(formik.values.commonComponents.noServices)}
+              value={formik.values.commonComponents.noServices?.[0] === "on"}
             />
           }
           label={"The app does not use any of these services"}
         />
         <FormHelperText>
-          {errors.noServices && !isDirty ? "required field" : ""}
+          {formik.errors?.commonComponents?.noServices}
         </FormHelperText>
-      </FormGroup>
-    </div>
+      </FormControl>
+    </Box>
   );
 }

@@ -8,7 +8,8 @@ export const ALL_ACTIVE_REQUESTS = gql`
   query PrivateCloudActiveRequests {
     privateCloudActiveRequests {
       id
-      status
+      active
+      decisionStatus 
       type
       requestedProject {
         name

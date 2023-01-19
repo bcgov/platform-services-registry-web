@@ -13,40 +13,32 @@ import useWindowSize from "../../hooks/useWindowSize";
 import { EmptyAlert, ErrorAlert } from "../../components/common/Alert";
 
 const ALL_PROJECTS = gql`
-  query PrivateCloudProjectsPaginated(
-    $offset: Int!
-    $limit: Int!
-    $search: String
-    $filter: FilterPrivateCloudProjectsInput
-  ) {
-    privateCloudProjectsCount(search: $search, filter: $filter)
-    privateCloudProjectsPaginated(
-      offset: $offset
-      limit: $limit
-      search: $search
-      filter: $filter
-    ) {
-      id
-      name
-      description
-      cluster
-      ministry
-      licencePlate
-      projectOwner {
-        firstName
-        lastName
-        githubId
+  query PrivateCloudProjectsPaginated($page: Int!, $pageSize: Int!) {
+    privateCloudProjectsPaginated(page: $page, pageSize: $pageSize) {
+      projects {
+        id
+        name
+        description
+        cluster
+        ministry
+        licencePlate
+        projectOwner {
+          firstName
+          lastName
+          githubId
+        }
+        primaryTechnicalLead {
+          firstName
+          lastName
+          githubId
+        }
+        secondaryTechnicalLead {
+          firstName
+          lastName
+          githubId
+        }
       }
-      primaryTechnicalLead {
-        firstName
-        lastName
-        githubId
-      }
-      secondaryTechnicalLead {
-        firstName
-        lastName
-        githubId
-      }
+      total
     }
   }
 `;
@@ -59,10 +51,10 @@ export default function Projects() {
   const { loading, data, fetchMore, refetch, error } = useQuery(ALL_PROJECTS, {
     nextFetchPolicy: "cache-first",
     variables: {
-      offset: 0,
-      limit: 10,
-      search: debouncedSearch,
-      filter
+      page: 1,
+      pageSize: 5
+      // search: debouncedSearch,
+      // filter
     }
   });
 
@@ -70,10 +62,10 @@ export default function Projects() {
     (page, pageSize) => {
       fetchMore({
         variables: {
-          offset: page * pageSize,
-          limit: pageSize,
-          debouncedSearch,
-          filter
+          page,
+          pageSize
+          // debouncedSearch,
+          // filter
         }
       });
     },
@@ -93,10 +85,10 @@ export default function Projects() {
       columns={width < 900 ? columnsXs : columns}
       rows={
         width < 900
-          ? data.privateCloudProjectsPaginated.map(projectsToRowsXs)
-          : data.privateCloudProjectsPaginated.map(projectsToRows)
+          ? data?.privateCloudProjectsPaginated?.projects.map(projectsToRowsXs)
+          : data?.privateCloudProjectsPaginated?.projects.map(projectsToRows)
       }
-      count={loading ? 0 : data.privateCloudProjectsCount}
+      count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
       title="Products"
       loading={loading}
     />

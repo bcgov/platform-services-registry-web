@@ -6,11 +6,9 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import FormHelperText from "@mui/material/FormHelperText";
 import { clusterNames } from "./common/Constants";
-import { Controller, useFormContext } from "react-hook-form";
 import TitleTypography from "./common/TitleTypography";
 
-export default function ClusterInput() {
-  const { control, errors, isDisabled } = useFormContext();
+export default function ClusterInput({ formik, isDisabled }) {
   return (
     <Box
       sx={{
@@ -20,37 +18,32 @@ export default function ClusterInput() {
       autoComplete="off"
     >
       <div>
-      <TitleTypography>Cluster</TitleTypography>
-
-        <FormControl sx={{ mt: 0, mb: 2, minWidth: 250 }}>
+        <TitleTypography>Cluster</TitleTypography>
+        <FormControl size="small" sx={{ mt: 0, mb: 2, minWidth: 250 }}>
           <InputLabel id="demo-simple-select-required-label">
             Cluster
           </InputLabel>
-          <Controller
+          <Select
+            id="cluster"
             name="cluster"
-            defaultValue={""}
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <Select
-                {...field}
-                disabled={isDisabled}
-                size="medium"
-                labelId="select-cluster"
-                id="select-cluster"
-                label="Cluster"
-              >
-                {clusterNames.map((clusterOption) => (
-                  <MenuItem key={clusterOption.id} value={clusterOption.name}>
-                    {clusterOption.humanFriendlyName}
-                  </MenuItem>
-                ))}
-              </Select>
-            )}
-          />
-          <FormHelperText>
+            value={formik.values.cluster}
+            onChange={formik.handleChange}
+            error={formik.touched.cluster && Boolean(formik.errors.cluster)}
+            helpertext={formik.touched.cluster && formik.errors.cluster}
+            disabled={isDisabled}
+            labelId="select-cluster"
+            label="Cluster"
+          >
+            {clusterNames.map((clusterOption) => (
+              <MenuItem key={clusterOption.id} value={clusterOption.name}>
+                {clusterOption.humanFriendlyName}
+              </MenuItem>
+            ))}
+          </Select>
+
+          {/* <FormHelperText>
             {errors.cluster ? errors.cluster?.message : ""}
-          </FormHelperText>
+          </FormHelperText> */}
         </FormControl>
       </div>
     </Box>

@@ -1,6 +1,11 @@
 import * as yup from "yup";
+import {
+  CreateUserInputSchema,
+  CommonComponentsInputSchema,
+  QuotaInputSchema
+} from "../../__generated__/resolvers-types";
 
-const metaDataSchema = {
+export const metaDataSchema = {
   name: yup.string().required(),
   description: yup.string().required(),
   projectOwner: yup.string().email("Must be a valid email address").required(),
@@ -21,7 +26,7 @@ const metaDataSchema = {
   cluster: yup.string().required()
 };
 
-const customQuotaSchema = {
+export const customQuotaSchema = {
   cpuRequests: yup.number().required().positive(),
   cpuLimits: yup.number().required().positive(),
   memoryRequests: yup.number().required().positive().integer(),
@@ -34,7 +39,7 @@ const customQuotaSchema = {
   snapshotCount: yup.number().required().positive().integer()
 };
 
-const quotaSchema = {
+export const quotaSchema = {
   productionCpu: yup.string().required(),
   productionMemory: yup.string().required(),
   productionStorage: yup.string().required(),
@@ -49,7 +54,7 @@ const quotaSchema = {
   toolsStorage: yup.string().required()
 };
 
-const commonComponentsSchema = {
+export const commonComponentsSchema = {
   addressAndGeolocation: yup.string().nullable(),
   workflowManagement: yup.string().nullable(),
   formDesignAndSubmission: yup.string().nullable(),
@@ -63,15 +68,15 @@ const commonComponentsSchema = {
   noServices: yup.boolean().required()
 };
 
-const projectFormSchema = yup
+export const projectFormSchema = yup
   .object()
   .shape({ ...metaDataSchema, ...quotaSchema, ...commonComponentsSchema });
 
-const createProjectFormSchema = yup
+export const createProjectFormSchema = yup
   .object()
   .shape({ ...metaDataSchema, ...commonComponentsSchema });
 
-const userProjectToFormData = (userPrivateCloudProject) => {
+export const userProjectToFormData = (userPrivateCloudProject) => {
   if (userPrivateCloudProject === undefined) return {};
 
   const {
@@ -149,7 +154,7 @@ const userProjectToFormData = (userPrivateCloudProject) => {
   };
 };
 
-const formDataToUserProject = (data, dirtyFields) => {
+export const formDataToUserProject = (data, dirtyFields) => {
   const changedFields = dirtyFields
     ? Object.keys(dirtyFields).reduce((acc, key) => {
         acc[key] = data[key];
@@ -246,9 +251,145 @@ const formDataToUserProject = (data, dirtyFields) => {
   };
 };
 
-export {
-  userProjectToFormData,
-  formDataToUserProject,
-  projectFormSchema,
-  createProjectFormSchema
+export const cpuToDefaultOption = (quota) =>
+  `CPU_REQUEST_${quota.cpuRequests}_LIMIT_${quota.cpuLimits}`.replaceAll(
+    ".",
+    "_"
+  );
+
+export const memoryToDefaultOption = (quota) =>
+  `MEMORY_REQUEST_${quota.memoryRequests}_LIMIT_${quota.memoryLimits}`.replaceAll(
+    ".",
+    "_"
+  );
+
+export const storageToDefaultOption = (quota) =>
+  `STORAGE_${quota.storageFile}`.replaceAll(".", "_");
+
+export const createProjectInputInitalValues = {
+  name: "",
+  description: "",
+  projectOwner: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    ministry: "",
+    githubId: ""
+  },
+  primaryTechnicalLead: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    ministry: "",
+    githubId: ""
+  },
+  secondaryTechnicalLead: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    ministry: "",
+    githubId: ""
+  },
+  ministry: "",
+  cluster: "",
+  commonComponents: {
+    addressAndGeolocation: "",
+    workflowManagement: "",
+    formDesignAndSubmission: "",
+    identityManagement: "",
+    paymentServices: "",
+    documentManagement: "",
+    endUserNotificationAndSubscription: "",
+    publishing: "",
+    businessIntelligence: "",
+    other: "",
+    noServices: ""
+  }
 };
+
+const quotaInitialValues = {
+  productionQuotaSelected: {
+    cpu: "",
+    memory: "",
+    storage: ""
+  },
+  developmentQuotaSelected: {
+    cpu: "",
+    memory: "",
+    storage: ""
+  },
+  testQuotaSelected: {
+    cpu: "",
+    memory: "",
+    storage: ""
+  },
+  toolsQuotaSelected: {
+    cpu: "",
+    memory: "",
+    storage: ""
+  }
+};
+
+export const projectInitialValues = {
+  ...createProjectInputInitalValues,
+  ...quotaInitialValues
+};
+
+const customQuotaInitialValues = {
+  productionQuota: {
+    cpuRequests: "",
+    cpuLimits: "",
+    memoryReque: "",
+    memoryLimit: "",
+    storageFile: "",
+    snapshotCoun: ""
+  },
+  testQuota: {
+    cpuRequests: "",
+    cpuLimits: "",
+    memoryRequests: "",
+    memoryLimits: "",
+    storageFile: "",
+    snapshotCount: ""
+  },
+  developmentQuota: {
+    cpuRequests: "",
+    cpuLimits: "",
+    memoryRequests: "",
+    memoryLimits: "",
+    storageFile: "",
+    snapshotCount: ""
+  },
+  toolsQuota: {
+    cpuRequests: "",
+    cpuLimits: "",
+    memoryRequests: "",
+    memoryLimits: "",
+    storageFile: "",
+    snapshotCount: ""
+  }
+};
+
+export const customProjectInitialValues = {
+  ...createProjectInputInitalValues,
+  ...customQuotaInitialValues
+};
+
+export const replaceNullsWithEmptyString = (obj) =>
+  JSON.parse(
+    JSON.stringify(obj, (key, value) => (value === null ? "" : value))
+  );
+
+export const createProjectInputValidationSchema = yup.object().shape({
+  name: yup.string().required(),
+  description: yup.string().required(),
+  ministry: yup.string().required(),
+  cluster: yup.string().required(),
+  projectOwner: CreateUserInputSchema(),
+  primaryTechnicalLead: CreateUserInputSchema(),
+  secondaryTechnicalLead: yup
+    .object(CreateUserInputSchema)
+    .optional()
+    .default(null),
+  commonComponents: CommonComponentsInputSchema()
+});

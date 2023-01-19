@@ -1,0 +1,19 @@
+# This configuration file tells GraphQL Code Generator how to generate types based on our schema.
+schema: "http://localhost:4000/graphql"
+require: ["ts-node/register"]
+generates:
+  # Specify where our generated types should live.
+  ./src/__generated__/resolvers-types.ts:
+    plugins:
+      - "typescript"
+      - "typescript-validation-schema"
+    config:
+      strictScalars: true,
+      schema: yup
+      scalars:
+        DateTime: string
+        EmailAddress: string
+      # Providing our context's interface ensures our context's type is set for
+      # all of our resolvers.
+      # This file path starts from the location of the file where you generate
+      # types (i.e., `/src/__generated__/resolvers-types.ts` above)

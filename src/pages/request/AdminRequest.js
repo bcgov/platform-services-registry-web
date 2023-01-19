@@ -5,8 +5,8 @@ import ClusterInput from "../../components/ClusterInput";
 import QuotaInput from "../../components/QuotaInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
-  userProjectToFormData,
-  projectFormSchema as schema
+  projectInitialValues as initialValues,
+  replaceNullsWithEmptyString
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/CommonComponents";
 import { Button } from "@mui/material";
@@ -18,10 +18,12 @@ import StyledForm from "../../components/common/StyledForm";
 import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
 import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import Container from "../../components/common/Container";
 
 const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
-    privateCloudActiveRequest(requestId: $requestId) {
+    privateCloudActiveRequestById(requestId: $requestId) {
       id
       createdBy {
         firstName
@@ -33,109 +35,62 @@ const ADMIN_REQUEST = gql`
         id
       }
       type
-      status
+      decisionStatus
       active
       created
       decisionDate
       project {
-        ... on PrivateCloudProject {
-          name
-        }
+        name
       }
       requestedProject {
-        ... on PrivateCloudProject {
-          id
-          name
-          licencePlate
-          description
-          status
-          projectOwner {
-            email
-          }
-          primaryTechnicalLead {
-            email
-          }
-          secondaryTechnicalLead {
-            email
-          }
-          ministry
-          cluster
-          commonComponents {
-            addressAndGeolocation
-            workflowManagement
-            formDesignAndSubmission
-            identityManagement
-            paymentServices
-            documentManagement
-            endUserNotificationAndSubscription
-            publishing
-            businessIntelligence
-            other
-          }
-          productionQuota {
-            cpu {
-              requests
-              limits
-            }
-            memory {
-              requests
-              limits
-            }
-            storage {
-              file
-            }
-            snapshot {
-              count
-            }
-          }
-          testQuota {
-            cpu {
-              requests
-              limits
-            }
-            memory {
-              requests
-              limits
-            }
-            storage {
-              file
-            }
-            snapshot {
-              count
-            }
-          }
-          developmentQuota {
-            cpu {
-              requests
-              limits
-            }
-            memory {
-              requests
-              limits
-            }
-            storage {
-              file
-            }
-            snapshot {
-              count
-            }
-          }
-          toolsQuota {
-            cpu {
-              limits
-              requests
-            }
-            memory {
-              requests
-              limits
-            }
-            storage {
-              file
-            }
-            snapshot {
-              count
-            }
-          }
+        id
+        name
+        licencePlate
+        description
+        status
+        projectOwner {
+          email
+        }
+        primaryTechnicalLead {
+          email
+        }
+        secondaryTechnicalLead {
+          email
+        }
+        ministry
+        cluster
+        commonComponents {
+          addressAndGeolocation
+          workflowManagement
+          formDesignAndSubmission
+          identityManagement
+          paymentServices
+          documentManagement
+          endUserNotificationAndSubscription
+          publishing
+          businessIntelligence
+          noServices
+          other
+        }
+        productionQuotaSelected {
+          cpu
+          memory
+          storage
+        }
+        testQuotaSelected {
+          cpu
+          memory
+          storage
+        }
+        developmentQuotaSelected {
+          cpu
+          memory
+          storage
+        }
+        toolsQuotaSelected {
+          cpu
+          memory
+          storage
         }
       }
     }
@@ -143,29 +98,31 @@ const ADMIN_REQUEST = gql`
 `;
 
 const MAKE_REQUEST_DECISION = gql`
-  mutation MakePrivateCloudRequestDecision(
+  mutation PrivateCloudRequestDecision(
     $requestId: ID!
     $decision: RequestDecision!
   ) {
-    makePrivateCloudRequestDecision(requestId: $requestId, decision: $decision)
+    privateCloudRequestDecision(requestId: $requestId, decision: $decision) {
+      id
+      decisionStatus
+    }
   }
 `;
 
-export default function Request() {
+export default function AdminRequest() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
 
-  const {
-    loading: adminRequestLoading,
-    data: adminRequestData,
-    error: adminRequestError
-  } = useQuery(ADMIN_REQUEST, {
+  const { data, loading, error } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id }
   });
 
+  const { project, requestedProject, ...request } =
+    data?.privateCloudActiveRequestById || {};
+
   const [
-    makePrivateCloudRequestDecision,
+    privateCloudRequestDecision,
     { data: decisionData, loading: decisionLoading, error: decisionError }
   ] = useMutation(MAKE_REQUEST_DECISION, {
     refetchQueries: [
@@ -178,8 +135,16 @@ export default function Request() {
     toastId.current = toast("Your decision has been submitted", {
       autoClose: false
     });
-    makePrivateCloudRequestDecision({
+    privateCloudRequestDecision({
       variables: { requestId: id, decision },
+      onError: (error) => {
+        console.log(error);
+        toast.update(toastId.current, {
+          render: `Error: ${error.message}`,
+          type: toast.TYPE.ERROR,
+          autoClose: 5000
+        });
+      },
       onCompleted: () => {
         navigate(-1);
         toast.update(toastId.current, {
@@ -191,96 +156,70 @@ export default function Request() {
     });
   };
 
-  const {
-    control,
-    reset,
-    setValue,
-    watch,
-    formState: { errors }
-  } = useForm({
-    resolver: yupResolver(schema)
+  const formik = useFormik({
+    initialValues,
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+    }
   });
 
-  const adminPrivateCloudRequest = adminRequestData?.privateCloudActiveRequest;
-  const initalFormData = userProjectToFormData(
-    adminPrivateCloudRequest?.requestedProject
-  );
-
   useEffect(() => {
-    if (!adminRequestLoading && !adminRequestError) {
-      reset(userProjectToFormData(adminPrivateCloudRequest.requestedProject));
+    if (data) {
+      // Form values cannon be null (uncontrolled input error), so replace nulls with empty strings
+      formik.setValues(replaceNullsWithEmptyString(requestedProject));
     }
-  }, [adminRequestLoading, adminRequestError, adminPrivateCloudRequest, reset]);
-
-  if (decisionError && toastId.current) {
-    toast.update(toastId.current, {
-      render: `Error: ${decisionError.message}`,
-      type: toast.TYPE.SUCCESS,
-      autoClose: 5000
-    });
-  } else if (adminRequestError) {
-    return `Error! ${adminRequestError}`;
-  }
+  }, [data]);
 
   const name =
-    adminPrivateCloudRequest?.type === "CREATE"
-      ? adminPrivateCloudRequest?.requestedProject?.name
-      : adminPrivateCloudRequest?.project?.name;
+    request?.type === "CREATE" ? requestedProject?.name : project?.name;
+  const decisionAlreadyMade =
+    !requestedProject || request?.decisionStatus !== "PENDING";
 
   return (
     <div>
       <NavToolbar path={"request"} title={name}>
-        <div>
-          <Button
-            disabled={adminPrivateCloudRequest?.status !== "PENDING_DECISION"}
-            sx={{ mr: 1 }}
-            onClick={() => makeDecisionOnClick("APPROVE")}
-            variant="outlined"
-          >
-            Approve
-          </Button>
-          <Button
-            disabled={adminPrivateCloudRequest?.status !== "PENDING_DECISION"}
-            sx={{ mr: 1 }}
-            onClick={() => makeDecisionOnClick("REJECT")}
-            variant="outlined"
-          >
-            Reject
-          </Button>
-        </div>
-      </NavToolbar>
-      {decisionLoading ? (
-        <LoadingSpinner />
-      ) : (
-        <FormProvider
-          {...{
-            control,
-            errors,
-            setValue,
-            watch,
-            initialValues: initalFormData,
-            isDisabled: adminPrivateCloudRequest?.active
-          }}
+        <Button
+          disabled={decisionAlreadyMade}
+          sx={{ mr: 1 }}
+          onClick={() => makeDecisionOnClick("APPROVED")}
+          variant="outlined"
         >
-          <StyledForm>
-            <MetaDataInput />
-            <div style={{ marginLeft: 70 }}>
-              <ClusterInput />
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <div>
-                  <QuotaInput nameSpace={"production"} />
-                  <QuotaInput nameSpace={"test"} />
-                </div>
-                <div style={{ marginLeft: 45 }}>
-                  <QuotaInput nameSpace={"tools"} />
-                  <QuotaInput nameSpace={"development"} />
-                </div>
-              </div>
-              <CommonComponents />
-            </div>
-          </StyledForm>
-        </FormProvider>
-      )}
+          Approve
+        </Button>
+        <Button
+          disabled={decisionAlreadyMade}
+          sx={{ mr: 1 }}
+          onClick={() => makeDecisionOnClick("REJECTED")}
+          variant="outlined"
+        >
+          Reject
+        </Button>
+      </NavToolbar>
+      <Container>
+        <MetaDataInput formik={formik} isDisabled={false} />
+        <div style={{ marginLeft: 50 }}>
+          <ClusterInput formik={formik} isDisabled={false} />
+          <div>
+            <QuotaInput
+              nameSpace={"production"}
+              formik={formik}
+              isDisabled={false}
+            />
+            <QuotaInput nameSpace={"test"} formik={formik} isDisabled={false} />
+            <QuotaInput
+              nameSpace={"tools"}
+              formik={formik}
+              isDisabled={false}
+            />
+            <QuotaInput
+              nameSpace={"development"}
+              formik={formik}
+              isDisabled={false}
+            />
+          </div>
+          <CommonComponents formik={formik} isDisabled={false} />
+        </div>
+      </Container>
     </div>
   );
 }

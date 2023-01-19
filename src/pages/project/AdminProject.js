@@ -26,7 +26,7 @@ import { toast } from "react-toastify";
 
 const PROJECT = gql`
   query Query($projectId: ID!) {
-    privateCloudProject(projectId: $projectId) {
+    privateCloudProjectById(projectId: $projectId) {
       id
       name
       description
@@ -61,68 +61,36 @@ const PROJECT = gql`
         other
       }
       productionQuota {
-        cpu {
-          requests
-          limits
-        }
-        memory {
-          requests
-          limits
-        }
-        storage {
-          file
-        }
-        snapshot {
-          count
-        }
+        cpuRequests
+        cpuLimits
+        memoryRequests
+        memoryLimits
+        storageFile
+        snapshotCount
       }
       testQuota {
-        cpu {
-          limits
-          requests
-        }
-        memory {
-          requests
-          limits
-        }
-        storage {
-          file
-        }
-        snapshot {
-          count
-        }
+        cpuRequests
+        cpuLimits
+        memoryRequests
+        memoryLimits
+        storageFile
+        snapshotCount
       }
       developmentQuota {
-        cpu {
-          requests
-          limits
-        }
-        memory {
-          requests
-          limits
-        }
-        storage {
-          file
-        }
-        snapshot {
-          count
-        }
+        cpuRequests
+        cpuLimits
+        memoryRequests
+        memoryLimits
+        storageFile
+        snapshotCount
       }
       toolsQuota {
-        cpu {
-          requests
-          limits
-        }
-        memory {
-          requests
-          limits
-        }
-        storage {
-          file
-        }
-        snapshot {
-          count
-        }
+        cpuRequests
+        cpuLimits
+        memoryRequests
+        memoryLimits
+        storageFile
+        snapshotCount
       }
     }
   }
@@ -131,7 +99,13 @@ const PROJECT = gql`
 const UPDATE_USER_PROJECT = gql`
   mutation Mutation(
     $projectId: ID!
-    $metaData: EditProjectMetaDataInput
+    $name: String!
+    $description: String!
+    $cluster: Cluster
+    $ministry: String
+    $projectOwner: CreateUserInput
+    $primaryTechnicalLead: CreateUserInput
+    $secondaryTechnicalLead: CreateUserInput
     $commonComponents: CommonComponentsInput
     $productionQuota: QuotaInput
     $developmentQuota: QuotaInput
@@ -140,7 +114,13 @@ const UPDATE_USER_PROJECT = gql`
   ) {
     privateCloudProjectEditRequest(
       projectId: $projectId
-      metaData: $metaData
+      name: $name
+      description: $description
+      cluster: $cluster
+      ministry: $ministry
+      projectOwner: $projectOwner
+      primaryTechnicalLead: $primaryTechnicalLead
+      secondaryTechnicalLead: $secondaryTechnicalLead
       commonComponents: $commonComponents
       productionQuota: $productionQuota
       developmentQuota: $developmentQuota
@@ -185,7 +165,7 @@ export default function Project({ requestsRoute }) {
     variables: { projectId: id },
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
-      const project = data.privateCloudProject;
+      const project = data.privateCloudProjectById;
       const formData = userProjectToFormData(project);
       reset(formData);
     }
@@ -216,7 +196,7 @@ export default function Project({ requestsRoute }) {
     refetchQueries: ["PrivateCloudActiveRequests"]
   });
 
-  const privateCloudProject = projectData?.privateCloudProject;
+  const privateCloudProject = projectData?.privateCloudProjectById;
 
   const onSubmit = (data) => {
     const userProject = formDataToUserProject(data, dirtyFields);

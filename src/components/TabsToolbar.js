@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -14,8 +14,7 @@ import AdminContext from "../context/admin";
 
 export default function TabsToolbar({ routes, createButtonRoute }) {
   const { pathname } = useLocation();
-  const { isAdmin } = useContext(AdminContext);
-
+  const { admin } = useContext(AdminContext);
 
   return (
     <>
@@ -49,7 +48,7 @@ export default function TabsToolbar({ routes, createButtonRoute }) {
             <Tab component={Link} label="Products" to={routes[1]} />
           </Tabs>
         </Box>
-        {pathname === routes[1] && isAdmin? <TabForm /> : null}
+        {pathname === routes[1] && admin ? <TabForm /> : null}
         <Button
           component={Link}
           to={createButtonRoute}

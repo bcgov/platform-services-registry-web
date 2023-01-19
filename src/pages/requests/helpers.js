@@ -4,7 +4,8 @@ import Avatar from "@mui/material/Avatar";
 
 const requestsToRows = ({
   id,
-  status,
+  active,
+  decisionStatus,
   type,
   requestedProject: {
     name,
@@ -62,9 +63,9 @@ const requestsToRows = ({
   status: (
     <Chip
       style={{ borderRadius: 7, fontWeight: "500" }}
-      color={statusColourLookup[status]}
+      color={decisionStatusColourLookup[decisionStatus]}
       variant="outlined"
-      label={statusLookup[status]}
+      label={decisionStatusLookup[decisionStatus]}
     />
   ),
   type: <Chip style={{ borderRadius: 7 }} label={type} />,
@@ -74,14 +75,14 @@ function truncate(str, n) {
   return str.length > n ? str.substr(0, n - 1) + "..." : str;
 }
 
-const statusLookup = {
+const decisionStatusLookup = {
   APPROVED: "APPROVED",
-  PENDING_DECISION: "PENDING DECISION",
+  PENDING: "PENDING DECISION",
 };
 
-const statusColourLookup = {
+const decisionStatusColourLookup = {
   APPROVED: "success",
-  PENDING_DECISION: "secondary",
+  PENDING: "secondary",
   REJECTED: "error",
 };
 

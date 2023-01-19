@@ -16,7 +16,7 @@ import StyledForm from "../../components/common/StyledForm";
 
 const USER_REQUEST = gql`
   query Query($requestId: ID!) {
-    userPrivateCloudActiveRequest(requestId: $requestId) {
+    userPrivateCloudActiveRequestById(requestId: $requestId) {
       id
       createdBy {
         firstName
@@ -28,7 +28,7 @@ const USER_REQUEST = gql`
         id
       }
       type
-      status
+      decisionStatus
       active
       created
       decisionDate
@@ -68,68 +68,36 @@ const USER_REQUEST = gql`
             other
           }
           productionQuota {
-            cpu {
-              requests
-              limits
-            }
-            memory {
-              requests
-              limits
-            }
-            storage {
-              file
-            }
-            snapshot {
-              count
-            }
+            cpuRequests
+            cpuLimits
+            memoryRequests
+            memoryLimits
+            storageFile
+            snapshotCount
           }
           testQuota {
-            cpu {
-              requests
-              limits
-            }
-            memory {
-              requests
-              limits
-            }
-            storage {
-              file
-            }
-            snapshot {
-              count
-            }
+            cpuRequests
+            cpuLimits
+            memoryRequests
+            memoryLimits
+            storageFile
+            snapshotCount
           }
           developmentQuota {
-            cpu {
-              requests
-              limits
-            }
-            memory {
-              requests
-              limits
-            }
-            storage {
-              file
-            }
-            snapshot {
-              count
-            }
+            cpuRequests
+            cpuLimits
+            memoryRequests
+            memoryLimits
+            storageFile
+            snapshotCount
           }
           toolsQuota {
-            cpu {
-              limits
-              requests
-            }
-            memory {
-              requests
-              limits
-            }
-            storage {
-              file
-            }
-            snapshot {
-              count
-            }
+            cpuRequests
+            cpuLimits
+            memoryRequests
+            memoryLimits
+            storageFile
+            snapshotCount
           }
         }
       }
@@ -158,7 +126,8 @@ export default function Request() {
     resolver: yupResolver(schema)
   });
 
-  const userPrivateCloudRequest = userRequestData?.userPrivateCloudActiveRequest;
+  const userPrivateCloudRequest =
+    userRequestData?.userPrivateCloudActiveRequestById;
 
   useEffect(() => {
     if (!userRequestLoading && !userRequestError) {

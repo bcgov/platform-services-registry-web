@@ -3,21 +3,18 @@ import AdminContext from "../context/admin";
 import { useKeycloak } from "@react-keycloak/web";
 
 function AdminProvider({ children }) {
- 
   const { keycloak } = useKeycloak();
-  const hasAdminRole = keycloak.hasResourceRole("admin", "registry-api")
+  const hasAdminRole = keycloak.hasResourceRole("admin", "registry-web");
   const [admin, toggleAdmin] = useState(false);
-  
 
   useEffect(() => {
-    toggleAdmin(hasAdminRole)
-  },[hasAdminRole])
-
+    toggleAdmin(hasAdminRole);
+  }, [hasAdminRole]);
 
   const value = useMemo(
     () => ({
       admin,
-      toggleAdmin,
+      toggleAdmin
     }),
     [admin]
   );

@@ -15,137 +15,103 @@ import {
   defaultStorageOptionsLookup
 } from "./common/Constants";
 import TitleTypography from "./common/TitleTypography";
+import Styled from "styled-components";
 
 String.prototype.capitalizeFirstLetter = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
-export default function QuotaInput({ nameSpace }) {
-  const { control, errors, isDisabled, initialValues } = useFormContext();
+const StyledBox = Styled(Box)`
+  display: "flex";
+  flexDirection: "column";
+  width: 280;
+`;
+
+export default function QuotaInput({ nameSpace, formik, isDisabled }) {
+  const cpu = formik.values[nameSpace + "QuotaSelected"]?.cpu;
+  const memory = formik.values[nameSpace + "QuotaSelected"]?.memory;
+  const storage = formik.values[nameSpace + "QuotaSelected"]?.storage;
 
   return (
-    <Box
-      noValidate
-      autoComplete="off"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        width: 280,
-        mr: 5
-      }}
-    >
-      <TitleTypography>{nameSpace.capitalizeFirstLetter()} Quota</TitleTypography>
-      <FormControl sx={{ mt: 1, mb: 2, minWidth: 250 }}>
+    <StyledBox>
+      <TitleTypography>
+        {nameSpace.capitalizeFirstLetter()} Quota
+      </TitleTypography>
+      <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
         <InputLabel id="demo-simple-select-required-label">Cpu</InputLabel>
-        <Controller
-          name={nameSpace + "Cpu"}
-          defaultValue={""}
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <Select
-              {...field}
-              disabled={isDisabled}
-              size="small"
-              labelId="select-defaultCpuOptions"
-              id="select-defaultCpuOptions"
-              label="Cpu"
-            >
-              {[
-                ...new Set([
-                  initialValues?.[nameSpace + "Cpu"],
-                  ...defaultCpuOptions
-                ])
-              ]
-                .filter(Boolean)
-                .map((cpuOption) => (
-                  <MenuItem key={cpuOption.value} value={cpuOption}>
-                    {defaultCpuOptionsLookup[cpuOption] || cpuOption}
-                  </MenuItem>
-                ))}
-            </Select>
-          )}
-        />
-        <FormHelperText>{errors.cpu ? errors.cpu?.message : ""}</FormHelperText>
+        <Select
+          id={nameSpace + "QuotaSelected.cpu"}
+          name={nameSpace + "QuotaSelected.cpu"}
+          label="Cpu"
+          disabled={isDisabled}
+          value={cpu}
+          onChange={formik.handleChange}
+          error={
+            formik.touched[nameSpace + "QuotaSelected"]?.cpu &&
+            Boolean(formik.errors[nameSpace + "QuotaSelected"]?.cpu)
+          }
+          helpertext={
+            formik.touched[nameSpace + "QuotaSelected"]?.cpu &&
+            formik.errors[nameSpace + "QuotaSelected"]?.cpu
+          }
+        >
+          {Object.entries(defaultCpuOptionsLookup).map((cpuOption) => (
+            <MenuItem key={cpuOption[1]} value={cpuOption[0]}>
+              {cpuOption[1]}
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
-      <FormControl sx={{ mt: 2, mb: 2, minWidth: 250 }}>
-        <Controller
-          name={nameSpace + "Memory"}
-          defaultValue={""}
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <Select
-              {...field}
-              disabled={isDisabled}
-              size="small"
-              labelId="select-defaultMemoryOptions"
-              id={`select-${nameSpace}-memory`}
-              label="Memory Options"
-            >
-              {[
-                ...new Set([
-                  ...defaultMemoryOptions,
-                  initialValues?.[nameSpace + "Memory"]
-                ])
-              ]
-                .filter(Boolean)
-                .map((defaultMemoryOption) => (
-                  <MenuItem
-                    key={defaultMemoryOption}
-                    value={defaultMemoryOption}
-                  >
-                    {defaultMemoryOptionsLookup[defaultMemoryOption] ||
-                      defaultMemoryOption}
-                  </MenuItem>
-                ))}
-            </Select>
-          )}
-        />
-        <FormHelperText>
-          {errors.memory ? errors.memory?.message : ""}
-        </FormHelperText>
+      <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
         <InputLabel id="demo-simple-select-required-label">Memory</InputLabel>
+        <Select
+          id={nameSpace + "QuotaSelected.memory"}
+          name={nameSpace + "QuotaSelected.memory"}
+          label="Memory"
+          disabled={isDisabled}
+          value={memory}
+          onChange={formik.handleChange}
+          error={
+            formik.touched[nameSpace + "QuotaSelected"]?.memory &&
+            Boolean(formik.errors[nameSpace + "QuotaSelected"]?.memory)
+          }
+          helpertext={
+            formik.touched[nameSpace + "QuotaSelected"]?.memory &&
+            formik.errors[nameSpace + "QuotaSelected"]?.memory
+          }
+        >
+          {Object.entries(defaultMemoryOptionsLookup).map((memoryOption) => (
+            <MenuItem key={memoryOption[1]} value={memoryOption[0]}>
+              {memoryOption[1]}
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
-      <FormControl sx={{ mt: 2, mb: 2, minWidth: 250 }}>
+      <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
         <InputLabel id="demo-simple-select-required-label">Storage</InputLabel>
-        <Controller
-          name={nameSpace + "Storage"}
-          defaultValue={""}
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <Select
-              {...field}
-              disabled={isDisabled}
-              size="small"
-              labelId="select-defaultStorageOptions"
-              id="select-defaultStorageOptions"
-              label="DefaultStorageOptions"
-            >
-              {[
-                ...new Set([
-                  initialValues?.[nameSpace + "Storage"],
-                  ...defaultStorageOptions
-                ])
-              ]
-                .filter(Boolean)
-                .map((defaultStorageOption) => (
-                  <MenuItem
-                    key={defaultStorageOption}
-                    value={defaultStorageOption}
-                  >
-                    {defaultStorageOptionsLookup[defaultStorageOption] ||
-                      defaultStorageOption}
-                  </MenuItem>
-                ))}
-            </Select>
-          )}
-        />
-        <FormHelperText>
-          {errors.storage ? errors.storage?.message : ""}
-        </FormHelperText>
+        <Select
+          id={nameSpace + "QuotaSelected.storage"}
+          name={nameSpace + "QuotaSelected.storage"}
+          label="Storage"
+          disabled={isDisabled}
+          value={storage}
+          onChange={formik.handleChange}
+          error={
+            formik.touched[nameSpace + "QuotaSelected"]?.storage &&
+            Boolean(formik.errors[nameSpace + "QuotaSelected"]?.storage)
+          }
+          helpertext={
+            formik.touched[nameSpace + "QuotaSelected"]?.storage &&
+            formik.errors[nameSpace + "QuotaSelected"]?.storage
+          }
+        >
+          {Object.entries(defaultStorageOptionsLookup).map((storageOption) => (
+            <MenuItem key={storageOption[1]} value={storageOption[0]}>
+              {storageOption[1]}
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
-    </Box>
+    </StyledBox>
   );
 }

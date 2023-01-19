@@ -30,7 +30,6 @@ const NoMatch = () => {
 export const AppRouter = () => {
   const { initialized, keycloak } = useKeycloak();
   const isAdmin = keycloak.hasResourceRole("admin");
-  console.log("isAdmin", isAdmin)
 
   if (!initialized) {
     return <LoadingSpinner />;
@@ -116,7 +115,7 @@ export const AppRouter = () => {
             <Route
               path="product/:id"
               element={
-                <Project requestsRoute="/private-cloud/admin/dashboard/requests" />
+                <Project requestsRoute="/private-cloud/user/dashboard/requests" />
               }
             />
             <Route path="request/:id" element={<UserRequest />} />
