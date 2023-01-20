@@ -172,8 +172,6 @@ export default function AdminProject({ requestsRoute }) {
     variables: { projectId: id }
   });
 
-  const project = data?.privateCloudProjectById || {};
-
   const [
     privateCloudRequestDecision,
     { data: decisionData, loading: decisionLoading, error: decisionError }
@@ -269,11 +267,13 @@ export default function AdminProject({ requestsRoute }) {
   useEffect(() => {
     if (data) {
       // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
-      setInitialValues(replaceNullsWithEmptyString(project));
+      setInitialValues(
+        replaceNullsWithEmptyString(data?.privateCloudProjectById)
+      );
     }
   }, [data]);
 
-  const name = project?.name;
+  const name = data?.privateCloudProjectById?.name;
 
   return (
     <div>
@@ -282,9 +282,7 @@ export default function AdminProject({ requestsRoute }) {
           <IconButton
             sx={{ mr: 2 }}
             disabled={!formik.dirty}
-            onClick={() => {
-              refetch({ projectId: id });
-            }}
+            onClick={() => formik.resetForm()}
             aria-label="delete"
           >
             <RestartAltIcon />
