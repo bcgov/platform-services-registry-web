@@ -1,50 +1,40 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/MetaDataInput";
 import ClusterInput from "../../components/ClusterInput";
 import QuotaInput from "../../components/QuotaInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
-  userProjectToFormData,
-  formDataToUserProject,
-  projectFormSchema as schema
+  projectInitialValues,
+  replaceNullsWithEmptyString
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/CommonComponents";
-import Typography from "@mui/material/Typography";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { Button, IconButton } from "@mui/material";
-import { useForm, FormProvider } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import StyledLink from "../../components/common/StyledLink";
 import { useParams, useNavigate } from "react-router-dom";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
-import StyledForm from "../../components/common/StyledForm";
 import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
 import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import Container from "../../components/common/Container";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Button, IconButton } from "@mui/material";
 
-const PROJECT = gql`
+const ADMIN_PROJECT = gql`
   query Query($projectId: ID!) {
     privateCloudProjectById(projectId: $projectId) {
       id
       name
+      licencePlate
       description
-      activeEditRequest {
-        id
-        active
-      }
+      status
       projectOwner {
         email
-        githubId
       }
       primaryTechnicalLead {
         email
-        githubId
       }
       secondaryTechnicalLead {
         email
-        githubId
       }
       ministry
       cluster
@@ -58,39 +48,28 @@ const PROJECT = gql`
         endUserNotificationAndSubscription
         publishing
         businessIntelligence
+        noServices
         other
       }
-      productionQuota {
-        cpuRequests
-        cpuLimits
-        memoryRequests
-        memoryLimits
-        storageFile
-        snapshotCount
+      productionQuotaSelected {
+        cpu
+        memory
+        storage
       }
-      testQuota {
-        cpuRequests
-        cpuLimits
-        memoryRequests
-        memoryLimits
-        storageFile
-        snapshotCount
+      testQuotaSelected {
+        cpu
+        memory
+        storage
       }
-      developmentQuota {
-        cpuRequests
-        cpuLimits
-        memoryRequests
-        memoryLimits
-        storageFile
-        snapshotCount
+      developmentQuotaSelected {
+        cpu
+        memory
+        storage
       }
-      toolsQuota {
-        cpuRequests
-        cpuLimits
-        memoryRequests
-        memoryLimits
-        storageFile
-        snapshotCount
+      toolsQuotaSelected {
+        cpu
+        memory
+        storage
       }
     }
   }
@@ -101,7 +80,6 @@ const UPDATE_USER_PROJECT = gql`
     $projectId: ID!
     $name: String!
     $description: String!
-    $cluster: Cluster
     $ministry: String
     $projectOwner: CreateUserInput
     $primaryTechnicalLead: CreateUserInput
@@ -116,7 +94,6 @@ const UPDATE_USER_PROJECT = gql`
       projectId: $projectId
       name: $name
       description: $description
-      cluster: $cluster
       ministry: $ministry
       projectOwner: $projectOwner
       primaryTechnicalLead: $primaryTechnicalLead
@@ -133,6 +110,18 @@ const UPDATE_USER_PROJECT = gql`
   }
 `;
 
+const MAKE_REQUEST_DECISION = gql`
+  mutation PrivateCloudRequestDecision(
+    $requestId: ID!
+    $decision: RequestDecision!
+  ) {
+    privateCloudRequestDecision(requestId: $requestId, decision: $decision) {
+      id
+      decisionStatus
+    }
+  }
+`;
+
 const DELETE_USER_PROJECT = gql`
   mutation Mutation($projectId: ID!) {
     privateCloudProjectDeleteRequest(projectId: $projectId) {
@@ -141,34 +130,27 @@ const DELETE_USER_PROJECT = gql`
   }
 `;
 
-export default function Project({ requestsRoute }) {
+export default function AdminProject({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    watch,
-    setValue,
-    formState: { isDirty, dirtyFields, errors }
-  } = useForm({ resolver: yupResolver(schema) });
+  const [initialValues, setInitialValues] = useState(projectInitialValues);
 
-  const {
-    loading: projectLoading,
-    data: projectData,
-    error: projectError,
-    refetch
-  } = useQuery(PROJECT, {
-    fetchPolicy: "network-only",
-    variables: { projectId: id },
-    notifyOnNetworkStatusChange: true,
-    onCompleted: (data) => {
-      const project = data.privateCloudProjectById;
-      const formData = userProjectToFormData(project);
-      reset(formData);
-    }
+  const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
+    variables: { projectId: id }
+  });
+
+  const project = data?.privateCloudProjectById || {};
+
+  const [
+    privateCloudRequestDecision,
+    { data: decisionData, loading: decisionLoading, error: decisionError }
+  ] = useMutation(MAKE_REQUEST_DECISION, {
+    refetchQueries: [
+      { query: USER_ACTIVE_REQUESTS },
+      { query: ALL_ACTIVE_REQUESTS }
+    ]
   });
 
   const [
@@ -185,49 +167,29 @@ export default function Project({ requestsRoute }) {
     ]
   });
 
-  const [
-    deletePrivateCloudProjectRequest,
-    {
-      data: deleteProjectData,
-      loading: deleteProjectLoading,
-      error: deleteProjectError
-    }
-  ] = useMutation(DELETE_USER_PROJECT, {
-    refetchQueries: ["PrivateCloudActiveRequests"]
+  const [deletePrivateCloudProjectRequest] = useMutation(DELETE_USER_PROJECT, {
+    refetchQueries: [
+      { query: USER_ACTIVE_REQUESTS },
+      { query: ALL_ACTIVE_REQUESTS }
+    ]
   });
 
-  const privateCloudProject = projectData?.privateCloudProjectById;
-
-  const onSubmit = (data) => {
-    const userProject = formDataToUserProject(data, dirtyFields);
-    toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false
-    });
-
-    createPrivateCloudProjectEditRequest({
-      variables: { projectId: id, ...userProject, ...userProject.quota },
-      onCompleted: () => {
-        navigate(requestsRoute);
-
-        toast.update(toastId.current, {
-          render: "Edit request successfuly created",
-          type: toast.TYPE.SUCCESS,
-          autoClose: 5000
-        });
-      }
-    });
-  };
-
-  const onDeleteSubmit = () => {
+  const deleteOnClick = () => {
     toastId.current = toast("Your edit request has been submitted", {
       autoClose: false
     });
 
     deletePrivateCloudProjectRequest({
       variables: { projectId: id },
+      onError: (error) => {
+        toast.update(toastId.current, {
+          render: `Error: ${error.message}`,
+          type: toast.TYPE.ERROR,
+          autoClose: 5000
+        });
+      },
       onCompleted: () => {
         navigate(requestsRoute);
-
         toast.update(toastId.current, {
           render: "Delete request successfuly created",
           type: toast.TYPE.SUCCESS,
@@ -237,39 +199,30 @@ export default function Project({ requestsRoute }) {
     });
   };
 
-  if (editProjectError && toastId.current) {
-    toast.update(toastId.current, {
-      render: `Error: ${editProjectError.message}`,
-      type: toast.TYPE.SUCCESS,
-      autoClose: 5000
-    });
-  } else if (deleteProjectError && toastId.current) {
-    toast.update(toastId.current, {
-      render: `Error: ${deleteProjectError.message}`,
-      type: toast.TYPE.SUCCESS,
-      autoClose: 5000
-    });
-  } else if (projectError) {
-    // Find bettwr way to handle this
-    return `Error! ${projectError}`;
-  }
+  const formik = useFormik({
+    initialValues,
+    enableReinitialize: true,
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+    }
+  });
+
+  useEffect(() => {
+    if (data) {
+      // Form values cannon be null (uncontrolled input error), so replace nulls with empty strings
+      setInitialValues(replaceNullsWithEmptyString(project));
+    }
+  }, [data]);
+
+  const name = project?.name;
 
   return (
     <div>
-      <FormProvider
-        {...{
-          control,
-          errors,
-          setValue,
-          watch,
-          isDirty,
-          isDisabled: privateCloudProject?.activeEditRequest?.active
-        }}
-      >
-        <NavToolbar path={"project"} title={privateCloudProject?.name}>
+      <form onSubmit={formik.handleSubmit}>
+        <NavToolbar path={"request"} title={name}>
           <IconButton
             sx={{ mr: 2 }}
-            disabled={!isDirty}
+            disabled={!formik.dirty}
             onClick={() => {
               refetch({ projectId: id });
             }}
@@ -279,57 +232,50 @@ export default function Project({ requestsRoute }) {
           </IconButton>
           <Button
             sx={{ mr: 1 }}
-            disabled={!isDirty}
-            onClick={handleSubmit(onSubmit)}
+            type="submit"
+            disabled={!formik.dirty}
             variant="outlined"
           >
             SUBMIT EDIT REQUEST
           </Button>
           <IconButton
             sx={{ mr: 1 }}
-            onClick={handleSubmit(onDeleteSubmit)}
+            onClick={deleteOnClick}
             aria-label="delete"
           >
             <DeleteForeverIcon />
           </IconButton>
         </NavToolbar>
-        <div style={{ marginTop: 20, marginBottom: 20 }}>
-          {privateCloudProject?.activeEditRequest?.active && (
-            <Typography
-              variant="body"
-              sx={{ mb: 0, ml: 3, color: "rgba(0, 0, 0, 0.6)" }}
-            >
-              This project cannot be edited as it has an{" "}
-              <StyledLink
-                to={`/private-cloud/user/request/${privateCloudProject?.activeEditRequest?.id}`}
-              >
-                <i>active request</i>
-              </StyledLink>
-            </Typography>
-          )}
-        </div>
-        {editProjectLoading ? (
-          <LoadingSpinner />
-        ) : (
-          <StyledForm onSubmit={handleSubmit(onSubmit)}>
-            <MetaDataInput defaultEditOpen={true} />
-            <div style={{ marginLeft: 70 }}>
-              <ClusterInput />
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <div>
-                  <QuotaInput nameSpace={"production"} />
-                  <QuotaInput nameSpace={"test"} />
-                </div>
-                <div>
-                  <QuotaInput nameSpace={"tools"} />
-                  <QuotaInput nameSpace={"development"} />
-                </div>
-              </div>
-              <CommonComponents />
+        <Container>
+          <MetaDataInput formik={formik} isDisabled={false} />
+          <div style={{ marginLeft: 50 }}>
+            <ClusterInput formik={formik} isDisabled={true} />
+            <div>
+              <QuotaInput
+                nameSpace={"production"}
+                formik={formik}
+                isDisabled={false}
+              />
+              <QuotaInput
+                nameSpace={"test"}
+                formik={formik}
+                isDisabled={false}
+              />
+              <QuotaInput
+                nameSpace={"tools"}
+                formik={formik}
+                isDisabled={false}
+              />
+              <QuotaInput
+                nameSpace={"development"}
+                formik={formik}
+                isDisabled={false}
+              />
             </div>
-          </StyledForm>
-        )}
-      </FormProvider>
+            <CommonComponents formik={formik} isDisabled={false} />
+          </div>
+        </Container>
+      </form>
     </div>
   );
 }

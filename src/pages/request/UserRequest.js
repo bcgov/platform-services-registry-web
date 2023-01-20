@@ -1,20 +1,23 @@
-import React, { useEffect } from "react";
-import { useQuery, gql } from "@apollo/client";
+import React, { useEffect, useRef } from "react";
+import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/MetaDataInput";
 import ClusterInput from "../../components/ClusterInput";
 import QuotaInput from "../../components/QuotaInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
-  userProjectToFormData,
-  projectFormSchema as schema
+  projectInitialValues as initialValues,
+  replaceNullsWithEmptyString
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/CommonComponents";
-import { useForm, FormProvider } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useParams } from "react-router-dom";
-import StyledForm from "../../components/common/StyledForm";
+import { Button } from "@mui/material";
+import { useParams, useNavigate } from "react-router-dom";
+import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
+import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
+import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import Container from "../../components/common/Container";
 
-const USER_REQUEST = gql`
+const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
     userPrivateCloudActiveRequestById(requestId: $requestId) {
       id
@@ -33,148 +36,117 @@ const USER_REQUEST = gql`
       created
       decisionDate
       project {
-        ... on PrivateCloudProject {
-          name
-        }
+        name
       }
       requestedProject {
-        ... on PrivateCloudProject {
-          id
-          name
-          licencePlate
-          description
-          status
-          projectOwner {
-            email
-          }
-          primaryTechnicalLead {
-            email
-          }
-          secondaryTechnicalLead {
-            email
-          }
-          ministry
-          cluster
-          commonComponents {
-            addressAndGeolocation
-            workflowManagement
-            formDesignAndSubmission
-            identityManagement
-            paymentServices
-            documentManagement
-            endUserNotificationAndSubscription
-            publishing
-            businessIntelligence
-            other
-          }
-          productionQuota {
-            cpuRequests
-            cpuLimits
-            memoryRequests
-            memoryLimits
-            storageFile
-            snapshotCount
-          }
-          testQuota {
-            cpuRequests
-            cpuLimits
-            memoryRequests
-            memoryLimits
-            storageFile
-            snapshotCount
-          }
-          developmentQuota {
-            cpuRequests
-            cpuLimits
-            memoryRequests
-            memoryLimits
-            storageFile
-            snapshotCount
-          }
-          toolsQuota {
-            cpuRequests
-            cpuLimits
-            memoryRequests
-            memoryLimits
-            storageFile
-            snapshotCount
-          }
+        id
+        name
+        licencePlate
+        description
+        status
+        projectOwner {
+          email
+        }
+        primaryTechnicalLead {
+          email
+        }
+        secondaryTechnicalLead {
+          email
+        }
+        ministry
+        cluster
+        commonComponents {
+          addressAndGeolocation
+          workflowManagement
+          formDesignAndSubmission
+          identityManagement
+          paymentServices
+          documentManagement
+          endUserNotificationAndSubscription
+          publishing
+          businessIntelligence
+          noServices
+          other
+        }
+        productionQuotaSelected {
+          cpu
+          memory
+          storage
+        }
+        testQuotaSelected {
+          cpu
+          memory
+          storage
+        }
+        developmentQuotaSelected {
+          cpu
+          memory
+          storage
+        }
+        toolsQuotaSelected {
+          cpu
+          memory
+          storage
         }
       }
     }
   }
 `;
 
-export default function Request() {
+export default function UserRequest() {
   const { id } = useParams();
 
-  const {
-    loading: userRequestLoading,
-    data: userRequestData,
-    error: userRequestError
-  } = useQuery(USER_REQUEST, {
+  const { data, loading, error } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id }
   });
 
-  const {
-    control,
-    reset,
-    setValue,
-    watch,
-    formState: { errors }
-  } = useForm({
-    resolver: yupResolver(schema)
+  const { project, requestedProject, ...request } =
+    data?.userPrivateCloudActiveRequestById || {};
+
+  const formik = useFormik({
+    initialValues
   });
 
-  const userPrivateCloudRequest =
-    userRequestData?.userPrivateCloudActiveRequestById;
-
   useEffect(() => {
-    if (!userRequestLoading && !userRequestError) {
-      reset(userProjectToFormData(userPrivateCloudRequest.requestedProject));
+    if (requestedProject) {
+      // Form values cannon be null (uncontrolled input error), so replace nulls with empty strings
+      formik.setValues(replaceNullsWithEmptyString(requestedProject));
     }
-  }, [userRequestLoading, userRequestError, userPrivateCloudRequest, reset]);
+  }, [requestedProject]);
 
-  if (userRequestError) return `Error! ${userRequestError}`;
+  console.log(requestedProject);
 
   const name =
-    userPrivateCloudRequest?.type === "CREATE"
-      ? userPrivateCloudRequest?.requestedProject?.name
-      : userPrivateCloudRequest?.project?.name;
+    request?.type === "CREATE" ? requestedProject?.name : project?.name;
 
   return (
     <div>
-      <NavToolbar path={"request"} title={name} />
-      <FormProvider
-        {...{
-          control,
-          errors,
-          setValue,
-          watch,
-          initialValues: userProjectToFormData(
-            userPrivateCloudRequest?.requestedProject
-          ),
-          isDisabled: userPrivateCloudRequest?.active
-        }}
-      >
-        <StyledForm>
-          <MetaDataInput />
-          <div style={{ marginLeft: 70 }}>
-            <ClusterInput />
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <div>
-                <QuotaInput nameSpace={"production"} />
-                <QuotaInput nameSpace={"test"} />
-              </div>
-              <div style={{ marginLeft: 45 }}>
-                <QuotaInput nameSpace={"tools"} />
-                <QuotaInput nameSpace={"development"} />
-              </div>
-            </div>
-            <CommonComponents />
+      <NavToolbar path={"request"} title={name}></NavToolbar>
+      <Container>
+        <MetaDataInput formik={formik} isDisabled={false} />
+        <div style={{ marginLeft: 50 }}>
+          <ClusterInput formik={formik} isDisabled={false} />
+          <div>
+            <QuotaInput
+              nameSpace={"production"}
+              formik={formik}
+              isDisabled={false}
+            />
+            <QuotaInput nameSpace={"test"} formik={formik} isDisabled={false} />
+            <QuotaInput
+              nameSpace={"tools"}
+              formik={formik}
+              isDisabled={false}
+            />
+            <QuotaInput
+              nameSpace={"development"}
+              formik={formik}
+              isDisabled={false}
+            />
           </div>
-        </StyledForm>
-      </FormProvider>
+          <CommonComponents formik={formik} isDisabled={false} />
+        </div>
+      </Container>
     </div>
   );
 }

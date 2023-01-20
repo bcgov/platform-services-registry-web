@@ -380,6 +380,11 @@ export const replaceNullsWithEmptyString = (obj) =>
     JSON.stringify(obj, (key, value) => (value === null ? "" : value))
   );
 
+export const replaceEmptyStringWithNull = (obj) =>
+  JSON.parse(
+    JSON.stringify(obj, (key, value) => (value === "" ? null : value))
+  );
+
 export const createProjectInputValidationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),

@@ -1,19 +1,24 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
+import * as yup from "yup";
+import {
+  CreateUserInputSchema,
+  CommonComponentsInputSchema
+} from "../__generated__/resolvers-types";
+import {
+  createProjectInputInitalValues as initialValues,
+  replaceEmptyStringWithNull
+} from "../components/common/FormHelpers";
+import { useFormik } from "formik";
 import { useMutation, gql } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
 import NavToolbar from "../components/NavToolbar";
 import Button from "@mui/material/Button";
 import MetaDataInput from "../components/MetaDataInput";
 import ClusterInput from "../components/ClusterInput";
-import { useNavigate } from "react-router-dom";
 import CommonComponents from "../components/CommonComponents";
 import { USER_ACTIVE_REQUESTS } from "./requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "./requests/AdminRequests";
 import { toast } from "react-toastify";
-import { useFormik } from "formik";
-import {
-  createProjectInputInitalValues as initialValues,
-  createProjectInputValidationSchema as validationSchema
-} from "../components/common/FormHelpers";
 import Container from "../components/common/Container";
 
 const CREATE_USER_PROJECT = gql`
@@ -44,6 +49,24 @@ const CREATE_USER_PROJECT = gql`
   }
 `;
 
+const validationSchema = yup.object().shape({
+  name: yup.string().required(),
+  description: yup.string().required(),
+  ministry: yup.string().required(),
+  cluster: yup.string().required(),
+  projectOwner: CreateUserInputSchema(),
+  primaryTechnicalLead: CreateUserInputSchema(),
+  secondaryTechnicalLead: yup
+    .object(CreateUserInputSchema)
+    .nullable()
+    .transform((value) => (value.email === "" ? null : value)),
+  commonComponents: yup
+    .object(CommonComponentsInputSchema)
+    .transform((value, original) => {
+      return replaceEmptyStringWithNull(value);
+    })
+});
+
 export default function Create({ requestsRoute }) {
   const navigate = useNavigate();
   const toastId = useRef(null);
@@ -60,28 +83,14 @@ export default function Create({ requestsRoute }) {
   );
 
   const formik = useFormik({
-    validationSchema,
     initialValues,
+    validationSchema,
     onSubmit: (values) => {
-      console.log("submit");
       toastId.current = toast("Your create request has been submitted", {
         autoClose: false
       });
 
-      // This may be unnecessary since I have remove @noNullInput for this mutation input
-      const variables = { ...values };
-
-      if (variables.secondaryTechnicalLead.email === "") {
-        delete variables.secondaryTechnicalLead;
-      }
-
-      const { noServices, ...rest } = variables.commonComponents;
-
-      for (let component in rest) {
-        if (rest[component] === "") {
-          delete variables.commonComponents[component];
-        }
-      }
+      const variables = validationSchema.cast(values);
 
       privateCloudProjectRequest({
         variables,
@@ -108,6 +117,9 @@ export default function Create({ requestsRoute }) {
       });
     }
   });
+
+  console.log("FORMIK");
+  console.log(formik.values.commonComponents);
 
   return (
     <div>
