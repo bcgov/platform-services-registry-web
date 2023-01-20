@@ -34,7 +34,7 @@ export default function StickyTable({
   };
 
   const handleRowClick = (id) => {
-    console.log(onClickPath + id)
+    console.log(onClickPath + id);
     navigate(onClickPath + id);
   };
 
@@ -46,7 +46,7 @@ export default function StickyTable({
             <TableRow style={{ marginLeft: 110, marginRight: 11 }}>
               {columns.map((column) => (
                 <TableCell
-                  key={column.id}
+                  key={column.id + "key"}
                   align={column.align}
                   style={{
                     width: column.width,
@@ -114,20 +114,19 @@ export default function StickyTable({
   );
 }
 
-
 // Skeleton (if needed in future, but the ui experience is not great as it just flashes)
-  // columns.map((_, i) => (
-  //   <TableRow
-  //     key={"row" + i}
-  //     style={{ marginLeft: 24, marginRight: 24 }}
-  //     sx={{
-  //       width: "100%",
-  //     }}
-  //   >
-  //     {columns.map((__, j) => (
-  //       <TableCell key={"col" + j}>
-  //         <Skeleton height="70px" animation="wave" />
-  //       </TableCell>
-  //     ))}
-  //   </TableRow>
-  // ))
+// columns.map((_, i) => (
+//   <TableRow
+//     key={"row" + i}
+//     style={{ marginLeft: 24, marginRight: 24 }}
+//     sx={{
+//       width: "100%",
+//     }}
+//   >
+//     {columns.map((__, j) => (
+//       <TableCell key={"col" + j}>
+//         <Skeleton height="70px" animation="wave" />
+//       </TableCell>
+//     ))}
+//   </TableRow>
+// ))

@@ -1,4 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import * as yup from "yup";
+import {
+  CreateUserInputSchema,
+  CommonComponentsInputSchema,
+  QuotaInputSchema,
+  MinistrySchema,
+  ClusterSchema
+} from "../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/MetaDataInput";
 import ClusterInput from "../../components/ClusterInput";
@@ -6,7 +14,8 @@ import QuotaInput from "../../components/QuotaInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
   projectInitialValues,
-  replaceNullsWithEmptyString
+  replaceNullsWithEmptyString,
+  replaceEmptyStringWithNull
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
@@ -130,6 +139,28 @@ const DELETE_USER_PROJECT = gql`
   }
 `;
 
+const validationSchema = yup.object().shape({
+  name: yup.string().required(),
+  description: yup.string().required(),
+  ministry: MinistrySchema.required(),
+  cluster: ClusterSchema.required(),
+  projectOwner: CreateUserInputSchema(),
+  primaryTechnicalLead: CreateUserInputSchema(),
+  secondaryTechnicalLead: yup
+    .object(CreateUserInputSchema)
+    .nullable()
+    .transform((value) => (value.email === "" ? null : value)),
+  commonComponents: yup
+    .object(CommonComponentsInputSchema)
+    .transform((value, original) => {
+      return replaceEmptyStringWithNull(value);
+    }),
+  productionQuota: yup.object(QuotaInputSchema).required(),
+  developmentQuota: yup.object(QuotaInputSchema).required(),
+  developmentQuota: yup.object(QuotaInputSchema).required(),
+  developmentQuota: yup.object(QuotaInputSchema).required()
+});
+
 export default function AdminProject({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -154,7 +185,7 @@ export default function AdminProject({ requestsRoute }) {
   });
 
   const [
-    createPrivateCloudProjectEditRequest,
+    privateCloudProjectEditRequest,
     {
       data: editProjectData,
       loading: editProjectLoading,
@@ -201,15 +232,43 @@ export default function AdminProject({ requestsRoute }) {
 
   const formik = useFormik({
     initialValues,
+    validationSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      toastId.current = toast("Your edit request has been submitted", {
+        autoClose: false
+      });
+
+      const variables = validationSchema.cast(values);
+
+      privateCloudProjectEditRequest({
+        variables,
+        onError: (error) => {
+          toast.update(toastId.current, {
+            render: `Error: ${error.message}`,
+            type: toast.TYPE.ERROR,
+            autoClose: 5000
+          });
+        },
+
+        onCompleted: (data) => {
+          navigate(requestsRoute);
+
+          if (data?.privateCloudProjectEditRequest) {
+            toast.update(toastId.current, {
+              render: "Request successfuly created",
+              type: toast.TYPE.SUCCESS,
+              autoClose: 5000
+            });
+          }
+        }
+      });
     }
   });
 
   useEffect(() => {
     if (data) {
-      // Form values cannon be null (uncontrolled input error), so replace nulls with empty strings
+      // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
       setInitialValues(replaceNullsWithEmptyString(project));
     }
   }, [data]);

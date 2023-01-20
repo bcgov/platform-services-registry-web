@@ -2,7 +2,9 @@ import React, { useRef } from "react";
 import * as yup from "yup";
 import {
   CreateUserInputSchema,
-  CommonComponentsInputSchema
+  CommonComponentsInputSchema,
+  ClusterSchema,
+  MinistrySchema,
 } from "../__generated__/resolvers-types";
 import {
   createProjectInputInitalValues as initialValues,
@@ -52,8 +54,8 @@ const CREATE_USER_PROJECT = gql`
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
-  ministry: yup.string().required(),
-  cluster: yup.string().required(),
+  ministry: MinistrySchema.required(),
+  cluster: ClusterSchema.required(),
   projectOwner: CreateUserInputSchema(),
   primaryTechnicalLead: CreateUserInputSchema(),
   secondaryTechnicalLead: yup
@@ -95,7 +97,6 @@ export default function Create({ requestsRoute }) {
       privateCloudProjectRequest({
         variables,
         onError: (error) => {
-          console.log(error);
           toast.update(toastId.current, {
             render: `Error: ${error.message}`,
             type: toast.TYPE.ERROR,
@@ -117,9 +118,6 @@ export default function Create({ requestsRoute }) {
       });
     }
   });
-
-  console.log("FORMIK");
-  console.log(formik.values.commonComponents);
 
   return (
     <div>

@@ -184,14 +184,16 @@ export type MutationCreateUserArgs = {
 
 
 export type MutationCustomPrivateCloudProjectEditRequestArgs = {
-  cluster?: InputMaybe<Cluster>;
   commonComponents: CommonComponentsInput;
   description?: InputMaybe<Scalars['String']>;
   developmentQuota?: InputMaybe<CustomQuotaInput>;
   ministry?: InputMaybe<Ministry>;
   name?: InputMaybe<Scalars['String']>;
+  primaryTechnicalLead?: InputMaybe<CreateUserInput>;
   productionQuota?: InputMaybe<CustomQuotaInput>;
   projectId: Scalars['ID'];
+  projectOwner?: InputMaybe<CreateUserInput>;
+  secondaryTechnicalLead?: InputMaybe<CreateUserInput>;
   testQuota?: InputMaybe<CustomQuotaInput>;
   toolsQuota?: InputMaybe<CustomQuotaInput>;
 };
@@ -204,7 +206,10 @@ export type MutationCustomPrivateCloudProjectRequestArgs = {
   developmentQuota?: InputMaybe<CustomQuotaInput>;
   ministry: Ministry;
   name: Scalars['String'];
+  primaryTechnicalLead?: InputMaybe<CreateUserInput>;
   productionQuota?: InputMaybe<CustomQuotaInput>;
+  projectOwner?: InputMaybe<CreateUserInput>;
+  secondaryTechnicalLead?: InputMaybe<CreateUserInput>;
   testQuota?: InputMaybe<CustomQuotaInput>;
   toolsQuota?: InputMaybe<CustomQuotaInput>;
 };
@@ -216,19 +221,18 @@ export type MutationPrivateCloudProjectDeleteRequestArgs = {
 
 
 export type MutationPrivateCloudProjectEditRequestArgs = {
-  cluster?: InputMaybe<Cluster>;
-  commonComponents?: InputMaybe<CommonComponentsInput>;
-  description?: InputMaybe<Scalars['String']>;
-  developmentQuota?: InputMaybe<QuotaInput>;
-  ministry?: InputMaybe<Ministry>;
-  name?: InputMaybe<Scalars['String']>;
-  primaryTechnicalLead?: InputMaybe<CreateUserInput>;
-  productionQuota?: InputMaybe<QuotaInput>;
+  commonComponents: CommonComponentsInput;
+  description: Scalars['String'];
+  developmentQuota: QuotaInput;
+  ministry: Ministry;
+  name: Scalars['String'];
+  primaryTechnicalLead: CreateUserInput;
+  productionQuota: QuotaInput;
   projectId: Scalars['ID'];
-  projectOwner?: InputMaybe<CreateUserInput>;
+  projectOwner: CreateUserInput;
   secondaryTechnicalLead?: InputMaybe<CreateUserInput>;
-  testQuota?: InputMaybe<QuotaInput>;
-  toolsQuota?: InputMaybe<QuotaInput>;
+  testQuota: QuotaInput;
+  toolsQuota: QuotaInput;
 };
 
 
@@ -407,9 +411,9 @@ export type Quota = {
 };
 
 export type QuotaInput = {
-  cpu?: InputMaybe<DefaultCpuOptions>;
-  memory?: InputMaybe<DefaultMemoryOptions>;
-  storage?: InputMaybe<DefaultStorageOptions>;
+  cpu: DefaultCpuOptions;
+  memory: DefaultMemoryOptions;
+  storage: DefaultStorageOptions;
 };
 
 export enum RequestDecision {
@@ -425,9 +429,9 @@ export enum RequestType {
 
 export type SelectedDefaultQuota = {
   __typename?: 'SelectedDefaultQuota';
-  cpu?: Maybe<DefaultCpuOptions>;
-  memory?: Maybe<DefaultMemoryOptions>;
-  storage?: Maybe<DefaultStorageOptions>;
+  cpu: Scalars['String'];
+  memory: Scalars['String'];
+  storage: Scalars['String'];
 };
 
 export type SignUpInput = {
@@ -553,9 +557,9 @@ export const PublicCloudPlatformSchema = yup.mixed().oneOf([PublicCloudPlatform.
 
 export function QuotaInputSchema(): yup.SchemaOf<QuotaInput> {
   return yup.object({
-    cpu: yup.mixed(),
-    memory: yup.mixed(),
-    storage: yup.mixed()
+    cpu: yup.mixed().defined(),
+    memory: yup.mixed().defined(),
+    storage: yup.mixed().defined()
   })
 }
 

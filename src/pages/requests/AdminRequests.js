@@ -56,6 +56,7 @@ export default function Requests() {
       rows={data.privateCloudActiveRequests.map(requestsToRows).reverse()}
       title="Active Requests"
       loading={loading}
+      count={loading ? 0 : data?.privateCloudActiveRequests?.length}
     />
   ) : null;
 }
