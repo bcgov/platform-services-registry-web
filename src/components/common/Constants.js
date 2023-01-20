@@ -93,8 +93,7 @@ const defaultMemoryOptionsLookup = {
   MEMORY_REQUEST_16_LIMIT_32: "16 GB Request, 32 GB Limit",
   MEMORY_REQUEST_32_LIMIT_64: "32 GB Request, 64 GB Limit",
   MEMORY_REQUEST_64_LIMIT_128: "64 GB Request, 128 GB Limit",
-  MEMORY_REQUEST_128_LIMIT_256: "128 GB Request, 256 GB Limit"
-};
+ };
 
 const defaultStorageOptionsLookup = {
   STORAGE_1: "1 GB",

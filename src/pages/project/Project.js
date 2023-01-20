@@ -57,37 +57,25 @@ const USER_PROJECT = gql`
         businessIntelligence
         other
       }
-      productionQuota {
-        cpuRequests
-        cpuLimits
-        memoryRequests
-        memoryLimits
-        storageFile
-        snapshotCount
+      productionQuota: productionQuotaSelected {
+        cpu
+        memory
+        storage
       }
-      testQuota {
-        cpuRequests
-        cpuLimits
-        memoryRequests
-        memoryLimits
-        storageFile
-        snapshotCount
+      testQuota: testQuotaSelected {
+        cpu
+        memory
+        storage
       }
-      developmentQuota {
-        cpuRequests
-        cpuLimits
-        memoryRequests
-        memoryLimits
-        storageFile
-        snapshotCount
+      developmentQuota: developmentQuotaSelected {
+        cpu
+        memory
+        storage
       }
-      toolsQuota {
-        cpuRequests
-        cpuLimits
-        memoryRequests
-        memoryLimits
-        storageFile
-        snapshotCount
+      toolsQuota: toolsQuotaSelected {
+        cpu
+        memory
+        storage
       }
     }
   }

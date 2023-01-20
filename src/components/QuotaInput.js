@@ -28,9 +28,9 @@ const StyledBox = Styled(Box)`
 `;
 
 export default function QuotaInput({ nameSpace, formik, isDisabled }) {
-  const cpu = formik.values[nameSpace + "QuotaSelected"]?.cpu;
-  const memory = formik.values[nameSpace + "QuotaSelected"]?.memory;
-  const storage = formik.values[nameSpace + "QuotaSelected"]?.storage;
+  const cpu = formik.values[nameSpace + "Quota"]?.cpu;
+  const memory = formik.values[nameSpace + "Quota"]?.memory;
+  const storage = formik.values[nameSpace + "Quota"]?.storage;
 
   return (
     <StyledBox>
@@ -40,19 +40,19 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
       <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
         <InputLabel id="demo-simple-select-required-label">Cpu</InputLabel>
         <Select
-          id={nameSpace + "QuotaSelected.cpu"}
-          name={nameSpace + "QuotaSelected.cpu"}
+          id={nameSpace + "Quota.cpu"}
+          name={nameSpace + "Quota.cpu"}
           label="Cpu"
           disabled={isDisabled}
           value={cpu}
           onChange={formik.handleChange}
           error={
-            formik.touched[nameSpace + "QuotaSelected"]?.cpu &&
-            Boolean(formik.errors[nameSpace + "QuotaSelected"]?.cpu)
+            formik.touched[nameSpace + "Quota"]?.cpu &&
+            Boolean(formik.errors[nameSpace + "Quota"]?.cpu)
           }
           helpertext={
-            formik.touched[nameSpace + "QuotaSelected"]?.cpu &&
-            formik.errors[nameSpace + "QuotaSelected"]?.cpu
+            formik.touched[nameSpace + "Quota"]?.cpu &&
+            formik.errors[nameSpace + "Quota"]?.cpu
           }
         >
           {Object.entries(defaultCpuOptionsLookup).map((cpuOption) => (
@@ -65,19 +65,19 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
       <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
         <InputLabel id="demo-simple-select-required-label">Memory</InputLabel>
         <Select
-          id={nameSpace + "QuotaSelected.memory"}
-          name={nameSpace + "QuotaSelected.memory"}
+          id={nameSpace + "Quota.memory"}
+          name={nameSpace + "Quota.memory"}
           label="Memory"
           disabled={isDisabled}
           value={memory}
           onChange={formik.handleChange}
           error={
-            formik.touched[nameSpace + "QuotaSelected"]?.memory &&
-            Boolean(formik.errors[nameSpace + "QuotaSelected"]?.memory)
+            formik.touched[nameSpace + "Quota"]?.memory &&
+            Boolean(formik.errors[nameSpace + "Quota"]?.memory)
           }
           helpertext={
-            formik.touched[nameSpace + "QuotaSelected"]?.memory &&
-            formik.errors[nameSpace + "QuotaSelected"]?.memory
+            formik.touched[nameSpace + "Quota"]?.memory &&
+            formik.errors[nameSpace + "Quota"]?.memory
           }
         >
           {Object.entries(defaultMemoryOptionsLookup).map((memoryOption) => (
@@ -90,19 +90,19 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
       <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
         <InputLabel id="demo-simple-select-required-label">Storage</InputLabel>
         <Select
-          id={nameSpace + "QuotaSelected.storage"}
-          name={nameSpace + "QuotaSelected.storage"}
+          id={nameSpace + "Quota.storage"}
+          name={nameSpace + "Quota.storage"}
           label="Storage"
           disabled={isDisabled}
           value={storage}
           onChange={formik.handleChange}
           error={
-            formik.touched[nameSpace + "QuotaSelected"]?.storage &&
-            Boolean(formik.errors[nameSpace + "QuotaSelected"]?.storage)
+            formik.touched[nameSpace + "Quota"]?.storage &&
+            Boolean(formik.errors[nameSpace + "Quota"]?.storage)
           }
           helpertext={
-            formik.touched[nameSpace + "QuotaSelected"]?.storage &&
-            formik.errors[nameSpace + "QuotaSelected"]?.storage
+            formik.touched[nameSpace + "Quota"]?.storage &&
+            formik.errors[nameSpace + "Quota"]?.storage
           }
         >
           {Object.entries(defaultStorageOptionsLookup).map((storageOption) => (

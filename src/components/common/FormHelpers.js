@@ -308,22 +308,22 @@ export const createProjectInputInitalValues = {
 };
 
 const quotaInitialValues = {
-  productionQuotaSelected: {
+  productionQuota: {
     cpu: "",
     memory: "",
     storage: ""
   },
-  developmentQuotaSelected: {
+  developmentQuota: {
     cpu: "",
     memory: "",
     storage: ""
   },
-  testQuotaSelected: {
+  testQuota: {
     cpu: "",
     memory: "",
     storage: ""
   },
-  toolsQuotaSelected: {
+  toolsQuota: {
     cpu: "",
     memory: "",
     storage: ""
@@ -378,6 +378,17 @@ export const customProjectInitialValues = {
 export const replaceNullsWithEmptyString = (obj) =>
   JSON.parse(
     JSON.stringify(obj, (key, value) => (value === null ? "" : value))
+  );
+
+export const stripTypeName = (payloadWithTypeName) =>
+  JSON.parse(
+    JSON.stringify(payloadWithTypeName, (name, val) => {
+      if (name === "__typename") {
+        delete val[name];
+      } else {
+        return val;
+      }
+    })
   );
 
 export const replaceEmptyStringWithNull = (obj) =>

@@ -15,7 +15,8 @@ import NavToolbar from "../../components/NavToolbar";
 import {
   projectInitialValues,
   replaceNullsWithEmptyString,
-  replaceEmptyStringWithNull
+  replaceEmptyStringWithNull,
+  stripTypeName
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
@@ -60,22 +61,22 @@ const ADMIN_PROJECT = gql`
         noServices
         other
       }
-      productionQuotaSelected {
+      productionQuota: productionQuotaSelected {
         cpu
         memory
         storage
       }
-      testQuotaSelected {
+      testQuota: testQuotaSelected {
         cpu
         memory
         storage
       }
-      developmentQuotaSelected {
+      developmentQuota: developmentQuotaSelected {
         cpu
         memory
         storage
       }
-      toolsQuotaSelected {
+      toolsQuota: toolsQuotaSelected {
         cpu
         memory
         storage
@@ -89,15 +90,15 @@ const UPDATE_USER_PROJECT = gql`
     $projectId: ID!
     $name: String!
     $description: String!
-    $ministry: String
-    $projectOwner: CreateUserInput
-    $primaryTechnicalLead: CreateUserInput
+    $ministry: Ministry!
+    $projectOwner: CreateUserInput!
+    $primaryTechnicalLead: CreateUserInput!
     $secondaryTechnicalLead: CreateUserInput
-    $commonComponents: CommonComponentsInput
-    $productionQuota: QuotaInput
-    $developmentQuota: QuotaInput
-    $testQuota: QuotaInput
-    $toolsQuota: QuotaInput
+    $commonComponents: CommonComponentsInput!
+    $productionQuota: QuotaInput!
+    $developmentQuota: QuotaInput!
+    $testQuota: QuotaInput!
+    $toolsQuota: QuotaInput!
   ) {
     privateCloudProjectEditRequest(
       projectId: $projectId
@@ -115,18 +116,6 @@ const UPDATE_USER_PROJECT = gql`
     ) {
       id
       active
-    }
-  }
-`;
-
-const MAKE_REQUEST_DECISION = gql`
-  mutation PrivateCloudRequestDecision(
-    $requestId: ID!
-    $decision: RequestDecision!
-  ) {
-    privateCloudRequestDecision(requestId: $requestId, decision: $decision) {
-      id
-      decisionStatus
     }
   }
 `;
@@ -149,7 +138,7 @@ const validationSchema = yup.object().shape({
   secondaryTechnicalLead: yup
     .object(CreateUserInputSchema)
     .nullable()
-    .transform((value) => (value.email === "" ? null : value)),
+    .transform((value) => (value?.email === "" ? null : value)),
   commonComponents: yup
     .object(CommonComponentsInputSchema)
     .transform((value, original) => {
@@ -157,8 +146,8 @@ const validationSchema = yup.object().shape({
     }),
   productionQuota: yup.object(QuotaInputSchema).required(),
   developmentQuota: yup.object(QuotaInputSchema).required(),
-  developmentQuota: yup.object(QuotaInputSchema).required(),
-  developmentQuota: yup.object(QuotaInputSchema).required()
+  toolsQuota: yup.object(QuotaInputSchema).required(),
+  testQuota: yup.object(QuotaInputSchema).required()
 });
 
 export default function AdminProject({ requestsRoute }) {
@@ -170,16 +159,6 @@ export default function AdminProject({ requestsRoute }) {
 
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id }
-  });
-
-  const [
-    privateCloudRequestDecision,
-    { data: decisionData, loading: decisionLoading, error: decisionError }
-  ] = useMutation(MAKE_REQUEST_DECISION, {
-    refetchQueries: [
-      { query: USER_ACTIVE_REQUESTS },
-      { query: ALL_ACTIVE_REQUESTS }
-    ]
   });
 
   const [
@@ -196,7 +175,7 @@ export default function AdminProject({ requestsRoute }) {
     ]
   });
 
-  const [deletePrivateCloudProjectRequest] = useMutation(DELETE_USER_PROJECT, {
+  const [privateCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
     refetchQueries: [
       { query: USER_ACTIVE_REQUESTS },
       { query: ALL_ACTIVE_REQUESTS }
@@ -208,7 +187,7 @@ export default function AdminProject({ requestsRoute }) {
       autoClose: false
     });
 
-    deletePrivateCloudProjectRequest({
+    privateCloudProjectDeleteRequest({
       variables: { projectId: id },
       onError: (error) => {
         toast.update(toastId.current, {
@@ -233,14 +212,17 @@ export default function AdminProject({ requestsRoute }) {
     validationSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
+      console.log("SUBMIT");
       toastId.current = toast("Your edit request has been submitted", {
         autoClose: false
       });
 
       const variables = validationSchema.cast(values);
 
+      console.log({ projectId: id, ...variables });
+
       privateCloudProjectEditRequest({
-        variables,
+        variables: { projectId: id, ...variables },
         onError: (error) => {
           toast.update(toastId.current, {
             render: `Error: ${error.message}`,
@@ -268,7 +250,9 @@ export default function AdminProject({ requestsRoute }) {
     if (data) {
       // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
       setInitialValues(
-        replaceNullsWithEmptyString(data?.privateCloudProjectById)
+        stripTypeName(
+          replaceNullsWithEmptyString(data?.privateCloudProjectById)
+        )
       );
     }
   }, [data]);
@@ -278,7 +262,7 @@ export default function AdminProject({ requestsRoute }) {
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
-        <NavToolbar path={"request"} title={name}>
+        <NavToolbar path={"product"} title={name}>
           <IconButton
             sx={{ mr: 2 }}
             disabled={!formik.dirty}

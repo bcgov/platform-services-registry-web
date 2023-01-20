@@ -68,22 +68,22 @@ const ADMIN_REQUEST = gql`
           noServices
           other
         }
-        productionQuotaSelected {
+        productionQuota: productionQuotaSelected {
           cpu
           memory
           storage
         }
-        testQuotaSelected {
+        testQuota: testQuotaSelected {
           cpu
           memory
           storage
         }
-        developmentQuotaSelected {
+        developmentQuota: developmentQuotaSelected {
           cpu
           memory
           storage
         }
-        toolsQuotaSelected {
+        toolsQuota: toolsQuotaSelected {
           cpu
           memory
           storage
