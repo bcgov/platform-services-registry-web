@@ -9,17 +9,19 @@ export const ALL_ACTIVE_REQUESTS = gql`
     privateCloudActiveRequests {
       id
       active
-      decisionStatus 
+      decisionStatus
       type
       requestedProject {
         name
         description
+        ministry
+        cluster
+        licencePlate
         projectOwner {
           firstName
           lastName
           githubId
         }
-
         primaryTechnicalLead {
           firstName
           lastName
@@ -30,11 +32,6 @@ export const ALL_ACTIVE_REQUESTS = gql`
           lastName
           githubId
         }
-        ... on PrivateCloudProject {
-          cluster
-          licencePlate
-        }
-        ministry
       }
     }
   }

@@ -4,7 +4,7 @@ import {
   CreateUserInputSchema,
   CommonComponentsInputSchema,
   ClusterSchema,
-  MinistrySchema,
+  MinistrySchema
 } from "../__generated__/resolvers-types";
 import {
   createProjectInputInitalValues as initialValues,
