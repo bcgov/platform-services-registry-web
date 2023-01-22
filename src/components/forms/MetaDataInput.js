@@ -20,7 +20,7 @@ export default function MetaDataInput({ formik, isDisabled }) {
     <Box
       sx={{
         "& .MuiTextField-root": { m: 0, mb: 3, mt: 1, width: "30ch" },
-        width: "550px"
+        width: "550px",
       }}
       noValidate
       autoComplete="off"
@@ -53,27 +53,7 @@ export default function MetaDataInput({ formik, isDisabled }) {
         size="small"
       />
 
-      <FormControl size="small" sx={{ minWidth: 250, mt: 1 }}>
-        <InputLabel id="demo-simple-select-required-label">Ministry</InputLabel>
-
-        <Select
-          id="select-ministry"
-          name="ministry"
-          label="Ministry"
-          labelId="select-ministry"
-          disabled={isDisabled}
-          value={formik.values.ministry}
-          onChange={formik.handleChange}
-          error={formik.touched.ministry && Boolean(formik.errors.ministry)}
-          helpertext={formik.touched.ministry && formik.errors.ministry}
-        >
-          {ministries.map((ministryOption) => (
-            <MenuItem key={ministryOption} value={ministryOption}>
-              {ministryOption}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+     
       <UserInput
         label={"Product Owner"}
         contact="projectOwner"

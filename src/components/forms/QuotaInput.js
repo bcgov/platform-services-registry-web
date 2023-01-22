@@ -4,12 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import FormHelperText from "@mui/material/FormHelperText";
-import { Controller, useFormContext } from "react-hook-form";
 import {
-  defaultCpuOptions,
-  defaultMemoryOptions,
-  defaultStorageOptions,
   defaultCpuOptionsLookup,
   defaultMemoryOptionsLookup,
   defaultStorageOptionsLookup
@@ -65,7 +60,6 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
       <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
         <InputLabel id="demo-simple-select-required-label">Memory</InputLabel>
         <Select
-          selectProps={{IconComponent: () => null}}
           id={nameSpace + "Quota.memory"}
           name={nameSpace + "Quota.memory"}
           label="Memory"

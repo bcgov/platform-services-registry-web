@@ -19,7 +19,7 @@ export default function ClusterInput({ formik, isDisabled }) {
     >
       <div>
         <TitleTypography>Cluster</TitleTypography>
-        <FormControl size="small" sx={{ mt: 0, mb: 2, minWidth: 250 }}>
+        <FormControl size="small" sx={{ mt: 2, mb: 2, minWidth: 250 }}>
           <InputLabel id="demo-simple-select-required-label">
             Cluster
           </InputLabel>
