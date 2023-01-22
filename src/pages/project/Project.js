@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
-import MetaDataInput from "../../components/MetaDataInput";
-import ClusterInput from "../../components/ClusterInput";
-import QuotaInput from "../../components/QuotaInput";
+import MetaDataInput from "../../components/forms/MetaDataInput";
+import ClusterInput from "../../components/forms/ClusterInput";
+import QuotaInput from "../../components/forms/QuotaInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
   userProjectToFormData,
@@ -19,7 +19,7 @@ import StyledLink from "../../components/common/StyledLink";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import StyledForm from "../../components/common/StyledForm";
-import CommonComponents from "../../components/CommonComponents";
+import CommonComponents from "../../components/forms/CommonComponents";
 import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
 import { toast } from "react-toastify";

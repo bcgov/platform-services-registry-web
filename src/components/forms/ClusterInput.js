@@ -5,8 +5,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import FormHelperText from "@mui/material/FormHelperText";
-import { clusterNames } from "./common/Constants";
-import TitleTypography from "./common/TitleTypography";
+import { clusterNames } from "../common/Constants";
+import TitleTypography from "../common/TitleTypography";
 
 export default function ClusterInput({ formik, isDisabled }) {
   return (

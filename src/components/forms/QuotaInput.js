@@ -13,8 +13,8 @@ import {
   defaultCpuOptionsLookup,
   defaultMemoryOptionsLookup,
   defaultStorageOptionsLookup
-} from "./common/Constants";
-import TitleTypography from "./common/TitleTypography";
+} from "../common/Constants";
+import TitleTypography from "../common/TitleTypography";
 import Styled from "styled-components";
 
 String.prototype.capitalizeFirstLetter = function () {
@@ -65,6 +65,7 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
       <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
         <InputLabel id="demo-simple-select-required-label">Memory</InputLabel>
         <Select
+          selectProps={{IconComponent: () => null}}
           id={nameSpace + "Quota.memory"}
           name={nameSpace + "Quota.memory"}
           label="Memory"

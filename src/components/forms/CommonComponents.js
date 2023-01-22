@@ -7,7 +7,7 @@ import FormLabel from "@mui/material/FormLabel";
 import { Typography } from "@mui/material";
 import styled from "styled-components";
 import Box from "@mui/material/Box";
-import TitleTypography from "./common/TitleTypography";
+import TitleTypography from "../common/TitleTypography";
 import TextField from "@mui/material/TextField";
 import Checkbox from "@mui/material/Checkbox";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -95,7 +95,7 @@ export default function CommonComponents({ formik, isDisabled }) {
           <div key={name} style={{ marginBottom: "10px" }}>
             <Typography
               variant="body1"
-              color={isDisabled && "rgba(0, 0, 0, 0.38)"}
+              // color={isDisabled && "rgba(0, 0, 0, 0.38)"}
               sx={{ marginTop: 0.5, fontWeight: "medium" }}
             >
               {description}

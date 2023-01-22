@@ -3,9 +3,9 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
-import DownloadCsv from "./DownloadCsv";
-import Search from "./Search";
-import Filter from "./Filter";
+import DownloadCsv from "../DownloadCsv";
+import Search from "../Search";
+import Filter from "../Filter";
 
 export default function TabForm() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);

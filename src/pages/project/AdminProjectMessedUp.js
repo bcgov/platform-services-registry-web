@@ -15,10 +15,19 @@ import NavToolbar from "../../components/NavToolbar";
 import {
   projectInitialValues,
   replaceNullsWithEmptyString,
-  replaceEmptyStringWithNull,
-  stripTypeName
+  replaceEmptyStringWithNull
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/forms/CommonComponents";
+import { useParams, useNavigate } from "react-router-dom";
+import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
+import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
+import { toast } from "react-toastify";
+import { useFormik, withFormik } from "formik";
+import Container from "../../components/common/Container";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Button, IconButton } from "@mui/material";
+import { useForm, FormProvider } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
 import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
@@ -39,24 +48,12 @@ const ADMIN_PROJECT = gql`
       status
       projectOwner {
         email
-        firstName
-        githubId
-        lastName
-        ministry
       }
       primaryTechnicalLead {
         email
-        firstName
-        githubId
-        lastName
-        ministry
       }
       secondaryTechnicalLead {
         email
-        firstName
-        githubId
-        lastName
-        ministry
       }
       ministry
       cluster
@@ -73,22 +70,22 @@ const ADMIN_PROJECT = gql`
         noServices
         other
       }
-      productionQuota: productionQuotaSelected {
+      productionQuotaSelected {
         cpu
         memory
         storage
       }
-      testQuota: testQuotaSelected {
+      testQuotaSelected {
         cpu
         memory
         storage
       }
-      developmentQuota: developmentQuotaSelected {
+      developmentQuotaSelected {
         cpu
         memory
         storage
       }
-      toolsQuota: toolsQuotaSelected {
+      toolsQuotaSelected {
         cpu
         memory
         storage
@@ -102,15 +99,15 @@ const UPDATE_USER_PROJECT = gql`
     $projectId: ID!
     $name: String!
     $description: String!
-    $ministry: Ministry!
-    $projectOwner: CreateUserInput!
-    $primaryTechnicalLead: CreateUserInput!
+    $ministry: String
+    $projectOwner: CreateUserInput
+    $primaryTechnicalLead: CreateUserInput
     $secondaryTechnicalLead: CreateUserInput
-    $commonComponents: CommonComponentsInput!
-    $productionQuota: QuotaInput!
-    $developmentQuota: QuotaInput!
-    $testQuota: QuotaInput!
-    $toolsQuota: QuotaInput!
+    $commonComponents: CommonComponentsInput
+    $productionQuota: QuotaInput
+    $developmentQuota: QuotaInput
+    $testQuota: QuotaInput
+    $toolsQuota: QuotaInput
   ) {
     privateCloudProjectEditRequest(
       projectId: $projectId
@@ -128,6 +125,18 @@ const UPDATE_USER_PROJECT = gql`
     ) {
       id
       active
+    }
+  }
+`;
+
+const MAKE_REQUEST_DECISION = gql`
+  mutation PrivateCloudRequestDecision(
+    $requestId: ID!
+    $decision: RequestDecision!
+  ) {
+    privateCloudRequestDecision(requestId: $requestId, decision: $decision) {
+      id
+      decisionStatus
     }
   }
 `;
@@ -150,7 +159,7 @@ const validationSchema = yup.object().shape({
   secondaryTechnicalLead: yup
     .object(CreateUserInputSchema)
     .nullable()
-    .transform((value) => (value?.email === "" ? null : value)),
+    .transform((value) => (value.email === "" ? null : value)),
   commonComponents: yup
     .object(CommonComponentsInputSchema)
     .transform((value, original) => {
@@ -158,19 +167,49 @@ const validationSchema = yup.object().shape({
     }),
   productionQuota: yup.object(QuotaInputSchema).required(),
   developmentQuota: yup.object(QuotaInputSchema).required(),
-  toolsQuota: yup.object(QuotaInputSchema).required(),
-  testQuota: yup.object(QuotaInputSchema).required()
+  developmentQuota: yup.object(QuotaInputSchema).required(),
+  developmentQuota: yup.object(QuotaInputSchema).required()
 });
 
+
 export default function AdminProject({ requestsRoute }) {
+
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
 
   const [initialValues, setInitialValues] = useState(projectInitialValues);
 
+
+  const {
+    loading: projectLoading,
+    data: projectData,
+    error: projectError,
+    refetch
+  } = useQuery(PROJECT, {
+    fetchPolicy: "network-only",
+    variables: { projectId: id },
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data) => {
+      const project = data.privateCloudProjectById;
+      const formData = userProjectToFormData(project);
+      reset(formData);
+    }
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id }
+  });
+
+  const project = data?.privateCloudProjectById || {};
+
+  const [
+    privateCloudRequestDecision,
+    { data: decisionData, loading: decisionLoading, error: decisionError }
+  ] = useMutation(MAKE_REQUEST_DECISION, {
+    refetchQueries: [
+      { query: USER_ACTIVE_REQUESTS },
+      { query: ALL_ACTIVE_REQUESTS }
+    ]
+
   });
 
   const [
@@ -187,7 +226,7 @@ export default function AdminProject({ requestsRoute }) {
     ]
   });
 
-  const [privateCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
+  const [deletePrivateCloudProjectRequest] = useMutation(DELETE_USER_PROJECT, {
     refetchQueries: [
       { query: USER_ACTIVE_REQUESTS },
       { query: ALL_ACTIVE_REQUESTS }
@@ -199,7 +238,7 @@ export default function AdminProject({ requestsRoute }) {
       autoClose: false
     });
 
-    privateCloudProjectDeleteRequest({
+    deletePrivateCloudProjectRequest({
       variables: { projectId: id },
       onError: (error) => {
         toast.update(toastId.current, {
@@ -231,7 +270,7 @@ export default function AdminProject({ requestsRoute }) {
       const variables = validationSchema.cast(values);
 
       privateCloudProjectEditRequest({
-        variables: { projectId: id, ...variables },
+        variables,
         onError: (error) => {
           toast.update(toastId.current, {
             render: `Error: ${error.message}`,
@@ -258,25 +297,41 @@ export default function AdminProject({ requestsRoute }) {
   useEffect(() => {
     if (data) {
       // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
-      setInitialValues(
-        stripTypeName(
-          replaceNullsWithEmptyString(data?.privateCloudProjectById)
-        )
-      );
+      setInitialValues(replaceNullsWithEmptyString(project));
     }
   }, [data]);
 
-  const name = data?.privateCloudProjectById?.name;
+  const name = project?.name;
+=======
+<<<<<<< Updated upstream
+  if (editProjectError && toastId.current) {
+    toast.update(toastId.current, {
+      render: `Error: ${editProjectError.message}`,
+      type: toast.TYPE.SUCCESS,
+      autoClose: 5000
+    });
+  } else if (deleteProjectError && toastId.current) {
+    toast.update(toastId.current, {
+      render: `Error: ${deleteProjectError.message}`,
+      type: toast.TYPE.SUCCESS,
+      autoClose: 5000
+    });
+  } else if (projectError) {
+    // Find bettwr way to handle this
+    return `Error! ${projectError}`;
+  }
+>>>>>>> Stashed changes
 
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
-        <NavToolbar path={"product"} title={name}>
+        <NavToolbar path={"request"} title={name}>
           <IconButton
             sx={{ mr: 2 }}
             disabled={!formik.dirty}
-            onClick={() => formik.resetForm()}
-            // type="reset"
+            onClick={() => {
+              refetch({ projectId: id });
+            }}
             aria-label="delete"
           >
             <RestartAltIcon />
@@ -291,7 +346,6 @@ export default function AdminProject({ requestsRoute }) {
           </Button>
           <IconButton
             sx={{ mr: 1 }}
-            disabled={!formik.dirty}
             onClick={deleteOnClick}
             aria-label="delete"
           >
@@ -328,6 +382,56 @@ export default function AdminProject({ requestsRoute }) {
           </div>
         </Container>
       </form>
+          </StyledForm>
+        )}
+      </FormProvider>
+
+
+  // useEffect(() => {
+  //   if (data) {
+  //     // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
+  //     setInitialValues(
+  //       replaceNullsWithEmptyString(data?.privateCloudProjectById)
+  //     );
+  //   }
+  // }, [data]);
+
+  const name = data?.privateCloudProjectById?.name;
+
+  return (
+    <div>
+      {/* <NavToolbar path={"request"} title={name}>
+        <IconButton
+          sx={{ mr: 2 }}
+          disabled={!formik.dirty}
+          onClick={() => formik.resetForm()}
+          aria-label="delete"
+        >
+          <RestartAltIcon />
+        </IconButton>
+        <Button
+          sx={{ mr: 1 }}
+          type="submit"
+          disabled={!formik.dirty}
+          variant="outlined"
+        >
+          SUBMIT EDIT REQUEST
+        </Button>
+        <IconButton sx={{ mr: 1 }} onClick={deleteOnClick} aria-label="delete">
+          <DeleteForeverIcon />
+        </IconButton>
+      </NavToolbar> */}
+      <Container>
+        <MyEnhancedForm
+          project={data?.privateCloudProjectById}
+          privateCloudProjectEditRequest={privateCloudProjectEditRequest}
+          toastId={toastId}
+          requestsRoute={requestsRoute}
+          navigate={navigate}
+        />
+      </Container>
+
     </div>
   );
 }
+

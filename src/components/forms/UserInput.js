@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
-import { useMutation, gql, useLazyQuery } from "@apollo/client";
+import { gql, useLazyQuery } from "@apollo/client";
 import Avatar from "@mui/material/Avatar";
 import { TextField } from "@mui/material";
-import { Controller, useFormContext } from "react-hook-form";
-import useDebounce from "../hooks/useDebounce";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import useDebounce from "../../hooks/useDebounce";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -16,7 +12,7 @@ import IconButton from "@mui/material/IconButton";
 import Edit from "@mui/icons-material/Edit";
 import Divider from "@mui/material/Divider";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
-import { ministries } from "./common/Constants";
+import { ministries } from "../common/Constants";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -35,7 +31,7 @@ const USER_BY_EMAIL = gql`
 `;
 
 export default function UserInput({
-  contact,
+  contact, // e.g "projectOwner" or "primaryTechnicalLead" or "secondaryTechnicalLead"
   label,
   defaultEditOpen = true,
   formik,
@@ -50,6 +46,7 @@ export default function UserInput({
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
     onCompleted: (data) => {
+      // Set the data fetched from the Get User API Query to the form fields
       if (data.userByEmail) {
         formik.setFieldValue(contact + ".githubId", data.userByEmail.githubId);
         formik.setFieldValue(
@@ -64,6 +61,7 @@ export default function UserInput({
   });
 
   useEffect(() => {
+    // When the user types in the email field, call the Get User API Query
     if (debouncedEmail) {
       getUser({ variables: { email: debouncedEmail } });
     }
@@ -118,13 +116,6 @@ export default function UserInput({
           sx={{ px: 2, py: 1, bgcolor: "background.default" }}
         >
           <div>
-            {/* {parentErrors?.[`${contact}UserExists`] && (
-              <span style={{ color: "grey" }}>
-                This user does not exist, please create a user or use an
-                existing one
-              </span>
-            )} */}
-
             <Box
               sx={{
                 display: "flex",

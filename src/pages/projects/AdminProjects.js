@@ -13,8 +13,18 @@ import useWindowSize from "../../hooks/useWindowSize";
 import { EmptyAlert, ErrorAlert } from "../../components/common/Alert";
 
 const ALL_PROJECTS = gql`
-  query PrivateCloudProjectsPaginated($page: Int!, $pageSize: Int!) {
-    privateCloudProjectsPaginated(page: $page, pageSize: $pageSize) {
+  query PrivateCloudProjectsPaginated(
+    $page: Int!
+    $pageSize: Int!
+    $filter: FilterPrivateCloudProjectsInput
+    $search: String
+  ) {
+    privateCloudProjectsPaginated(
+      page: $page
+      pageSize: $pageSize
+      filter: $filter
+      search: $search
+    ) {
       projects {
         id
         name
@@ -44,6 +54,7 @@ const ALL_PROJECTS = gql`
 `;
 
 export default function Projects() {
+  console.log("RENDER");
   const { debouncedSearch } = useContext(SearchContext);
   const { filter } = useContext(FilterContext);
   const { width } = useWindowSize();
@@ -52,9 +63,9 @@ export default function Projects() {
     nextFetchPolicy: "cache-first",
     variables: {
       page: 1,
-      pageSize: 5
-      // search: debouncedSearch,
-      // filter
+      pageSize: 5,
+      search: debouncedSearch,
+      filter
     }
   });
 
@@ -63,13 +74,13 @@ export default function Projects() {
       fetchMore({
         variables: {
           page,
-          pageSize
-          // debouncedSearch,
-          // filter
+          pageSize,
+          search: debouncedSearch,
+          filter
         }
       });
     },
-    [filter, debouncedSearch, fetchMore]
+    [filter, debouncedSearch]
   );
 
   if (error && error.message === "Not a user") {

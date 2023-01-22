@@ -13,29 +13,63 @@ import UserProvider from "./providers/user";
 import SearchProvider from "./providers/search";
 import FilterProvider from "./providers/filter";
 
+// const theme = createTheme({
+//   typography: {
+//     fontFamily: ["Roboto"].join(","),
+//   },
+//   input: {
+//     "& input.Mui-disabled": {
+//       color: "red"
+//     }
+//   },
+//   textFields: {
+//     "& input.Mui-disabled": {
+//       color: "red"
+//     },
+//     fontSize: "200px",
+//   },
+//   tablecell: {
+//     fontSize: "200px",
+//   },
+//   palette: {
+//     primary: {
+//       main: "#003366",
+//     },
+//   },
+// });
+
 const theme = createTheme({
-  typography: {
-    fontFamily: ["Roboto"].join(","),
-  },
-  input: {
-    "& input.Mui-disabled": {
-      color: "red"
-    }
-  },
-  textFields: {
-    "& input.Mui-disabled": {
-      color: "red"
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          ".css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
+            {
+              "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important"
+            }
+        }
+      }
     },
-    fontSize: "200px",
-  },
-  tablecell: {
-    fontSize: "200px",
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          ".css-1wgigoj-MuiFormLabel-root-MuiInputLabel-root": {
+            fontSize: "3rem"
+          },
+
+          ".css-1sl9rdz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
+            {
+              "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important"
+            }
+        }
+      }
+    }
   },
   palette: {
     primary: {
-      main: "#003366",
-    },
-  },
+      main: "#003366"
+    }
+  }
 });
 
 export const ModeContext = createContext();
@@ -54,7 +88,7 @@ const ME = gql`
 
 function App() {
   const {
-    keycloak: { authenticated },
+    keycloak: { authenticated }
   } = useKeycloak();
 
   const { error, data } = useQuery(ME, { errorPolicy: "ignore" });

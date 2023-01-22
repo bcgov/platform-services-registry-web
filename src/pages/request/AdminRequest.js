@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
-import MetaDataInput from "../../components/MetaDataInput";
-import ClusterInput from "../../components/ClusterInput";
-import QuotaInput from "../../components/QuotaInput";
+import MetaDataInput from "../../components/forms/MetaDataInput";
+import ClusterInput from "../../components/forms/ClusterInput";
+import QuotaInput from "../../components/forms/QuotaInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
   projectInitialValues as initialValues,
   replaceNullsWithEmptyString
 } from "../../components/common/FormHelpers";
-import CommonComponents from "../../components/CommonComponents";
+import CommonComponents from "../../components/forms/CommonComponents";
 import { Button } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
@@ -192,28 +192,24 @@ export default function AdminRequest() {
         </Button>
       </NavToolbar>
       <Container>
-        <MetaDataInput formik={formik} isDisabled={false} />
+        <MetaDataInput formik={formik} isDisabled={true} />
         <div style={{ marginLeft: 50 }}>
-          <ClusterInput formik={formik} isDisabled={false} />
+          <ClusterInput formik={formik} isDisabled={true} />
           <div>
             <QuotaInput
               nameSpace={"production"}
               formik={formik}
-              isDisabled={false}
+              isDisabled={true}
             />
-            <QuotaInput nameSpace={"test"} formik={formik} isDisabled={false} />
-            <QuotaInput
-              nameSpace={"tools"}
-              formik={formik}
-              isDisabled={false}
-            />
+            <QuotaInput nameSpace={"test"} formik={formik} isDisabled={true} />
+            <QuotaInput nameSpace={"tools"} formik={formik} isDisabled={true} />
             <QuotaInput
               nameSpace={"development"}
               formik={formik}
-              isDisabled={false}
+              isDisabled={true}
             />
           </div>
-          <CommonComponents formik={formik} isDisabled={false} />
+          <CommonComponents formik={formik} isDisabled={true} />
         </div>
       </Container>
     </div>
