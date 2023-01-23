@@ -1,6 +1,6 @@
 ### How to run the project locally
 
-- Frist, make sure the api is already running at http://localhost:4000 . This is a required step as the front end needs to fetch the graphql schema from the API. The front end will use the graphql schema to generate form validation schema (whit the yup package). This ensures that the forms on the front end include all the fields required by the various API endpoints.
+- Frist, make sure the api is already running at http://localhost:4000 . This is a required step as the frontend needs to fetch the graphql schema from the API. The frontend will use the graphql schema to generate form validation schema (whit the yup package). This ensures that the forms on the front end include all the fields required by the various API endpoints.
 
 - Execute the following command while in the root folder of this repository `npm run generate`
 
