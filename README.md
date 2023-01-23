@@ -1,11 +1,3 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
 ## How to run the project locally
 
 - Frist, make sure the api is already running at `http://localhost:4000`. This is a required step as the front end needs to fetch the graphql schema from the API. The front end will use the graphql schema to generate form validation schema (whit the yup package). This ensures that the forms on the front end include all the fields required by the various API endpoints.
