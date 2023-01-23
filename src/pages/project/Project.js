@@ -282,10 +282,10 @@ export default function AdminProject({ requestsRoute }) {
         <NavToolbar path={"product"} title={name}>
           <IconButton
             sx={{ mr: 2 }}
-            disabled={false}
+            disabled={!formik.dirty}
             onClick={() => formik.resetForm()}
             // type="reset"
-            aria-label="delete"
+            aria-label="reset"
           >
             <RestartAltIcon />
           </IconButton>
@@ -299,7 +299,7 @@ export default function AdminProject({ requestsRoute }) {
           </Button>
           <IconButton
             sx={{ mr: 1 }}
-            disabled={!formik.dirty}
+            disabled={hasActiveRequest}
             onClick={deleteOnClick}
             aria-label="delete"
           >
@@ -315,7 +315,7 @@ export default function AdminProject({ requestsRoute }) {
           <div style={{ marginLeft: 50 }}>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={hasActiveRequest} />
-              <ClusterInput formik={formik} isDisabled={hasActiveRequest} />
+              <ClusterInput formik={formik} isDisabled={true} />
             </div>
             <div>
               <QuotaInput
