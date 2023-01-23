@@ -17,6 +17,7 @@ import NavToolbar from "../components/NavToolbar";
 import Button from "@mui/material/Button";
 import MetaDataInput from "../components/forms/MetaDataInput";
 import ClusterInput from "../components/forms/ClusterInput";
+import MinistryInput from "../components/forms/MinistryInput";
 import CommonComponents from "../components/forms/CommonComponents";
 import { USER_ACTIVE_REQUESTS } from "./requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "./requests/AdminRequests";
@@ -130,7 +131,10 @@ export default function Create({ requestsRoute }) {
         <Container>
           <MetaDataInput formik={formik} isDisabled={false} />
           <div style={{ marginLeft: 50 }}>
-            <ClusterInput formik={formik} isDisabled={false} />
+            <div style={{ display: "flex" }}>
+              <MinistryInput formik={formik} isDisabled={false} />
+              <ClusterInput formik={formik} isDisabled={false} />
+            </div>
             <CommonComponents formik={formik} isDisabled={false} />
           </div>
         </Container>

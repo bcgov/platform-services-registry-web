@@ -6,7 +6,7 @@ import Select from "@mui/material/Select";
 import { ministries } from "../common/Constants";
 import TitleTypography from "../common/TitleTypography";
 
-const MinistyInput = ({ formik, isDisabled }) => {
+const MinistryInput = ({ formik, isDisabled }) => {
   return (
     <div>
       <TitleTypography>Ministry</TitleTypography>
@@ -35,4 +35,4 @@ const MinistyInput = ({ formik, isDisabled }) => {
   );
 };
 
-export default MinistyInput;
+export default MinistryInput;

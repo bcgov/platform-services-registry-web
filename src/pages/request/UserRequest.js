@@ -3,6 +3,7 @@ import { useQuery, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
 import ClusterInput from "../../components/forms/ClusterInput";
 import QuotaInput from "../../components/forms/QuotaInput";
+import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
   projectInitialValues as initialValues,
@@ -119,7 +120,10 @@ export default function UserRequest() {
       <Container>
         <MetaDataInput formik={formik} isDisabled={true} />
         <div style={{ marginLeft: 50 }}>
-          <ClusterInput formik={formik} isDisabled={true} />
+          <div style={{ display: "flex" }}>
+            <MinistryInput formik={formik} isDisabled={true} />
+            <ClusterInput formik={formik} isDisabled={true} />
+          </div>
           <div>
             <QuotaInput
               nameSpace={"production"}
