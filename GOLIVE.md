@@ -27,8 +27,11 @@ Make sure the common component options are correct
 Please verify that projects are actaully being provisioned when requests are approved (**Create**, **Edit**, **Delete**). 
 You can possibly coordinate this with Alex L when she tests out the web app. Thanks!
 
-Also, as discussed in the go-live meeting, could you please verify that the provisioner will handle multiple quota changes in a singe provision. As in the
-new registry, a user is able to change the memory, storage and cpu for prod, test, dev and tools in a single project request.
+Also, as discussed in the go-live meeting, could you please verify that the provisioner will handle multiple quota changes in a singe provision. As in the new registry, a user is able to change the memory, storage and cpu for prod, test, dev and tools in a single project request.
+
+## Zhana
+
+The emails are not working like they used to. This is because I changed things arround that broke the emails. Sorry for that and for the extra work, but can you please test out the emails locally and fix those changes. Thank you Zhanna, your work on this feature is appreciated and the emails look great.
 
 ## Promote to Prod when the above testing is complete
 
