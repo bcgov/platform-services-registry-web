@@ -33,6 +33,10 @@ Also, as discussed in the go-live meeting, could you please verify that the prov
 
 The emails are not working like they used to. This is because I changed things arround that broke the emails. Sorry for that and for the extra work, but can you please test out the emails locally and fix those changes. Thank you Zhanna, your work on this feature is appreciated and the emails look great.
 
+## Alex C
+
+I have updated the ticket for the Graph API with more details. Thansk for working on this. 
+
 ## Promote to Prod when the above testing is complete
 
 Carry out Create, Edit, Delete testing for other clusters other than CLAB. Verify that they work 
