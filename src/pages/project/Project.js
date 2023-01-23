@@ -29,6 +29,7 @@ import Container from "../../components/common/Container";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Button, IconButton } from "@mui/material";
+import ActiveRequestText from "../../components/common/ActiveRequestText";
 
 const ADMIN_PROJECT = gql`
   query Query($projectId: ID!) {
@@ -38,6 +39,10 @@ const ADMIN_PROJECT = gql`
       licencePlate
       description
       status
+      activeEditRequest {
+        active
+        id
+      }
       projectOwner {
         email
         firstName
@@ -268,6 +273,8 @@ export default function AdminProject({ requestsRoute }) {
   }, [data]);
 
   const name = data?.userPrivateCloudProjectById?.name;
+  const hasActiveRequest =
+    !!data?.userPrivateCloudProjectById?.activeEditRequest;
 
   return (
     <div>
@@ -299,36 +306,40 @@ export default function AdminProject({ requestsRoute }) {
             <DeleteForeverIcon />
           </IconButton>
         </NavToolbar>
+        <ActiveRequestText
+          hasActiveRequest={hasActiveRequest}
+          requestId={data?.userPrivateCloudProjectById?.activeEditRequest?.id}
+        />
         <Container>
-          <MetaDataInput formik={formik} isDisabled={false} />
+          <MetaDataInput formik={formik} isDisabled={hasActiveRequest} />
           <div style={{ marginLeft: 50 }}>
             <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={false} />
-              <ClusterInput formik={formik} isDisabled={true} />
+              <MinistryInput formik={formik} isDisabled={hasActiveRequest} />
+              <ClusterInput formik={formik} isDisabled={hasActiveRequest} />
             </div>
             <div>
               <QuotaInput
                 nameSpace={"production"}
                 formik={formik}
-                isDisabled={false}
+                isDisabled={hasActiveRequest}
               />
               <QuotaInput
                 nameSpace={"test"}
                 formik={formik}
-                isDisabled={false}
+                isDisabled={hasActiveRequest}
               />
               <QuotaInput
                 nameSpace={"tools"}
                 formik={formik}
-                isDisabled={false}
+                isDisabled={hasActiveRequest}
               />
               <QuotaInput
                 nameSpace={"development"}
                 formik={formik}
-                isDisabled={false}
+                isDisabled={hasActiveRequest}
               />
             </div>
-            <CommonComponents formik={formik} isDisabled={false} />
+            <CommonComponents formik={formik} isDisabled={hasActiveRequest} />
           </div>
         </Container>
       </form>
