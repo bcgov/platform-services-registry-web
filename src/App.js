@@ -13,31 +13,6 @@ import UserProvider from "./providers/user";
 import SearchProvider from "./providers/search";
 import FilterProvider from "./providers/filter";
 
-// const theme = createTheme({
-//   typography: {
-//     fontFamily: ["Roboto"].join(","),
-//   },
-//   input: {
-//     "& input.Mui-disabled": {
-//       color: "red"
-//     }
-//   },
-//   textFields: {
-//     "& input.Mui-disabled": {
-//       color: "red"
-//     },
-//     fontSize: "200px",
-//   },
-//   tablecell: {
-//     fontSize: "200px",
-//   },
-//   palette: {
-//     primary: {
-//       main: "#003366",
-//     },
-//   },
-// });
-
 const theme = createTheme({
   components: {
     MuiTextField: {
