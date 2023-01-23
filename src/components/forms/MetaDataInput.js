@@ -51,6 +51,9 @@ export default function MetaDataInput({ formik, isDisabled }) {
         error={formik.touched.description && Boolean(formik.errors.description)}
         helpertext={formik.touched.email && formik.errors.email}
         size="small"
+        style={{ width: "100%" }}
+        multiline
+        rows={4}
       />
 
      

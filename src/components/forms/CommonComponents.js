@@ -88,11 +88,11 @@ export default function CommonComponents({ formik, isDisabled }) {
   }, [formik.values.commonComponents]);
 
   return (
-    <Box>
+    <Box sx={{mt: 2}}>
       <TitleTypography>Common Components</TitleTypography>
       <FormControl>
         {commonComponents.map(({ name, description }) => (
-          <div key={name} style={{ marginBottom: "10px" }}>
+          <div key={name} style={{ marginBottom: "10px"}}>
             <Typography
               variant="body1"
               // color={isDisabled && "rgba(0, 0, 0, 0.38)"}
