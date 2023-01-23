@@ -275,7 +275,7 @@ export default function AdminProject({ requestsRoute }) {
         <NavToolbar path={"product"} title={name}>
           <IconButton
             sx={{ mr: 2 }}
-            disabled={!formik.dirty}
+            disabled={false}
             onClick={() => formik.resetForm()}
             // type="reset"
             aria-label="delete"

@@ -1,47 +1,63 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import * as yup from "yup";
+import {
+  CreateUserInputSchema,
+  CommonComponentsInputSchema,
+  QuotaInputSchema,
+  MinistrySchema,
+  ClusterSchema
+} from "../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
 import ClusterInput from "../../components/forms/ClusterInput";
 import QuotaInput from "../../components/forms/QuotaInput";
+import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
-  userProjectToFormData,
-  formDataToUserProject,
-  projectFormSchema as schema
+  projectInitialValues,
+  replaceNullsWithEmptyString,
+  replaceEmptyStringWithNull,
+  stripTypeName
 } from "../../components/common/FormHelpers";
-import Typography from "@mui/material/Typography";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { Button, IconButton } from "@mui/material";
-import { useForm, FormProvider } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import StyledLink from "../../components/common/StyledLink";
-import { useParams, useNavigate } from "react-router-dom";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
-import StyledForm from "../../components/common/StyledForm";
 import CommonComponents from "../../components/forms/CommonComponents";
+import { useParams, useNavigate } from "react-router-dom";
 import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
 import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import Container from "../../components/common/Container";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Button, IconButton } from "@mui/material";
 
-const USER_PROJECT = gql`
+const ADMIN_PROJECT = gql`
   query Query($projectId: ID!) {
     userPrivateCloudProjectById(projectId: $projectId) {
       id
       name
+      licencePlate
       description
-      activeEditRequest {
-        id
-        active
-      }
+      status
       projectOwner {
         email
+        firstName
+        githubId
+        lastName
+        ministry
       }
       primaryTechnicalLead {
         email
+        firstName
+        githubId
+        lastName
+        ministry
       }
       secondaryTechnicalLead {
         email
+        firstName
+        githubId
+        lastName
+        ministry
       }
       ministry
       cluster
@@ -55,6 +71,7 @@ const USER_PROJECT = gql`
         endUserNotificationAndSubscription
         publishing
         businessIntelligence
+        noServices
         other
       }
       productionQuota: productionQuotaSelected {
@@ -84,15 +101,27 @@ const USER_PROJECT = gql`
 const UPDATE_USER_PROJECT = gql`
   mutation Mutation(
     $projectId: ID!
-    $metaData: EditProjectMetaDataInput
-    $productionQuota: QuotaInput
-    $developmentQuota: QuotaInput
-    $testQuota: QuotaInput
-    $toolsQuota: QuotaInput
+    $name: String!
+    $description: String!
+    $ministry: Ministry!
+    $projectOwner: CreateUserInput!
+    $primaryTechnicalLead: CreateUserInput!
+    $secondaryTechnicalLead: CreateUserInput
+    $commonComponents: CommonComponentsInput!
+    $productionQuota: QuotaInput!
+    $developmentQuota: QuotaInput!
+    $testQuota: QuotaInput!
+    $toolsQuota: QuotaInput!
   ) {
     privateCloudProjectEditRequest(
       projectId: $projectId
-      metaData: $metaData
+      name: $name
+      description: $description
+      ministry: $ministry
+      projectOwner: $projectOwner
+      primaryTechnicalLead: $primaryTechnicalLead
+      secondaryTechnicalLead: $secondaryTechnicalLead
+      commonComponents: $commonComponents
       productionQuota: $productionQuota
       developmentQuota: $developmentQuota
       testQuota: $testQuota
@@ -112,21 +141,41 @@ const DELETE_USER_PROJECT = gql`
   }
 `;
 
-export default function Project({ requestsRoute }) {
+const validationSchema = yup.object().shape({
+  name: yup.string().required(),
+  description: yup.string().required(),
+  ministry: MinistrySchema.required(),
+  cluster: ClusterSchema.required(),
+  projectOwner: CreateUserInputSchema(),
+  primaryTechnicalLead: CreateUserInputSchema(),
+  secondaryTechnicalLead: yup
+    .object(CreateUserInputSchema)
+    .nullable()
+    .transform((value) => (value?.email === "" ? null : value)),
+  commonComponents: yup
+    .object(CommonComponentsInputSchema)
+    .transform((value, original) => {
+      return replaceEmptyStringWithNull(value);
+    }),
+  productionQuota: yup.object(QuotaInputSchema).required(),
+  developmentQuota: yup.object(QuotaInputSchema).required(),
+  toolsQuota: yup.object(QuotaInputSchema).required(),
+  testQuota: yup.object(QuotaInputSchema).required()
+});
+
+export default function AdminProject({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
 
-  const {
-    loading: userProjectLoading,
-    data: userProjectData,
-    error: userProjectError
-  } = useQuery(USER_PROJECT, {
+  const [initialValues, setInitialValues] = useState(projectInitialValues);
+
+  const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id }
   });
 
   const [
-    createPrivateCloudProjectEditRequest,
+    privateCloudProjectEditRequest,
     {
       data: editProjectData,
       loading: editProjectLoading,
@@ -139,68 +188,29 @@ export default function Project({ requestsRoute }) {
     ]
   });
 
-  const [
-    deletePrivateCloudProjectRequest,
-    {
-      data: deleteProjectData,
-      loading: deleteProjectLoading,
-      error: deleteProjectError
-    }
-  ] = useMutation(DELETE_USER_PROJECT, {
-    refetchQueries: ["PrivateCloudActiveRequests"]
+  const [privateCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
+    refetchQueries: [
+      { query: USER_ACTIVE_REQUESTS },
+      { query: ALL_ACTIVE_REQUESTS }
+    ]
   });
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    watch,
-    setValue,
-    formState: { isDirty, dirtyFields, errors }
-  } = useForm({
-    resolver: yupResolver(schema)
-  });
-
-  const userPrivateCloudProject = userProjectData?.userPrivateCloudProjectById;
-
-  useEffect(() => {
-    if (!userProjectLoading && !userProjectError) {
-      if (userPrivateCloudProject) {
-        reset(userProjectToFormData(userPrivateCloudProject));
-      }
-    }
-  }, [userProjectLoading, userProjectError, userPrivateCloudProject, reset]);
-
-  const onSubmit = (data) => {
-    const userProject = formDataToUserProject(data, dirtyFields);
+  const deleteOnClick = () => {
     toastId.current = toast("Your edit request has been submitted", {
       autoClose: false
     });
 
-    createPrivateCloudProjectEditRequest({
-      variables: { projectId: id, ...userProject, ...userProject.quota },
-      onCompleted: () => {
-        navigate(requestsRoute);
-
+    privateCloudProjectDeleteRequest({
+      variables: { projectId: id },
+      onError: (error) => {
         toast.update(toastId.current, {
-          render: "Request successfuly created",
-          type: toast.TYPE.SUCCESS,
+          render: `Error: ${error.message}`,
+          type: toast.TYPE.ERROR,
           autoClose: 5000
         });
-      }
-    });
-  };
-
-  const onDeleteSubmit = () => {
-    toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false
-    });
-
-    deletePrivateCloudProjectRequest({
-      variables: { projectId: id },
+      },
       onCompleted: () => {
         navigate(requestsRoute);
-
         toast.update(toastId.current, {
           render: "Delete request successfuly created",
           type: toast.TYPE.SUCCESS,
@@ -210,96 +220,118 @@ export default function Project({ requestsRoute }) {
     });
   };
 
-  if (editProjectError && toastId.current) {
-    toast.update(toastId.current, {
-      render: `Error: ${editProjectError.message}`,
-      type: toast.TYPE.SUCCESS,
-      autoClose: 5000
-    });
-  } else if (deleteProjectError && toastId.current) {
-    toast.update(toastId.current, {
-      render: `Error: ${deleteProjectError.message}`,
-      type: toast.TYPE.SUCCESS,
-      autoClose: 5000
-    });
-  } else if (userProjectError) {
-    // Find bettwr way to handle this
-    return `Error! ${userProjectError}`;
-  }
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    enableReinitialize: true,
+    onSubmit: (values) => {
+      toastId.current = toast("Your edit request has been submitted", {
+        autoClose: false
+      });
+
+      const variables = validationSchema.cast(values);
+
+      privateCloudProjectEditRequest({
+        variables: { projectId: id, ...variables },
+        onError: (error) => {
+          toast.update(toastId.current, {
+            render: `Error: ${error.message}`,
+            type: toast.TYPE.ERROR,
+            autoClose: 5000
+          });
+        },
+
+        onCompleted: (data) => {
+          navigate(requestsRoute);
+
+          if (data?.privateCloudProjectEditRequest) {
+            toast.update(toastId.current, {
+              render: "Request successfuly created",
+              type: toast.TYPE.SUCCESS,
+              autoClose: 5000
+            });
+          }
+        }
+      });
+    }
+  });
+
+  useEffect(() => {
+    if (data) {
+      // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
+      setInitialValues(
+        stripTypeName(
+          replaceNullsWithEmptyString(data?.userPrivateCloudProjectById)
+        )
+      );
+    }
+  }, [data]);
+
+  const name = data?.userPrivateCloudProjectById?.name;
+
   return (
     <div>
-      <NavToolbar path={"project"} title={userPrivateCloudProject?.name}>
-        <IconButton
-          sx={{ mr: 2 }}
-          disabled={!isDirty}
-          onClick={() => reset(userProjectToFormData(userPrivateCloudProject))}
-          aria-label="delete"
-        >
-          <RestartAltIcon />
-        </IconButton>
-        <Button
-          sx={{ mr: 1 }}
-          disabled={!isDirty}
-          onClick={handleSubmit(onSubmit)}
-          variant="outlined"
-        >
-          SUBMIT EDIT REQUEST
-        </Button>
-        <IconButton
-          sx={{ mr: 1 }}
-          onClick={handleSubmit(onDeleteSubmit)}
-          aria-label="delete"
-        >
-          <DeleteForeverIcon />
-        </IconButton>
-      </NavToolbar>
-      <div style={{ minHeight: 50 }}>
-        {userPrivateCloudProject?.activeRequest?.active && (
-          <Typography
-            variant="body"
-            sx={{ mb: 0, ml: 3, color: "rgba(0, 0, 0, 0.6)" }}
+      <form onSubmit={formik.handleSubmit}>
+        <NavToolbar path={"product"} title={name}>
+          <IconButton
+            sx={{ mr: 2 }}
+            disabled={false}
+            onClick={() => formik.resetForm()}
+            // type="reset"
+            aria-label="delete"
           >
-            This project cannot be edited as it has an{" "}
-            <StyledLink
-              to={`/private-cloud/user/request/${userPrivateCloudProject?.activeRequest?.id}`}
-            >
-              <i>active request</i>
-            </StyledLink>
-          </Typography>
-        )}
-      </div>
-      {editProjectLoading ? (
-        <LoadingSpinner />
-      ) : (
-        <FormProvider
-          {...{
-            control,
-            errors,
-            setValue,
-            watch,
-            initialValues: userProjectToFormData(userPrivateCloudProject),
-            isDisabled: userPrivateCloudProject?.activeRequest?.active
-          }}
-        >
-          <StyledForm>
-            <MetaDataInput />
-            <div style={{ marginLeft: 70 }}>
-              <ClusterInput />
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <div>
-                  <QuotaInput nameSpace={"production"} />
-                  <QuotaInput nameSpace={"test"} />
-                </div>
-                <div>
-                  <QuotaInput nameSpace={"tools"} />
-                  <QuotaInput nameSpace={"development"} />
-                </div>
-              </div>
-              <CommonComponents />
+            <RestartAltIcon />
+          </IconButton>
+          <Button
+            sx={{ mr: 1 }}
+            type="submit"
+            disabled={!formik.dirty}
+            variant="outlined"
+          >
+            SUBMIT EDIT REQUEST
+          </Button>
+          <IconButton
+            sx={{ mr: 1 }}
+            disabled={!formik.dirty}
+            onClick={deleteOnClick}
+            aria-label="delete"
+          >
+            <DeleteForeverIcon />
+          </IconButton>
+        </NavToolbar>
+        <Container>
+          <MetaDataInput formik={formik} isDisabled={false} />
+          <div style={{ marginLeft: 50 }}>
+            <div style={{ display: "flex" }}>
+              <MinistryInput formik={formik} isDisabled={false} />
+              <ClusterInput formik={formik} isDisabled={true} />
             </div>
-          </StyledForm>
-        </FormProvider>
-      )}
+            <div>
+              <QuotaInput
+                nameSpace={"production"}
+                formik={formik}
+                isDisabled={false}
+              />
+              <QuotaInput
+                nameSpace={"test"}
+                formik={formik}
+                isDisabled={false}
+              />
+              <QuotaInput
+                nameSpace={"tools"}
+                formik={formik}
+                isDisabled={false}
+              />
+              <QuotaInput
+                nameSpace={"development"}
+                formik={formik}
+                isDisabled={false}
+              />
+            </div>
+            <CommonComponents formik={formik} isDisabled={false} />
+          </div>
+        </Container>
+      </form>
     </div>
   );
 }
