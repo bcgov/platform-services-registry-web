@@ -54,7 +54,6 @@ const ALL_PROJECTS = gql`
 `;
 
 export default function Projects() {
-  console.log("RENDER");
   const { debouncedSearch } = useContext(SearchContext);
   const { filter } = useContext(FilterContext);
   const { width } = useWindowSize();

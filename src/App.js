@@ -18,49 +18,48 @@ const theme = createTheme({
     MuiTextField: {
       styleOverrides: {
         root: {
-          ".Mui-disabled" {
-            color: "rgba(0, 0, 0, 0.87) !important"
+          ".Mui-disabled": {
+            color: "rgba(0, 0, 0, 0.87) !important",
           },
           ".css-xy0qn3.Mui-disabled": {
-            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important"
+            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
           },
           ".css-1wgigoj-MuiFormLabel-root-MuiInputLabel-root": {
-            fontSize: "3rem"
+            fontSize: "3rem",
           },
-
           ".css-1sl9rdz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
-          {
-            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important"
-          }
-        }
-      }
+            {
+              "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
+            },
+        },
+      },
     },
     MuiSelect: {
       styleOverrides: {
         root: {
-          ".Mui-disabled" {
-            color: "rgba(0, 0, 0, 0.87) !important"
+          ".Mui-disabled": {
+            color: "rgba(0, 0, 0, 0.87) !important",
           },
           ".css-xy0qn3.Mui-disabled": {
-            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important"
+            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
           },
           ".css-1wgigoj-MuiFormLabel-root-MuiInputLabel-root": {
-            fontSize: "3rem"
+            fontSize: "3rem",
           },
 
           ".css-1sl9rdz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
-          {
-            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important"
-          }
-        }
-      }
-    }
+            {
+              "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
+            },
+        },
+      },
+    },
   },
   palette: {
     primary: {
-      main: "#003366"
-    }
-  }
+      main: "#003366",
+    },
+  },
 });
 
 export const ModeContext = createContext();
@@ -79,7 +78,7 @@ const ME = gql`
 
 function App() {
   const {
-    keycloak: { authenticated }
+    keycloak: { authenticated },
   } = useKeycloak();
 
   const { error, data } = useQuery(ME, { errorPolicy: "ignore" });
