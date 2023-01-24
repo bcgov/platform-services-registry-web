@@ -5,7 +5,7 @@ import {
   CommonComponentsInputSchema,
   QuotaInputSchema,
   MinistrySchema,
-  ClusterSchema
+  ClusterSchema,
 } from "../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
@@ -17,7 +17,7 @@ import {
   projectInitialValues,
   replaceNullsWithEmptyString,
   replaceEmptyStringWithNull,
-  stripTypeName
+  stripTypeName,
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/forms/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
@@ -165,7 +165,7 @@ const validationSchema = yup.object().shape({
   productionQuota: yup.object(QuotaInputSchema).required(),
   developmentQuota: yup.object(QuotaInputSchema).required(),
   toolsQuota: yup.object(QuotaInputSchema).required(),
-  testQuota: yup.object(QuotaInputSchema).required()
+  testQuota: yup.object(QuotaInputSchema).required(),
 });
 
 export default function AdminProject({ requestsRoute }) {
@@ -176,7 +176,7 @@ export default function AdminProject({ requestsRoute }) {
   const [initialValues, setInitialValues] = useState(projectInitialValues);
 
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
-    variables: { projectId: id }
+    variables: { projectId: id },
   });
 
   const [
@@ -184,25 +184,25 @@ export default function AdminProject({ requestsRoute }) {
     {
       data: editProjectData,
       loading: editProjectLoading,
-      error: editProjectError
-    }
+      error: editProjectError,
+    },
   ] = useMutation(UPDATE_USER_PROJECT, {
     refetchQueries: [
       { query: USER_ACTIVE_REQUESTS },
-      { query: ALL_ACTIVE_REQUESTS }
-    ]
+      { query: ALL_ACTIVE_REQUESTS },
+    ],
   });
 
   const [privateCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
     refetchQueries: [
       { query: USER_ACTIVE_REQUESTS },
-      { query: ALL_ACTIVE_REQUESTS }
-    ]
+      { query: ALL_ACTIVE_REQUESTS },
+    ],
   });
 
   const deleteOnClick = () => {
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     privateCloudProjectDeleteRequest({
@@ -211,7 +211,7 @@ export default function AdminProject({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
       onCompleted: () => {
@@ -219,9 +219,9 @@ export default function AdminProject({ requestsRoute }) {
         toast.update(toastId.current, {
           render: "Delete request successfuly created",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000
+          autoClose: 5000,
         });
-      }
+      },
     });
   };
 
@@ -231,7 +231,7 @@ export default function AdminProject({ requestsRoute }) {
     enableReinitialize: true,
     onSubmit: (values) => {
       toastId.current = toast("Your edit request has been submitted", {
-        autoClose: false
+        autoClose: false,
       });
 
       const variables = validationSchema.cast(values);
@@ -242,7 +242,7 @@ export default function AdminProject({ requestsRoute }) {
           toast.update(toastId.current, {
             render: `Error: ${error.message}`,
             type: toast.TYPE.ERROR,
-            autoClose: 5000
+            autoClose: 5000,
           });
         },
 
@@ -253,12 +253,12 @@ export default function AdminProject({ requestsRoute }) {
             toast.update(toastId.current, {
               render: "Request successfuly created",
               type: toast.TYPE.SUCCESS,
-              autoClose: 5000
+              autoClose: 5000,
             });
           }
-        }
+        },
       });
-    }
+    },
   });
 
   useEffect(() => {
@@ -305,10 +305,11 @@ export default function AdminProject({ requestsRoute }) {
             <DeleteForeverIcon />
           </IconButton>
         </NavToolbar>
-        <ActiveRequestText
-          hasActiveRequest={hasActiveRequest}
-          requestId={data?.privateCloudProjectById?.activeEditRequest?.id}
-        />
+        {hasActiveRequest ? (
+          <ActiveRequestText
+            requestId={data?.privateCloudProjectById?.activeEditRequest?.id}
+          />
+        ) : null}
         <Container>
           <MetaDataInput formik={formik} isDisabled={hasActiveRequest} />
           <div style={{ marginLeft: 50 }}>

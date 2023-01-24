@@ -24,9 +24,6 @@ const theme = createTheme({
           ".css-xy0qn3.Mui-disabled": {
             "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
           },
-          ".css-1wgigoj-MuiFormLabel-root-MuiInputLabel-root": {
-            fontSize: "3rem",
-          },
           ".css-1sl9rdz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
             {
               "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
@@ -42,9 +39,6 @@ const theme = createTheme({
           },
           ".css-xy0qn3.Mui-disabled": {
             "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
-          },
-          ".css-1wgigoj-MuiFormLabel-root-MuiInputLabel-root": {
-            fontSize: "3rem",
           },
 
           ".css-1sl9rdz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
