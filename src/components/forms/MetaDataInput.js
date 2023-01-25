@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
@@ -10,11 +10,35 @@ import { ministries } from "../common/Constants";
 import UserInput from "./UserInput";
 import TitleTypography from "../common/TitleTypography";
 import { useLocation } from "react-router-dom";
+import keycloak from "../../keycloak";
+import { useMsal } from '@azure/msal-react';
 
 export default function MetaDataInput({ formik, isDisabled }) {
   const { pathname } = useLocation();
 
   const defaultEditOpen = pathname.includes("create");
+  const [graphToken, setToken] = useState('');
+  const { instance, accounts } = useMsal();
+
+  useEffect(() => {
+    async function fetchGraphUserDelegateToken() {
+      const request = {
+        scopes: ['User.ReadBasic.All'],
+        account: accounts[0],
+      };
+      await instance
+        .acquireTokenSilent(request)
+        .then((response) => {
+          setToken(response.accessToken);
+        })
+        .catch(async (e) => {
+          instance.acquireTokenPopup(request).then((response) => {
+            setToken(response.accessToken);
+          });
+        });
+     }
+     fetchGraphUserDelegateToken();
+  },[keycloak]);
 
   return (
     <Box
@@ -63,6 +87,9 @@ export default function MetaDataInput({ formik, isDisabled }) {
         formik={formik}
         isDisabled={isDisabled}
         defaultEditOpen={defaultEditOpen}
+        graphToken={graphToken} 
+        instance={instance} 
+        accounts={accounts}
       />
       <UserInput
         label={"Primary Technical Lead"}
@@ -70,6 +97,9 @@ export default function MetaDataInput({ formik, isDisabled }) {
         formik={formik}
         isDisabled={isDisabled}
         defaultEditOpen={defaultEditOpen}
+        graphToken={graphToken} 
+        instance={instance} 
+        accounts={accounts}
       />
 
       <UserInput
@@ -78,6 +108,9 @@ export default function MetaDataInput({ formik, isDisabled }) {
         formik={formik}
         isDisabled={isDisabled}
         defaultEditOpen={defaultEditOpen}
+        graphToken={graphToken} 
+        instance={instance} 
+        accounts={accounts}
       />
     </Box>
   );

@@ -8,14 +8,20 @@ import { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloak from "./keycloak";
 import ApolloLinkProvider from "./ApolloLinkProvider";
 import { BrowserRouter } from "react-router-dom";
+import { PublicClientApplication } from '@azure/msal-browser';
+import { MsalProvider } from '@azure/msal-react';
+import { msalConfig } from './components/utilities/graphAuthConfig';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+const msalInstance = new PublicClientApplication(msalConfig);
 root.render(
   <ReactKeycloakProvider authClient={keycloak}>
     <ApolloLinkProvider>
       <React.StrictMode>
         <BrowserRouter>
-          <App />
+          <MsalProvider instance={msalInstance}>
+            <App />
+          </MsalProvider>
         </BrowserRouter>
       </React.StrictMode>
     </ApolloLinkProvider>
