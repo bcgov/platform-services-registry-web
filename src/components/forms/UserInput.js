@@ -18,10 +18,10 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 
+// note that githubID was removed from here.
 const USER_BY_EMAIL = gql`
   query UserByEmail($email: EmailAddress!) {
     userByEmail(email: $email) {
-      githubId
       firstName
       lastName
       email
@@ -42,9 +42,19 @@ export default function UserInput({
 }) {
   const [edit, setEdit] = useState(defaultEditOpen);
   const [photoURL, setPhotoURL] = useState('');
+  const [IDIRUserFound, setIDIRUserFound ] = useState(false);
   //const debouncedGithubId = useDebounce(formik.values[contact]?.githubId, 500);
   const debouncedIdirSearch = useDebounce(formik.values[contact]?.IdirSearchField, 500);
   const email = formik.values[contact]?.email;
+
+  useEffect(() => {
+    // When the user types in the email field, call the Get User API Query
+    if (debouncedIdirSearch) {
+     getIDIRUser(debouncedIdirSearch);
+    } else {
+      setIDIRUserFound(false);
+    }
+  }, [debouncedIdirSearch]);
 
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
@@ -67,10 +77,8 @@ export default function UserInput({
     // Get ministry form string in form 'LastName, FirstName MINISTRY:DIVISION
     if (displayName && displayName.length > 0){
       const dividedString = displayName.split(/(\s+)/);
-      console.log(dividedString);
       if (dividedString[2]){
         const ministry = dividedString[dividedString.length - 1].split(':', 1)[0];
-        console.log(`Ministry: ${ministry}`);
         return ministry;
       }
     }
@@ -118,32 +126,34 @@ export default function UserInput({
           const data = await response.json();
           if (data.value.length > 0 && data.value[0].id) {
             setPhotoURL(await getUserPhoto(bearer, data.value[0].id));
-            console.log(JSON.stringify(data));
-           
             formik.setFieldValue(contact + ".firstName", data.value[0].givenName);
             formik.setFieldValue(contact + ".lastName", data.value[0].surname);
             formik.setFieldValue(contact + ".email", data.value[0].mail);
             formik.setFieldValue(contact + ".ministry", parseMinistryFromDisplayName(data.value[0].displayName));
+            validateIdirSearch(true);
           } else {
-            //TODO: throw error
-            console.warn("throw a real error, Alex (B)")
+            console.warn(`No IDIR users found from query "${query}"`);
+            validateIdirSearch(false);
           }
-        } else {
-          //TODO: throw error
-          console.warn("throw a real error, Alex (A)")
         }
       })
       .catch((error) => console.error(error));
     
   });
 
-  useEffect(() => {
-    // When the user types in the email field, call the Get User API Query
-    if (debouncedIdirSearch) {
-     // getUser({ variables: { email: debouncedEmail } });
-     getIDIRUser(debouncedIdirSearch);
+  const validateIdirSearch = ((userFound) => {
+    setIDIRUserFound(userFound);
+    if(!userFound){
+      resetFields();
     }
-  }, [debouncedIdirSearch]);
+  });
+
+  const resetFields = (() => {
+    formik.setFieldValue(contact + ".firstName", "");
+    formik.setFieldValue(contact + ".lastName", "");
+    formik.setFieldValue(contact + ".email", "");
+    formik.setFieldValue(contact + ".ministry", "");
+  });
 
   return (
     <Card sx={{ mt: 4, mb: 2 }}>
@@ -208,7 +218,7 @@ export default function UserInput({
                 disabled={isDisabled}
                 value={formik.values[contact]?.IdirSearchField}
                 onChange={formik.handleChange}
-                error={
+                errors={
                   formik.touched[contact]?.IdirSearchField &&
                   Boolean(formik.errors[contact]?.IdirSearchField)
                 }
@@ -237,26 +247,6 @@ export default function UserInput({
                 }
                 size="small"
               />
-
-              {/* <TextField
-                variant="standard"
-                id={contact + ".githubId"}
-                name={contact + ".githubId"}
-                label="Github ID"
-                disabled={isDisabled || !!data?.userByEmail?.githubId || !email}
-                value={formik.values[contact]?.githubId}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched[contact]?.githubId &&
-                  Boolean(formik.errors[contact]?.githubId)
-                }
-                helperText={
-                  formik.touched[contact]?.githubId &&
-                  formik.errors[contact]?.githubId
-                }
-                size="small"
-              /> */}
-
               <TextField
                 variant="standard"
                 id={contact + ".firstName"}
@@ -330,7 +320,7 @@ export default function UserInput({
           </div>
         </Stack>
       ) : null}
-      {data?.userByEmail ? (
+      {data?.userByEmail || IDIRUserFound ? (
         <Alert severity="success">
           {data?.userByEmail?.firstName} {data?.userByEmail?.lastName} is an
           existing user
