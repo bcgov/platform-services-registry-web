@@ -35,11 +35,14 @@ export default function UserInput({
   label,
   defaultEditOpen = true,
   formik,
-  isDisabled = false
+  isDisabled = false,
+  instance,
+  accounts,
+  graphToken
 }) {
   const [edit, setEdit] = useState(defaultEditOpen);
-
-  const debouncedGithubId = useDebounce(formik.values[contact]?.githubId, 500);
+  const [photoURL, setPhotoURL] = useState('');
+  //const debouncedGithubId = useDebounce(formik.values[contact]?.githubId, 500);
   const debouncedEmail = useDebounce(formik.values[contact]?.email, 500);
   const email = formik.values[contact]?.email;
 
@@ -59,11 +62,73 @@ export default function UserInput({
       }
     }
   });
+  async function getUserPhoto(bearer, userId) {
+    const url = `https://graph.microsoft.com/v1.0/users/${userId}/photo/$value`;
+    const headers = new Headers();
+    headers.append('ConsistencyLevel', 'eventual');
+    headers.append('Authorization', bearer);
+  
+    const response = await fetch(url, {
+      method: 'GET',
+      headers,
+    });
+    if (response.ok) {
+      return window.URL.createObjectURL(await response.blob());
+    }
+    return '';
+  }
+  const getIDIRUser = ((query) => {
+    const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${query}')
+  &$orderby=displayName&$count=true
+  &$top=1
+  &$select=id,
+  mail,
+  displayName,
+  givenName,
+  surname,
+  ministry`;
+    const headers = new Headers();
+    headers.append('ConsistencyLevel', 'eventual');
+    const bearer = `Bearer ${graphToken}`;
+    headers.append('Authorization', bearer);
+    const options = {
+      method: 'GET',
+      headers,
+    };
+
+    return fetch(url, options)
+      .then(async (response) => {
+        if (response.ok) {
+          const data = await response.json();
+          if (data.value.length > 0 && data.value[0].id) {
+            setPhotoURL(await getUserPhoto(bearer, data.value[0].id));
+            console.log(JSON.stringify(data));
+           
+            formik.setFieldValue(
+              contact + ".firstName",
+              data.value[0].givenName
+            );
+            formik.setFieldValue(contact + ".lastName", data.value[0].surname);
+            formik.setFieldValue(contact + ".email", data.value[0].id.email);
+            // TODO: parse ministry from displayname formik.setFieldValue(contact + ".ministry", 'CITZ'); //data.value[0].displayName);
+          } else {
+            //TODO: throw error
+            console.warn("throw a real error, Alex (B)")
+          }
+        } else {
+          //TODO: throw error
+          console.warn("throw a real error, Alex (A)")
+        }
+      })
+      .catch((error) => console.error(error));
+    
+  });
 
   useEffect(() => {
     // When the user types in the email field, call the Get User API Query
     if (debouncedEmail) {
-      getUser({ variables: { email: debouncedEmail } });
+     // getUser({ variables: { email: debouncedEmail } });
+     getIDIRUser(debouncedEmail);
     }
   }, [debouncedEmail]);
 
@@ -77,9 +142,7 @@ export default function UserInput({
       >
         <Avatar
           variant="rounded"
-          src={`https://github.com/${
-            debouncedGithubId !== "" ? debouncedGithubId : undefined
-          }.png`}
+          src={photoURL}
         />
         <Stack sx={{ width: "100%", ml: 2 }} spacing={0.5}>
           <Typography fontWeight={700}>{label}</Typography>
@@ -143,7 +206,7 @@ export default function UserInput({
                 size="small"
               />
 
-              <TextField
+              {/* <TextField
                 variant="standard"
                 id={contact + ".githubId"}
                 name={contact + ".githubId"}
@@ -160,7 +223,7 @@ export default function UserInput({
                   formik.errors[contact]?.githubId
                 }
                 size="small"
-              />
+              /> */}
 
               <TextField
                 variant="standard"
