@@ -20,6 +20,7 @@ export default function MetaDataInput({ formik, isDisabled }) {
   const [graphToken, setToken] = useState('');
   const { instance, accounts } = useMsal();
 
+  /* Whenever the keycloak value changes, we'll get a new Azure access token to make calls to the MS Graph API to search for IDIR users. */
   useEffect(() => {
     async function fetchGraphUserDelegateToken() {
       const request = {

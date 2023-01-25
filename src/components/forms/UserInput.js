@@ -43,7 +43,7 @@ export default function UserInput({
   const [edit, setEdit] = useState(defaultEditOpen);
   const [photoURL, setPhotoURL] = useState('');
   //const debouncedGithubId = useDebounce(formik.values[contact]?.githubId, 500);
-  const debouncedEmail = useDebounce(formik.values[contact]?.email, 500);
+  const debouncedIdirSearch = useDebounce(formik.values[contact]?.IdirSearchField, 500);
   const email = formik.values[contact]?.email;
 
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
@@ -51,7 +51,7 @@ export default function UserInput({
     onCompleted: (data) => {
       // Set the data fetched from the Get User API Query to the form fields
       if (data.userByEmail) {
-        formik.setFieldValue(contact + ".githubId", data.userByEmail.githubId);
+        // formik.setFieldValue(contact + ".githubId", data.userByEmail.githubId);
         formik.setFieldValue(
           contact + ".firstName",
           data.userByEmail.firstName
@@ -62,6 +62,22 @@ export default function UserInput({
       }
     }
   });
+
+  const parseMinistryFromDisplayName = ((displayName) => {
+    // Get ministry form string in form 'LastName, FirstName MINISTRY:DIVISION
+    if (displayName && displayName.length > 0){
+      const dividedString = displayName.split(/(\s+)/);
+      console.log(dividedString);
+      if (dividedString[2]){
+        const ministry = dividedString[dividedString.length - 1].split(':', 1)[0];
+        console.log(`Ministry: ${ministry}`);
+        return ministry;
+      }
+    }
+
+    return "";
+  });
+
   async function getUserPhoto(bearer, userId) {
     const url = `https://graph.microsoft.com/v1.0/users/${userId}/photo/$value`;
     const headers = new Headers();
@@ -77,6 +93,7 @@ export default function UserInput({
     }
     return '';
   }
+
   const getIDIRUser = ((query) => {
     const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${query}')
   &$orderby=displayName&$count=true
@@ -85,8 +102,7 @@ export default function UserInput({
   mail,
   displayName,
   givenName,
-  surname,
-  ministry`;
+  surname`;
     const headers = new Headers();
     headers.append('ConsistencyLevel', 'eventual');
     const bearer = `Bearer ${graphToken}`;
@@ -104,13 +120,10 @@ export default function UserInput({
             setPhotoURL(await getUserPhoto(bearer, data.value[0].id));
             console.log(JSON.stringify(data));
            
-            formik.setFieldValue(
-              contact + ".firstName",
-              data.value[0].givenName
-            );
+            formik.setFieldValue(contact + ".firstName", data.value[0].givenName);
             formik.setFieldValue(contact + ".lastName", data.value[0].surname);
-            formik.setFieldValue(contact + ".email", data.value[0].id.email);
-            // TODO: parse ministry from displayname formik.setFieldValue(contact + ".ministry", 'CITZ'); //data.value[0].displayName);
+            formik.setFieldValue(contact + ".email", data.value[0].mail);
+            formik.setFieldValue(contact + ".ministry", parseMinistryFromDisplayName(data.value[0].displayName));
           } else {
             //TODO: throw error
             console.warn("throw a real error, Alex (B)")
@@ -126,11 +139,11 @@ export default function UserInput({
 
   useEffect(() => {
     // When the user types in the email field, call the Get User API Query
-    if (debouncedEmail) {
+    if (debouncedIdirSearch) {
      // getUser({ variables: { email: debouncedEmail } });
-     getIDIRUser(debouncedEmail);
+     getIDIRUser(debouncedIdirSearch);
     }
-  }, [debouncedEmail]);
+  }, [debouncedIdirSearch]);
 
   return (
     <Card sx={{ mt: 4, mb: 2 }}>
@@ -187,6 +200,25 @@ export default function UserInput({
                 width: "90%"
               }}
             >
+              <TextField
+                variant="standard"
+                id={contact + ".IdirSearchField"}
+                name={contact + ".IdirSearchField"}
+                label="Search for IDIR contact by email"
+                disabled={isDisabled}
+                value={formik.values[contact]?.IdirSearchField}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched[contact]?.IdirSearchField &&
+                  Boolean(formik.errors[contact]?.IdirSearchField)
+                }
+                helperText={
+                  formik.touched[contact]?.IdirSearchField &&
+                  formik.errors[contact]?.IdirSearchField
+                }
+                size="small"
+              />
+
               <TextField
                 variant="standard"
                 id={contact + ".email"}
