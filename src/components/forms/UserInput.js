@@ -43,8 +43,8 @@ export default function UserInput({
   const [edit, setEdit] = useState(defaultEditOpen);
   const [photoURL, setPhotoURL] = useState('');
   const [IDIRUserFound, setIDIRUserFound ] = useState(false);
-  //const debouncedGithubId = useDebounce(formik.values[contact]?.githubId, 500);
-  const debouncedIdirSearch = useDebounce(formik.values[contact]?.IdirSearchField, 500);
+  const [searchTerm, setSearchTerm] = useState("")
+  const debouncedIdirSearch = useDebounce(searchTerm, 500);
   const email = formik.values[contact]?.email;
 
   useEffect(() => {
@@ -73,8 +73,8 @@ export default function UserInput({
     }
   });
 
+  // Get ministry form string in form 'LastName, FirstName MINISTRY:DIVISION
   const parseMinistryFromDisplayName = ((displayName) => {
-    // Get ministry form string in form 'LastName, FirstName MINISTRY:DIVISION
     if (displayName && displayName.length > 0){
       const dividedString = displayName.split(/(\s+)/);
       if (dividedString[2]){
@@ -153,6 +153,7 @@ export default function UserInput({
     formik.setFieldValue(contact + ".lastName", "");
     formik.setFieldValue(contact + ".email", "");
     formik.setFieldValue(contact + ".ministry", "");
+    setPhotoURL("");
   });
 
   return (
@@ -212,20 +213,11 @@ export default function UserInput({
             >
               <TextField
                 variant="standard"
-                id={contact + ".IdirSearchField"}
-                name={contact + ".IdirSearchField"}
+                id={"IdirSearchField"}
+                name={"IdirSearchField"}
                 label="Search for IDIR contact by email"
                 disabled={isDisabled}
-                value={formik.values[contact]?.IdirSearchField}
-                onChange={formik.handleChange}
-                errors={
-                  formik.touched[contact]?.IdirSearchField &&
-                  Boolean(formik.errors[contact]?.IdirSearchField)
-                }
-                helperText={
-                  formik.touched[contact]?.IdirSearchField &&
-                  formik.errors[contact]?.IdirSearchField
-                }
+                onChange={(e) => setSearchTerm(e.target.value)}
                 size="small"
               />
 
@@ -244,6 +236,24 @@ export default function UserInput({
                 helperText={
                   formik.touched[contact]?.email &&
                   formik.errors[contact]?.email
+                }
+                size="small"
+              />
+              <TextField
+                variant="standard"
+                id={contact + ".githubId"}
+                name={contact + ".githubId"}
+                label="Github ID"
+                disabled={isDisabled || !!data?.userByEmail?.githubId || !email}
+                value={formik.values[contact]?.githubId}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched[contact]?.githubId &&
+                  Boolean(formik.errors[contact]?.githubId)
+                }
+                helperText={
+                  formik.touched[contact]?.githubId &&
+                  formik.errors[contact]?.githubId
                 }
                 size="small"
               />
