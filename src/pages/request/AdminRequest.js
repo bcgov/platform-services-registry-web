@@ -7,7 +7,7 @@ import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
   projectInitialValues as initialValues,
-  replaceNullsWithEmptyString
+  replaceNullsWithEmptyString,
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/forms/CommonComponents";
 import { Button } from "@mui/material";
@@ -17,6 +17,9 @@ import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import Container from "../../components/common/Container";
+import Users from "../../components/forms/Users";
+import Divider from "@mui/material/Divider";
+import Quotas from "../../components/forms/Quotas";
 
 const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
@@ -112,7 +115,7 @@ export default function AdminRequest() {
   const toastId = useRef(null);
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
-    variables: { requestId: id }
+    variables: { requestId: id },
   });
 
   const { project, requestedProject, ...request } =
@@ -120,17 +123,17 @@ export default function AdminRequest() {
 
   const [
     privateCloudRequestDecision,
-    { data: decisionData, loading: decisionLoading, error: decisionError }
+    { data: decisionData, loading: decisionLoading, error: decisionError },
   ] = useMutation(MAKE_REQUEST_DECISION, {
     refetchQueries: [
       { query: USER_ACTIVE_REQUESTS },
-      { query: ALL_ACTIVE_REQUESTS }
-    ]
+      { query: ALL_ACTIVE_REQUESTS },
+    ],
   });
 
   const makeDecisionOnClick = (decision) => {
     toastId.current = toast("Your decision has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
     privateCloudRequestDecision({
       variables: { requestId: id, decision },
@@ -139,7 +142,7 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
       onCompleted: () => {
@@ -147,9 +150,9 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: "Decision successful",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000
+          autoClose: 5000,
         });
-      }
+      },
     });
   };
 
@@ -157,7 +160,7 @@ export default function AdminRequest() {
     initialValues,
     onSubmit: (values) => {
       alert(JSON.stringify(values, null, 2));
-    }
+    },
   });
 
   useEffect(() => {
@@ -169,14 +172,13 @@ export default function AdminRequest() {
 
   const name =
     request?.type === "CREATE" ? requestedProject?.name : project?.name;
-  const decisionAlreadyMade =
-    !requestedProject || request?.decisionStatus !== "PENDING";
+  const isDisabled = !requestedProject || request?.decisionStatus !== "PENDING";
 
   return (
     <div>
       <NavToolbar path={"request"} title={name}>
         <Button
-          disabled={decisionAlreadyMade}
+          disabled={isDisabled}
           sx={{ mr: 1 }}
           onClick={() => makeDecisionOnClick("APPROVED")}
           variant="outlined"
@@ -184,7 +186,7 @@ export default function AdminRequest() {
           Approve
         </Button>
         <Button
-          disabled={decisionAlreadyMade}
+          disabled={isDisabled}
           sx={{ mr: 1 }}
           onClick={() => makeDecisionOnClick("REJECTED")}
           variant="outlined"
@@ -193,27 +195,19 @@ export default function AdminRequest() {
         </Button>
       </NavToolbar>
       <Container>
-        <MetaDataInput formik={formik} isDisabled={true} />
-        <div >
+        <MetaDataInput formik={formik} isDisabled={isDisabled} />
+        <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+        <div>
           <div style={{ display: "flex" }}>
-            <MinistryInput formik={formik} isDisabled={true} />
+            <MinistryInput formik={formik} isDisabled={isDisabled} />
             <ClusterInput formik={formik} isDisabled={true} />
           </div>
-          <div>
-            <QuotaInput
-              nameSpace={"production"}
-              formik={formik}
-              isDisabled={true}
-            />
-            <QuotaInput nameSpace={"test"} formik={formik} isDisabled={true} />
-            <QuotaInput nameSpace={"tools"} formik={formik} isDisabled={true} />
-            <QuotaInput
-              nameSpace={"development"}
-              formik={formik}
-              isDisabled={true}
-            />
-          </div>
-          <CommonComponents formik={formik} isDisabled={true} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <Users formik={formik} isDisabled={false} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <Quotas formik={formik} isDisabled={isDisabled} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <CommonComponents formik={formik} isDisabled={isDisabled} />
         </div>
       </Container>
     </div>

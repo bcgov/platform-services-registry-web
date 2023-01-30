@@ -78,13 +78,12 @@ export default function CommonComponents({ formik, isDisabled }) {
   }, [formik.values.commonComponents]);
 
   return (
-    <Box sx={{ mt: 4, mb: 4 }}>
-      <div>
+    <Box sx={{ mt: 6, mb: 4 }}>
+      <div >
         <TitleTypography>Common Components</TitleTypography>
-        <Typography sx={{ mb: 4 }} color="text.primary">
-          Tell us about the <b>Product Owner (PO).</b> This is typically the
-          business owner of the application. We will use this information to
-          contact them with any non-technical questions.
+        <Typography sx={{ mb: 2 }} color="text.primary">
+          Please indicate what services you expect to utilize as part of your
+          product?
         </Typography>
       </div>
       <FormControl>

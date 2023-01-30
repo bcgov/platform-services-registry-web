@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
 import ClusterInput from "../../components/forms/ClusterInput";
-import QuotaInput from "../../components/forms/QuotaInput";
 import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
@@ -13,6 +12,9 @@ import CommonComponents from "../../components/forms/CommonComponents";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import Container from "../../components/common/Container";
+import Users from "../../components/forms/Users";
+import Divider from "@mui/material/Divider";
+import Quotas from "../../components/forms/Quotas";
 
 const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
@@ -113,32 +115,25 @@ export default function UserRequest() {
 
   const name =
     request?.type === "CREATE" ? requestedProject?.name : project?.name;
+  const isDisabled = !requestedProject || request?.decisionStatus !== "PENDING";
 
   return (
     <div>
       <NavToolbar path={"request"} title={name}></NavToolbar>
       <Container>
-        <MetaDataInput formik={formik} isDisabled={true} />
+        <MetaDataInput formik={formik} isDisabled={isDisabled} />
+        <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
         <div>
           <div style={{ display: "flex" }}>
-            <MinistryInput formik={formik} isDisabled={true} />
+            <MinistryInput formik={formik} isDisabled={isDisabled} />
             <ClusterInput formik={formik} isDisabled={true} />
           </div>
-          <div>
-            <QuotaInput
-              nameSpace={"production"}
-              formik={formik}
-              isDisabled={true}
-            />
-            <QuotaInput nameSpace={"test"} formik={formik} isDisabled={true} />
-            <QuotaInput nameSpace={"tools"} formik={formik} isDisabled={true} />
-            <QuotaInput
-              nameSpace={"development"}
-              formik={formik}
-              isDisabled={true}
-            />
-          </div>
-          <CommonComponents formik={formik} isDisabled={true} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <Users formik={formik} isDisabled={false} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <Quotas formik={formik} isDisabled={isDisabled} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <CommonComponents formik={formik} isDisabled={isDisabled} />
         </div>
       </Container>
     </div>

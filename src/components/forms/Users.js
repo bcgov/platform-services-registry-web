@@ -9,7 +9,7 @@ const Users = ({ formik, isDisabled }) => {
 
   const defaultEditOpen = pathname.includes("create");
   return (
-    <Box sx={{ display: "flex", mt: 6, mb: 6 }}>
+    <Box sx={{ display: "flex", mt: 6, mb: 7 }}>
       <Box sx={{ display: "flex", flexDirection: "column", mr: 14 }}>
         <div style={{ width: 500 }}>
           <TitleTypography>Project Owner</TitleTypography>
@@ -32,10 +32,10 @@ const Users = ({ formik, isDisabled }) => {
         <div style={{ width: 600 }}>
           <TitleTypography>Technical Leads</TitleTypography>
           <Typography sx={{ mb: 4 }} color="text.priamry">
-            Tell us about the <b>Technical Lead (TL).</b> This is typically the
-            DevOps specialist. We will use this information to contact them with
+            This is typically the <b>DevOps specialist.</b> We use this information to contact them with
             technical questions or notify them about platform events. You
-            require at least <b>one</b> Technical Lead.
+            require a <b>Primary Technical Lead</b>, a{" "}
+            <b>Secondary Technical Lead</b> is optional.
           </Typography>
         </div>
 

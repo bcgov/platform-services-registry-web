@@ -93,7 +93,7 @@ export default function UserInput({
             {data?.userByEmail?.firstName} {data?.userByEmail?.lastName}
           </Typography>
         </Stack>
-        {/* {!edit ? (
+        {!edit ? (
           <IconButton
             onClick={() => setEdit(true)}
             sx={{ width: 40, height: 40, p: 1 }}
@@ -107,7 +107,7 @@ export default function UserInput({
           >
             <KeyboardArrowUpRoundedIcon sx={{ fontSize: 17 }} />
           </IconButton>
-        )} */}
+        )}
       </Box>
       <Divider />
       {edit ? (
@@ -147,7 +147,7 @@ export default function UserInput({
               variant="standard"
               id={contact + ".githubId"}
               name={contact + ".githubId"}
-              label="Github ID"
+              label="Github Username"
               disabled={isDisabled || !!data?.userByEmail?.githubId || !email}
               value={formik.values[contact]?.githubId}
               onChange={formik.handleChange}

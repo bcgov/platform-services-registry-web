@@ -10,7 +10,6 @@ import {
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
 import ClusterInput from "../../components/forms/ClusterInput";
-import QuotaInput from "../../components/forms/QuotaInput";
 import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
@@ -30,6 +29,9 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Button, IconButton } from "@mui/material";
 import ActiveRequestText from "../../components/common/ActiveRequestText";
+import Users from "../../components/forms/Users";
+import Divider from "@mui/material/Divider";
+import Quotas from "../../components/forms/Quotas";
 
 const ADMIN_PROJECT = gql`
   query Query($projectId: ID!) {
@@ -157,11 +159,12 @@ const validationSchema = yup.object().shape({
     .object(CreateUserInputSchema)
     .nullable()
     .transform((value) => (value?.email === "" ? null : value)),
-  commonComponents: yup
-    .object(CommonComponentsInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
+  // commonComponents: yup
+  //   .object(CommonComponentsInputSchema)
+  //   .transform((value, original) => {
+  //     return replaceEmptyStringWithNull(value);
+  //   }),
+  commonComponents: CommonComponentsInputSchema(),
   productionQuota: yup.object(QuotaInputSchema).required(),
   developmentQuota: yup.object(QuotaInputSchema).required(),
   toolsQuota: yup.object(QuotaInputSchema).required(),
@@ -273,7 +276,7 @@ export default function AdminProject({ requestsRoute }) {
   }, [data]);
 
   const name = data?.privateCloudProjectById?.name;
-  const hasActiveRequest = !!data?.privateCloudProjectById?.activeEditRequest;
+  const isDisabled = !!data?.privateCloudProjectById?.activeEditRequest;
 
   return (
     <div>
@@ -298,48 +301,32 @@ export default function AdminProject({ requestsRoute }) {
           </Button>
           <IconButton
             sx={{ mr: 1 }}
-            disabled={hasActiveRequest}
+            disabled={isDisabled}
             onClick={deleteOnClick}
             aria-label="delete"
           >
             <DeleteForeverIcon />
           </IconButton>
         </NavToolbar>
-        {hasActiveRequest ? (
+        {isDisabled ? (
           <ActiveRequestText
             requestId={data?.privateCloudProjectById?.activeEditRequest?.id}
           />
         ) : null}
         <Container>
-          <MetaDataInput formik={formik} isDisabled={hasActiveRequest} />
+          <MetaDataInput formik={formik} isDisabled={isDisabled} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>
             <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={hasActiveRequest} />
+              <MinistryInput formik={formik} isDisabled={isDisabled} />
               <ClusterInput formik={formik} isDisabled={true} />
             </div>
-            <div>
-              <QuotaInput
-                nameSpace={"production"}
-                formik={formik}
-                isDisabled={hasActiveRequest}
-              />
-              <QuotaInput
-                nameSpace={"test"}
-                formik={formik}
-                isDisabled={hasActiveRequest}
-              />
-              <QuotaInput
-                nameSpace={"tools"}
-                formik={formik}
-                isDisabled={hasActiveRequest}
-              />
-              <QuotaInput
-                nameSpace={"development"}
-                formik={formik}
-                isDisabled={hasActiveRequest}
-              />
-            </div>
-            <CommonComponents formik={formik} isDisabled={hasActiveRequest} />
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            <Users formik={formik} isDisabled={false} />
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            <Quotas formik={formik} isDisabled={isDisabled} />
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            <CommonComponents formik={formik} isDisabled={isDisabled} />
           </div>
         </Container>
       </form>
