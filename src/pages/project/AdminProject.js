@@ -312,7 +312,7 @@ export default function AdminProject({ requestsRoute }) {
         ) : null}
         <Container>
           <MetaDataInput formik={formik} isDisabled={hasActiveRequest} />
-          <div style={{ marginLeft: 50 }}>
+          <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={hasActiveRequest} />
               <ClusterInput formik={formik} isDisabled={true} />

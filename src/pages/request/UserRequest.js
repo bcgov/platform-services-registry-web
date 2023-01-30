@@ -7,7 +7,7 @@ import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
   projectInitialValues as initialValues,
-  replaceNullsWithEmptyString
+  replaceNullsWithEmptyString,
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/forms/CommonComponents";
 import { useParams } from "react-router-dom";
@@ -94,14 +94,14 @@ export default function UserRequest() {
   const { id } = useParams();
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
-    variables: { requestId: id }
+    variables: { requestId: id },
   });
 
   const { project, requestedProject, ...request } =
     data?.userPrivateCloudActiveRequestById || {};
 
   const formik = useFormik({
-    initialValues
+    initialValues,
   });
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export default function UserRequest() {
       <NavToolbar path={"request"} title={name}></NavToolbar>
       <Container>
         <MetaDataInput formik={formik} isDisabled={true} />
-        <div style={{ marginLeft: 50 }}>
+        <div>
           <div style={{ display: "flex" }}>
             <MinistryInput formik={formik} isDisabled={true} />
             <ClusterInput formik={formik} isDisabled={true} />

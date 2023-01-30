@@ -14,6 +14,11 @@ import SearchProvider from "./providers/search";
 import FilterProvider from "./providers/filter";
 
 const theme = createTheme({
+  typography: {
+    // In Chinese and Japanese the characters are usually larger,
+    // so a smaller fontsize may be appropriate.
+    fontSize: 15,
+  },
   components: {
     MuiTextField: {
       styleOverrides: {

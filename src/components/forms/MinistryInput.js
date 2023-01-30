@@ -7,14 +7,20 @@ import { ministries } from "../common/Constants";
 import TitleTypography from "../common/TitleTypography";
 import FormHelperText from "@mui/material/FormHelperText";
 import RequiredField from "../common/RequiredField";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 const MinistryInput = ({ formik, isDisabled }) => {
   return (
-    <div>
-      <TitleTypography>Ministry</TitleTypography>
-      <FormControl size="small" sx={{ minWidth: 250, mt: 2, mr: 3 }}>
-        <InputLabel id="demo-simple-select-required-label">Ministry</InputLabel>
-
+    <Box sx={{ mb: 5, mt: 5, mr: 10, width: 250 }}>
+      <div>
+        <TitleTypography>Ministry</TitleTypography>
+        <Typography sx={{ mb: 2 }} color="text.primary">
+          Select the government ministry that this project belongs to.
+        </Typography>
+      </div>
+      <FormControl sx={{ width: 250, mt: 1}} size="small">
+        <InputLabel id="ministry-label">Ministry</InputLabel>
         <Select
           id="select-ministry"
           name="ministry"
@@ -35,7 +41,7 @@ const MinistryInput = ({ formik, isDisabled }) => {
           {formik.touched.ministry && <RequiredField />}
         </FormHelperText>
       </FormControl>
-    </div>
+    </Box>
   );
 };
 

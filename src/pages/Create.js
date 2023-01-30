@@ -23,6 +23,8 @@ import { USER_ACTIVE_REQUESTS } from "./requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "./requests/AdminRequests";
 import { toast } from "react-toastify";
 import Container from "../components/common/Container";
+import Users from "../components/forms/Users";
+import Divider from "@mui/material/Divider";
 
 const CREATE_USER_PROJECT = gql`
   mutation PrivateCloudProjectRequest(
@@ -96,9 +98,9 @@ export default function Create({ requestsRoute }) {
       });
 
       console.log("Values", values);
-      console.log("X")
+      console.log("X");
       const variables = validationSchema.cast(values);
-      console.log("Y")
+      console.log("Y");
       privateCloudProjectRequest({
         variables,
         onError: (error) => {
@@ -123,7 +125,6 @@ export default function Create({ requestsRoute }) {
       });
     },
   });
-  console.log("Values", formik.values);
 
   return (
     <div>
@@ -135,13 +136,15 @@ export default function Create({ requestsRoute }) {
         </NavToolbar>
         <Container>
           <MetaDataInput formik={formik} isDisabled={false} />
-          <div style={{ marginLeft: 50 }}>
-            <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={false} />
-              <ClusterInput formik={formik} isDisabled={false} />
-            </div>
-            <CommonComponents formik={formik} isDisabled={false} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <div style={{ display: "flex" }}>
+            <MinistryInput formik={formik} isDisabled={false} />
+            <ClusterInput formik={formik} isDisabled={false} />
           </div>
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <Users formik={formik} isDisabled={false} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <CommonComponents formik={formik} isDisabled={false} />
         </Container>
       </form>
     </div>

@@ -194,7 +194,7 @@ export default function AdminRequest() {
       </NavToolbar>
       <Container>
         <MetaDataInput formik={formik} isDisabled={true} />
-        <div style={{ marginLeft: 50 }}>
+        <div >
           <div style={{ display: "flex" }}>
             <MinistryInput formik={formik} isDisabled={true} />
             <ClusterInput formik={formik} isDisabled={true} />

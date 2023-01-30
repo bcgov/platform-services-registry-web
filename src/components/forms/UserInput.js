@@ -70,7 +70,7 @@ export default function UserInput({
   }, [debouncedEmail]);
 
   return (
-    <Card sx={{ mt: 4, mb: 2 }}>
+    <Card sx={{  mr: 8, width: 400 }}>
       <Box
         sx={{
           p: 2,
@@ -93,7 +93,7 @@ export default function UserInput({
             {data?.userByEmail?.firstName} {data?.userByEmail?.lastName}
           </Typography>
         </Stack>
-        {!edit ? (
+        {/* {!edit ? (
           <IconButton
             onClick={() => setEdit(true)}
             sx={{ width: 40, height: 40, p: 1 }}
@@ -107,7 +107,7 @@ export default function UserInput({
           >
             <KeyboardArrowUpRoundedIcon sx={{ fontSize: 17 }} />
           </IconButton>
-        )}
+        )} */}
       </Box>
       <Divider />
       {edit ? (
@@ -117,114 +117,110 @@ export default function UserInput({
           justifyContent="space-between"
           sx={{ px: 2, py: 1, bgcolor: "background.default" }}
         >
-          <div>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                ml: 2,
-                width: "90%",
-              }}
-            >
-              <TextField
-                variant="standard"
-                id={contact + ".email"}
-                name={contact + ".email"}
-                label="Email"
-                disabled={isDisabled}
-                value={formik.values[contact]?.email}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              ml: 2,
+              width: "75%",
+            }}
+          >
+            <TextField
+              sx={{ mb: 2 }}
+              variant="standard"
+              id={contact + ".email"}
+              name={contact + ".email"}
+              label="Email"
+              disabled={isDisabled}
+              value={formik.values[contact]?.email}
+              onChange={formik.handleChange}
+              error={
+                formik.touched[contact]?.email &&
+                Boolean(formik.errors[contact]?.email)
+              }
+              helperText={formik.touched[contact]?.email && <RequiredField />}
+              size="small"
+            />
+
+            <TextField
+              sx={{ mb: 2 }}
+              variant="standard"
+              id={contact + ".githubId"}
+              name={contact + ".githubId"}
+              label="Github ID"
+              disabled={isDisabled || !!data?.userByEmail?.githubId || !email}
+              value={formik.values[contact]?.githubId}
+              onChange={formik.handleChange}
+              error={
+                formik.touched[contact]?.githubId &&
+                Boolean(formik.errors[contact]?.githubId)
+              }
+              helperText={formik.touched[contact]?.email && <RequiredField />}
+              size="small"
+            />
+
+            <TextField
+              sx={{ mb: 2 }}
+              variant="standard"
+              id={contact + ".firstName"}
+              name={contact + ".firstName"}
+              label="First Name"
+              disabled={isDisabled || !!data?.userByEmail?.firstName || !email}
+              value={formik.values[contact]?.firstName}
+              onChange={formik.handleChange}
+              error={
+                formik.touched[contact]?.firstName &&
+                Boolean(formik.errors[contact]?.firstName)
+              }
+              helperText={formik.touched[contact]?.email && <RequiredField />}
+              size="small"
+            />
+
+            <TextField
+              sx={{ mb: 2 }}
+              variant="standard"
+              id={contact + ".lastName"}
+              name={contact + ".lastName"}
+              label="Last Name"
+              disabled={isDisabled || !!data?.userByEmail?.lastName || !email}
+              value={formik.values[contact]?.lastName}
+              onChange={formik.handleChange}
+              error={
+                formik.touched[contact]?.lastName &&
+                Boolean(formik.errors[contact]?.lastName)
+              }
+              helperText={formik.touched[contact]?.email && <RequiredField />}
+              size="small"
+            />
+
+            <FormControl sx={{ minWidth: 250, mt: 1, mb: 3 }} size="small">
+              <InputLabel id="demo-simple-select-required-label">
+                Ministry
+              </InputLabel>
+              <Select
+                id={contact + ".ministry"}
+                name={contact + ".ministry"}
+                label="Ministry"
+                disabled={isDisabled || !!data?.userByEmail?.ministry || !email}
+                value={formik.values[contact]?.ministry}
                 onChange={formik.handleChange}
                 error={
-                  formik.touched[contact]?.email &&
-                  Boolean(formik.errors[contact]?.email)
+                  formik.touched[contact]?.ministry &&
+                  Boolean(formik.errors[contact]?.ministry)
                 }
                 helperText={formik.touched[contact]?.email && <RequiredField />}
-                size="small"
-              />
-
-              <TextField
-                variant="standard"
-                id={contact + ".githubId"}
-                name={contact + ".githubId"}
-                label="Github ID"
-                disabled={isDisabled || !!data?.userByEmail?.githubId || !email}
-                value={formik.values[contact]?.githubId}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched[contact]?.githubId &&
-                  Boolean(formik.errors[contact]?.githubId)
-                }
-                helperText={formik.touched[contact]?.email && <RequiredField />}
-                size="small"
-              />
-
-              <TextField
-                variant="standard"
-                id={contact + ".firstName"}
-                name={contact + ".firstName"}
-                label="First Name"
-                disabled={
-                  isDisabled || !!data?.userByEmail?.firstName || !email
-                }
-                value={formik.values[contact]?.firstName}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched[contact]?.firstName &&
-                  Boolean(formik.errors[contact]?.firstName)
-                }
-                helperText={formik.touched[contact]?.email && <RequiredField />}
-                size="small"
-              />
-
-              <TextField
-                variant="standard"
-                id={contact + ".lastName"}
-                name={contact + ".lastName"}
-                label="Last Name"
-                disabled={isDisabled || !!data?.userByEmail?.lastName || !email}
-                value={formik.values[contact]?.lastName}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched[contact]?.lastName &&
-                  Boolean(formik.errors[contact]?.lastName)
-                }
-                helperText={formik.touched[contact]?.email && <RequiredField />}
-                size="small"
-              />
-
-              <FormControl sx={{ minWidth: 250, mt: 1, mb: 3 }} size="small">
-                <InputLabel id="demo-simple-select-required-label">
-                  Ministry
-                </InputLabel>
-                <Select
-                  id={contact + ".ministry"}
-                  name={contact + ".ministry"}
-                  label="Ministry"
-                  disabled={
-                    isDisabled || !!data?.userByEmail?.ministry || !email
-                  }
-                  value={formik.values[contact]?.ministry}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched[contact]?.ministry &&
-                    Boolean(formik.errors[contact]?.ministry)
-                  }
-                  helperText={
-                    formik.touched[contact]?.email && <RequiredField />
-                  }
-                >
-                  {ministries.map((ministryOption) => (
-                    <MenuItem key={ministryOption} value={ministryOption}>
-                      {ministryOption}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText>
-                  {formik.touched[contact]?.email && <RequiredField />}
-                </FormHelperText>
-              </FormControl>
-            </Box>
-          </div>
+              >
+                {ministries.map((ministryOption) => (
+                  <MenuItem key={ministryOption} value={ministryOption}>
+                    {ministryOption}
+                  </MenuItem>
+                ))}
+              </Select>
+              <FormHelperText>
+                {formik.touched[contact]?.email && <RequiredField />}
+              </FormHelperText>
+            </FormControl>
+          </Box>
         </Stack>
       ) : null}
       {data?.userByEmail ? (

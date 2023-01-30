@@ -3,7 +3,6 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import { Typography } from "@mui/material";
 import styled from "styled-components";
 import Box from "@mui/material/Box";
@@ -58,15 +57,6 @@ const StyledCheckboxContainer = styled.div`
   align-items: flex-start;
 `;
 
-const StyledContainer = styled.div`
-  padding-bottom: 25px;
-  max-width: 850px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-`;
-
 export default function CommonComponents({ formik, isDisabled }) {
   const [dirty, setDirty] = useState(false);
 
@@ -87,15 +77,16 @@ export default function CommonComponents({ formik, isDisabled }) {
     setDirty(values.length !== 0);
   }, [formik.values.commonComponents]);
 
-  // console.log("Errors");
-  // console.log(formik.errors);
-
-  // console.log("Values ");
-  // console.log(formik.values);
-
   return (
-    <Box sx={{ mt: 2 }}>
-      <TitleTypography>Common Components</TitleTypography>
+    <Box sx={{ mt: 4, mb: 4 }}>
+      <div>
+        <TitleTypography>Common Components</TitleTypography>
+        <Typography sx={{ mb: 4 }} color="text.primary">
+          Tell us about the <b>Product Owner (PO).</b> This is typically the
+          business owner of the application. We will use this information to
+          contact them with any non-technical questions.
+        </Typography>
+      </div>
       <FormControl>
         {commonComponents.map(({ name, description }) => (
           <div key={name} style={{ marginBottom: "10px" }}>
