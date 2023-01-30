@@ -2,7 +2,7 @@ import * as yup from "yup";
 import {
   CreateUserInputSchema,
   CommonComponentsInputSchema,
-  QuotaInputSchema
+  QuotaInputSchema,
 } from "../../__generated__/resolvers-types";
 
 export const metaDataSchema = {
@@ -20,10 +20,10 @@ export const metaDataSchema = {
     .boolean()
     .when("secondaryTechnicalLead", {
       is: (val) => val != null,
-      then: yup.boolean().required()
+      then: yup.boolean().required(),
     }),
   ministry: yup.string().required(),
-  cluster: yup.string().required()
+  cluster: yup.string().required(),
 };
 
 export const customQuotaSchema = {
@@ -36,7 +36,7 @@ export const customQuotaSchema = {
   storageBackup: yup.number().required().positive().integer(),
   storageCapacity: yup.number().required().positive().integer(),
   storagePvcCount: yup.number().required().positive().integer(),
-  snapshotCount: yup.number().required().positive().integer()
+  snapshotCount: yup.number().required().positive().integer(),
 };
 
 export const quotaSchema = {
@@ -51,7 +51,7 @@ export const quotaSchema = {
   testStorage: yup.string().required(),
   toolsCpu: yup.string().required(),
   toolsMemory: yup.string().required(),
-  toolsStorage: yup.string().required()
+  toolsStorage: yup.string().required(),
 };
 
 export const commonComponentsSchema = {
@@ -65,7 +65,7 @@ export const commonComponentsSchema = {
   publishing: yup.string().nullable(),
   businessIntelligence: yup.string().nullable(),
   other: yup.string().nullable(),
-  noServices: yup.boolean().required()
+  noServices: yup.boolean().required(),
 };
 
 export const projectFormSchema = yup
@@ -88,7 +88,7 @@ export const userProjectToFormData = (userPrivateCloudProject) => {
     description,
     ministry,
     cluster,
-    commonComponents
+    commonComponents,
   } = userPrivateCloudProject;
 
   return {
@@ -150,7 +150,7 @@ export const userProjectToFormData = (userPrivateCloudProject) => {
         ".",
         "_"
       ),
-    toolsStorage: `STORAGE_${toolsQuota.storage.file}`.replaceAll(".", "_")
+    toolsStorage: `STORAGE_${toolsQuota.storage.file}`.replaceAll(".", "_"),
   };
 };
 
@@ -191,7 +191,7 @@ export const formDataToUserProject = (data, dirtyFields) => {
     endUserNotificationAndSubscription,
     publishing,
     businessIntelligence,
-    other
+    other,
   } = changedFields;
 
   // const selectedCommonComponents = Object.fromEntries(
@@ -205,7 +205,7 @@ export const formDataToUserProject = (data, dirtyFields) => {
     primaryTechnicalLead,
     secondaryTechnicalLead,
     ministry,
-    cluster
+    cluster,
   };
 
   const commonComponents = {
@@ -218,36 +218,36 @@ export const formDataToUserProject = (data, dirtyFields) => {
     endUserNotificationAndSubscription,
     publishing,
     businessIntelligence,
-    other
+    other,
   };
 
   const quota = {
     productionQuota: {
       cpu: productionCpu,
       memory: productionMemory,
-      storage: productionStorage
+      storage: productionStorage,
     },
     developmentQuota: {
       cpu: developmentCpu,
       memory: developmentMemory,
-      storage: developmentStorage
+      storage: developmentStorage,
     },
     testQuota: {
       cpu: testCpu,
       memory: testMemory,
-      storage: testStorage
+      storage: testStorage,
     },
     toolsQuota: {
       cpu: toolsCpu,
       memory: toolsMemory,
-      storage: toolsStorage
-    }
+      storage: toolsStorage,
+    },
   };
 
   return {
     metaData,
     quota,
-    commonComponents
+    commonComponents,
   };
 };
 
@@ -274,21 +274,21 @@ export const createProjectInputInitalValues = {
     lastName: "",
     email: "",
     ministry: "",
-    githubId: ""
+    githubId: "",
   },
   primaryTechnicalLead: {
     firstName: "",
     lastName: "",
     email: "",
     ministry: "",
-    githubId: ""
+    githubId: "",
   },
   secondaryTechnicalLead: {
     firstName: "",
     lastName: "",
     email: "",
     ministry: "",
-    githubId: ""
+    githubId: "",
   },
   ministry: "",
   cluster: "",
@@ -303,36 +303,35 @@ export const createProjectInputInitalValues = {
     publishing: "",
     businessIntelligence: "",
     other: "",
-    noServices: ""
-  }
+  },
 };
 
 const quotaInitialValues = {
   productionQuota: {
     cpu: "",
     memory: "",
-    storage: ""
+    storage: "",
   },
   developmentQuota: {
     cpu: "",
     memory: "",
-    storage: ""
+    storage: "",
   },
   testQuota: {
     cpu: "",
     memory: "",
-    storage: ""
+    storage: "",
   },
   toolsQuota: {
     cpu: "",
     memory: "",
-    storage: ""
-  }
+    storage: "",
+  },
 };
 
 export const projectInitialValues = {
   ...createProjectInputInitalValues,
-  ...quotaInitialValues
+  ...quotaInitialValues,
 };
 
 const customQuotaInitialValues = {
@@ -342,7 +341,7 @@ const customQuotaInitialValues = {
     memoryReque: "",
     memoryLimit: "",
     storageFile: "",
-    snapshotCoun: ""
+    snapshotCoun: "",
   },
   testQuota: {
     cpuRequests: "",
@@ -350,7 +349,7 @@ const customQuotaInitialValues = {
     memoryRequests: "",
     memoryLimits: "",
     storageFile: "",
-    snapshotCount: ""
+    snapshotCount: "",
   },
   developmentQuota: {
     cpuRequests: "",
@@ -358,7 +357,7 @@ const customQuotaInitialValues = {
     memoryRequests: "",
     memoryLimits: "",
     storageFile: "",
-    snapshotCount: ""
+    snapshotCount: "",
   },
   toolsQuota: {
     cpuRequests: "",
@@ -366,13 +365,13 @@ const customQuotaInitialValues = {
     memoryRequests: "",
     memoryLimits: "",
     storageFile: "",
-    snapshotCount: ""
-  }
+    snapshotCount: "",
+  },
 };
 
 export const customProjectInitialValues = {
   ...createProjectInputInitalValues,
-  ...customQuotaInitialValues
+  ...customQuotaInitialValues,
 };
 
 export const replaceNullsWithEmptyString = (obj) =>
@@ -407,5 +406,5 @@ export const createProjectInputValidationSchema = yup.object().shape({
     .object(CreateUserInputSchema)
     .optional()
     .default(null),
-  commonComponents: CommonComponentsInputSchema()
+  commonComponents: CommonComponentsInputSchema(),
 });

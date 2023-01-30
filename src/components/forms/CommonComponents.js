@@ -16,38 +16,38 @@ const commonComponents = [
   { name: "addressAndGeolocation", description: "Address and geolocation" },
   {
     name: "workflowManagement",
-    description: "Workflow Management (similar to Camunda)"
+    description: "Workflow Management (similar to Camunda)",
   },
   {
     name: "formDesignAndSubmission",
     description:
-      "Form Design and Submission (similar to CHEFS, Gravity, Orbeon)"
+      "Form Design and Submission (similar to CHEFS, Gravity, Orbeon)",
   },
   {
     name: "identityManagement",
-    description: "Identity management (user authentication and authorization)"
+    description: "Identity management (user authentication and authorization)",
   },
   {
     name: "paymentServices",
     description:
-      "Payment services (i.e. collection, processing, reconciliation, ledger management)"
+      "Payment services (i.e. collection, processing, reconciliation, ledger management)",
   },
   {
     name: "documentManagement",
     description:
-      "Document Management (file storage and transfer, PDF and other document generation)"
+      "Document Management (file storage and transfer, PDF and other document generation)",
   },
   {
     name: "endUserNotificationAndSubscription",
     description:
-      "End user notification and subscription service (email, text messages, automated phone calls, in-app pop up messages)"
+      "End user notification and subscription service (email, text messages, automated phone calls, in-app pop up messages)",
   },
   { name: "publishing", description: "Publishing (web content management)" },
   {
     name: "businessIntelligence",
     description:
-      "Business Intelligence Dashboard and Metrics reporting (i.e. diagrams and pie charts, report generation)"
-  }
+      "Business Intelligence Dashboard and Metrics reporting (i.e. diagrams and pie charts, report generation)",
+  },
 ];
 
 const StyledCheckboxContainer = styled.div`
@@ -86,6 +86,12 @@ export default function CommonComponents({ formik, isDisabled }) {
 
     setDirty(values.length !== 0);
   }, [formik.values.commonComponents]);
+
+  // console.log("Errors");
+  // console.log(formik.errors);
+
+  // console.log("Values ");
+  // console.log(formik.values);
 
   return (
     <Box sx={{ mt: 2 }}>
@@ -163,10 +169,13 @@ export default function CommonComponents({ formik, isDisabled }) {
           }
           label={"The app does not use any of these services"}
         />
+        {formik.errors?.commonComponents}
+        <FormHelperText>{formik.errors?.commonComponents}</FormHelperText>
         <FormHelperText>
           {formik.errors?.commonComponents?.noServices}
         </FormHelperText>
       </FormControl>
+      {formik.errors?.commonComponents}
     </Box>
   );
 }

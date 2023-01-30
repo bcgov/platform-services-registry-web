@@ -17,6 +17,8 @@ import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
+import RequiredField from "../common/RequiredField";
+import FormHelperText from "@mui/material/FormHelperText";
 
 const USER_BY_EMAIL = gql`
   query UserByEmail($email: EmailAddress!) {
@@ -35,7 +37,7 @@ export default function UserInput({
   label,
   defaultEditOpen = true,
   formik,
-  isDisabled = false
+  isDisabled = false,
 }) {
   const [edit, setEdit] = useState(defaultEditOpen);
 
@@ -57,7 +59,7 @@ export default function UserInput({
         formik.setFieldValue(contact + ".email", data.userByEmail.email);
         formik.setFieldValue(contact + ".ministry", data.userByEmail.ministry);
       }
-    }
+    },
   });
 
   useEffect(() => {
@@ -72,7 +74,7 @@ export default function UserInput({
       <Box
         sx={{
           p: 2,
-          display: "flex"
+          display: "flex",
         }}
       >
         <Avatar
@@ -121,7 +123,7 @@ export default function UserInput({
                 display: "flex",
                 flexDirection: "column",
                 ml: 2,
-                width: "90%"
+                width: "90%",
               }}
             >
               <TextField
@@ -136,10 +138,7 @@ export default function UserInput({
                   formik.touched[contact]?.email &&
                   Boolean(formik.errors[contact]?.email)
                 }
-                helperText={
-                  formik.touched[contact]?.email &&
-                  formik.errors[contact]?.email
-                }
+                helperText={formik.touched[contact]?.email && <RequiredField />}
                 size="small"
               />
 
@@ -155,10 +154,7 @@ export default function UserInput({
                   formik.touched[contact]?.githubId &&
                   Boolean(formik.errors[contact]?.githubId)
                 }
-                helperText={
-                  formik.touched[contact]?.githubId &&
-                  formik.errors[contact]?.githubId
-                }
+                helperText={formik.touched[contact]?.email && <RequiredField />}
                 size="small"
               />
 
@@ -176,10 +172,7 @@ export default function UserInput({
                   formik.touched[contact]?.firstName &&
                   Boolean(formik.errors[contact]?.firstName)
                 }
-                helperText={
-                  formik.touched[contact]?.firstName &&
-                  formik.errors[contact]?.firstName
-                }
+                helperText={formik.touched[contact]?.email && <RequiredField />}
                 size="small"
               />
 
@@ -195,10 +188,7 @@ export default function UserInput({
                   formik.touched[contact]?.lastName &&
                   Boolean(formik.errors[contact]?.lastName)
                 }
-                helperText={
-                  formik.touched[contact]?.lastName &&
-                  formik.errors[contact]?.lastName
-                }
+                helperText={formik.touched[contact]?.email && <RequiredField />}
                 size="small"
               />
 
@@ -219,9 +209,8 @@ export default function UserInput({
                     formik.touched[contact]?.ministry &&
                     Boolean(formik.errors[contact]?.ministry)
                   }
-                  helpertext={
-                    formik.touched[contact]?.ministry &&
-                    formik.errors[contact]?.ministry
+                  helperText={
+                    formik.touched[contact]?.email && <RequiredField />
                   }
                 >
                   {ministries.map((ministryOption) => (
@@ -230,6 +219,9 @@ export default function UserInput({
                     </MenuItem>
                   ))}
                 </Select>
+                <FormHelperText>
+                  {formik.touched[contact]?.email && <RequiredField />}
+                </FormHelperText>
               </FormControl>
             </Box>
           </div>

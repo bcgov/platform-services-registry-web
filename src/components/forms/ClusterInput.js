@@ -4,15 +4,16 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import FormHelperText from "@mui/material/FormHelperText";
 import { clusterNames } from "../common/Constants";
 import TitleTypography from "../common/TitleTypography";
+import FormHelperText from "@mui/material/FormHelperText";
+import RequiredField from "../common/RequiredField";
 
 export default function ClusterInput({ formik, isDisabled }) {
   return (
     <Box
       sx={{
-        "& .MuiTextField-root": { m: 0, mb: 3, width: 250 }
+        "& .MuiTextField-root": { m: 0, mb: 3, width: 250 },
       }}
       noValidate
       autoComplete="off"
@@ -40,10 +41,9 @@ export default function ClusterInput({ formik, isDisabled }) {
               </MenuItem>
             ))}
           </Select>
-
-          {/* <FormHelperText>
-            {errors.cluster ? errors.cluster?.message : ""}
-          </FormHelperText> */}
+          <FormHelperText>
+            {formik.touched.cluster && <RequiredField />}
+          </FormHelperText>
         </FormControl>
       </div>
     </Box>

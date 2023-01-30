@@ -4,11 +4,11 @@ import {
   CreateUserInputSchema,
   CommonComponentsInputSchema,
   ClusterSchema,
-  MinistrySchema
+  MinistrySchema,
 } from "../__generated__/resolvers-types";
 import {
   createProjectInputInitalValues as initialValues,
-  replaceEmptyStringWithNull
+  replaceEmptyStringWithNull,
 } from "../components/common/FormHelpers";
 import { useFormik } from "formik";
 import { useMutation, gql } from "@apollo/client";
@@ -63,11 +63,13 @@ const validationSchema = yup.object().shape({
     .object(CreateUserInputSchema)
     .nullable()
     .transform((value) => (value.email === "" ? null : value)),
-  commonComponents: yup
-    .object(CommonComponentsInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    })
+  commonComponents: CommonComponentsInputSchema(),
+  // commonComponents: yup
+  //   .object(CommonComponentsInputSchema)
+  //   .required()
+  //   .transform((value, original) => {
+  //     return replaceEmptyStringWithNull(value);
+  //   })
 });
 
 export default function Create({ requestsRoute }) {
@@ -80,8 +82,8 @@ export default function Create({ requestsRoute }) {
       errorPolicy: "ignore", // Query to refetch might not have been called yet, so ignore error
       refetchQueries: [
         { query: USER_ACTIVE_REQUESTS },
-        { query: ALL_ACTIVE_REQUESTS }
-      ]
+        { query: ALL_ACTIVE_REQUESTS },
+      ],
     }
   );
 
@@ -90,18 +92,20 @@ export default function Create({ requestsRoute }) {
     validationSchema,
     onSubmit: (values) => {
       toastId.current = toast("Your create request has been submitted", {
-        autoClose: false
+        autoClose: false,
       });
 
+      console.log("Values", values);
+      console.log("X")
       const variables = validationSchema.cast(values);
-
+      console.log("Y")
       privateCloudProjectRequest({
         variables,
         onError: (error) => {
           toast.update(toastId.current, {
             render: `Error: ${error.message}`,
             type: toast.TYPE.ERROR,
-            autoClose: 5000
+            autoClose: 5000,
           });
         },
 
@@ -112,13 +116,14 @@ export default function Create({ requestsRoute }) {
             toast.update(toastId.current, {
               render: "Request successfuly created",
               type: toast.TYPE.SUCCESS,
-              autoClose: 5000
+              autoClose: 5000,
             });
           }
-        }
+        },
       });
-    }
+    },
   });
+  console.log("Values", formik.values);
 
   return (
     <div>

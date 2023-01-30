@@ -52,7 +52,6 @@ export type CommonComponentsInput = {
   endUserNotificationAndSubscription?: InputMaybe<CommonComponentsOptions>;
   formDesignAndSubmission?: InputMaybe<CommonComponentsOptions>;
   identityManagement?: InputMaybe<CommonComponentsOptions>;
-  noServices: Scalars['Boolean'];
   other?: InputMaybe<Scalars['String']>;
   paymentServices?: InputMaybe<CommonComponentsOptions>;
   publishing?: InputMaybe<CommonComponentsOptions>;
@@ -320,6 +319,7 @@ export type Query = {
   privateCloudProjects: Array<PrivateCloudProject>;
   privateCloudProjectsById: Array<PrivateCloudProject>;
   privateCloudProjectsPaginated: ProjectsPaginatedOutput;
+  privateCloudProjectsWithFilterSearch: Array<PrivateCloudProject>;
   privateCloudRequests: Array<PrivateCloudRequest>;
   user?: Maybe<User>;
   userByEmail?: Maybe<User>;
@@ -358,6 +358,12 @@ export type QueryPrivateCloudProjectsPaginatedArgs = {
   filter?: InputMaybe<FilterPrivateCloudProjectsInput>;
   page: Scalars['Int'];
   pageSize: Scalars['Int'];
+  search?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryPrivateCloudProjectsWithFilterSearchArgs = {
+  filter?: InputMaybe<FilterPrivateCloudProjectsInput>;
   search?: InputMaybe<Scalars['String']>;
 };
 
@@ -494,7 +500,6 @@ export function CommonComponentsInputSchema(): yup.SchemaOf<CommonComponentsInpu
     endUserNotificationAndSubscription: yup.mixed(),
     formDesignAndSubmission: yup.mixed(),
     identityManagement: yup.mixed(),
-    noServices: yup.boolean().defined(),
     other: yup.string(),
     paymentServices: yup.mixed(),
     publishing: yup.mixed(),

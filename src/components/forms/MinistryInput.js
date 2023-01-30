@@ -5,6 +5,8 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { ministries } from "../common/Constants";
 import TitleTypography from "../common/TitleTypography";
+import FormHelperText from "@mui/material/FormHelperText";
+import RequiredField from "../common/RequiredField";
 
 const MinistryInput = ({ formik, isDisabled }) => {
   return (
@@ -22,7 +24,6 @@ const MinistryInput = ({ formik, isDisabled }) => {
           value={formik.values.ministry}
           onChange={formik.handleChange}
           error={formik.touched.ministry && Boolean(formik.errors.ministry)}
-          helpertext={formik.touched.ministry && formik.errors.ministry}
         >
           {ministries.map((ministryOption) => (
             <MenuItem key={ministryOption} value={ministryOption}>
@@ -30,6 +31,9 @@ const MinistryInput = ({ formik, isDisabled }) => {
             </MenuItem>
           ))}
         </Select>
+        <FormHelperText>
+          {formik.touched.ministry && <RequiredField />}
+        </FormHelperText>
       </FormControl>
     </div>
   );
