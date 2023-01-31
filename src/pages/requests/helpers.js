@@ -1,6 +1,8 @@
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
+import CircularProgress from "../../components/common/CircularProgress";
+import { Box } from "@mui/system";
 
 const requestsToRows = ({
   id,
@@ -14,7 +16,7 @@ const requestsToRows = ({
     projectOwner,
     primaryTechnicalLead,
     secondaryTechnicalLead,
-     ministry,
+    ministry,
     cluster,
   },
 }) => ({
@@ -44,30 +46,36 @@ const requestsToRows = ({
   ),
   technicalLeads: (
     <Stack direction="column" spacing={1}>
-      {[primaryTechnicalLead, secondaryTechnicalLead].filter(Boolean).map(({ firstName, lastName, githubId }) => (
-        <Chip
-          key={githubId}
-          style={{ width: "fit-content" }}
-          avatar={
-            <Avatar
-              alt={firstName}
-              src={`https://github.com/${githubId}.png`}
-            />
-          }
-          label={`${firstName} ${lastName}`}
-          variant="outlined"
-        />
-      ))}
+      {[primaryTechnicalLead, secondaryTechnicalLead]
+        .filter(Boolean)
+        .map(({ firstName, lastName, githubId }) => (
+          <Chip
+            key={githubId}
+            style={{ width: "fit-content" }}
+            avatar={
+              <Avatar
+                alt={firstName}
+                src={`https://github.com/${githubId}.png`}
+              />
+            }
+            label={`${firstName} ${lastName}`}
+            variant="outlined"
+          />
+        ))}
     </Stack>
   ),
   status: (
-    <Chip
-      style={{ borderRadius: 7, fontWeight: "500" }}
-      color={decisionStatusColourLookup[decisionStatus]}
-      variant="outlined"
-      label={decisionStatusLookup[decisionStatus]}
-    />
+    <Box sx={{ display: "flex" }}>
+      {decisionStatus === "APPROVED" ? <CircularProgress /> : null}
+      <Chip
+        style={{ borderRadius: 7, fontWeight: "500", border: "none" }}
+        // color={decisionStatusColourLookup[decisionStatus]}
+        variant="outlined"
+        label={decisionStatusLookup[decisionStatus]}
+      />
+    </Box>
   ),
+
   type: <Chip style={{ borderRadius: 7 }} label={type} />,
 });
 
@@ -76,7 +84,7 @@ function truncate(str, n) {
 }
 
 const decisionStatusLookup = {
-  APPROVED: "APPROVED",
+  APPROVED: "PROVISIONING",
   PENDING: "PENDING DECISION",
 };
 

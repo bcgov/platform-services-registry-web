@@ -65,13 +65,12 @@ const validationSchema = yup.object().shape({
     .object(CreateUserInputSchema)
     .nullable()
     .transform((value) => (value.email === "" ? null : value)),
-  commonComponents: CommonComponentsInputSchema(),
-  // commonComponents: yup
-  //   .object(CommonComponentsInputSchema)
-  //   .required()
-  //   .transform((value, original) => {
-  //     return replaceEmptyStringWithNull(value);
-  //   })
+  // commonComponents: CommonComponentsInputSchema(),
+  commonComponents: yup
+    .object(CommonComponentsInputSchema)
+    .transform((value, original) => {
+      return replaceEmptyStringWithNull(value);
+    }),
 });
 
 export default function Create({ requestsRoute }) {
@@ -97,10 +96,8 @@ export default function Create({ requestsRoute }) {
         autoClose: false,
       });
 
-      console.log("Values", values);
-      console.log("X");
       const variables = validationSchema.cast(values);
-      console.log("Y");
+
       privateCloudProjectRequest({
         variables,
         onError: (error) => {

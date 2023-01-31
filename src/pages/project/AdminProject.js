@@ -159,12 +159,12 @@ const validationSchema = yup.object().shape({
     .object(CreateUserInputSchema)
     .nullable()
     .transform((value) => (value?.email === "" ? null : value)),
-  // commonComponents: yup
-  //   .object(CommonComponentsInputSchema)
-  //   .transform((value, original) => {
-  //     return replaceEmptyStringWithNull(value);
-  //   }),
-  commonComponents: CommonComponentsInputSchema(),
+  commonComponents: yup
+    .object(CommonComponentsInputSchema)
+    .transform((value, original) => {
+      return replaceEmptyStringWithNull(value);
+    }),
+  // commonComponents: CommonComponentsInputSchema(),
   productionQuota: yup.object(QuotaInputSchema).required(),
   developmentQuota: yup.object(QuotaInputSchema).required(),
   toolsQuota: yup.object(QuotaInputSchema).required(),

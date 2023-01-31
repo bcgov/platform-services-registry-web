@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
@@ -33,7 +33,11 @@ const USER_PROJECTS = gql`
 `;
 
 export default function Projects() {
-  const { loading, error, data } = useQuery(USER_PROJECTS);
+  const { loading, error, data, startPolling } = useQuery(USER_PROJECTS);
+
+  useEffect(() => {
+    startPolling(8000);
+  }, [startPolling]);
 
   if (error && error.message === "Not a user") {
     return (

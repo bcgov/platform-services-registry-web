@@ -4,7 +4,7 @@ import {
   columns,
   columnsXs,
   projectsToRows,
-  projectsToRowsXs
+  projectsToRowsXs,
 } from "./helpers";
 import StickyTable from "../../components/common/Table";
 import SearchContext from "../../context/search";
@@ -58,15 +58,20 @@ export default function Projects() {
   const { filter } = useContext(FilterContext);
   const { width } = useWindowSize();
 
-  const { loading, data, fetchMore, refetch, error } = useQuery(ALL_PROJECTS, {
+  const { loading, data, fetchMore, startPolling, error } = useQuery(ALL_PROJECTS, {
     nextFetchPolicy: "cache-first",
     variables: {
       page: 1,
       pageSize: 5,
       search: debouncedSearch,
-      filter
-    }
+      filter,
+    },
+    pollInterval: 500,
   });
+
+  useEffect(() => {
+    startPolling(8000);
+  }, [startPolling]);
 
   const getNextPage = useCallback(
     (page, pageSize) => {
@@ -75,8 +80,8 @@ export default function Projects() {
           page,
           pageSize,
           search: debouncedSearch,
-          filter
-        }
+          filter,
+        },
       });
     },
     [filter, debouncedSearch]
