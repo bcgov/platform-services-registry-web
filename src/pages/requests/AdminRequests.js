@@ -11,6 +11,7 @@ export const ALL_ACTIVE_REQUESTS = gql`
       active
       decisionStatus
       type
+      created
       requestedProject {
         name
         description

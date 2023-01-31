@@ -16,9 +16,9 @@ import Users from "../../components/forms/Users";
 import Divider from "@mui/material/Divider";
 import Quotas from "../../components/forms/Quotas";
 
-const ADMIN_REQUEST = gql`
+const USER_REQUEST = gql`
   query Query($requestId: ID!) {
-    userPrivateCloudActiveRequestById(requestId: $requestId) {
+    userPrivateCloudRequestById(requestId: $requestId) {
       id
       createdBy {
         firstName
@@ -95,12 +95,12 @@ const ADMIN_REQUEST = gql`
 export default function UserRequest() {
   const { id } = useParams();
 
-  const { data, loading, error } = useQuery(ADMIN_REQUEST, {
+  const { data, loading, error } = useQuery(USER_REQUEST, {
     variables: { requestId: id },
   });
 
   const { project, requestedProject, ...request } =
-    data?.userPrivateCloudActiveRequestById || {};
+    data?.userPrivateCloudRequestById || {};
 
   const formik = useFormik({
     initialValues,

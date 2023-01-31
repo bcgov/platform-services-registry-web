@@ -19,7 +19,7 @@ import MetaDataInput from "../components/forms/MetaDataInput";
 import ClusterInput from "../components/forms/ClusterInput";
 import MinistryInput from "../components/forms/MinistryInput";
 import CommonComponents from "../components/forms/CommonComponents";
-import { USER_ACTIVE_REQUESTS } from "./requests/UserRequests";
+import { USER_REQUESTS } from "./requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "./requests/AdminRequests";
 import { toast } from "react-toastify";
 import Container from "../components/common/Container";
@@ -82,7 +82,7 @@ export default function Create({ requestsRoute }) {
     {
       errorPolicy: "ignore", // Query to refetch might not have been called yet, so ignore error
       refetchQueries: [
-        { query: USER_ACTIVE_REQUESTS },
+        { query: USER_REQUESTS },
         { query: ALL_ACTIVE_REQUESTS },
       ],
     }

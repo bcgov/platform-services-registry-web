@@ -100,8 +100,8 @@ export default function Projects() {
       columns={width < 900 ? columnsXs : columns}
       rows={
         width < 900
-          ? data?.privateCloudProjectsPaginated?.projects.map(projectsToRowsXs)
-          : data?.privateCloudProjectsPaginated?.projects.map(projectsToRows)
+          ? data?.privateCloudProjectsPaginated?.projects.map(projectsToRowsXs).reverse()
+          : data?.privateCloudProjectsPaginated?.projects.map(projectsToRows).reverse()
       }
       count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
       title="Products"

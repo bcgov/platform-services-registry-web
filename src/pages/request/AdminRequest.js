@@ -12,7 +12,7 @@ import {
 import CommonComponents from "../../components/forms/CommonComponents";
 import { Button } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
-import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
+import { USER_REQUESTS } from "../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
@@ -126,7 +126,7 @@ export default function AdminRequest() {
     { data: decisionData, loading: decisionLoading, error: decisionError },
   ] = useMutation(MAKE_REQUEST_DECISION, {
     refetchQueries: [
-      { query: USER_ACTIVE_REQUESTS },
+      { query: USER_REQUESTS },
       { query: ALL_ACTIVE_REQUESTS },
     ],
   });
