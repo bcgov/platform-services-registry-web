@@ -303,6 +303,7 @@ export const createProjectInputInitalValues = {
     publishing: "",
     businessIntelligence: "",
     other: "",
+    noServices: false,
   },
 };
 
