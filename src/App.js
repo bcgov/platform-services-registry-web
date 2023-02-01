@@ -14,37 +14,51 @@ import SearchProvider from "./providers/search";
 import FilterProvider from "./providers/filter";
 
 const theme = createTheme({
+  typography: {
+    // In Chinese and Japanese the characters are usually larger,
+    // so a smaller fontsize may be appropriate.
+    fontSize: 15,
+  },
   components: {
     MuiTextField: {
       styleOverrides: {
         root: {
-          ".css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
+          ".Mui-disabled": {
+            color: "rgba(0, 0, 0, 0.87) !important",
+          },
+          ".css-xy0qn3.Mui-disabled": {
+            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
+          },
+          ".css-1sl9rdz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
             {
-              "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important"
-            }
-        }
-      }
+              "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
+            },
+        },
+      },
     },
     MuiSelect: {
       styleOverrides: {
         root: {
-          ".css-1wgigoj-MuiFormLabel-root-MuiInputLabel-root": {
-            fontSize: "3rem"
+          ".Mui-disabled": {
+            color: "rgba(0, 0, 0, 0.87) !important",
+          },
+          ".css-xy0qn3.Mui-disabled": {
+            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
           },
 
           ".css-1sl9rdz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
             {
-              "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important"
-            }
-        }
-      }
-    }
+              "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
+            },
+        },
+      },
+    },
   },
   palette: {
     primary: {
-      main: "#003366"
-    }
-  }
+      main: "#003366",
+    },
+  },
 });
 
 export const ModeContext = createContext();
@@ -63,7 +77,7 @@ const ME = gql`
 
 function App() {
   const {
-    keycloak: { authenticated }
+    keycloak: { authenticated },
   } = useKeycloak();
 
   const { error, data } = useQuery(ME, { errorPolicy: "ignore" });

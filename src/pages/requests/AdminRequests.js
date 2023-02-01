@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
 import StickyTable from "../../components/common/Table";
 import { requestsToRows, columns } from "./helpers";
@@ -11,6 +11,7 @@ export const ALL_ACTIVE_REQUESTS = gql`
       active
       decisionStatus
       type
+      created
       requestedProject {
         name
         description
@@ -38,7 +39,11 @@ export const ALL_ACTIVE_REQUESTS = gql`
 `;
 
 export default function Requests() {
-  const { loading, error, data } = useQuery(ALL_ACTIVE_REQUESTS);
+  const { loading, error, data, startPolling } = useQuery(ALL_ACTIVE_REQUESTS);
+
+  useEffect(() => {
+    startPolling(8000);
+  }, [startPolling]);
 
   if (error && error.message === "Not a user") {
     return <EmptyAlert />;

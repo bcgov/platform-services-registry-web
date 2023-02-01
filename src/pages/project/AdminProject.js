@@ -5,23 +5,22 @@ import {
   CommonComponentsInputSchema,
   QuotaInputSchema,
   MinistrySchema,
-  ClusterSchema
+  ClusterSchema,
 } from "../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
 import ClusterInput from "../../components/forms/ClusterInput";
-import QuotaInput from "../../components/forms/QuotaInput";
 import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
   projectInitialValues,
   replaceNullsWithEmptyString,
   replaceEmptyStringWithNull,
-  stripTypeName
+  stripTypeName,
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/forms/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
-import { USER_ACTIVE_REQUESTS } from "../requests/UserRequests";
+import { USER_REQUESTS } from "../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
@@ -30,6 +29,9 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Button, IconButton } from "@mui/material";
 import ActiveRequestText from "../../components/common/ActiveRequestText";
+import Users from "../../components/forms/Users";
+import Divider from "@mui/material/Divider";
+import Quotas from "../../components/forms/Quotas";
 
 const ADMIN_PROJECT = gql`
   query Query($projectId: ID!) {
@@ -162,10 +164,11 @@ const validationSchema = yup.object().shape({
     .transform((value, original) => {
       return replaceEmptyStringWithNull(value);
     }),
+  // commonComponents: CommonComponentsInputSchema(),
   productionQuota: yup.object(QuotaInputSchema).required(),
   developmentQuota: yup.object(QuotaInputSchema).required(),
   toolsQuota: yup.object(QuotaInputSchema).required(),
-  testQuota: yup.object(QuotaInputSchema).required()
+  testQuota: yup.object(QuotaInputSchema).required(),
 });
 
 export default function AdminProject({ requestsRoute }) {
@@ -176,7 +179,7 @@ export default function AdminProject({ requestsRoute }) {
   const [initialValues, setInitialValues] = useState(projectInitialValues);
 
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
-    variables: { projectId: id }
+    variables: { projectId: id },
   });
 
   const [
@@ -184,25 +187,25 @@ export default function AdminProject({ requestsRoute }) {
     {
       data: editProjectData,
       loading: editProjectLoading,
-      error: editProjectError
-    }
+      error: editProjectError,
+    },
   ] = useMutation(UPDATE_USER_PROJECT, {
     refetchQueries: [
-      { query: USER_ACTIVE_REQUESTS },
-      { query: ALL_ACTIVE_REQUESTS }
-    ]
+      { query: USER_REQUESTS },
+      { query: ALL_ACTIVE_REQUESTS },
+    ],
   });
 
   const [privateCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
     refetchQueries: [
-      { query: USER_ACTIVE_REQUESTS },
-      { query: ALL_ACTIVE_REQUESTS }
-    ]
+      { query: USER_REQUESTS },
+      { query: ALL_ACTIVE_REQUESTS },
+    ],
   });
 
   const deleteOnClick = () => {
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     privateCloudProjectDeleteRequest({
@@ -211,7 +214,7 @@ export default function AdminProject({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
       onCompleted: () => {
@@ -219,9 +222,9 @@ export default function AdminProject({ requestsRoute }) {
         toast.update(toastId.current, {
           render: "Delete request successfuly created",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000
+          autoClose: 5000,
         });
-      }
+      },
     });
   };
 
@@ -231,7 +234,7 @@ export default function AdminProject({ requestsRoute }) {
     enableReinitialize: true,
     onSubmit: (values) => {
       toastId.current = toast("Your edit request has been submitted", {
-        autoClose: false
+        autoClose: false,
       });
 
       const variables = validationSchema.cast(values);
@@ -242,7 +245,7 @@ export default function AdminProject({ requestsRoute }) {
           toast.update(toastId.current, {
             render: `Error: ${error.message}`,
             type: toast.TYPE.ERROR,
-            autoClose: 5000
+            autoClose: 5000,
           });
         },
 
@@ -253,12 +256,12 @@ export default function AdminProject({ requestsRoute }) {
             toast.update(toastId.current, {
               render: "Request successfuly created",
               type: toast.TYPE.SUCCESS,
-              autoClose: 5000
+              autoClose: 5000,
             });
           }
-        }
+        },
       });
-    }
+    },
   });
 
   useEffect(() => {
@@ -273,7 +276,7 @@ export default function AdminProject({ requestsRoute }) {
   }, [data]);
 
   const name = data?.privateCloudProjectById?.name;
-  const hasActiveRequest = !!data?.privateCloudProjectById?.activeEditRequest;
+  const isDisabled = !!data?.privateCloudProjectById?.activeEditRequest;
 
   return (
     <div>
@@ -298,47 +301,32 @@ export default function AdminProject({ requestsRoute }) {
           </Button>
           <IconButton
             sx={{ mr: 1 }}
-            disabled={hasActiveRequest}
+            disabled={isDisabled}
             onClick={deleteOnClick}
             aria-label="delete"
           >
             <DeleteForeverIcon />
           </IconButton>
         </NavToolbar>
-        <ActiveRequestText
-          hasActiveRequest={hasActiveRequest}
-          requestId={data?.privateCloudProjectById?.activeEditRequest?.id}
-        />
+        {isDisabled ? (
+          <ActiveRequestText
+            requestId={data?.privateCloudProjectById?.activeEditRequest?.id}
+          />
+        ) : null}
         <Container>
-          <MetaDataInput formik={formik} isDisabled={hasActiveRequest} />
-          <div style={{ marginLeft: 50 }}>
+          <MetaDataInput formik={formik} isDisabled={isDisabled} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <div>
             <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={hasActiveRequest} />
+              <MinistryInput formik={formik} isDisabled={isDisabled} />
               <ClusterInput formik={formik} isDisabled={true} />
             </div>
-            <div>
-              <QuotaInput
-                nameSpace={"production"}
-                formik={formik}
-                isDisabled={hasActiveRequest}
-              />
-              <QuotaInput
-                nameSpace={"test"}
-                formik={formik}
-                isDisabled={hasActiveRequest}
-              />
-              <QuotaInput
-                nameSpace={"tools"}
-                formik={formik}
-                isDisabled={hasActiveRequest}
-              />
-              <QuotaInput
-                nameSpace={"development"}
-                formik={formik}
-                isDisabled={hasActiveRequest}
-              />
-            </div>
-            <CommonComponents formik={formik} isDisabled={hasActiveRequest} />
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            <Users formik={formik} isDisabled={false} />
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            <Quotas formik={formik} isDisabled={isDisabled} />
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            <CommonComponents formik={formik} isDisabled={isDisabled} />
           </div>
         </Container>
       </form>

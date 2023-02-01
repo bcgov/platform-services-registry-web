@@ -34,7 +34,7 @@ const actionForCurrentState = (keycloak) => {
 
   // TODO: update this once a better access control is in place
   // where we check if users are part of our GitHub organization
-  return () => keycloak.login({ idpHint: 'idir' });
+  return () => keycloak.login();
 };
 
 const Button = (props) => {

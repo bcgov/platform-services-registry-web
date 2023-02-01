@@ -31,7 +31,7 @@ export default function TabsToolbar({ routes, createButtonRoute }) {
             fontSize: 20,
             minWidth: 170,
             // sm: { display: "none", color: "red"}
-            display: { xs: "none", sm: "block" }
+            display: { xs: "none", sm: "block" },
           }}
         >
           PRIVATE CLOUD
@@ -44,7 +44,13 @@ export default function TabsToolbar({ routes, createButtonRoute }) {
         />
         <Box sx={{ width: "100%" }}>
           <Tabs value={routes.indexOf(pathname)} aria-label="nav tabs">
-            <Tab component={Link} label="Requests" to={routes[0]} />
+            <Tab
+              component={Link}
+              label={
+                pathname.includes("admin") ? "Active Requests" : "Requests"
+              }
+              to={routes[0]}
+            />
             <Tab component={Link} label="Products" to={routes[1]} />
           </Tabs>
         </Box>

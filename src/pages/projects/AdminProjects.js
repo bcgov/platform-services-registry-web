@@ -4,7 +4,7 @@ import {
   columns,
   columnsXs,
   projectsToRows,
-  projectsToRowsXs
+  projectsToRowsXs,
 } from "./helpers";
 import StickyTable from "../../components/common/Table";
 import SearchContext from "../../context/search";
@@ -54,20 +54,24 @@ const ALL_PROJECTS = gql`
 `;
 
 export default function Projects() {
-  console.log("RENDER");
   const { debouncedSearch } = useContext(SearchContext);
   const { filter } = useContext(FilterContext);
   const { width } = useWindowSize();
 
-  const { loading, data, fetchMore, refetch, error } = useQuery(ALL_PROJECTS, {
+  const { loading, data, fetchMore, startPolling, error } = useQuery(ALL_PROJECTS, {
     nextFetchPolicy: "cache-first",
     variables: {
       page: 1,
       pageSize: 5,
       search: debouncedSearch,
-      filter
-    }
+      filter,
+    },
+    pollInterval: 500,
   });
+
+  useEffect(() => {
+    startPolling(8000);
+  }, [startPolling]);
 
   const getNextPage = useCallback(
     (page, pageSize) => {
@@ -76,8 +80,8 @@ export default function Projects() {
           page,
           pageSize,
           search: debouncedSearch,
-          filter
-        }
+          filter,
+        },
       });
     },
     [filter, debouncedSearch]
@@ -96,8 +100,8 @@ export default function Projects() {
       columns={width < 900 ? columnsXs : columns}
       rows={
         width < 900
-          ? data?.privateCloudProjectsPaginated?.projects.map(projectsToRowsXs)
-          : data?.privateCloudProjectsPaginated?.projects.map(projectsToRows)
+          ? data?.privateCloudProjectsPaginated?.projects.map(projectsToRowsXs).reverse()
+          : data?.privateCloudProjectsPaginated?.projects.map(projectsToRows).reverse()
       }
       count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
       title="Products"

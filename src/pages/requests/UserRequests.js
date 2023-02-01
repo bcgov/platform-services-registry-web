@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
 import StickyTable from "../../components/common/Table";
 import { requestsToRows, columns } from "./helpers";
 import { EmptyAlert, ErrorAlert } from "../../components/common/Alert";
 
-export const USER_ACTIVE_REQUESTS = gql`
-  query UserPrivateCloudActiveRequests {
-    userPrivateCloudActiveRequests {
+export const USER_REQUESTS = gql`
+  query UserPrivateCloudRequests {
+    userPrivateCloudRequests {
       id
-      active,
+      active
       decisionStatus
       type
+      created
       requestedProject {
         name
         description
@@ -40,7 +41,11 @@ export const USER_ACTIVE_REQUESTS = gql`
 `;
 
 export default function Requests() {
-  const { loading, error, data } = useQuery(USER_ACTIVE_REQUESTS);
+  const { loading, error, data, startPolling } = useQuery(USER_REQUESTS);
+
+  useEffect(() => {
+    startPolling(8000);
+  }, [startPolling]);
 
   if (error && error.message === "Not a user") {
     return <EmptyAlert />;
@@ -52,7 +57,7 @@ export default function Requests() {
     <StickyTable
       onClickPath={"/private-cloud/user/request/"}
       columns={columns}
-      rows={data.userPrivateCloudActiveRequests.map(requestsToRows).reverse()}
+      rows={data.userPrivateCloudRequests.map(requestsToRows).reverse()}
       title="Active Requests"
       loading={loading}
     />
