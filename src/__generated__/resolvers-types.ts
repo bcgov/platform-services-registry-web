@@ -465,7 +465,6 @@ export type User = {
   lastName: Scalars['String'];
   lastSeen?: Maybe<Scalars['DateTime']>;
   ministry: Ministry;
-  privateCloudActiveRquests: Array<Maybe<PrivateCloudRequest>>;
   privateCloudProjectOwner: Array<Maybe<PrivateCloudProject>>;
   privateCloudProjectPrimaryTechnicalLead: Array<Maybe<PrivateCloudProject>>;
   privateCloudProjectSecondaryTechnicalLead: Array<Maybe<PrivateCloudProject>>;
