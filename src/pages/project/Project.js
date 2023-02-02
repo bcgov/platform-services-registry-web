@@ -82,22 +82,22 @@ const ADMIN_PROJECT = gql`
         noServices
         other
       }
-      productionQuota: productionQuotaSelected {
+      productionQuota {
         cpu
         memory
         storage
       }
-      testQuota: testQuotaSelected {
+      testQuota {
         cpu
         memory
         storage
       }
-      developmentQuota: developmentQuotaSelected {
+      developmentQuota {
         cpu
         memory
         storage
       }
-      toolsQuota: toolsQuotaSelected {
+      toolsQuota {
         cpu
         memory
         storage
@@ -181,6 +181,7 @@ export default function AdminProject({ requestsRoute }) {
 
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id },
+    nextFetchPolicy: "cache-and-network",
   });
 
   const [
@@ -191,17 +192,11 @@ export default function AdminProject({ requestsRoute }) {
       error: editProjectError,
     },
   ] = useMutation(UPDATE_USER_PROJECT, {
-    refetchQueries: [
-      { query: USER_REQUESTS },
-      { query: ALL_ACTIVE_REQUESTS },
-    ],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
   const [privateCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
-    refetchQueries: [
-      { query: USER_REQUESTS },
-      { query: ALL_ACTIVE_REQUESTS },
-    ],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
   const deleteOnClick = () => {

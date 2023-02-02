@@ -56,7 +56,7 @@ export default function DenseAppBar() {
                   BC Platform Services&nbsp;
                 </Typography>
                 <Typography sx={{ mt: 2, fontWeight: "500", fontSize: 20 }}>
-                  Project Registry
+                  Product Registry
                 </Typography>
               </div>
             )}

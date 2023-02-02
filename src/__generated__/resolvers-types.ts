@@ -52,6 +52,7 @@ export type CommonComponentsInput = {
   endUserNotificationAndSubscription?: InputMaybe<CommonComponentsOptions>;
   formDesignAndSubmission?: InputMaybe<CommonComponentsOptions>;
   identityManagement?: InputMaybe<CommonComponentsOptions>;
+  noServices?: InputMaybe<Scalars['Boolean']>;
   other?: InputMaybe<Scalars['String']>;
   paymentServices?: InputMaybe<CommonComponentsOptions>;
   publishing?: InputMaybe<CommonComponentsOptions>;
@@ -267,22 +268,18 @@ export type PrivateCloudProject = {
   created: Scalars['DateTime'];
   description: Scalars['String'];
   developmentQuota: Quota;
-  developmentQuotaSelected?: Maybe<SelectedDefaultQuota>;
   id: Scalars['ID'];
   licencePlate: Scalars['ID'];
   ministry: Ministry;
   name: Scalars['String'];
   primaryTechnicalLead: User;
   productionQuota: Quota;
-  productionQuotaSelected?: Maybe<SelectedDefaultQuota>;
   projectOwner: User;
   requestHistory: Array<Maybe<PrivateCloudRequest>>;
   secondaryTechnicalLead?: Maybe<User>;
   status: ProjectStatus;
   testQuota: Quota;
-  testQuotaSelected?: Maybe<SelectedDefaultQuota>;
   toolsQuota: Quota;
-  toolsQuotaSelected?: Maybe<SelectedDefaultQuota>;
 };
 
 export type PrivateCloudRequest = {
@@ -329,6 +326,8 @@ export type Query = {
   userPrivateCloudProjectById: PrivateCloudProject;
   userPrivateCloudProjects: Array<PrivateCloudProject>;
   userPrivateCloudProjectsByIds: PrivateCloudProject;
+  userPrivateCloudRequestById: PrivateCloudRequest;
+  userPrivateCloudRequests: Array<PrivateCloudRequest>;
   users: Array<User>;
   usersByIds: Array<User>;
 };
@@ -398,22 +397,20 @@ export type QueryUserPrivateCloudProjectsByIdsArgs = {
 };
 
 
+export type QueryUserPrivateCloudRequestByIdArgs = {
+  requestId: Scalars['ID'];
+};
+
+
 export type QueryUsersByIdsArgs = {
   ids: Array<Scalars['ID']>;
 };
 
 export type Quota = {
   __typename?: 'Quota';
-  cpuLimits: Scalars['Float'];
-  cpuRequests: Scalars['Float'];
-  memoryLimits: Scalars['Int'];
-  memoryRequests: Scalars['Int'];
-  snapshotCount: Scalars['Int'];
-  storageBackup: Scalars['Int'];
-  storageBlock: Scalars['Int'];
-  storageCapacity: Scalars['Int'];
-  storageFile: Scalars['Int'];
-  storagePvcCount: Scalars['Int'];
+  cpu: DefaultCpuOptions;
+  memory: DefaultMemoryOptions;
+  storage: DefaultStorageOptions;
 };
 
 export type QuotaInput = {
@@ -432,13 +429,6 @@ export enum RequestType {
   Delete = 'DELETE',
   Edit = 'EDIT'
 }
-
-export type SelectedDefaultQuota = {
-  __typename?: 'SelectedDefaultQuota';
-  cpu: Scalars['String'];
-  memory: Scalars['String'];
-  storage: Scalars['String'];
-};
 
 export type SignUpInput = {
   githubId: Scalars['String'];
@@ -500,6 +490,7 @@ export function CommonComponentsInputSchema(): yup.SchemaOf<CommonComponentsInpu
     endUserNotificationAndSubscription: yup.mixed(),
     formDesignAndSubmission: yup.mixed(),
     identityManagement: yup.mixed(),
+    noServices: yup.boolean(),
     other: yup.string(),
     paymentServices: yup.mixed(),
     publishing: yup.mixed(),
