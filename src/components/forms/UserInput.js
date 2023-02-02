@@ -47,6 +47,7 @@ export default function UserInput({
 
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
+    nextFetchPolicy: "cache-first",
     onCompleted: (data) => {
       // Set the data fetched from the Get User API Query to the form fields
       if (data.userByEmail) {
