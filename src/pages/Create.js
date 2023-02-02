@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import Container from "../components/common/Container";
 import Users from "../components/forms/Users";
 import Divider from "@mui/material/Divider";
+import MinistrySpecificMessage from "../components/common/MinistrySpecificMessage";
 
 const CREATE_USER_PROJECT = gql`
   mutation PrivateCloudProjectRequest(
@@ -70,6 +71,14 @@ const validationSchema = yup.object().shape({
     .object(CommonComponentsInputSchema)
     .transform((value, original) => {
       return replaceEmptyStringWithNull(value);
+    }),
+    confirmAGApproval: yup.boolean().when('ministry', {
+      is: 'AG',
+      then: yup.boolean().required("Koolaid man OOOH YEEEAAH!")
+      // if(ministry){
+      //   const jagMinistries = ["ag", "pssm", "embc", "mah"];
+      //   return yup.boolean().isTrue(jagMinistries.includes(ministry.toLowerCase())).typeError("you done goofed, son");
+      // }
     }),
 });
 
@@ -138,6 +147,7 @@ export default function Create({ requestsRoute }) {
             <MinistryInput formik={formik} isDisabled={false} />
             <ClusterInput formik={formik} isDisabled={false} />
           </div>
+          <MinistrySpecificMessage formik={formik} isDisabled={false}></ MinistrySpecificMessage>
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Users formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />

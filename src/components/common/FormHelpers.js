@@ -305,6 +305,8 @@ export const createProjectInputInitalValues = {
     other: "",
     noServices: false,
   },
+  confirmAGApproval: false,
+
 };
 
 const quotaInitialValues = {
