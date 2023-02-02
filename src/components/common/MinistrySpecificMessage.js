@@ -9,11 +9,10 @@ export default function MinistrySpecificMessage({ formik, isDisabled }) {
     const [message, setMessage] = useState();
     
     const JAGMessage = () => {
-        console.log(isDisabled);
         return (
             <div>
             All product teams from the Ministries of Attorney General, Public Safety and Solicitor General and Emergency Management BC and BC Housing must engage 
-            in with <a href="mailto:JAGMISO@gov.bc.ca">AG Security</a> prior to submitting a request for a new project.
+            with <a href="mailto:JAGMISO@gov.bc.ca">AG Security</a> prior to submitting a request for a new project.
                 <br/>
                 <FormControlLabel
                     control={
@@ -34,6 +33,7 @@ export default function MinistrySpecificMessage({ formik, isDisabled }) {
                     }
                     label={"I confirm that I have contacted the AG Security and received their approval for provisioning the namespaces in Private Cloud Openshift plaform."}
                     />
+                   
                     <FormHelperText>
                         {formik.touched.confirmAGApproval && <RequiredField />}
                     </FormHelperText>

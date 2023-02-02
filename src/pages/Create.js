@@ -33,6 +33,7 @@ const CREATE_USER_PROJECT = gql`
     $description: String!
     $ministry: Ministry!
     $cluster: Cluster!
+    $confirmJAGApproval: Boolean
     $commonComponents: CommonComponentsInput!
     $projectOwner: CreateUserInput!
     $primaryTechnicalLead: CreateUserInput!
@@ -43,6 +44,7 @@ const CREATE_USER_PROJECT = gql`
       description: $description
       ministry: $ministry
       cluster: $cluster
+      $confirmJAGApproval: Boolean
       commonComponents: $commonComponents
       projectOwner: $projectOwner
       primaryTechnicalLead: $primaryTechnicalLead
@@ -72,14 +74,52 @@ const validationSchema = yup.object().shape({
     .transform((value, original) => {
       return replaceEmptyStringWithNull(value);
     }),
-    confirmAGApproval: yup.boolean().when('ministry', {
-      is: 'AG',
-      then: yup.boolean().required("Koolaid man OOOH YEEEAAH!")
-      // if(ministry){
-      //   const jagMinistries = ["ag", "pssm", "embc", "mah"];
-      //   return yup.boolean().isTrue(jagMinistries.includes(ministry.toLowerCase())).typeError("you done goofed, son");
-      // }
+    confirmAGApproval: yup.boolean().nullable().required(), // <-- this doesn't stop the request from being made. 
+
+    /* Below is some variations that sort of worked, but not really. I think the issue may be with the checkbox component itself  */
+    // .when ("ministry", {
+    //   is: value => value && (value.toLowerCase() === 'ag' ||
+    //     value.toLowerCase() === 'pssm' || 
+    //     value.toLowerCase() === 'embc' ||
+    //     value.toLowerCase() === 'mah'),
+    //   then: yup.boolean().required(),
+    // }),
+    /* 
+    noOfPassengers: Yup
+      .number()
+      .when('carType', {
+          is: value => value && value === "SUV",
+          then: Yup
+              .number()
+              .max(6, 'Max 6 passengers are required'),
+          otherwise: Yup
+              .number()
+              .max(4, 'Max 4 passengers are required'),
+      }),*/
+
+    confirmAGApproval: yup.boolean().nullable()
+    .when("ministry", (ministry) => {
+      if(ministry && (ministry.toLowerCase() === 'ag' ||
+      ministry.toLowerCase() === 'pssm' || 
+      ministry.toLowerCase() === 'embc' ||
+      ministry.toLowerCase() === 'mah')){
+        console.log(ministry);
+        return yup.boolean().required();
+      } 
+      
     }),
+
+    
+    
+    // {is: "AG", 
+    //     then: yup.boolean().required(),
+    //     otherwise: yup.boolean().notRequired()
+
+    //   amlWorkspaceName: yup.mixed()
+    // .when('source', {is: (val) => { return val === 'aml_pipelines'}, 
+    //             then: yup.string().required('AMLWorkspace is Required'),
+    //             otherwise: yup.mixed().notRequired()}),
+    
 });
 
 export default function Create({ requestsRoute }) {
