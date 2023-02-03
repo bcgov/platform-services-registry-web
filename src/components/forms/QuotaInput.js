@@ -21,6 +21,8 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
   const memory = formik.values[nameSpace + "Quota"]?.memory;
   const storage = formik.values[nameSpace + "Quota"]?.storage;
 
+  console.log(formik)
+
   return (
     <Box sx={{width: 340, mt: 3, mb: 5, mr: 4}}>
       <TitleTypography>

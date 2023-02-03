@@ -72,22 +72,22 @@ const ADMIN_REQUEST = gql`
           noServices
           other
         }
-        productionQuota: productionQuotaSelected {
+        productionQuota {
           cpu
           memory
           storage
         }
-        testQuota: testQuotaSelected {
+        testQuota {
           cpu
           memory
           storage
         }
-        developmentQuota: developmentQuotaSelected {
+        developmentQuota {
           cpu
           memory
           storage
         }
-        toolsQuota: toolsQuotaSelected {
+        toolsQuota {
           cpu
           memory
           storage
@@ -125,10 +125,7 @@ export default function AdminRequest() {
     privateCloudRequestDecision,
     { data: decisionData, loading: decisionLoading, error: decisionError },
   ] = useMutation(MAKE_REQUEST_DECISION, {
-    refetchQueries: [
-      { query: USER_REQUESTS },
-      { query: ALL_ACTIVE_REQUESTS },
-    ],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
   const makeDecisionOnClick = (decision) => {

@@ -335,46 +335,6 @@ export const projectInitialValues = {
   ...quotaInitialValues,
 };
 
-const customQuotaInitialValues = {
-  productionQuota: {
-    cpuRequests: "",
-    cpuLimits: "",
-    memoryReque: "",
-    memoryLimit: "",
-    storageFile: "",
-    snapshotCoun: "",
-  },
-  testQuota: {
-    cpuRequests: "",
-    cpuLimits: "",
-    memoryRequests: "",
-    memoryLimits: "",
-    storageFile: "",
-    snapshotCount: "",
-  },
-  developmentQuota: {
-    cpuRequests: "",
-    cpuLimits: "",
-    memoryRequests: "",
-    memoryLimits: "",
-    storageFile: "",
-    snapshotCount: "",
-  },
-  toolsQuota: {
-    cpuRequests: "",
-    cpuLimits: "",
-    memoryRequests: "",
-    memoryLimits: "",
-    storageFile: "",
-    snapshotCount: "",
-  },
-};
-
-export const customProjectInitialValues = {
-  ...createProjectInputInitalValues,
-  ...customQuotaInitialValues,
-};
-
 export const replaceNullsWithEmptyString = (obj) =>
   JSON.parse(
     JSON.stringify(obj, (key, value) => (value === null ? "" : value))

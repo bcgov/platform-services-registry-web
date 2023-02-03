@@ -67,22 +67,22 @@ const USER_REQUEST = gql`
           noServices
           other
         }
-        productionQuota: productionQuotaSelected {
+        productionQuota {
           cpu
           memory
           storage
         }
-        testQuota: testQuotaSelected {
+        testQuota {
           cpu
           memory
           storage
         }
-        developmentQuota: developmentQuotaSelected {
+        developmentQuota {
           cpu
           memory
           storage
         }
-        toolsQuota: toolsQuotaSelected {
+        toolsQuota {
           cpu
           memory
           storage
