@@ -12,17 +12,16 @@ import {
 import TitleTypography from "../common/TitleTypography";
 import Styled from "styled-components";
 
+
 String.prototype.capitalizeFirstLetter = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
-export default function QuotaInput({ nameSpace, formik, isDisabled }) {
+export default function QuotaInput({ nameSpace, formik, isDisabled, currentQuota={} }) {
   const cpu = formik.values[nameSpace + "Quota"]?.cpu;
   const memory = formik.values[nameSpace + "Quota"]?.memory;
   const storage = formik.values[nameSpace + "Quota"]?.storage;
-
-  console.log(formik)
-
+console.log(formik.values[nameSpace + "Quota"]?.cpu)
   return (
     <Box sx={{width: 340, mt: 3, mb: 5, mr: 4}}>
       <TitleTypography>
@@ -53,6 +52,9 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
               </MenuItem>
             ))}
           </Select>
+          <TitleTypography>
+          {currentQuota.cpu&&cpu !== currentQuota.cpu && currentQuota.cpu}
+      </TitleTypography>
         </FormControl>
         <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
           <InputLabel id="memory-label">Memory</InputLabel>
@@ -78,6 +80,9 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
               </MenuItem>
             ))}
           </Select>
+          <TitleTypography>
+          {memory !== currentQuota.memory && currentQuota.memory}
+      </TitleTypography>
         </FormControl>
         <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
           <InputLabel id="storage-label">
@@ -107,6 +112,9 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
               )
             )}
           </Select>
+          <TitleTypography>
+          {storage !== currentQuota.storage && currentQuota.storage}
+      </TitleTypography>
         </FormControl>
       </Box>
     </Box>

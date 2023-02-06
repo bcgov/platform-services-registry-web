@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
 import ClusterInput from "../../components/forms/ClusterInput";
-import QuotaInput from "../../components/forms/QuotaInput";
 import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
@@ -41,6 +40,26 @@ const ADMIN_REQUEST = gql`
       decisionDate
       project {
         name
+        productionQuota {
+          cpu
+          memory
+          storage
+        }
+        testQuota {
+          cpu
+          memory
+          storage
+        }
+        developmentQuota {
+          cpu
+          memory
+          storage
+        }
+        toolsQuota {
+          cpu
+          memory
+          storage
+        }
       }
       requestedProject {
         id
@@ -113,6 +132,7 @@ export default function AdminRequest() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
+  const [currentProjectQuota, setCurrentProjectQuota] = useState({})
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id },
@@ -164,6 +184,7 @@ export default function AdminRequest() {
     if (data) {
       // Form values cannon be null (uncontrolled input error), so replace nulls with empty strings
       formik.setValues(replaceNullsWithEmptyString(requestedProject));
+      setCurrentProjectQuota(data.privateCloudActiveRequestById.project)
     }
   }, [data]);
 
@@ -202,7 +223,9 @@ export default function AdminRequest() {
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Users formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas formik={formik} isDisabled={isDisabled} />
+          <Quotas formik={formik} isDisabled={isDisabled} 
+          currentProjectQuota={currentProjectQuota}
+          />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <CommonComponents formik={formik} isDisabled={isDisabled} />
         </div>
