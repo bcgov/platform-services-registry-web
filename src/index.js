@@ -4,21 +4,25 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { ReactKeycloakProvider } from "@react-keycloak/web";
-import keycloak from "./keycloak";
 import ApolloLinkProvider from "./ApolloLinkProvider";
 import { BrowserRouter } from "react-router-dom";
+import { ReactKeycloakProvider } from "@react-keycloak/web";
+import keycloak from "./keycloak";
+import { MsalProvider } from "@azure/msal-react";
+import { msalInstance } from "./msGraphApi";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <ReactKeycloakProvider authClient={keycloak}>
-    <ApolloLinkProvider>
-      <React.StrictMode>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </React.StrictMode>
-    </ApolloLinkProvider>
+    <MsalProvider instance={msalInstance}>
+      <ApolloLinkProvider>
+        <React.StrictMode>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </React.StrictMode>
+      </ApolloLinkProvider>
+    </MsalProvider>
   </ReactKeycloakProvider>
 );
 

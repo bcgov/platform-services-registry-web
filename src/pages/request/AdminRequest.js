@@ -50,12 +50,26 @@ const ADMIN_REQUEST = gql`
         status
         projectOwner {
           email
+          email
+          firstName
+          lastName
+          ministry
+          githubId
         }
         primaryTechnicalLead {
           email
+          firstName
+          lastName
+          ministry
+          githubId
         }
         secondaryTechnicalLead {
           email
+          email
+          firstName
+          lastName
+          ministry
+          githubId
         }
         ministry
         cluster
