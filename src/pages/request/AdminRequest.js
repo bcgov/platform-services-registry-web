@@ -69,12 +69,26 @@ const ADMIN_REQUEST = gql`
         status
         projectOwner {
           email
+          email
+          firstName
+          lastName
+          ministry
+          githubId
         }
         primaryTechnicalLead {
           email
+          firstName
+          lastName
+          ministry
+          githubId
         }
         secondaryTechnicalLead {
           email
+          email
+          firstName
+          lastName
+          ministry
+          githubId
         }
         ministry
         cluster
@@ -213,15 +227,15 @@ export default function AdminRequest() {
         </Button>
       </NavToolbar>
       <Container>
-        <MetaDataInput formik={formik} isDisabled={isDisabled} />
+        <MetaDataInput formik={formik} isDisabled={true} />
         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
         <div>
           <div style={{ display: "flex" }}>
-            <MinistryInput formik={formik} isDisabled={isDisabled} />
+            <MinistryInput formik={formik} isDisabled={true} />
             <ClusterInput formik={formik} isDisabled={true} />
           </div>
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Users formik={formik} isDisabled={false} />
+          <Users formik={formik} isDisabled={true} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Quotas
             formik={formik}
@@ -229,7 +243,7 @@ export default function AdminRequest() {
             currentProjectQuota={currentProjectQuota}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <CommonComponents formik={formik} isDisabled={isDisabled} />
+          <CommonComponents formik={formik} isDisabled={true} />
         </div>
       </Container>
     </div>

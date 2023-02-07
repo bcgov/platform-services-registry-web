@@ -106,9 +106,7 @@ export default function QuotaInput({ nameSpace, formik, isDisabled, currentQuota
             </Typography>]}
         </FormControl>
         <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
-          <InputLabel id="storage-label">
-            Storage
-          </InputLabel>
+          <InputLabel id="storage-label">Storage</InputLabel>
           <Select
             id={nameSpace + "Quota.storage"}
             name={nameSpace + "Quota.storage"}

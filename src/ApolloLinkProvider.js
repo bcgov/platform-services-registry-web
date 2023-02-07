@@ -11,7 +11,7 @@ import {
 import { offsetLimitPagination } from "@apollo/client/utilities";
 import { useKeycloak } from "@react-keycloak/web";
 import { onError } from "@apollo/client/link/error";
-import config from "./config";
+import config from "./keycloak/config";
 
 // Log any GraphQL errors or network error that occurred
 const errorLink = onError(({ graphQLErrors, networkError }) => {

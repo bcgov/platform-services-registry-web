@@ -148,15 +148,15 @@ export default function UserRequest() {
     <div>
       <NavToolbar path={"request"} title={name}></NavToolbar>
       <Container>
-        <MetaDataInput formik={formik} isDisabled={isDisabled} />
+        <MetaDataInput formik={formik} isDisabled={true} />
         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
         <div>
           <div style={{ display: "flex" }}>
-            <MinistryInput formik={formik} isDisabled={isDisabled} />
+            <MinistryInput formik={formik} isDisabled={true} />
             <ClusterInput formik={formik} isDisabled={true} />
           </div>
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Users formik={formik} isDisabled={false} />
+          <Users formik={formik} isDisabled={true} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Quotas
             formik={formik}
@@ -164,7 +164,7 @@ export default function UserRequest() {
             currentProjectQuota={currentProjectQuota}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <CommonComponents formik={formik} isDisabled={isDisabled} />
+          <CommonComponents formik={formik} isDisabled={true} />
         </div>
       </Container>
     </div>
