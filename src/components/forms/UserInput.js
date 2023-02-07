@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
-import { gql, useLazyQuery } from "@apollo/client";
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import Avatar from "@mui/material/Avatar";
 import { TextField } from "@mui/material";
 import useDebounce from "../../hooks/useDebounce";
@@ -19,6 +19,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import RequiredField from "../common/RequiredField";
 import FormHelperText from "@mui/material/FormHelperText";
+import Autocomplete from "@mui/material/Autocomplete";
+import { callMsGraph } from "../../msGraphApi";
 
 const USER_BY_EMAIL = gql`
   query UserByEmail($email: EmailAddress!) {
@@ -32,6 +34,16 @@ const USER_BY_EMAIL = gql`
   }
 `;
 
+const parseMinistryFromDisplayName = (displayName) => {
+  if (displayName && displayName.length > 0) {
+    const dividedString = displayName.split(/(\s+)/);
+    if (dividedString[2]) {
+      const ministry = dividedString[dividedString.length - 1].split(":", 1)[0];
+      return ministry;
+    }
+  }
+};
+
 export default function UserInput({
   contact, // e.g "projectOwner" or "primaryTechnicalLead" or "secondaryTechnicalLead"
   label,
@@ -39,39 +51,67 @@ export default function UserInput({
   formik,
   isDisabled = false,
 }) {
+  const email = formik.values[contact]?.email;
+
   const [edit, setEdit] = useState(defaultEditOpen);
+  const [userOptions, setUserOptions] = useState([email]);
+  const [emailInput, setEmailInput] = useState("");
 
   const debouncedGithubId = useDebounce(formik.values[contact]?.githubId, 500);
-  const debouncedEmail = useDebounce(formik.values[contact]?.email, 500);
-  const email = formik.values[contact]?.email;
+  const debouncedEmail = useDebounce(emailInput);
 
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
     nextFetchPolicy: "cache-first",
     onCompleted: (data) => {
-      // Set the data fetched from the Get User API Query to the form fields
       if (data.userByEmail) {
         formik.setFieldValue(contact + ".githubId", data.userByEmail.githubId);
-        formik.setFieldValue(
-          contact + ".firstName",
-          data.userByEmail.firstName
-        );
-        formik.setFieldValue(contact + ".lastName", data.userByEmail.lastName);
-        formik.setFieldValue(contact + ".email", data.userByEmail.email);
-        formik.setFieldValue(contact + ".ministry", data.userByEmail.ministry);
+      } else {
+        formik.setFieldValue(contact + ".githubId", "");
       }
     },
   });
 
+  const getFilteredUsers = useCallback(async () => {
+    const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${debouncedEmail}')&$orderby=userPrincipalName&$count=true&$top=25`;
+    const data = await callMsGraph(url);
+
+    setUserOptions(data.value);
+  }, [debouncedEmail]);
+
   useEffect(() => {
-    // When the user types in the email field, call the Get User API Query
+    const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
+
+    console.log("USER");
+    console.log(user);
+
+    if (user) {
+      getUser({ variables: { email } });
+
+      formik.setFieldValue(contact + ".email", user.mail.toLowerCase() || "");
+      formik.setFieldValue(contact + ".firstName", user.givenName || "");
+      formik.setFieldValue(contact + ".lastName", user.surname || "");
+      formik.setFieldValue(
+        contact + ".ministry",
+        parseMinistryFromDisplayName(user.displayName) || ""
+      );
+    } else if (!email) {
+      formik.setFieldValue(contact + ".email", "");
+      formik.setFieldValue(contact + ".firstName", "");
+      formik.setFieldValue(contact + ".lastName", "");
+      formik.setFieldValue(contact + ".ministry", "");
+      formik.setFieldValue(contact + ".githubId", "");
+    }
+  }, [email]);
+
+  useEffect(() => {
     if (debouncedEmail) {
-      getUser({ variables: { email: debouncedEmail } });
+      getFilteredUsers();
     }
   }, [debouncedEmail]);
 
   return (
-    <Card sx={{  mr: 8, width: 400 }}>
+    <Card sx={{ mr: 8, width: 400 }}>
       <Box
         sx={{
           p: 2,
@@ -91,7 +131,9 @@ export default function UserInput({
             color="text.secondary"
             sx={{ height: 20 }}
           >
-            {data?.userByEmail?.firstName} {data?.userByEmail?.lastName}
+            {formik.values[contact]?.firstName}{" "}
+            {formik.values[contact]?.lastName}
+            {/* {data?.userByEmail?.firstName} {data?.userByEmail?.lastName} */}
           </Typography>
         </Stack>
         {!edit ? (
@@ -126,21 +168,33 @@ export default function UserInput({
               width: "75%",
             }}
           >
-            <TextField
-              sx={{ mb: 2 }}
-              variant="standard"
+            <Autocomplete
+              disablePortal
+              options={userOptions.map((option) => option.mail?.toLowerCase())}
+              getOptionLabel={(mail) => mail || ""}
+              sx={{ width: 300 }}
               id={contact + ".email"}
               name={contact + ".email"}
               label="Email"
               disabled={isDisabled}
-              value={formik.values[contact]?.email}
-              onChange={formik.handleChange}
+              onChange={(e, value) =>
+                formik.setFieldValue(contact + ".email", value)
+              }
+              value={email}
               error={
                 formik.touched[contact]?.email &&
                 Boolean(formik.errors[contact]?.email)
               }
               helperText={formik.touched[contact]?.email && <RequiredField />}
-              size="small"
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  sx={{ mb: 2 }}
+                  variant="standard"
+                  size="small"
+                />
+              )}
             />
 
             <TextField
@@ -166,7 +220,7 @@ export default function UserInput({
               id={contact + ".firstName"}
               name={contact + ".firstName"}
               label="First Name"
-              disabled={isDisabled || !!data?.userByEmail?.firstName || !email}
+              disabled={true}
               value={formik.values[contact]?.firstName}
               onChange={formik.handleChange}
               error={
@@ -183,7 +237,7 @@ export default function UserInput({
               id={contact + ".lastName"}
               name={contact + ".lastName"}
               label="Last Name"
-              disabled={isDisabled || !!data?.userByEmail?.lastName || !email}
+              disabled={true}
               value={formik.values[contact]?.lastName}
               onChange={formik.handleChange}
               error={
@@ -194,33 +248,24 @@ export default function UserInput({
               size="small"
             />
 
-            <FormControl sx={{ minWidth: 250, mt: 1, mb: 3 }} size="small">
-              <InputLabel id="demo-simple-select-required-label">
-                Ministry
-              </InputLabel>
-              <Select
-                id={contact + ".ministry"}
-                name={contact + ".ministry"}
-                label="Ministry"
-                disabled={isDisabled || !!data?.userByEmail?.ministry || !email}
-                value={formik.values[contact]?.ministry}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched[contact]?.ministry &&
-                  Boolean(formik.errors[contact]?.ministry)
-                }
-                helperText={formik.touched[contact]?.email && <RequiredField />}
-              >
-                {ministries.map((ministryOption) => (
-                  <MenuItem key={ministryOption} value={ministryOption}>
-                    {ministryOption}
-                  </MenuItem>
-                ))}
-              </Select>
-              <FormHelperText>
-                {formik.touched[contact]?.email && <RequiredField />}
-              </FormHelperText>
-            </FormControl>
+            <TextField
+              sx={{ mb: 2 }}
+              variant="standard"
+              id={contact + ".ministry"}
+              name={contact + ".ministry"}
+              label="Ministry"
+              disabled={true}
+              value={formik.values[contact]?.ministry}
+              onChange={formik.handleChange}
+              error={
+                formik.touched[contact]?.ministry &&
+                Boolean(formik.errors[contact]?.ministry)
+              }
+              helperText={
+                formik.touched[contact]?.ministry && <RequiredField />
+              }
+              size="small"
+            />
           </Box>
         </Stack>
       ) : null}

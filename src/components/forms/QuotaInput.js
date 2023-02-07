@@ -21,14 +21,10 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
   const memory = formik.values[nameSpace + "Quota"]?.memory;
   const storage = formik.values[nameSpace + "Quota"]?.storage;
 
-  console.log(formik)
-
   return (
-    <Box sx={{width: 340, mt: 3, mb: 5, mr: 4}}>
-      <TitleTypography>
-        {nameSpace.capitalizeFirstLetter()}
-      </TitleTypography>
-      <Box sx={{display: "flex", flexDirection: "column", }}>
+    <Box sx={{ width: 340, mt: 3, mb: 5, mr: 4 }}>
+      <TitleTypography>{nameSpace.capitalizeFirstLetter()}</TitleTypography>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
         <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3 }}>
           <InputLabel id="cpu-lebel">Cpu</InputLabel>
           <Select
@@ -80,9 +76,7 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
           </Select>
         </FormControl>
         <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
-          <InputLabel id="storage-label">
-            Storage
-          </InputLabel>
+          <InputLabel id="storage-label">Storage</InputLabel>
           <Select
             id={nameSpace + "Quota.storage"}
             name={nameSpace + "Quota.storage"}
