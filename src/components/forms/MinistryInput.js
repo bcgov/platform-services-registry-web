@@ -12,14 +12,14 @@ import Typography from "@mui/material/Typography";
 
 const MinistryInput = ({ formik, isDisabled }) => {
   return (
-    <Box sx={{ mb: 5, mt: 5, mr: 10, width: 250 }}>
+    <Box sx={{ mb: 5, mt: 5, mr: 10, width: 300 }}>
       <div>
         <TitleTypography>Ministry</TitleTypography>
         <Typography sx={{ mb: 2 }} color="text.primary">
           Select the government ministry that this project belongs to.
         </Typography>
       </div>
-      <FormControl sx={{ width: 250, mt: 1}} size="small">
+      <FormControl sx={{ width: 250, mt: 1 }} size="small">
         <InputLabel id="ministry-label">Ministry</InputLabel>
         <Select
           id="select-ministry"
@@ -41,6 +41,12 @@ const MinistryInput = ({ formik, isDisabled }) => {
           {formik.touched.ministry && <RequiredField />}
         </FormHelperText>
       </FormControl>
+      <Typography sx={{width: 700, mt: 5}}variant="subtitle2" color="text.secondary">
+        * All product teams from the Ministries of Attorney General, Public Safety
+        and Solicitor General and Emergency Management BC and BC Housing must
+        engage with <a href="mailto:JAGMISO@gov.bc.ca">AG Security</a> prior to
+        submitting a request for a new project.{" "}
+      </Typography>
     </Box>
   );
 };
