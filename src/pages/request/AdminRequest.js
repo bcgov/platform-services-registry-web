@@ -223,8 +223,10 @@ export default function AdminRequest() {
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Users formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas formik={formik} isDisabled={isDisabled} 
-          currentProjectQuota={currentProjectQuota}
+          <Quotas
+            formik={formik}
+            isDisabled={isDisabled}
+            currentProjectQuota={currentProjectQuota}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <CommonComponents formik={formik} isDisabled={isDisabled} />

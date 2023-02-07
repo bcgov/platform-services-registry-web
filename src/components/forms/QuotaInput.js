@@ -22,8 +22,8 @@ export default function QuotaInput({ nameSpace, formik, isDisabled, currentQuota
   const cpu = formik.values[nameSpace + "Quota"]?.cpu;
   const memory = formik.values[nameSpace + "Quota"]?.memory;
   const storage = formik.values[nameSpace + "Quota"]?.storage;
-  console.log(formik.values[nameSpace + "Quota"]?.cpu)
-  return (
+
+  return (    
     <Box sx={{ width: 340, mt: 3, mb: 5, mr: 4 }}>
       <TitleTypography>
         {nameSpace.capitalizeFirstLetter()}
