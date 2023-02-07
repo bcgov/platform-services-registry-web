@@ -34,6 +34,16 @@ const USER_BY_EMAIL = gql`
   }
 `;
 
+const parseMinistryFromDisplayName = (displayName) => {
+  if (displayName && displayName.length > 0) {
+    const dividedString = displayName.split(/(\s+)/);
+    if (dividedString[2]) {
+      const ministry = dividedString[dividedString.length - 1].split(":", 1)[0];
+      return ministry;
+    }
+  }
+};
+
 export default function UserInput({
   contact, // e.g "projectOwner" or "primaryTechnicalLead" or "secondaryTechnicalLead"
   label,
@@ -43,17 +53,12 @@ export default function UserInput({
 }) {
   const email = formik.values[contact]?.email;
 
-  console.log("EMAIL");
-  console.log(email);
-
   const [edit, setEdit] = useState(defaultEditOpen);
   const [userOptions, setUserOptions] = useState([email]);
   const [emailInput, setEmailInput] = useState("");
 
   const debouncedGithubId = useDebounce(formik.values[contact]?.githubId, 500);
   const debouncedEmail = useDebounce(emailInput);
-
-  console.log("User Options: ", userOptions);
 
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
@@ -74,11 +79,11 @@ export default function UserInput({
     setUserOptions(data.value);
   }, [debouncedEmail]);
 
-  console.log("EMAIL");
-  console.log(email);
-
   useEffect(() => {
     const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
+
+    console.log("USER");
+    console.log(user);
 
     if (user) {
       getUser({ variables: { email } });
@@ -86,12 +91,16 @@ export default function UserInput({
       formik.setFieldValue(contact + ".email", user.mail.toLowerCase() || "");
       formik.setFieldValue(contact + ".firstName", user.givenName || "");
       formik.setFieldValue(contact + ".lastName", user.surname || "");
-      formik.setFieldValue(contact + ".ministry", "CITZ" || "");
+      formik.setFieldValue(
+        contact + ".ministry",
+        parseMinistryFromDisplayName(user.displayName) || ""
+      );
     } else if (!email) {
       formik.setFieldValue(contact + ".email", "");
       formik.setFieldValue(contact + ".firstName", "");
       formik.setFieldValue(contact + ".lastName", "");
       formik.setFieldValue(contact + ".ministry", "");
+      formik.setFieldValue(contact + ".githubId", "");
     }
   }, [email]);
 
