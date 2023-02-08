@@ -268,14 +268,6 @@ export default function UserInput({
           </Box>
         </Stack>
       ) : null}
-      {data?.userByEmail ? (
-        <Alert severity="success">
-          {data?.userByEmail?.firstName} {data?.userByEmail?.lastName} is an
-          existing user
-        </Alert>
-      ) : (
-        <Alert severity="info">This user does not exist</Alert>
-      )}
     </Card>
   );
 }
