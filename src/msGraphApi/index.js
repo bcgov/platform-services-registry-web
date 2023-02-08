@@ -58,6 +58,7 @@ export async function callMsGraph(apiEndPoint) {
     }
   } catch (error) {
     throw Error("Error making MS Graph API call");
+    console.log(error)
   }
 }
 
@@ -76,79 +77,3 @@ export async function getUserPhoto(bearer, userId) {
   }
   return "";
 }
-
-// export async function getUsers(email) {
-//   try {
-//     graphToken = await fetchGraphUserDelegateToken();
-//   } catch (error) {
-//     return;
-//   }
-
-//   // const users = await client
-//   //   .api("/users")
-//   //   .header("ConsistencyLevel", "eventual")
-//   //   .filter(`endswith(mail,\'${email}\')`)
-//   //   .orderby("userPrincipalName")
-//   //   .get();
-
-
-//   return users;
-// }
-
-export async function getIDIRUser(query) {
-  const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${query}')
-    &$orderby=displayName&$count=true
-    &$top=1
-    &$select=id,
-    mail,
-    displayName,
-    givenName,
-    surname`;
-
-  let graphToken;
-
-
-  try {
-    graphToken = await fetchGraphUserDelegateToken();
-  } catch (error) {
-    return;
-  }
-
-  const headers = new Headers();
-  headers.append("ConsistencyLevel", "eventual");
-  const bearer = `Bearer ${graphToken}`;
-  headers.append("Authorization", bearer);
-  const options = {
-    method: "GET",
-    headers,
-  };
-
-  let data;
-
-  try {
-    const response = await fetch(url, options);
-
-    if (response.ok) {
-      data = await response.json();
-    }
-  } catch (error) {
-    console.error(error);
-  }
-
-  return data;
-}
-
-// const validateIdirSearch = (userFound) => {
-//   setIDIRUserFound(userFound);
-//   if (!userFound) {
-//     resetFields();
-//   }
-// };
-
-// const resetFields = () => {
-//   formik.setFieldValue(contact + ".firstName", "");
-//   formik.setFieldValue(contact + ".lastName", "");
-//   formik.setFieldValue(contact + ".email", "");
-//   formik.setFieldValue(contact + ".ministry", "");
-//   setPhotoURL("");
-// };
