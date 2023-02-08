@@ -45,12 +45,24 @@ const USER_REQUEST = gql`
         status
         projectOwner {
           email
+          firstName
+          lastName
+          ministry
+          githubId
         }
         primaryTechnicalLead {
           email
+          firstName
+          lastName
+          ministry
+          githubId
         }
         secondaryTechnicalLead {
           email
+          firstName
+          lastName
+          ministry
+          githubId
         }
         ministry
         cluster
