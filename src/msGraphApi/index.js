@@ -31,7 +31,7 @@ async function fetchGraphUserDelegateToken() {
           console.log(error);
         });
     }
-    // throw Error("Error fetching token");
+    console.log(err);
   }
 
   return response.accessToken;
@@ -58,7 +58,6 @@ export async function callMsGraph(apiEndPoint) {
     }
   } catch (error) {
     console.log(error);
-    throw Error("Error making MS Graph API call");
   }
 }
 
