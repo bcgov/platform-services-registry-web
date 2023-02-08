@@ -20,7 +20,7 @@ import FormControl from "@mui/material/FormControl";
 import RequiredField from "../common/RequiredField";
 import FormHelperText from "@mui/material/FormHelperText";
 import Autocomplete from "@mui/material/Autocomplete";
-import { callMsGraph } from "../../msGraphApi";
+import { getUsers } from "../../msGraphApi";
 
 const USER_BY_EMAIL = gql`
   query UserByEmail($email: EmailAddress!) {
@@ -73,17 +73,16 @@ export default function UserInput({
   });
 
   const getFilteredUsers = useCallback(async () => {
-    const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${debouncedEmail}')&$orderby=userPrincipalName&$count=true&$top=25`;
-    const data = await callMsGraph(url);
+    const data = await getUsers(debouncedEmail);
 
-    setUserOptions(data.value);
+    console.log("data");
+    console.log(data);
+
+    setUserOptions(data);
   }, [debouncedEmail]);
 
   useEffect(() => {
     const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
-
-    console.log("USER");
-    console.log(user);
 
     if (user) {
       getUser({ variables: { email } });
