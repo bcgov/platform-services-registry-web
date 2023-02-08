@@ -57,8 +57,8 @@ export async function callMsGraph(apiEndPoint) {
       return await response.json();
     }
   } catch (error) {
+    console.log(error);
     throw Error("Error making MS Graph API call");
-    console.log(error)
   }
 }
 
