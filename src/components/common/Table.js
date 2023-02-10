@@ -66,6 +66,7 @@ export default function StickyTable({
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
+                console.log(row)
                 return (
                   <TableRow
                     hover
@@ -76,6 +77,7 @@ export default function StickyTable({
                   >
                     {columns.map((column) => {
                       const value = row[column.id];
+                      
                       return (
                         <TableCell
                           style={{
@@ -89,7 +91,7 @@ export default function StickyTable({
                           key={column.id}
                           align={column.align}
                         >
-                          {column.format && typeof value === "number"
+                       {column.format && typeof value === "number"
                             ? column.format(value)
                             : value}
                         </TableCell>

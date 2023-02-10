@@ -45,7 +45,7 @@ const projectsToRows = ({
     <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
   ),
   projectOwner: (
-    <Chip
+   <a href={`mailto:projectOwner.email`}> <Chip
       key={projectOwner.githubId + licencePlate + "po"}
       style={{ width: "fit-content" }}
       avatar={
@@ -56,7 +56,7 @@ const projectsToRows = ({
       }
       label={`${projectOwner.firstName} ${projectOwner.lastName}`}
       variant="outlined"
-    />
+    /></a>
   ),
   technicalLeads: (
     <Stack direction="column" spacing={1}>
