@@ -50,7 +50,6 @@ const ADMIN_REQUEST = gql`
         status
         projectOwner {
           email
-          email
           firstName
           lastName
           ministry
@@ -64,7 +63,6 @@ const ADMIN_REQUEST = gql`
           githubId
         }
         secondaryTechnicalLead {
-          email
           email
           firstName
           lastName

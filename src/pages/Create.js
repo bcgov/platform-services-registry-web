@@ -142,6 +142,13 @@ export default function Create({ requestsRoute }) {
           <Users formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <CommonComponents formik={formik} isDisabled={false} />
+          <Button
+            type="submit"
+            sx={{ mt: 3, ml: 2, mb: 4, width: 350 }}
+            variant="outlined"
+          >
+            CREATE
+          </Button>
         </Container>
       </form>
     </div>
