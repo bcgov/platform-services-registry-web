@@ -34,7 +34,6 @@ export default function StickyTable({
   };
 
   const handleRowClick = (id) => {
-    console.log(onClickPath + id);
     navigate(onClickPath + id);
   };
 
@@ -66,7 +65,6 @@ export default function StickyTable({
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
-                console.log(row)
                 return (
                   <TableRow
                     hover
@@ -76,8 +74,7 @@ export default function StickyTable({
                     key={row.code}
                   >
                     {columns.map((column) => {
-                      const value = row[column.id];
-                      
+                      const value = row[column.id];                      
                       return (
                         <TableCell
                           style={{

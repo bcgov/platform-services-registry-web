@@ -19,16 +19,19 @@ export const ALL_ACTIVE_REQUESTS = gql`
         cluster
         licencePlate
         projectOwner {
+          email
           firstName
           lastName
           githubId
         }
         primaryTechnicalLead {
+          email
           firstName
           lastName
           githubId
         }
         secondaryTechnicalLead {
+          email
           firstName
           lastName
           githubId

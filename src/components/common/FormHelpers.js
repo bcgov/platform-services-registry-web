@@ -76,6 +76,11 @@ export const createProjectFormSchema = yup
   .object()
   .shape({ ...metaDataSchema, ...commonComponentsSchema });
 
+export const stopPropagationRow = (e, email) => {
+  e.stopPropagation()
+  window.location.assign(email);
+}
+
 export const userProjectToFormData = (userPrivateCloudProject) => {
   if (userPrivateCloudProject === undefined) return {};
 
@@ -157,9 +162,9 @@ export const userProjectToFormData = (userPrivateCloudProject) => {
 export const formDataToUserProject = (data, dirtyFields) => {
   const changedFields = dirtyFields
     ? Object.keys(dirtyFields).reduce((acc, key) => {
-        acc[key] = data[key];
-        return acc;
-      }, {})
+      acc[key] = data[key];
+      return acc;
+    }, {})
     : data;
 
   const {
