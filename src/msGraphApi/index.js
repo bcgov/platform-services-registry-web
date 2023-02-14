@@ -23,8 +23,6 @@ async function getTokenPopup() {
     accessToken = result.accessToken;
   } catch (error) {
     console.log("silent token acquisition fails. acquiring token using popup");
-    // if (error instanceof InteractionRequiredAuthError) {
-    // fallback to interaction when silent call fails
     const result = myMSALObj.acquireTokenPopup(request);
     accessToken = result.accessToken;
   }

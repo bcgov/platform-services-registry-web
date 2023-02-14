@@ -10,7 +10,6 @@ import {
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
 import ClusterInput from "../../components/forms/ClusterInput";
-import QuotaInput from "../../components/forms/QuotaInput";
 import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
@@ -33,6 +32,7 @@ import ActiveRequestText from "../../components/common/ActiveRequestText";
 import Divider from "@mui/material/Divider";
 import Quotas from "../../components/forms/Quotas";
 import Users from "../../components/forms/Users";
+import Namespaces from "../../components/Namespaces";
 
 const ADMIN_PROJECT = gql`
   query Query($projectId: ID!) {
@@ -169,7 +169,7 @@ const validationSchema = yup.object().shape({
   testQuota: yup.object(QuotaInputSchema).required(),
 });
 
-export default function AdminProject({ requestsRoute }) {
+export default function Project({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
@@ -314,6 +314,11 @@ export default function AdminProject({ requestsRoute }) {
               <MinistryInput formik={formik} isDisabled={isDisabled} />
               <ClusterInput formik={formik} isDisabled={true} />
             </div>
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            <Namespaces
+              cluster={data?.userPrivateCloudProjectById?.cluster}
+              licencePlate={data?.userPrivateCloudProjectById?.licencePlate}
+            />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Users formik={formik} isDisabled={false} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />

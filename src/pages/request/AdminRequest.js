@@ -20,6 +20,7 @@ import Container from "../../components/common/Container";
 import Users from "../../components/forms/Users";
 import Divider from "@mui/material/Divider";
 import Quotas from "../../components/forms/Quotas";
+import Namespaces from "../../components/Namespaces";
 
 const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
@@ -209,6 +210,20 @@ export default function AdminRequest() {
             <ClusterInput formik={formik} isDisabled={true} />
           </div>
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          {request?.type !== "CREATE" ? (
+            <div>
+              <Namespaces
+                cluster={
+                  data?.privateCloudActiveRequestById?.requestedProject?.cluster
+                }
+                licencePlate={
+                  data?.privateCloudActiveRequestById?.requestedProject
+                    ?.licencePlate
+                }
+              />
+              <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            </div>
+          ) : null}
           <Users formik={formik} isDisabled={true} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Quotas formik={formik} isDisabled={true} />
