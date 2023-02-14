@@ -22,6 +22,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import Autocomplete from "@mui/material/Autocomplete";
 import { getUsers } from "../../msGraphApi";
 
+
 const USER_BY_EMAIL = gql`
   query UserByEmail($email: EmailAddress!) {
     userByEmail(email: $email) {
@@ -34,6 +35,7 @@ const USER_BY_EMAIL = gql`
   }
 `;
 
+
 const parseMinistryFromDisplayName = (displayName) => {
   if (displayName && displayName.length > 0) {
     const dividedString = displayName.split(/(\s+)/);
@@ -44,6 +46,9 @@ const parseMinistryFromDisplayName = (displayName) => {
   }
 };
 
+
+
+
 export default function UserInput({
   contact, // e.g "projectOwner" or "primaryTechnicalLead" or "secondaryTechnicalLead"
   label,
@@ -53,12 +58,15 @@ export default function UserInput({
 }) {
   const email = formik.values[contact]?.email;
 
+
   const [edit, setEdit] = useState(defaultEditOpen);
   const [userOptions, setUserOptions] = useState([email]);
   const [emailInput, setEmailInput] = useState("");
 
+
   const debouncedGithubId = useDebounce(formik.values[contact]?.githubId, 500);
   const debouncedEmail = useDebounce(emailInput);
+
 
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
@@ -72,20 +80,26 @@ export default function UserInput({
     },
   });
 
+
   const getFilteredUsers = useCallback(async () => {
     const data = await getUsers(debouncedEmail);
+
 
     console.log("data");
     console.log(data);
 
+
     setUserOptions(data);
   }, [debouncedEmail]);
+
 
   useEffect(() => {
     const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
 
+
     if (user) {
       getUser({ variables: { email } });
+
 
       formik.setFieldValue(contact + ".email", user.mail.toLowerCase() || "");
       formik.setFieldValue(contact + ".firstName", user.givenName || "");
@@ -103,11 +117,13 @@ export default function UserInput({
     }
   }, [email]);
 
+
   useEffect(() => {
     if (debouncedEmail) {
       getFilteredUsers();
     }
   }, [debouncedEmail]);
+
 
   return (
     <Card sx={{ mr: 8, width: 400 }}>
@@ -128,7 +144,7 @@ export default function UserInput({
           <Typography
             variant="body2"
             color="text.secondary"
-            sx={{ height: 20 }}
+            sx={{color: "rgba(0, 0, 0, 0.87)", height: 20 }}
           >
             {formik.values[contact]?.firstName}{" "}
             {formik.values[contact]?.lastName}
@@ -189,15 +205,20 @@ export default function UserInput({
                 <TextField
                   {...params}
                   onChange={(e) => setEmailInput(e.target.value)}
-                  sx={{ mb: 2 }}
+                  sx={{ "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                  }, mb: 2 }}
                   variant="standard"
                   size="small"
                 />
               )}
             />
 
+
             <TextField
-              sx={{ mb: 2 }}
+              sx={{ "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+              }, mb: 2 }}
               variant="standard"
               id={contact + ".githubId"}
               name={contact + ".githubId"}
@@ -213,8 +234,11 @@ export default function UserInput({
               size="small"
             />
 
+
             <TextField
-              sx={{ mb: 2 }}
+              sx={{ "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+              }, mb: 2 }}
               variant="standard"
               id={contact + ".firstName"}
               name={contact + ".firstName"}
@@ -230,8 +254,11 @@ export default function UserInput({
               size="small"
             />
 
+
             <TextField
-              sx={{ mb: 2 }}
+              sx={{ "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+              }, mb: 2 }}
               variant="standard"
               id={contact + ".lastName"}
               name={contact + ".lastName"}
@@ -247,8 +274,11 @@ export default function UserInput({
               size="small"
             />
 
+
             <TextField
-              sx={{ mb: 2 }}
+              sx={{ "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+              }, mb: 2 }}
               variant="standard"
               id={contact + ".ministry"}
               name={contact + ".ministry"}

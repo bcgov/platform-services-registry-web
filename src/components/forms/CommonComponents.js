@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import Checkbox from "@mui/material/Checkbox";
 import FormHelperText from "@mui/material/FormHelperText";
 
+
 const commonComponents = [
   { name: "addressAndGeolocation", description: "Address and geolocation" },
   {
@@ -49,6 +50,7 @@ const commonComponents = [
   },
 ];
 
+
 const StyledCheckboxContainer = styled.div`
   min-width: 400px;
   display: inline-block;
@@ -57,10 +59,13 @@ const StyledCheckboxContainer = styled.div`
   align-items: flex-start;
 `;
 
+
 export default function CommonComponents({ formik, isDisabled }) {
   const [dirty, setDirty] = useState(false);
 
+
   const noServices = formik.values.commonComponents.noServices;
+
 
   const onClick = (name) => (event) => {
     if (event.target.value === formik.values.commonComponents[name]) {
@@ -70,12 +75,15 @@ export default function CommonComponents({ formik, isDisabled }) {
     }
   };
 
+
   useEffect(() => {
     const { noServices, ...rest } = formik.values.commonComponents;
     const values = Object.values(rest).filter((value) => value !== "");
 
+
     setDirty(values.length !== 0);
   }, [formik.values.commonComponents]);
+
 
   return (
     <Box sx={{ mt: 6, mb: 4 }}>
@@ -102,8 +110,11 @@ export default function CommonComponents({ formik, isDisabled }) {
               value={formik.values.commonComponents[name]}
             >
               <FormControlLabel
+                 sx={{ "& .MuiFormControlLabel-label.Mui-disabled": {
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                }}}
                 control={
-                  <Radio
+                  <Radio              
                     id={"commonComponents" + name + "IMPLEMENTED"}
                     name={"commonComponents." + name}
                     value="IMPLEMENTED"
@@ -113,6 +124,9 @@ export default function CommonComponents({ formik, isDisabled }) {
                 label="Implemented"
               />
               <FormControlLabel
+                 sx={{ "& .MuiFormControlLabel-label.Mui-disabled": {
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                }}}
                 control={
                   <Radio
                     id={"commonComponents" + name + "IMPLEMENTED"}
@@ -146,6 +160,9 @@ export default function CommonComponents({ formik, isDisabled }) {
           />
         </div>
         <FormControlLabel
+           sx={{ "& .MuiFormControlLabel-label.Mui-disabled": {
+            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+          }}}
           control={
             <Checkbox
               id="noServices"
