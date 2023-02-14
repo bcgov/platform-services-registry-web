@@ -269,6 +269,7 @@ export const storageToDefaultOption = (quota) =>
 export const createProjectInputInitalValues = {
   name: "",
   description: "",
+  humanComment: "",
   projectOwner: {
     firstName: "",
     lastName: "",

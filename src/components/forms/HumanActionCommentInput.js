@@ -6,21 +6,17 @@ import TitleTypography from "../common/TitleTypography";
 import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
 
-export default function MetaDataInput({ formik, isDisabled }) {
+export default function HumanActionCommentInput({ formik, isDisabled }) {
   return (
     <Box
       sx={{
         "& .MuiTextField-root": { mb: 2, mt: 2 },
         mb: 4,
         mt: 2,
-        display: "flex",
-        justifyContent: 'space-between',
-        alignItems: 'flex-end'
       }}
       noValidate
       autoComplete="off"
     >
-
       <Box sx={{ display: "flex", p: 0 }}>
         <Box sx={{ mr: 0, width: 650 }}>
           <div>
@@ -64,25 +60,28 @@ export default function MetaDataInput({ formik, isDisabled }) {
             rows={4}
           />
         </Box>
-        <Box></Box>
+        
+        <Box>
+            
+        </Box>
+        <TextField
+            fullWidth
+            id="description"
+            name="description"
+            label="Description"
+            disabled={isDisabled}
+            value={formik.values.description}
+            onChange={formik.handleChange}
+            error={
+              formik.touched.description && Boolean(formik.errors.description)
+            }
+            helperText={formik.touched.name && <RequiredField />}
+            size="small"
+            style={{ width: "100%" }}
+            multiline
+            rows={4}
+          />
       </Box>
-      <TextField
-        fullWidth
-        id="humanComment"
-        name="humanComment"
-        label="Human Action Comment"
-        // disabled={isDisabled}
-        value={formik.values.humanComment}
-        onChange={formik.handleChange}
-        error={
-          formik.touched.humanComment && Boolean(formik.errors.humanComment)
-        }
-        helperText={formik.touched.name && <RequiredField />}
-        size="small"
-        style={{ width: "45%" }}
-        multiline
-        rows={4}
-      />
     </Box>
   );
 }

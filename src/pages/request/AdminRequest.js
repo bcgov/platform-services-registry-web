@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
+import HumanActionCommentInput from "../../components/forms/HumanActionCommentInput";
 import ClusterInput from "../../components/forms/ClusterInput";
 import QuotaInput from "../../components/forms/QuotaInput";
 import MinistryInput from "../../components/forms/MinistryInput";
@@ -36,6 +37,7 @@ const ADMIN_REQUEST = gql`
       }
       type
       decisionStatus
+      humanComment
       active
       created
       decisionDate
@@ -204,7 +206,8 @@ export default function AdminRequest() {
         </Button>
       </NavToolbar>
       <Container>
-        <MetaDataInput formik={formik} isDisabled={true} />
+         <MetaDataInput formik={formik} isDisabled={true} />
+        {/* <HumanActionCommentInput formik={formik} isDisabled={true} /> */}
         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
         <div>
           <div style={{ display: "flex" }}>
