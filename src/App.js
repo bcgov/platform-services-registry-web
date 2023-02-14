@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext } from "react";
+import React, { useEffect, useState, createContext, useCallback } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "./App.css";
 import { AppRouter } from "./components/AppRouter";
@@ -12,6 +12,7 @@ import { useQuery, gql } from "@apollo/client";
 import UserProvider from "./providers/user";
 import SearchProvider from "./providers/search";
 import FilterProvider from "./providers/filter";
+import { getUserPhotoByEmail } from "./msGraphApi/index";
 
 const theme = createTheme({
   typography: {
@@ -70,7 +71,6 @@ const ME = gql`
       firstName
       lastName
       email
-      githubId
     }
   }
 `;
@@ -81,7 +81,7 @@ function App() {
   } = useKeycloak();
 
   const { error, data } = useQuery(ME, { errorPolicy: "ignore" });
-
+  const photoUrl = getUserPhotoByEmail(data?.me?.email);
   const [mode, setMode] = useState(localStorage.getItem("appMode") || "light");
   theme.palette.mode = mode;
 
@@ -98,7 +98,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <ModeContext.Provider value={{ mode: mode, toggleMode: toggleMode }}>
-        <UserProvider user={data?.me}>
+        <UserProvider user={{ photoUrl, ...data?.me }}>
           <SearchProvider>
             <FilterProvider>
               <AdminProvider>

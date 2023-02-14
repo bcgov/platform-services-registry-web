@@ -49,21 +49,18 @@ const ADMIN_PROJECT = gql`
       projectOwner {
         email
         firstName
-        githubId
         lastName
         ministry
       }
       primaryTechnicalLead {
         email
         firstName
-        githubId
         lastName
         ministry
       }
       secondaryTechnicalLead {
         email
         firstName
-        githubId
         lastName
         ministry
       }

@@ -16,17 +16,17 @@ const USER_PROJECTS = gql`
       projectOwner {
         firstName
         lastName
-        githubId
+        email
       }
       primaryTechnicalLead {
         firstName
         lastName
-        githubId
+        email
       }
       secondaryTechnicalLead {
         firstName
         lastName
-        githubId
+        email
       }
     }
   }

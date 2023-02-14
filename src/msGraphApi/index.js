@@ -44,15 +44,13 @@ export async function callMsGraph(endpoint, accessToken) {
     headers: headers,
   };
 
-  return fetch(endpoint, options)
-    .then((response) => response.json())
-    .catch((error) => console.log(error));
+  return fetch(endpoint, options);
 }
 
 export async function getUsers(email) {
   const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${email}')&$orderby=userPrincipalName&$count=true&$top=25`;
 
-  let response;
+  let data;
 
   try {
     const accessToken = await getTokenPopup();
@@ -61,10 +59,93 @@ export async function getUsers(email) {
       return [];
     }
 
-    response = await callMsGraph(url, accessToken);
+    const response = await callMsGraph(url, accessToken);
+    data = await response.json();
   } catch (error) {
     console.error(error);
   }
 
-  return response.value;
+  return data.value;
+}
+
+export async function getUser(email) {
+  const url = `https://graph.microsoft.com/v1.0/users/${email}`;
+
+  let user;
+
+  try {
+    const accessToken = await getTokenPopup();
+
+    if (!accessToken) {
+      return null;
+    }
+
+    const response = await callMsGraph(url, accessToken);
+    user = await response.json();
+
+    console.log("User by email: ");
+    console.log(user);
+  } catch (error) {
+    console.error(error);
+  }
+
+  return user;
+}
+
+export async function getUserPhoto(id) {
+  const url = `https://graph.microsoft.com/v1.0/users/${id}/photo/$value`;
+
+  let imageUrl;
+
+  try {
+    const accessToken = await getTokenPopup();
+
+    if (!accessToken) {
+      return null;
+    }
+
+    const response = await callMsGraph(url, accessToken);
+
+    if (response.ok) {
+      console.log(response);
+      const data = await response.blob();
+
+      console.log(data);
+
+      imageUrl = URL.createObjectURL(data);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return imageUrl;
+}
+
+export async function getUserPhotoByEmail(email) {
+  const url = `https://graph.microsoft.com/v1.0/users/${email}/photo/$value`;
+
+  let imageUrl;
+
+  try {
+    const accessToken = await getTokenPopup();
+
+    if (!accessToken) {
+      return null;
+    }
+
+    const response = await callMsGraph(url, accessToken);
+
+    if (response.ok) {
+      console.log(response);
+      const data = await response.blob();
+
+      console.log(data);
+
+      imageUrl = URL.createObjectURL(data);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return imageUrl;
 }
