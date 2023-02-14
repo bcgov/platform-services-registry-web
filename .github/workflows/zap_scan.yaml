@@ -1,0 +1,27 @@
+name: Site Security Scan
+on:
+  schedule:
+    # Runs every Monday At 01:00.
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+
+jobs:
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: Scan the platform services registry
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: main
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.7.0
+        with:
+          # Target URL
+          target: "https://platsrv-registry-web-101ed4-prod.apps.silver.devops.gov.bc.ca"
+          # The Docker file to be executed (optional)
+          docker_name: "owasp/zap2docker-stable"
+          # Relative path of the ZAP configuration file (optional)
+          # rules_file_name: '.zap/rules.tsv'
+          # Additional command line options (optional)
+          # cmd_options: '-a'
