@@ -69,7 +69,6 @@ export default function UserInput({
 
   const getFilteredUsers = useCallback(async () => {
     const data = await getUsers(debouncedEmail);
-    console.log(data);
 
     setUserOptions(data);
   }, [debouncedEmail]);
@@ -186,7 +185,9 @@ export default function UserInput({
                     formik.touched[contact]?.firstName &&
                     Boolean(formik.errors[contact]?.firstName)
                   }
-                  helperText={formik.touched[contact]?.email && <RequiredField />}
+                  helperText={
+                    formik.touched[contact]?.email && <RequiredField />
+                  }
                   sx={{ mb: 2 }}
                   variant="standard"
                   size="small"
@@ -207,7 +208,9 @@ export default function UserInput({
                 formik.touched[contact]?.firstName &&
                 Boolean(formik.errors[contact]?.firstName)
               }
-              helperText={formik.touched[contact]?.firstName && <RequiredField />}
+              helperText={
+                formik.touched[contact]?.firstName && <RequiredField />
+              }
               size="small"
             />
 
@@ -224,7 +227,9 @@ export default function UserInput({
                 formik.touched[contact]?.lastName &&
                 Boolean(formik.errors[contact]?.lastName)
               }
-              helperText={formik.touched[contact]?.lastName && <RequiredField />}
+              helperText={
+                formik.touched[contact]?.lastName && <RequiredField />
+              }
               size="small"
             />
 

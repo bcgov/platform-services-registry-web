@@ -33,7 +33,6 @@ import Users from "../../components/forms/Users";
 import Divider from "@mui/material/Divider";
 import Quotas from "../../components/forms/Quotas";
 import Namespaces from "../../components/Namespaces";
-import Modal from "../../components/common/ButtonModal";
 
 const ADMIN_PROJECT = gql`
   query Query($projectId: ID!) {

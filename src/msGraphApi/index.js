@@ -80,9 +80,6 @@ export async function getUser(email) {
 
     const response = await callMsGraph(url, accessToken);
     user = await response.json();
-
-    console.log("User by email: ");
-    console.log(user);
   } catch (error) {
     console.error(error);
   }
@@ -105,10 +102,7 @@ export async function getUserPhoto(id) {
     const response = await callMsGraph(url, accessToken);
 
     if (response.ok) {
-      console.log(response);
       const data = await response.blob();
-
-      console.log(data);
 
       imageUrl = URL.createObjectURL(data);
     }
@@ -134,10 +128,7 @@ export async function getUserPhotoByEmail(email) {
     const response = await callMsGraph(url, accessToken);
 
     if (response.ok) {
-      console.log(response);
       const data = await response.blob();
-
-      console.log(data);
 
       imageUrl = URL.createObjectURL(data);
     }
