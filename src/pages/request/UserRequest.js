@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
 import ClusterInput from "../../components/forms/ClusterInput";
@@ -37,6 +37,26 @@ const USER_REQUEST = gql`
       decisionDate
       project {
         name
+        productionQuota {
+          cpu
+          memory
+          storage
+        }
+        testQuota {
+          cpu
+          memory
+          storage
+        }
+        developmentQuota {
+          cpu
+          memory
+          storage
+        }
+        toolsQuota {
+          cpu
+          memory
+          storage
+        }
       }
       requestedProject {
         id
@@ -104,6 +124,7 @@ const USER_REQUEST = gql`
 
 export default function UserRequest() {
   const { id } = useParams();
+  const [currentProjectQuota, setCurrentProjectQuota] = useState({})
 
   const { data, loading, error } = useQuery(USER_REQUEST, {
     variables: { requestId: id },
@@ -122,6 +143,12 @@ export default function UserRequest() {
       formik.setValues(replaceNullsWithEmptyString(requestedProject));
     }
   }, [requestedProject]);
+
+  useEffect(() => {
+    if (data) {
+        setCurrentProjectQuota(data.userPrivateCloudRequestById.project)
+    }
+  }, [data]);
 
   const name =
     request?.type === "CREATE" ? requestedProject?.name : project?.name;
@@ -155,7 +182,11 @@ export default function UserRequest() {
           ) : null}
           <Users formik={formik} isDisabled={true} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas formik={formik} isDisabled={true} />
+          <Quotas
+            formik={formik}
+            isDisabled={isDisabled}
+            currentProjectQuota={currentProjectQuota}
+          />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <CommonComponents formik={formik} isDisabled={true} />
         </div>
