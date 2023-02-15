@@ -1,6 +1,7 @@
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
-import Avatar from "@mui/material/Avatar";
+// import Avatar from "@mui/material/Avatar";
+import Avatar from "../../components/common/Avatar";
 import CircularProgress from "../../components/common/CircularProgress";
 import { Box } from "@mui/system";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -36,13 +37,10 @@ const requestsToRows = ({
   cluster,
   projectOwner: (
     <Chip
-      key={projectOwner.githubId}
+      key={projectOwner.firstName}
       style={{ width: "fit-content" }}
       avatar={
-        <Avatar
-          alt={projectOwner.firstName}
-          src={`https://github.com/${projectOwner.githubId}.png`}
-        />
+        <Avatar firstName={projectOwner.firstName} email={projectOwner.email} />
       }
       label={`${projectOwner.firstName} ${projectOwner.lastName}`}
       variant="outlined"
@@ -52,15 +50,12 @@ const requestsToRows = ({
     <Stack direction="column" spacing={1}>
       {[primaryTechnicalLead, secondaryTechnicalLead]
         .filter(Boolean)
-        .map(({ firstName, lastName, githubId }) => (
+        .map(({ firstName, lastName, email }) => (
           <Chip
-            key={githubId}
+            key={firstName}
             style={{ width: "fit-content" }}
             avatar={
-              <Avatar
-                alt={firstName}
-                src={`https://github.com/${githubId}.png`}
-              />
+              <Avatar firstName={firstName} email={email} />
             }
             label={`${firstName} ${lastName}`}
             variant="outlined"

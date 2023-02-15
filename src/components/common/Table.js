@@ -34,7 +34,6 @@ export default function StickyTable({
   };
 
   const handleRowClick = (id) => {
-    console.log(onClickPath + id);
     navigate(onClickPath + id);
   };
 

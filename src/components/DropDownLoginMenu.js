@@ -4,7 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import { useKeycloak } from "@react-keycloak/web";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Avatar from "@mui/material/Avatar";
+import Avatar from "../components/common/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Logout from "@mui/icons-material/Logout";
@@ -49,15 +49,11 @@ export default function DropDownLoginMenu() {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            {userContext?.githubId ? (
-              <Avatar
-                sx={{ width: 32, height: 32 }}
-                alt={userContext?.firstName}
-                src={`https://github.com/${userContext?.githubId}.png`}
-              />
-            ) : (
-              <Avatar sx={{ width: 32, height: 32 }} />
-            )}
+            <Avatar
+              sx={{ width: 32, height: 32 }}
+              email={userContext?.email}
+              firstName={userContext?.firstName}
+            />
           </IconButton>
         </Tooltip>
       </Box>

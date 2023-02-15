@@ -18,7 +18,6 @@ export const USER_FIELDS = gql`
     firstName
     lastName
     email
-    githubId
   }
 `;
 
@@ -56,11 +55,9 @@ const flattenProject = (project) => {
     ...rest,
     projectOwnerName: `${projectOwner.firstName} ${projectOwner.lastName}`,
     projectOnwerEmail: projectOwner.email,
-    projectOwnerGithubId: projectOwner.githubId,
 
     primaryTechnicalLeadName: `${primaryTechnicalLead.firstName} ${primaryTechnicalLead.lastName}`,
     primaryTechnicalLeadEmail: primaryTechnicalLead.email,
-    primaryTechnicalLeadGithubId: primaryTechnicalLead.githubId,
 
     secondaryTechnicalLeadName: secondaryTechnicalLead
       ? `${secondaryTechnicalLead.firstName} ${secondaryTechnicalLead.lastName}`
@@ -68,13 +65,10 @@ const flattenProject = (project) => {
     secondaryTechnicalLeadEmail: secondaryTechnicalLead
       ? secondaryTechnicalLead.email
       : "",
-    secondaryTechnicalLeadGithubId: secondaryTechnicalLead
-      ? secondaryTechnicalLead.githubId
-      : "",
   };
 };
 
-// Replaces technicalLead or projectOwner with seperate headers for the name, email, and githubId
+// Replaces technicalLead or projectOwner with seperate headers for the name, email
 const transformSelectedFields = (selectedFields) => {
   const columns = [...selectedFields];
   // Replace the project owner header with the ones below
@@ -85,8 +79,7 @@ const transformSelectedFields = (selectedFields) => {
       projectOwnerIndex,
       1,
       "projectOwnerName",
-      "projectOnwerEmail",
-      "projectOwnerGithubId"
+      "projectOnwerEmail"
     );
   }
 
@@ -100,10 +93,8 @@ const transformSelectedFields = (selectedFields) => {
 
       "primaryTechnicalLeadName",
       "primaryTechnicalLeadEmail",
-      "primaryTechnicalLeadGithubId",
       "secondaryTechnicalLeadName",
       "secondaryTechnicalLeadEmail",
-      "secondaryTechnicalLeadGithubId"
     );
   }
 

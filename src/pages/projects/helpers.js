@@ -1,7 +1,7 @@
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
-import Avatar from "@mui/material/Avatar";
 import GroupAvatars from "../../components/common/Contacts";
+import Avatar from "../../components/common/Avatar";
 
 function truncate(str, n) {
   return str.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -14,13 +14,13 @@ const columns = [
   { id: "cluster", label: "Cluster", minWidth: 0, width: 100 },
   { id: "projectOwner", label: "Project Owner", minWidth: 0, width: 180 },
   { id: "technicalLeads", label: "Technical Leads", minWidth: 0, width: 180 },
-  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 }
+  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 },
 ];
 
 const columnsXs = [
   { id: "name", label: "Name", minWidth: 40, width: 60 },
   { id: "contacts", label: "Contacts", minWidth: 0, width: 100 },
-  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 }
+  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 },
 ];
 
 const projectsToRows = ({
@@ -32,7 +32,7 @@ const projectsToRows = ({
   secondaryTechnicalLead,
   ministry,
   cluster,
-  licencePlate
+  licencePlate,
 }) => ({
   id,
   name: <span style={{ fontSize: 18, fontWeight: "450" }}>{name}</span>,
@@ -46,13 +46,10 @@ const projectsToRows = ({
   ),
   projectOwner: (
     <Chip
-      key={projectOwner.githubId + licencePlate + "po"}
+      // key={projectOwner.githubId + licencePlate + "po"}
       style={{ width: "fit-content" }}
       avatar={
-        <Avatar
-          alt={projectOwner.firstName}
-          src={`https://github.com/${projectOwner.githubId}.png`}
-        />
+        <Avatar email={projectOwner.email} firstName={projectOwner.firstName} />
       }
       label={`${projectOwner.firstName} ${projectOwner.lastName}`}
       variant="outlined"
@@ -62,22 +59,17 @@ const projectsToRows = ({
     <Stack direction="column" spacing={1}>
       {[primaryTechnicalLead, secondaryTechnicalLead]
         .filter(Boolean)
-        .map(({ firstName, lastName, githubId }, i) => (
+        .map(({ firstName, lastName, email }, i) => (
           <Chip
             key={firstName + i + "project"}
             style={{ width: "fit-content" }}
-            avatar={
-              <Avatar
-                alt={firstName}
-                src={`https://github.com/${githubId}.png`}
-              />
-            }
+            avatar={<Avatar firstName={firstName} email={email} />}
             label={`${firstName} ${lastName}`}
             variant="outlined"
           />
         ))}
     </Stack>
-  )
+  ),
 });
 
 const projectsToRowsXs = ({
@@ -86,7 +78,7 @@ const projectsToRowsXs = ({
   projectOwner,
   primaryTechnicalLead,
   secondaryTechnicalLead,
-  licencePlate
+  licencePlate,
 }) => ({
   id,
   name: <span style={{ fontSize: 18, fontWeight: "450" }}>{name}</span>,
@@ -95,13 +87,13 @@ const projectsToRowsXs = ({
       users={[
         projectOwner,
         primaryTechnicalLead,
-        secondaryTechnicalLead
+        secondaryTechnicalLead,
       ].filter(Boolean)}
     />
   ),
   licencePlate: (
     <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
-  )
+  ),
 });
 
 export { columns, columnsXs, projectsToRows, projectsToRowsXs };

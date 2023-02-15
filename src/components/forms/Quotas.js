@@ -3,7 +3,8 @@ import Box from "@mui/material/Box";
 import TitleTypography from "../common/TitleTypography";
 import Typography from "@mui/material/Typography";
 
-const Quotas = ({ formik, isDisabled }) => {
+const Quotas = ({ formik, isDisabled, currentProjectQuota={}}) => {
+ 
   return (
     <Box sx={{mt: 6}}>
       <div>
@@ -20,21 +21,25 @@ const Quotas = ({ formik, isDisabled }) => {
           nameSpace={"production"}
           formik={formik}
           isDisabled={isDisabled}
+          currentQuota = {currentProjectQuota.productionQuota}
         />
         <QuotaInput
           nameSpace={"test"}
           formik={formik}
           isDisabled={isDisabled}
+          currentQuota = {currentProjectQuota.testQuota}
         />
         <QuotaInput
           nameSpace={"tools"}
           formik={formik}
           isDisabled={isDisabled}
+          currentQuota = {currentProjectQuota.toolsQuota}
         />
         <QuotaInput
           nameSpace={"development"}
           formik={formik}
           isDisabled={isDisabled}
+          currentQuota = {currentProjectQuota.developmentQuota}
         />
       </div>
     </Box>

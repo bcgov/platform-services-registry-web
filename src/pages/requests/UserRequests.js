@@ -18,17 +18,14 @@ export const USER_REQUESTS = gql`
         projectOwner {
           firstName
           lastName
-          githubId
         }
         primaryTechnicalLead {
           firstName
           lastName
-          githubId
         }
         secondaryTechnicalLead {
           firstName
           lastName
-          githubId
         }
         ... on PrivateCloudProject {
           cluster
