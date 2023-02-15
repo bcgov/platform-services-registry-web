@@ -32,6 +32,7 @@ import ActiveRequestText from "../../components/common/ActiveRequestText";
 import Users from "../../components/forms/Users";
 import Divider from "@mui/material/Divider";
 import Quotas from "../../components/forms/Quotas";
+import Namespaces from "../../components/Namespaces";
 
 const ADMIN_PROJECT = gql`
   query Query($projectId: ID!) {
@@ -48,21 +49,18 @@ const ADMIN_PROJECT = gql`
       projectOwner {
         email
         firstName
-        githubId
         lastName
         ministry
       }
       primaryTechnicalLead {
         email
         firstName
-        githubId
         lastName
         ministry
       }
       secondaryTechnicalLead {
         email
         firstName
-        githubId
         lastName
         ministry
       }
@@ -316,6 +314,11 @@ export default function AdminProject({ requestsRoute }) {
               <MinistryInput formik={formik} isDisabled={isDisabled} />
               <ClusterInput formik={formik} isDisabled={true} />
             </div>
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            <Namespaces
+              cluster={data?.privateCloudProjectById?.cluster}
+              licencePlate={data?.privateCloudProjectById?.licencePlate}
+            />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Users formik={formik} isDisabled={false} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />

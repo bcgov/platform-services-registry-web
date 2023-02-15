@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
 import { gql, useLazyQuery, useQuery } from "@apollo/client";
-import Avatar from "@mui/material/Avatar";
 import { TextField } from "@mui/material";
+import Avatar from "../common/Avatar";
 import useDebounce from "../../hooks/useDebounce";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
@@ -20,13 +20,13 @@ import FormControl from "@mui/material/FormControl";
 import RequiredField from "../common/RequiredField";
 import FormHelperText from "@mui/material/FormHelperText";
 import Autocomplete from "@mui/material/Autocomplete";
-import { getUsers } from "../../msGraphApi";
+import { getUsers, getUserPhoto } from "../../msGraphApi";
+import usePhotoUrl from "../../msGraphApi/useAzurePhoto";
 
 
 const USER_BY_EMAIL = gql`
   query UserByEmail($email: EmailAddress!) {
     userByEmail(email: $email) {
-      githubId
       firstName
       lastName
       email
@@ -61,33 +61,20 @@ export default function UserInput({
 
   const [edit, setEdit] = useState(defaultEditOpen);
   const [userOptions, setUserOptions] = useState([email]);
+  const [userId, setUserId] = useState("");
   const [emailInput, setEmailInput] = useState("");
 
-
-  const debouncedGithubId = useDebounce(formik.values[contact]?.githubId, 500);
   const debouncedEmail = useDebounce(emailInput);
 
-
+  const photoUrl = usePhotoUrl(email);
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
     nextFetchPolicy: "cache-first",
-    onCompleted: (data) => {
-      if (data.userByEmail) {
-        formik.setFieldValue(contact + ".githubId", data.userByEmail.githubId);
-      } else {
-        formik.setFieldValue(contact + ".githubId", "");
-      }
-    },
   });
 
 
   const getFilteredUsers = useCallback(async () => {
     const data = await getUsers(debouncedEmail);
-
-
-    console.log("data");
-    console.log(data);
-
 
     setUserOptions(data);
   }, [debouncedEmail]);
@@ -100,6 +87,7 @@ export default function UserInput({
     if (user) {
       getUser({ variables: { email } });
 
+      setUserId(user.id);
 
       formik.setFieldValue(contact + ".email", user.mail.toLowerCase() || "");
       formik.setFieldValue(contact + ".firstName", user.givenName || "");
@@ -113,7 +101,6 @@ export default function UserInput({
       formik.setFieldValue(contact + ".firstName", "");
       formik.setFieldValue(contact + ".lastName", "");
       formik.setFieldValue(contact + ".ministry", "");
-      formik.setFieldValue(contact + ".githubId", "");
     }
   }, [email]);
 
@@ -135,16 +122,15 @@ export default function UserInput({
       >
         <Avatar
           variant="rounded"
-          src={`https://github.com/${
-            debouncedGithubId !== "" ? debouncedGithubId : undefined
-          }.png`}
+          email={email}
+          firstName={formik.values[contact]?.firstName}
         />
         <Stack sx={{ width: "100%", ml: 2 }} spacing={0.5}>
           <Typography fontWeight={700}>{label}</Typography>
           <Typography
             variant="body2"
             color="text.secondary"
-            sx={{color: "rgba(0, 0, 0, 0.87)", height: 20 }}
+            sx={{ color: "rgba(0, 0, 0, 0.87)", height: 20 }}
           >
             {formik.values[contact]?.firstName}{" "}
             {formik.values[contact]?.lastName}
@@ -205,40 +191,29 @@ export default function UserInput({
                 <TextField
                   {...params}
                   onChange={(e) => setEmailInput(e.target.value)}
-                  sx={{ "& .MuiInputBase-input.Mui-disabled": {
-                    WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-                  }, mb: 2 }}
+                  sx={{
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                    }, mb: 2
+                  }}
+                  error={
+                    formik.touched[contact]?.firstName &&
+                    Boolean(formik.errors[contact]?.firstName)
+                  }
+                  helperText={
+                    formik.touched[contact]?.email && <RequiredField />
+                  }
                   variant="standard"
                   size="small"
                 />
               )}
             />
-
-
             <TextField
-              sx={{ "& .MuiInputBase-input.Mui-disabled": {
-                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-              }, mb: 2 }}
-              variant="standard"
-              id={contact + ".githubId"}
-              name={contact + ".githubId"}
-              label="Github Username"
-              disabled={isDisabled || !!data?.userByEmail?.githubId || !email}
-              value={formik.values[contact]?.githubId}
-              onChange={formik.handleChange}
-              error={
-                formik.touched[contact]?.githubId &&
-                Boolean(formik.errors[contact]?.githubId)
-              }
-              helperText={formik.touched[contact]?.email && <RequiredField />}
-              size="small"
-            />
-
-
-            <TextField
-              sx={{ "& .MuiInputBase-input.Mui-disabled": {
-                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-              }, mb: 2 }}
+              sx={{
+                "& .MuiInputBase-input.Mui-disabled": {
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                }, mb: 2
+              }}
               variant="standard"
               id={contact + ".firstName"}
               name={contact + ".firstName"}
@@ -250,15 +225,17 @@ export default function UserInput({
                 formik.touched[contact]?.firstName &&
                 Boolean(formik.errors[contact]?.firstName)
               }
-              helperText={formik.touched[contact]?.email && <RequiredField />}
+              helperText={
+                formik.touched[contact]?.firstName && <RequiredField />
+              }
               size="small"
             />
-
-
             <TextField
-              sx={{ "& .MuiInputBase-input.Mui-disabled": {
-                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-              }, mb: 2 }}
+              sx={{
+                "& .MuiInputBase-input.Mui-disabled": {
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                }, mb: 2
+              }}
               variant="standard"
               id={contact + ".lastName"}
               name={contact + ".lastName"}
@@ -270,15 +247,17 @@ export default function UserInput({
                 formik.touched[contact]?.lastName &&
                 Boolean(formik.errors[contact]?.lastName)
               }
-              helperText={formik.touched[contact]?.email && <RequiredField />}
+              helperText={
+                formik.touched[contact]?.lastName && <RequiredField />
+              }
               size="small"
             />
-
-
             <TextField
-              sx={{ "& .MuiInputBase-input.Mui-disabled": {
-                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-              }, mb: 2 }}
+              sx={{
+                "& .MuiInputBase-input.Mui-disabled": {
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                }, mb: 2
+              }}
               variant="standard"
               id={contact + ".ministry"}
               name={contact + ".ministry"}

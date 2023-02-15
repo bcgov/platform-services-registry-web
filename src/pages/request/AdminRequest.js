@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
 import ClusterInput from "../../components/forms/ClusterInput";
-import QuotaInput from "../../components/forms/QuotaInput";
 import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
@@ -20,6 +19,7 @@ import Container from "../../components/common/Container";
 import Users from "../../components/forms/Users";
 import Divider from "@mui/material/Divider";
 import Quotas from "../../components/forms/Quotas";
+import Namespaces from "../../components/Namespaces";
 
 const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
@@ -41,6 +41,26 @@ const ADMIN_REQUEST = gql`
       decisionDate
       project {
         name
+        productionQuota {
+          cpu
+          memory
+          storage
+        }
+        testQuota {
+          cpu
+          memory
+          storage
+        }
+        developmentQuota {
+          cpu
+          memory
+          storage
+        }
+        toolsQuota {
+          cpu
+          memory
+          storage
+        }
       }
       requestedProject {
         id
@@ -53,21 +73,18 @@ const ADMIN_REQUEST = gql`
           firstName
           lastName
           ministry
-          githubId
         }
         primaryTechnicalLead {
           email
           firstName
           lastName
           ministry
-          githubId
         }
         secondaryTechnicalLead {
           email
           firstName
           lastName
           ministry
-          githubId
         }
         ministry
         cluster
@@ -125,6 +142,7 @@ export default function AdminRequest() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
+  const [currentProjectQuota, setCurrentProjectQuota] = useState({})
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id },
@@ -176,6 +194,7 @@ export default function AdminRequest() {
     if (data) {
       // Form values cannon be null (uncontrolled input error), so replace nulls with empty strings
       formik.setValues(replaceNullsWithEmptyString(requestedProject));
+      setCurrentProjectQuota(data.privateCloudActiveRequestById.project)
     }
   }, [data]);
 
@@ -212,9 +231,27 @@ export default function AdminRequest() {
             <ClusterInput formik={formik} isDisabled={true} />
           </div>
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          {request?.type !== "CREATE" ? (
+            <div>
+              <Namespaces
+                cluster={
+                  data?.privateCloudActiveRequestById?.requestedProject?.cluster
+                }
+                licencePlate={
+                  data?.privateCloudActiveRequestById?.requestedProject
+                    ?.licencePlate
+                }
+              />
+              <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            </div>
+          ) : null}
           <Users formik={formik} isDisabled={true} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas formik={formik} isDisabled={true} />
+          <Quotas
+            formik={formik}
+            isDisabled={isDisabled}
+            currentProjectQuota={currentProjectQuota}
+          />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <CommonComponents formik={formik} isDisabled={true} />
         </div>

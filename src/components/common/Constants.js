@@ -102,7 +102,7 @@ const defaultStorageOptionsLookup = {
   STORAGE_16: "16 GB",
   STORAGE_32: "32 GB",
   STORAGE_64: "64 GB",
-  STORAGE_124: "124 GB",
+  STORAGE_128: "128 GB",
   STORAGE_256: "256 GB",
   STORAGE_512: "512 GB"
 };
@@ -133,7 +133,7 @@ const defaultStorageOptions = [
   "STORAGE_16",
   "STORAGE_32",
   "STORAGE_64",
-  "STORAGE_124",
+  "STORAGE_128",
   "STORAGE_256",
   "STORAGE_512"
 ];
