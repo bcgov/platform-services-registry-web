@@ -144,7 +144,6 @@ export default function AdminRequest() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
-  const [currentProjectQuota, setCurrentProjectQuota] = useState({})
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id },
@@ -196,7 +195,6 @@ export default function AdminRequest() {
     if (data) {
       // Form values cannon be null (uncontrolled input error), so replace nulls with empty strings
       formik.setValues(replaceNullsWithEmptyString(requestedProject));
-      setCurrentProjectQuota(data.privateCloudActiveRequestById.project)
     }
   }, [data]);
 
@@ -253,7 +251,7 @@ export default function AdminRequest() {
           <Quotas
             formik={formik}
             isDisabled={isDisabled}
-            currentProjectQuota={currentProjectQuota}
+            currentProjectQuota={data?.privateCloudActiveRequestById?.project}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <CommonComponents formik={formik} isDisabled={true} />

@@ -124,7 +124,6 @@ const USER_REQUEST = gql`
 
 export default function UserRequest() {
   const { id } = useParams();
-  const [currentProjectQuota, setCurrentProjectQuota] = useState({})
 
   const { data, loading, error } = useQuery(USER_REQUEST, {
     variables: { requestId: id },
@@ -143,12 +142,6 @@ export default function UserRequest() {
       formik.setValues(replaceNullsWithEmptyString(requestedProject));
     }
   }, [requestedProject]);
-
-  useEffect(() => {
-    if (data) {
-        setCurrentProjectQuota(data.userPrivateCloudRequestById.project)
-    }
-  }, [data]);
 
   const name =
     request?.type === "CREATE" ? requestedProject?.name : project?.name;
@@ -185,7 +178,7 @@ export default function UserRequest() {
           <Quotas
             formik={formik}
             isDisabled={isDisabled}
-            currentProjectQuota={currentProjectQuota}
+            currentProjectQuota={data?.userPrivateCloudRequestById?.project}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <CommonComponents formik={formik} isDisabled={true} />

@@ -67,22 +67,8 @@ export enum CommonComponentsOptions {
 export type CreateUserInput = {
   email: Scalars['EmailAddress'];
   firstName: Scalars['String'];
-  githubId: Scalars['String'];
   lastName: Scalars['String'];
   ministry: Ministry;
-};
-
-export type CustomQuotaInput = {
-  cpuLimits?: InputMaybe<Scalars['Float']>;
-  cpuRequests?: InputMaybe<Scalars['Float']>;
-  memoryLimits?: InputMaybe<Scalars['Int']>;
-  memoryRequests?: InputMaybe<Scalars['Int']>;
-  snapshotCount?: InputMaybe<Scalars['Int']>;
-  storageBackup?: InputMaybe<Scalars['Int']>;
-  storageBlock?: InputMaybe<Scalars['Int']>;
-  storageCapacity?: InputMaybe<Scalars['Int']>;
-  storageFile?: InputMaybe<Scalars['Int']>;
-  storagePvcCount?: InputMaybe<Scalars['Int']>;
 };
 
 export enum DecisionStatus {
@@ -168,8 +154,6 @@ export enum Ministry {
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: User;
-  customPrivateCloudProjectEditRequest: PrivateCloudRequest;
-  customPrivateCloudProjectRequest: PrivateCloudRequest;
   privateCloudProjectDeleteRequest: PrivateCloudRequest;
   privateCloudProjectEditRequest: PrivateCloudRequest;
   privateCloudProjectRequest: PrivateCloudRequest;
@@ -180,38 +164,6 @@ export type Mutation = {
 
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
-};
-
-
-export type MutationCustomPrivateCloudProjectEditRequestArgs = {
-  commonComponents: CommonComponentsInput;
-  description?: InputMaybe<Scalars['String']>;
-  developmentQuota?: InputMaybe<CustomQuotaInput>;
-  ministry?: InputMaybe<Ministry>;
-  name?: InputMaybe<Scalars['String']>;
-  primaryTechnicalLead?: InputMaybe<CreateUserInput>;
-  productionQuota?: InputMaybe<CustomQuotaInput>;
-  projectId: Scalars['ID'];
-  projectOwner?: InputMaybe<CreateUserInput>;
-  secondaryTechnicalLead?: InputMaybe<CreateUserInput>;
-  testQuota?: InputMaybe<CustomQuotaInput>;
-  toolsQuota?: InputMaybe<CustomQuotaInput>;
-};
-
-
-export type MutationCustomPrivateCloudProjectRequestArgs = {
-  cluster: Cluster;
-  commonComponents: CommonComponentsInput;
-  description: Scalars['String'];
-  developmentQuota?: InputMaybe<CustomQuotaInput>;
-  ministry: Ministry;
-  name: Scalars['String'];
-  primaryTechnicalLead?: InputMaybe<CreateUserInput>;
-  productionQuota?: InputMaybe<CustomQuotaInput>;
-  projectOwner?: InputMaybe<CreateUserInput>;
-  secondaryTechnicalLead?: InputMaybe<CreateUserInput>;
-  testQuota?: InputMaybe<CustomQuotaInput>;
-  toolsQuota?: InputMaybe<CustomQuotaInput>;
 };
 
 
@@ -431,7 +383,6 @@ export enum RequestType {
 }
 
 export type SignUpInput = {
-  githubId: Scalars['String'];
   ministry: Ministry;
 };
 
@@ -456,7 +407,6 @@ export type User = {
   created: Scalars['DateTime'];
   email: Scalars['EmailAddress'];
   firstName: Scalars['String'];
-  githubId: Scalars['String'];
   id: Scalars['ID'];
   lastName: Scalars['String'];
   lastSeen?: Maybe<Scalars['DateTime']>;
@@ -504,24 +454,8 @@ export function CreateUserInputSchema(): yup.SchemaOf<CreateUserInput> {
   return yup.object({
     email: yup.string().defined(),
     firstName: yup.string().defined(),
-    githubId: yup.string().defined(),
     lastName: yup.string().defined(),
     ministry: yup.mixed().defined()
-  })
-}
-
-export function CustomQuotaInputSchema(): yup.SchemaOf<CustomQuotaInput> {
-  return yup.object({
-    cpuLimits: yup.number(),
-    cpuRequests: yup.number(),
-    memoryLimits: yup.number(),
-    memoryRequests: yup.number(),
-    snapshotCount: yup.number(),
-    storageBackup: yup.number(),
-    storageBlock: yup.number(),
-    storageCapacity: yup.number(),
-    storageFile: yup.number(),
-    storagePvcCount: yup.number()
   })
 }
 
@@ -564,7 +498,6 @@ export const RequestTypeSchema = yup.mixed().oneOf([RequestType.Create, RequestT
 
 export function SignUpInputSchema(): yup.SchemaOf<SignUpInput> {
   return yup.object({
-    githubId: yup.string().defined(),
     ministry: yup.mixed().defined()
   })
 }

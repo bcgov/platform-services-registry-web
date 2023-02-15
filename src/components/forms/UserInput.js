@@ -172,10 +172,6 @@ export default function UserInput({
                 formik.setFieldValue(contact + ".email", value)
               }
               value={email}
-              error={
-                formik.touched[contact]?.email &&
-                Boolean(formik.errors[contact]?.email)
-              }
               helperText={formik.touched[contact]?.email && <RequiredField />}
               renderInput={(params) => (
                 <TextField
