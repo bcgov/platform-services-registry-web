@@ -21,25 +21,25 @@ const Quotas = ({ formik, isDisabled, currentProjectQuota={}}) => {
           nameSpace={"production"}
           formik={formik}
           isDisabled={isDisabled}
-          currentQuota = {currentProjectQuota.productionQuota}
+          currentQuota = {currentProjectQuota?.productionQuota}
         />
         <QuotaInput
           nameSpace={"test"}
           formik={formik}
           isDisabled={isDisabled}
-          currentQuota = {currentProjectQuota.testQuota}
+          currentQuota = {currentProjectQuota?.testQuota}
         />
         <QuotaInput
           nameSpace={"tools"}
           formik={formik}
           isDisabled={isDisabled}
-          currentQuota = {currentProjectQuota.toolsQuota}
+          currentQuota = {currentProjectQuota?.toolsQuota}
         />
         <QuotaInput
           nameSpace={"development"}
           formik={formik}
           isDisabled={isDisabled}
-          currentQuota = {currentProjectQuota.developmentQuota}
+          currentQuota = {currentProjectQuota?.developmentQuota}
         />
       </div>
     </Box>

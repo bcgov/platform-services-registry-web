@@ -23,9 +23,6 @@ export default function QuotaInput({
   isDisabled,
   currentQuota = {},
 }) {
-  console.log("Current Quota: ");
-  console.log(currentQuota);
-
   const cpu = formik.values[nameSpace + "Quota"]?.cpu;
   const memory = formik.values[nameSpace + "Quota"]?.memory;
   const storage = formik.values[nameSpace + "Quota"]?.storage;
