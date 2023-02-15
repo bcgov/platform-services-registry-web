@@ -110,11 +110,13 @@ export default function CommonComponents({ formik, isDisabled }) {
               value={formik.values.commonComponents[name]}
             >
               <FormControlLabel
-                 sx={{ "& .MuiFormControlLabel-label.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-                }}}
+                sx={{
+                  "& .MuiFormControlLabel-label.Mui-disabled": {
+                    WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                  }
+                }}
                 control={
-                  <Radio              
+                  <Radio
                     id={"commonComponents" + name + "IMPLEMENTED"}
                     name={"commonComponents." + name}
                     value="IMPLEMENTED"
@@ -124,9 +126,11 @@ export default function CommonComponents({ formik, isDisabled }) {
                 label="Implemented"
               />
               <FormControlLabel
-                 sx={{ "& .MuiFormControlLabel-label.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-                }}}
+                sx={{
+                  "& .MuiFormControlLabel-label.Mui-disabled": {
+                    WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                  }
+                }}
                 control={
                   <Radio
                     id={"commonComponents" + name + "IMPLEMENTED"}
@@ -143,7 +147,7 @@ export default function CommonComponents({ formik, isDisabled }) {
         <div style={{ display: "flex" }}>
           <Typography
             variant="body1"
-            color={isDisabled && "rgba(0, 0, 0, 0.38)"}
+            // color={isDisabled && "rgba(0, 0, 0, 0.38)"}
             sx={{ marginTop: 0.5, fontWeight: "medium" }}
           >
             Other
@@ -154,15 +158,28 @@ export default function CommonComponents({ formik, isDisabled }) {
             label="please specify"
             onChange={formik.handleChange}
             value={formik.values.commonComponents.other}
-            sx={{ ml: 3, width: "80%" }}
+            sx={{
+              "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input": {
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+              },
+              "& .MuiInputLabel-root": {
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+              },
+              "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline": {
+                borderColor: "rgba(0, 0, 0, 0.87)",
+              },
+              ml: 3, width: "80%"
+            }}
             disabled={isDisabled || !!noServices}
             size="small"
           />
         </div>
         <FormControlLabel
-           sx={{ "& .MuiFormControlLabel-label.Mui-disabled": {
-            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-          }}}
+          sx={{
+            "& .MuiFormControlLabel-label.Mui-disabled": {
+              WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+            }
+          }}
           control={
             <Checkbox
               id="noServices"

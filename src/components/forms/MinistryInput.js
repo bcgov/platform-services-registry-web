@@ -19,7 +19,18 @@ const MinistryInput = ({ formik, isDisabled }) => {
           Select the government ministry that this project belongs to.
         </Typography>
       </div>
-      <FormControl sx={{ width: 250, mt: 1 }} size="small">
+      <FormControl sx={{
+        "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input": {
+          WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+        },
+        "& .MuiInputLabel-root": {
+          WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+        },
+        "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline": {
+          borderColor: "rgba(0, 0, 0, 0.87)",
+        },
+        width: 250, mt: 1
+      }} size="small">
         <InputLabel id="ministry-label">Ministry</InputLabel>
         <Select
           id="select-ministry"
@@ -41,7 +52,7 @@ const MinistryInput = ({ formik, isDisabled }) => {
           {formik.touched.ministry && <RequiredField />}
         </FormHelperText>
       </FormControl>
-      <Typography sx={{width: 700, mt: 5}}variant="subtitle2" color="text.secondary">
+      <Typography sx={{ width: 700, mt: 5 }} variant="subtitle2" color="text.secondary">
         * All product teams from the Ministries of Attorney General, Public Safety
         and Solicitor General and Emergency Management BC and BC Housing must
         engage with <a href="mailto:JAGMISO@gov.bc.ca">AG Security</a> prior to

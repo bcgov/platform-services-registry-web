@@ -25,7 +25,18 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
     <Box sx={{ width: 340, mt: 3, mb: 5, mr: 4 }}>
       <TitleTypography>{nameSpace.capitalizeFirstLetter()}</TitleTypography>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3 }}>
+        <FormControl size="small" sx={{
+          "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input": {
+            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+          },
+          "& .MuiInputLabel-root": {
+            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+          },
+          "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline": {
+            borderColor: "rgba(0, 0, 0, 0.87)",
+          },
+          mt: 2, mb: 2, mr: 3
+        }}>
           <InputLabel id="cpu-lebel">Cpu</InputLabel>
           <Select
             id={nameSpace + "Quota.cpu"}
@@ -50,7 +61,18 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
             ))}
           </Select>
         </FormControl>
-        <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
+        <FormControl size="small" sx={{
+          "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input": {
+            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+          },
+          "& .MuiInputLabel-root": {
+            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+          },
+          "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline": {
+            borderColor: "rgba(0, 0, 0, 0.87)",
+          },
+          mt: 2, mb: 2, mr: 3, minWidth: 250
+        }}>
           <InputLabel id="memory-label">Memory</InputLabel>
           <Select
             id={nameSpace + "Quota.memory"}
@@ -75,7 +97,18 @@ export default function QuotaInput({ nameSpace, formik, isDisabled }) {
             ))}
           </Select>
         </FormControl>
-        <FormControl size="small" sx={{ mt: 2, mb: 2, mr: 3, minWidth: 250 }}>
+        <FormControl size="small" sx={{
+          "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input": {
+            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+          },
+          "& .MuiInputLabel-root": {
+            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+          },
+          "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline": {
+            borderColor: "rgba(0, 0, 0, 0.87)",
+          },
+          mt: 2, mb: 2, mr: 3, minWidth: 250
+        }}>
           <InputLabel id="storage-label">Storage</InputLabel>
           <Select
             id={nameSpace + "Quota.storage"}
