@@ -21,17 +21,17 @@ export const ALL_ACTIVE_REQUESTS = gql`
         projectOwner {
           firstName
           lastName
-          githubId
+          email
         }
         primaryTechnicalLead {
           firstName
           lastName
-          githubId
+          email
         }
         secondaryTechnicalLead {
           firstName
           lastName
-          githubId
+          email
         }
       }
     }
