@@ -9,10 +9,15 @@ async function getTokenPopup() {
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
    */
   const accounts = myMSALObj.getAllAccounts();
+  console.log("ACCOUNTS: ", accounts);
+
+  if (accounts.length === 0) {
+    return null;
+  }
 
   const request = {
     scopes: ["User.ReadBasic.All"],
-    account: accounts[0],
+    account: accounts[0]
   };
 
   let accessToken;
@@ -39,7 +44,7 @@ export async function callMsGraph(endpoint, accessToken) {
 
   const options = {
     method: "GET",
-    headers: headers,
+    headers: headers
   };
 
   return fetch(endpoint, options);
