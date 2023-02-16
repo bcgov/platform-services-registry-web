@@ -16,6 +16,8 @@ import Users from "../../components/forms/Users";
 import Divider from "@mui/material/Divider";
 import Quotas from "../../components/forms/Quotas";
 import Namespaces from "../../components/Namespaces";
+import TitleTypography from "../../components/common/TitleTypography";
+import { Typography } from "@mui/material";
 
 const USER_REQUEST = gql`
   query Query($requestId: ID!) {
@@ -32,6 +34,7 @@ const USER_REQUEST = gql`
       }
       type
       decisionStatus
+      humanComment
       active
       created
       decisionDate
@@ -124,14 +127,15 @@ const USER_REQUEST = gql`
 
 export default function UserRequest() {
   const { id } = useParams();
+  const [humanCommentText, setHumanCommentText] = useState(null)
 
+  
   const { data, loading, error } = useQuery(USER_REQUEST, {
     variables: { requestId: id },
   });
 
   const { project, requestedProject, ...request } =
     data?.userPrivateCloudRequestById || {};
-
   const formik = useFormik({
     initialValues,
   });
@@ -143,6 +147,12 @@ export default function UserRequest() {
     }
   }, [requestedProject]);
 
+  useEffect(() => {
+    if (request) {
+      setHumanCommentText(request.humanComment)
+    }
+  }, [request]);
+
   const name =
     request?.type === "CREATE" ? requestedProject?.name : project?.name;
   const isDisabled = !requestedProject || request?.decisionStatus !== "PENDING";
@@ -152,6 +162,11 @@ export default function UserRequest() {
       <NavToolbar path={"request"} title={name}></NavToolbar>
       <Container>
         <MetaDataInput formik={formik} isDisabled={true} />
+        {humanCommentText&&[
+          <TitleTypography> Reviewer’s comments</TitleTypography>,
+          <Typography sx={{ mb: 2, width: 600 }} color="text.primary">
+          {humanCommentText}
+        </Typography>]}
         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
         <div>
           <div style={{ display: "flex" }}>

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
-import HumanActionCommentInput from "../../components/forms/HumanActionCommentInput";
 import ClusterInput from "../../components/forms/ClusterInput";
 import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
@@ -21,6 +20,7 @@ import Users from "../../components/forms/Users";
 import Divider from "@mui/material/Divider";
 import Quotas from "../../components/forms/Quotas";
 import Namespaces from "../../components/Namespaces";
+import TextField from "@mui/material/TextField";
 
 const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
@@ -132,10 +132,12 @@ const MAKE_REQUEST_DECISION = gql`
   mutation PrivateCloudRequestDecision(
     $requestId: ID!
     $decision: RequestDecision!
+    $humanComment: String,
   ) {
-    privateCloudRequestDecision(requestId: $requestId, decision: $decision) {
+    privateCloudRequestDecision(requestId: $requestId, decision: $decision, humanComment: $humanComment) {
       id
       decisionStatus
+      humanComment
     }
   }
 `;
@@ -144,6 +146,7 @@ export default function AdminRequest() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
+  const [humanCommentInput, setHumanCommentInput] = useState(null)
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id },
@@ -164,7 +167,7 @@ export default function AdminRequest() {
       autoClose: false,
     });
     privateCloudRequestDecision({
-      variables: { requestId: id, decision },
+      variables: { requestId: id, decision, humanComment: humanCommentInput },
       onError: (error) => {
         console.log(error);
         toast.update(toastId.current, {
@@ -198,8 +201,13 @@ export default function AdminRequest() {
     }
   }, [data]);
 
-  const name =
-    request?.type === "CREATE" ? requestedProject?.name : project?.name;
+  useEffect(() => {
+    if (request.humanComment) {
+      setHumanCommentInput(request.humanComment)
+    }
+  }, [request.humanComment]);
+
+  const name = request?.type === "CREATE" ? requestedProject?.name : project?.name;
   const isDisabled = !requestedProject || request?.decisionStatus !== "PENDING";
 
   return (
@@ -223,8 +231,19 @@ export default function AdminRequest() {
         </Button>
       </NavToolbar>
       <Container>
-         <MetaDataInput formik={formik} isDisabled={true} />
-        {/* <HumanActionCommentInput formik={formik} isDisabled={true} /> */}
+        <MetaDataInput formik={formik} isDisabled={true} />
+        <TextField
+          fullWidth
+          id="humanComment"
+          name="humanComment"
+          label="Human Action Comment"
+          value={humanCommentInput}
+          onChange={(e) => setHumanCommentInput(e.target.value)}
+          size="small"
+          style={{ width: "45%" }}
+          multiline
+          rows={4}
+        />
         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
         <div>
           <div style={{ display: "flex" }}>

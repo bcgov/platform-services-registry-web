@@ -20,7 +20,6 @@ export default function MetaDataInput({ formik, isDisabled }) {
       noValidate
       autoComplete="off"
     >
-
       <Box sx={{ display: "flex", p: 0 }}>
         <Box sx={{ mr: 0, width: 650 }}>
           <div>
@@ -66,23 +65,6 @@ export default function MetaDataInput({ formik, isDisabled }) {
         </Box>
         <Box></Box>
       </Box>
-      <TextField
-        fullWidth
-        id="humanComment"
-        name="humanComment"
-        label="Human Action Comment"
-        // disabled={isDisabled}
-        value={formik.values.humanComment}
-        onChange={formik.handleChange}
-        error={
-          formik.touched.humanComment && Boolean(formik.errors.humanComment)
-        }
-        helperText={formik.touched.name && <RequiredField />}
-        size="small"
-        style={{ width: "45%" }}
-        multiline
-        rows={4}
-      />
     </Box>
   );
 }

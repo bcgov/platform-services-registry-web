@@ -157,9 +157,9 @@ export const userProjectToFormData = (userPrivateCloudProject) => {
 export const formDataToUserProject = (data, dirtyFields) => {
   const changedFields = dirtyFields
     ? Object.keys(dirtyFields).reduce((acc, key) => {
-        acc[key] = data[key];
-        return acc;
-      }, {})
+      acc[key] = data[key];
+      return acc;
+    }, {})
     : data;
 
   const {
@@ -269,7 +269,6 @@ export const storageToDefaultOption = (quota) =>
 export const createProjectInputInitalValues = {
   name: "",
   description: "",
-  humanComment: "",
   projectOwner: {
     firstName: "",
     lastName: "",
