@@ -74,7 +74,7 @@ export default function StickyTable({
                     key={row.code}
                   >
                     {columns.map((column) => {
-                      const value = row[column.id];
+                      const value = row[column.id];                      
                       return (
                         <TableCell
                           style={{
@@ -88,7 +88,7 @@ export default function StickyTable({
                           key={column.id}
                           align={column.align}
                         >
-                          {column.format && typeof value === "number"
+                       {column.format && typeof value === "number"
                             ? column.format(value)
                             : value}
                         </TableCell>

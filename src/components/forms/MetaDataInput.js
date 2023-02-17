@@ -25,7 +25,7 @@ export default function MetaDataInput({ formik, isDisabled }) {
               If this is your first time on the <b>OpenShift platform</b> you
               need to book an alignment meeting with the{" "}
               <b>Platform Services team.</b> Reach out to{" "}
-              <a href="mailto: olena.mitovska@gov.bc.ca">Oleana Mitovska</a> to
+              <a href="mailto: olena.mitovska@gov.bc.ca">Olena Mitovska</a> to
               get started.
             </Typography>
           </div>
