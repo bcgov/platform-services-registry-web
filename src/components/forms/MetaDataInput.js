@@ -30,7 +30,18 @@ export default function MetaDataInput({ formik, isDisabled }) {
             </Typography>
           </div>
           <TextField
-            style={{ width: "100%" }}
+            sx={{
+              "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input": {
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+              },
+              "& .MuiInputLabel-root": {
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+              },
+              "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline": {
+                borderColor: "rgba(0, 0, 0, 0.87)",
+              },
+              width: "100%"
+            }}
             fullWidth
             id="name"
             name="name"
@@ -55,12 +66,24 @@ export default function MetaDataInput({ formik, isDisabled }) {
             }
             helperText={formik.touched.name && <RequiredField />}
             size="small"
-            style={{ width: "100%" }}
+            sx={{
+              "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input": {
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+              },
+              "& .MuiInputLabel-root": {
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+              },
+              "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline": {
+                borderColor: "rgba(0, 0, 0, 0.87)",
+              },
+              width: "100%"
+            }}
             multiline
             rows={4}
           />
         </Box>
-        <Box></Box>
+        <Box>
+        </Box>
       </Box>
     </Box>
   );
