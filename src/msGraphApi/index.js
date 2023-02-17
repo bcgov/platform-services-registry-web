@@ -12,7 +12,7 @@ async function getTokenPopup() {
 
   const request = {
     scopes: ["User.ReadBasic.All"],
-    account: accounts[0],
+    account: accounts[0]
   };
 
   let accessToken;
@@ -23,7 +23,7 @@ async function getTokenPopup() {
     accessToken = result.accessToken;
   } catch (error) {
     console.log("silent token acquisition fails. acquiring token using popup");
-    const result = myMSALObj.acquireTokenPopup(request);
+    const result = await myMSALObj.acquireTokenPopup(request);
     accessToken = result.accessToken;
   }
 
@@ -39,7 +39,7 @@ export async function callMsGraph(endpoint, accessToken) {
 
   const options = {
     method: "GET",
-    headers: headers,
+    headers: headers
   };
 
   return fetch(endpoint, options);
