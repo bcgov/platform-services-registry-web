@@ -33,16 +33,19 @@ const ALL_PROJECTS = gql`
         ministry
         licencePlate
         projectOwner {
+          email
           firstName
           lastName
           email
         }
         primaryTechnicalLead {
+          email
           firstName
           lastName
           email
         }
         secondaryTechnicalLead {
+          email
           firstName
           lastName
           email
@@ -62,7 +65,7 @@ export default function Projects() {
     nextFetchPolicy: "cache-first",
     variables: {
       page: 1,
-      pageSize: 5,
+      pageSize: 10,
       search: debouncedSearch,
       filter,
     },
@@ -70,7 +73,7 @@ export default function Projects() {
   });
 
   useEffect(() => {
-    startPolling(8000);
+    startPolling(7000);
   }, [startPolling]);
 
   const getNextPage = useCallback(

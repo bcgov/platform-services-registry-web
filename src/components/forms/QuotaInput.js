@@ -13,17 +13,21 @@ import TitleTypography from "../common/TitleTypography";
 import Typography from "@mui/material/Typography";
 import Styled from "styled-components";
 
-
 String.prototype.capitalizeFirstLetter = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
-export default function QuotaInput({ nameSpace, formik, isDisabled, currentQuota = {} }) {
+export default function QuotaInput({
+  nameSpace,
+  formik,
+  isDisabled,
+  currentQuota = {},
+}) {
   const cpu = formik.values[nameSpace + "Quota"]?.cpu;
   const memory = formik.values[nameSpace + "Quota"]?.memory;
   const storage = formik.values[nameSpace + "Quota"]?.storage;
 
-  return (    
+  return (
     <Box sx={{ width: 340, mt: 3, mb: 5, mr: 4 }}>
       <TitleTypography>{nameSpace.capitalizeFirstLetter()}</TitleTypography>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -40,6 +44,7 @@ export default function QuotaInput({ nameSpace, formik, isDisabled, currentQuota
           mt: 2, mb: 2, mr: 3
         }}>
           <InputLabel id="cpu-lebel">Cpu</InputLabel>
+
           <Select
             id={nameSpace + "Quota.cpu"}
             name={nameSpace + "Quota.cpu"}
@@ -62,19 +67,17 @@ export default function QuotaInput({ nameSpace, formik, isDisabled, currentQuota
               </MenuItem>
             ))}
           </Select>
-          {currentQuota.cpu && cpu !== currentQuota.cpu &&
-            [<Typography variant="body1">
-              Requested:
-            </Typography>,
-            <Typography variant="body1">
-              {defaultCpuOptionsLookup[cpu]}
-            </Typography>,
-            <Typography variant="body1">
-              Current:
-            </Typography>,
-            <Typography variant="body1">
-              {defaultCpuOptionsLookup[currentQuota.cpu]}
-            </Typography>]}
+          {currentQuota.cpu &&
+            cpu !== currentQuota.cpu && [
+              <Typography variant="body1">Requested:</Typography>,
+              <Typography variant="body1">
+                {defaultCpuOptionsLookup[cpu]}
+              </Typography>,
+              <Typography variant="body1">Current:</Typography>,
+              <Typography variant="body1">
+                {defaultCpuOptionsLookup[currentQuota.cpu]}
+              </Typography>,
+            ]}
         </FormControl>
         <FormControl size="small" sx={{
           "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input": {
@@ -111,19 +114,17 @@ export default function QuotaInput({ nameSpace, formik, isDisabled, currentQuota
               </MenuItem>
             ))}
           </Select>
-          {currentQuota.memory && memory !== currentQuota.memory &&
-            [<Typography variant="body1">
-              Requested:
-            </Typography>,
-            <Typography variant="body1">
-              {defaultMemoryOptionsLookup[memory]}
-            </Typography>,
-            <Typography variant="body1">
-              Current:
-            </Typography>,
-            <Typography variant="body1">
-              {defaultMemoryOptionsLookup[currentQuota.memory]}
-            </Typography>]}
+          {currentQuota.memory &&
+            memory !== currentQuota.memory && [
+              <Typography variant="body1">Requested:</Typography>,
+              <Typography variant="body1">
+                {defaultMemoryOptionsLookup[memory]}
+              </Typography>,
+              <Typography variant="body1">Current:</Typography>,
+              <Typography variant="body1">
+                {defaultMemoryOptionsLookup[currentQuota.memory]}
+              </Typography>,
+            ]}
         </FormControl>
         <FormControl size="small" sx={{
           "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input": {
@@ -162,13 +163,15 @@ export default function QuotaInput({ nameSpace, formik, isDisabled, currentQuota
               )
             )}
           </Select>
-          {currentQuota.storage && storage !== currentQuota.storage &&
-            [<Typography variant="body1">
-               Requested: {defaultStorageOptionsLookup[storage]}
-            </Typography>,
-            <Typography variant="body1">
-              Current: {defaultStorageOptionsLookup[currentQuota.storage]}
-            </Typography>]}
+          {currentQuota.storage &&
+            storage !== currentQuota.storage && [
+              <Typography variant="body1">
+                Requested: {defaultStorageOptionsLookup[storage]}
+              </Typography>,
+              <Typography variant="body1">
+                Current: {defaultStorageOptionsLookup[currentQuota.storage]}
+              </Typography>,
+            ]}
         </FormControl>
       </Box>
     </Box>

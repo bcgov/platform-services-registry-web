@@ -16,14 +16,17 @@ export const USER_REQUESTS = gql`
         name
         description
         projectOwner {
+          email
           firstName
           lastName
         }
         primaryTechnicalLead {
+          email
           firstName
           lastName
         }
         secondaryTechnicalLead {
+          email
           firstName
           lastName
         }
