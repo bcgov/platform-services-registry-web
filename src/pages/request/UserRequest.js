@@ -163,8 +163,9 @@ export default function UserRequest() {
       <Container>
         <MetaDataInput formik={formik} isDisabled={true} />
         {humanCommentText&&[
+                  <Divider variant="middle" sx={{ mt: 1, mb: 5 }} />,
           <TitleTypography> Reviewer’s comments</TitleTypography>,
-          <Typography sx={{ mb: 2, width: 600 }} color="text.primary">
+          <Typography sx={{ mb: 4, maxWidth: 600 }} color="text.primary">
           {humanCommentText}
         </Typography>]}
         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />

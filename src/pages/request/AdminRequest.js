@@ -147,6 +147,7 @@ export default function AdminRequest() {
   const navigate = useNavigate();
   const toastId = useRef(null);
   const [humanCommentInput, setHumanCommentInput] = useState(null)
+  const [humanCommentLable, setHumanCommentLable] = useState('Provide feedback to the PO/TC regarding your decision for this product')
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id },
@@ -207,12 +208,16 @@ export default function AdminRequest() {
     }
   }, [request.humanComment]);
 
+  useEffect(() => {
+    setHumanCommentLable(humanCommentInput ? "Reviewer's comments":'Provide feedback to the PO/TC regarding your decision for this product')
+  }, [humanCommentInput]);
+
   const name = request?.type === "CREATE" ? requestedProject?.name : project?.name;
   const isDisabled = !requestedProject || request?.decisionStatus !== "PENDING";
 
   return (
     <div>
-      <NavToolbar path={"request"} title={name}>
+      <NavToolbar path={"request"} title={name} sx={{position: 'relative'}}>
         <Button
           disabled={isDisabled}
           sx={{ mr: 1 }}
@@ -229,21 +234,22 @@ export default function AdminRequest() {
         >
           Reject
         </Button>
-      </NavToolbar>
-      <Container>
-        <MetaDataInput formik={formik} isDisabled={true} />
         <TextField
           fullWidth
           id="humanComment"
           name="humanComment"
-          label="Human Action Comment"
+          label={humanCommentLable}
           value={humanCommentInput}
           onChange={(e) => setHumanCommentInput(e.target.value)}
           size="small"
-          style={{ width: "45%" }}
+          style={{ width: "45%", position: 'absolute', top: '150%', right: '2%' }}
           multiline
           rows={4}
         />
+      </NavToolbar>
+      <Container>
+        <MetaDataInput formik={formik} isDisabled={true} />
+       
         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
         <div>
           <div style={{ display: "flex" }}>
