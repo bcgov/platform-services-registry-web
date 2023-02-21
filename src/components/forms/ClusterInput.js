@@ -28,7 +28,18 @@ export default function ClusterInput({ formik, isDisabled }) {
           purposes.
         </Typography>
       </div>
-      <FormControl sx={{ width: 250, mt: 1 }} size="small">
+      <FormControl sx={{
+        "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input": {
+          WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+        },
+        "& .MuiInputLabel-root": {
+          WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+        },
+        "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline": {
+          borderColor: "rgba(0, 0, 0, 0.87)",
+        },
+        width: 250, mt: 1
+      }} size="small">
         <InputLabel id="cluster-label">Cluster</InputLabel>
         <Select
           id="cluster"

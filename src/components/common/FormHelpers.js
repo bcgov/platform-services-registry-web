@@ -76,6 +76,11 @@ export const createProjectFormSchema = yup
   .object()
   .shape({ ...metaDataSchema, ...commonComponentsSchema });
 
+export const stopPropagationRow = (e, email) => {
+  e.stopPropagation()
+  window.location.assign(email);
+}
+
 export const userProjectToFormData = (userPrivateCloudProject) => {
   if (userPrivateCloudProject === undefined) return {};
 

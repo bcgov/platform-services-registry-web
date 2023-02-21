@@ -2,6 +2,8 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import GroupAvatars from "../../components/common/Contacts";
 import Avatar from "../../components/common/Avatar";
+import Link from "@mui/material/Link";
+import { stopPropagationRow } from "../../components/common/FormHelpers";
 
 function truncate(str, n) {
   return str.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -42,31 +44,56 @@ const projectsToRows = ({
   ministry,
   cluster,
   licencePlate: (
-    <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
+    <Link
+      sx={{
+        "&:hover": {
+          cursor: "pointer",
+        },
+      }}
+      underline="hover"
+      onClick={(e) =>
+        stopPropagationRow(
+          e,
+          `https://console.apps.${cluster}.devops.gov.bc.ca/topology/ns/${licencePlate}-prod`
+        )
+      }
+    >
+      <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
+    </Link>
   ),
   projectOwner: (
-    <Chip
-      // key={projectOwner.githubId + licencePlate + "po"}
-      style={{ width: "fit-content"}}
-      avatar={
-        <Avatar email={projectOwner.email} firstName={projectOwner.firstName} lastName={projectOwner.lastName} />
-      }
-      label={`${projectOwner.firstName} ${projectOwner.lastName}`}
-      variant="outlined"
-    />
+    <Link
+      underline="hover"
+      onClick={(e) => stopPropagationRow(e, "mailto:" + projectOwner.email)}
+    >
+      <Chip
+        // key={projectOwner.githubId + licencePlate + "po"}
+        style={{ width: "fit-content" }}
+        avatar={
+          <Avatar email={projectOwner.email} firstName={projectOwner.firstName} lastName={projectOwner.lastName} />
+        }
+        label={`${projectOwner.firstName} ${projectOwner.lastName}`}
+        variant="outlined"
+      />
+    </Link>
   ),
   technicalLeads: (
     <Stack direction="column" spacing={1}>
       {[primaryTechnicalLead, secondaryTechnicalLead]
         .filter(Boolean)
         .map(({ firstName, lastName, email }, i) => (
-          <Chip
-            key={firstName + i + "project"}
-            style={{ width: "fit-content" }}
-            avatar={<Avatar firstName={firstName} email={email} lastName={lastName} />}
-            label={`${firstName} ${lastName}`}
-            variant="outlined"
-          />
+          <Link
+            underline="hover"
+            onClick={(e) => stopPropagationRow(e, "mailto:" + email)}
+          >
+            <Chip
+              key={firstName + i + "project"}
+              style={{ width: "fit-content" }}
+              avatar={<Avatar firstName={firstName} email={email} lastName={lastName} />}
+              label={`${firstName} ${lastName}`}
+              variant="outlined"
+            />
+          </Link>
         ))}
     </Stack>
   ),
@@ -79,6 +106,7 @@ const projectsToRowsXs = ({
   primaryTechnicalLead,
   secondaryTechnicalLead,
   licencePlate,
+  cluster,
 }) => ({
   id,
   name: <span style={{ fontSize: 18, fontWeight: "450" }}>{name}</span>,
@@ -92,7 +120,22 @@ const projectsToRowsXs = ({
     />
   ),
   licencePlate: (
-    <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
+    <Link
+      sx={{
+        "&:hover": {
+          cursor: "pointer",
+        },
+      }}
+      underline="hover"
+      onClick={(e) =>
+        stopPropagationRow(
+          e,
+          `https://console.apps.${cluster}.devops.gov.bc.ca/topology/ns/${licencePlate}-prod`
+        )
+      }
+    >
+      <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
+    </Link>
   ),
 });
 
