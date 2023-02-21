@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
 import ClusterInput from "../../components/forms/ClusterInput";
@@ -8,7 +8,6 @@ import {
   projectInitialValues as initialValues,
   replaceNullsWithEmptyString,
 } from "../../components/common/FormHelpers";
-import CommonComponents from "../../components/forms/CommonComponents";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import Container from "../../components/common/Container";
@@ -129,7 +128,6 @@ export default function UserRequest() {
   const { id } = useParams();
   const [humanCommentText, setHumanCommentText] = useState(null)
 
-  
   const { data, loading, error } = useQuery(USER_REQUEST, {
     variables: { requestId: id },
   });
@@ -162,12 +160,6 @@ export default function UserRequest() {
       <NavToolbar path={"request"} title={name}></NavToolbar>
       <Container>
         <MetaDataInput formik={formik} isDisabled={true} />
-        {humanCommentText&&[
-                  <Divider variant="middle" sx={{ mt: 1, mb: 5 }} />,
-          <TitleTypography> Reviewer’s comments</TitleTypography>,
-          <Typography sx={{ mb: 4, maxWidth: 600 }} color="text.primary">
-          {humanCommentText}
-        </Typography>]}
         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
         <div>
           <div style={{ display: "flex" }}>
@@ -196,8 +188,12 @@ export default function UserRequest() {
             isDisabled={isDisabled}
             currentProjectQuota={data?.userPrivateCloudRequestById?.project}
           />
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <CommonComponents formik={formik} isDisabled={true} />
+          {humanCommentText && [
+            <Divider variant="middle" sx={{ mt: 1, mb: 5 }} />,
+            <TitleTypography> Reviewer’s comments</TitleTypography>,
+            <Typography sx={{ mb: 6, maxWidth: 600 }} color="text.primary">
+              {humanCommentText}
+            </Typography>]}
         </div>
       </Container>
     </div>

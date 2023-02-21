@@ -40,7 +40,7 @@ const requestsToRows = ({
       key={projectOwner.firstName}
       style={{ width: "fit-content" }}
       avatar={
-        <Avatar firstName={projectOwner.firstName} email={projectOwner.email} />
+        <Avatar firstName={projectOwner.firstName} email={projectOwner.email} lastName={projectOwner.lastName}/>
       }
       label={`${projectOwner.firstName} ${projectOwner.lastName}`}
       variant="outlined"
@@ -55,7 +55,7 @@ const requestsToRows = ({
             key={firstName}
             style={{ width: "fit-content" }}
             avatar={
-              <Avatar firstName={firstName} email={email} />
+              <Avatar firstName={firstName} email={email} lastName={lastName}/>
             }
             label={`${firstName} ${lastName}`}
             variant="outlined"

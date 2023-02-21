@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
 import ClusterInput from "../../components/forms/ClusterInput";
@@ -8,7 +8,7 @@ import {
   projectInitialValues as initialValues,
   replaceNullsWithEmptyString,
 } from "../../components/common/FormHelpers";
-import CommonComponents from "../../components/forms/CommonComponents";
+import TitleTypography from "../../components/common/TitleTypography";
 import { Button } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { USER_REQUESTS } from "../requests/UserRequests";
@@ -21,6 +21,8 @@ import Divider from "@mui/material/Divider";
 import Quotas from "../../components/forms/Quotas";
 import Namespaces from "../../components/Namespaces";
 import TextField from "@mui/material/TextField";
+import { Box } from "@mui/material";
+
 
 const ADMIN_REQUEST = gql`
   query Query($requestId: ID!) {
@@ -147,7 +149,6 @@ export default function AdminRequest() {
   const navigate = useNavigate();
   const toastId = useRef(null);
   const [humanCommentInput, setHumanCommentInput] = useState(null)
-  const [humanCommentLable, setHumanCommentLable] = useState('Provide feedback to the PO/TC regarding your decision for this product')
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id },
@@ -208,48 +209,14 @@ export default function AdminRequest() {
     }
   }, [request.humanComment]);
 
-  useEffect(() => {
-    setHumanCommentLable(humanCommentInput ? "Reviewer's comments":'Provide feedback to the PO/TC regarding your decision for this product')
-  }, [humanCommentInput]);
-
   const name = request?.type === "CREATE" ? requestedProject?.name : project?.name;
   const isDisabled = !requestedProject || request?.decisionStatus !== "PENDING";
 
   return (
     <div>
-      <NavToolbar path={"request"} title={name} sx={{position: 'relative'}}>
-        <Button
-          disabled={isDisabled}
-          sx={{ mr: 1 }}
-          onClick={() => makeDecisionOnClick("APPROVED")}
-          variant="outlined"
-        >
-          Approve
-        </Button>
-        <Button
-          disabled={isDisabled}
-          sx={{ mr: 1 }}
-          onClick={() => makeDecisionOnClick("REJECTED")}
-          variant="outlined"
-        >
-          Reject
-        </Button>
-        <TextField
-          fullWidth
-          id="humanComment"
-          name="humanComment"
-          label={humanCommentLable}
-          value={humanCommentInput}
-          onChange={(e) => setHumanCommentInput(e.target.value)}
-          size="small"
-          style={{ width: "45%", position: 'absolute', top: '150%', right: '2%' }}
-          multiline
-          rows={4}
-        />
-      </NavToolbar>
+      <NavToolbar path={"request"} title={name} />
       <Container>
         <MetaDataInput formik={formik} isDisabled={true} />
-       
         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
         <div>
           <div style={{ display: "flex" }}>
@@ -279,8 +246,38 @@ export default function AdminRequest() {
             currentProjectQuota={data?.privateCloudActiveRequestById?.project}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <CommonComponents formik={formik} isDisabled={true} />
         </div>
+        <TitleTypography> Reviewer’s comments</TitleTypography>
+        <TextField
+          fullWidth
+          id="humanComment"
+          name="humanComment"
+          placeholder="Provide feedback to the PO/TC regarding your decision for this product"
+          value={humanCommentInput}
+          onChange={(e) => setHumanCommentInput(e.target.value)}
+          size="small"
+          style={{ display: 'block', width: "700px", maxWidth: '100%' }}
+          multiline
+          rows={4}
+        />
+        <Box sx={{ mt: 3, mb: 3 }}>
+          <Button
+            disabled={isDisabled}
+            sx={{ mr: 1, minWidth: '120px' }}
+            onClick={() => makeDecisionOnClick("APPROVED")}
+            variant="contained"
+          >
+            Approve
+          </Button>
+          <Button
+            disabled={isDisabled}
+            sx={{ mr: 1, minWidth: '120px' }}
+            onClick={() => makeDecisionOnClick("REJECTED")}
+            variant="outlined"
+          >
+            Reject
+          </Button>
+        </Box>
       </Container>
     </div>
   );

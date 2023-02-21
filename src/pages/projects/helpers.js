@@ -47,9 +47,9 @@ const projectsToRows = ({
   projectOwner: (
     <Chip
       // key={projectOwner.githubId + licencePlate + "po"}
-      style={{ width: "fit-content" }}
+      style={{ width: "fit-content"}}
       avatar={
-        <Avatar email={projectOwner.email} firstName={projectOwner.firstName} />
+        <Avatar email={projectOwner.email} firstName={projectOwner.firstName} lastName={projectOwner.lastName} />
       }
       label={`${projectOwner.firstName} ${projectOwner.lastName}`}
       variant="outlined"
@@ -63,7 +63,7 @@ const projectsToRows = ({
           <Chip
             key={firstName + i + "project"}
             style={{ width: "fit-content" }}
-            avatar={<Avatar firstName={firstName} email={email} />}
+            avatar={<Avatar firstName={firstName} email={email} lastName={lastName} />}
             label={`${firstName} ${lastName}`}
             variant="outlined"
           />
