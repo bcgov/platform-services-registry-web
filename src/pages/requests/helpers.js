@@ -1,6 +1,5 @@
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
-// import Avatar from "@mui/material/Avatar";
 import Avatar from "../../components/common/Avatar";
 import CircularProgress from "../../components/common/CircularProgress";
 import { Box } from "@mui/system";
@@ -8,6 +7,8 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import HourglassBottomRoundedIcon from "@mui/icons-material/HourglassBottomRounded";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import Link from "@mui/material/Link";
+import { stopPropagationRow } from "../../components/common/FormHelpers";
 
 dayjs.extend(relativeTime);
 
@@ -31,35 +32,62 @@ const requestsToRows = ({
   name: <span style={{ fontSize: 18, fontWeight: "500" }}>{name}</span>,
   created: <span style={{ fontSize: 16 }}> {dayjs(created).fromNow()}</span>,
   licencePlate: (
-    <b style={{ fontSize: 18, fontWeight: "500" }}>{licencePlate}</b>
+    <Link
+      sx={{
+        "&:hover": {
+          cursor: "pointer",
+        },
+      }}
+      underline="hover"
+      onClick={(e) =>
+        stopPropagationRow(
+          e,
+          `https://console.apps.${cluster}.devops.gov.bc.ca/topology/ns/${licencePlate}-prod`
+        )
+      }
+    >
+      <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
+    </Link>
   ),
   ministry,
   cluster,
   projectOwner: (
-    <Chip
-      key={projectOwner.firstName}
-      style={{ width: "fit-content" }}
-      avatar={
-        <Avatar firstName={projectOwner.firstName} email={projectOwner.email} />
-      }
-      label={`${projectOwner.firstName} ${projectOwner.lastName}`}
-      variant="outlined"
-    />
+    <Link
+      underline="hover"
+      onClick={(e) => stopPropagationRow(e, "mailto:" + projectOwner.email)}
+    >
+      <Chip
+        key={projectOwner.githubId}
+        style={{ width: "fit-content" }}
+        avatar={
+          <Avatar
+            firstName={projectOwner.firstName}
+            email={projectOwner.email}
+          />
+        }
+        label={`${projectOwner.firstName} ${projectOwner.lastName}`}
+        variant="outlined"
+      />
+    </Link>
   ),
   technicalLeads: (
     <Stack direction="column" spacing={1}>
       {[primaryTechnicalLead, secondaryTechnicalLead]
         .filter(Boolean)
-        .map(({ firstName, lastName, email }) => (
-          <Chip
-            key={firstName}
-            style={{ width: "fit-content" }}
-            avatar={
-              <Avatar firstName={firstName} email={email} />
-            }
-            label={`${firstName} ${lastName}`}
-            variant="outlined"
-          />
+
+        .map(({ firstName, lastName, githubId, email }) => (
+          <Link
+            underline="hover"
+            onClick={(e) => stopPropagationRow(e, "mailto:" + email)}
+          >
+            <Chip
+              key={githubId}
+              style={{ width: "fit-content" }}
+              avatar={<Avatar firstName={firstName} email={email} />}
+              label={`${firstName} ${lastName}`}
+              variant="outlined"
+            />
+          </Link>
         ))}
     </Stack>
   ),
