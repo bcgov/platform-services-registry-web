@@ -13,6 +13,9 @@ export default function MetaDataInput({ formik, isDisabled }) {
         "& .MuiTextField-root": { mb: 2, mt: 2 },
         mb: 4,
         mt: 2,
+        display: "flex",
+        justifyContent: 'space-between',
+        alignItems: 'flex-end'
       }}
       noValidate
       autoComplete="off"

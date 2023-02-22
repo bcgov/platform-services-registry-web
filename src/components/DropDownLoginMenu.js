@@ -53,6 +53,7 @@ export default function DropDownLoginMenu() {
               sx={{ width: 32, height: 32 }}
               email={userContext?.email}
               firstName={userContext?.firstName}
+              lastName={userContext?.lastName}
             />
           </IconButton>
         </Tooltip>

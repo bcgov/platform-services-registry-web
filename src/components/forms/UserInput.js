@@ -124,6 +124,7 @@ export default function UserInput({
           variant="rounded"
           email={email}
           firstName={formik.values[contact]?.firstName}
+          lastName={formik.values[contact]?.lastName}
         />
         <Stack sx={{ width: "100%", ml: 2 }} spacing={0.5}>
           <Typography fontWeight={700}>{label}</Typography>

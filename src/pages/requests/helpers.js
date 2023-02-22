@@ -60,10 +60,7 @@ const requestsToRows = ({
         key={projectOwner.githubId}
         style={{ width: "fit-content" }}
         avatar={
-          <Avatar
-            firstName={projectOwner.firstName}
-            email={projectOwner.email}
-          />
+          <Avatar firstName={projectOwner.firstName} email={projectOwner.email} lastName={projectOwner.lastName}/>
         }
         label={`${projectOwner.firstName} ${projectOwner.lastName}`}
         variant="outlined"
@@ -73,8 +70,7 @@ const requestsToRows = ({
   technicalLeads: (
     <Stack direction="column" spacing={1}>
       {[primaryTechnicalLead, secondaryTechnicalLead]
-        .filter(Boolean)
-
+        .filter(Boolean)        
         .map(({ firstName, lastName, githubId, email }) => (
           <Link
             underline="hover"
@@ -83,7 +79,9 @@ const requestsToRows = ({
             <Chip
               key={githubId}
               style={{ width: "fit-content" }}
-              avatar={<Avatar firstName={firstName} email={email} />}
+              avatar={
+                <Avatar firstName={firstName} email={email} lastName={lastName}/>
+              }
               label={`${firstName} ${lastName}`}
               variant="outlined"
             />

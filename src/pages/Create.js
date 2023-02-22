@@ -50,6 +50,7 @@ const CREATE_USER_PROJECT = gql`
       id
       active
       decisionStatus
+      humanComment
     }
   }
 `;
