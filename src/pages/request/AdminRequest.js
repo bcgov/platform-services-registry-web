@@ -242,7 +242,7 @@ export default function AdminRequest() {
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Quotas
             formik={formik}
-            isDisabled={isDisabled}
+            isDisabled={true}
             currentProjectQuota={data?.privateCloudActiveRequestById?.project}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
