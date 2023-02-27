@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import Container from "../components/common/Container";
 import Users from "../components/forms/Users";
 import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
 
 const CREATE_USER_PROJECT = gql`
   mutation PrivateCloudProjectRequest(
@@ -129,11 +130,7 @@ export default function Create({ requestsRoute }) {
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
-        <NavToolbar title="Create Project">
-          <Button type="submit" sx={{ mr: 2 }} variant="outlined">
-            CREATE
-          </Button>
-        </NavToolbar>
+        <NavToolbar title="Create Project"></NavToolbar>
         <Container>
           <MetaDataInput formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
@@ -145,12 +142,25 @@ export default function Create({ requestsRoute }) {
           <Users formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <CommonComponents formik={formik} isDisabled={false} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <Typography sx={{ mb: 3, mt: 3, width: 1100 }} color="text.primary">
+            <b>All set?</b> After hitting create, our smart robots will start
+            working hard behind the scenes. There is one step, the{" "}
+            <b>approval process</b>, where a human is involved. They'll take the
+            opportunity, if needed, to reach out and have an on-boarding
+            conversation with you. Also, look out for our{" "}
+            <b>Notification emails</b> that will provide you with valuable
+            information regarding your product status and details. By checking
+            this box, I confirm that I have read and understood the roles and
+            responsibilities as described in the Onboarding Guide."
+          </Typography>
+
           <Button
             type="submit"
-            sx={{ mt: 3, ml: 2, mb: 4, width: 350 }}
-            variant="outlined"
+            sx={{ mr: 1, width: "170px" }}
+            variant="contained"
           >
-            CREATE
+            Create
           </Button>
         </Container>
       </form>
