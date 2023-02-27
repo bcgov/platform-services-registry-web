@@ -276,7 +276,6 @@ export default function Project({ requestsRoute }) {
       <form onSubmit={formik.handleSubmit}>
         <NavToolbar path={"product"} title={name}>
           <IconButton
-            sx={{ mr: 2 }}
             disabled={!formik.dirty}
             onClick={() => formik.resetForm()}
             // type="reset"
@@ -284,16 +283,7 @@ export default function Project({ requestsRoute }) {
           >
             <RestartAltIcon />
           </IconButton>
-          <Button
-            sx={{ mr: 1 }}
-            type="submit"
-            disabled={!formik.dirty}
-            variant="outlined"
-          >
-            SUBMIT EDIT REQUEST
-          </Button>
           <IconButton
-            sx={{ mr: 1 }}
             disabled={isDisabled}
             onClick={deleteOnClick}
             aria-label="delete"
@@ -325,6 +315,14 @@ export default function Project({ requestsRoute }) {
             <Quotas formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
+            <Button
+              type="submit"
+              disabled={!formik.dirty}
+              sx={{ mr: 1, width: "170px" }}
+              variant="contained"
+            >
+              Submit
+            </Button>
           </div>
         </Container>
       </form>
