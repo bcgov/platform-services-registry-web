@@ -58,7 +58,7 @@ export default function Requests() {
       onClickPath={"/private-cloud/user/request/"}
       columns={columns}
       rows={data.userPrivateCloudRequests.map(requestsToRows).reverse()}
-      count={loading ? 0 : data?.userPrivateCloudRequests?.lengthg}
+      count={loading ? 0 : data?.userPrivateCloudRequests?.length}
       title="Active Requests"
       loading={loading}
     />
