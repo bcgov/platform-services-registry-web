@@ -5,6 +5,7 @@ import CircularProgress from "../../components/common/CircularProgress";
 import { Box } from "@mui/system";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import HourglassBottomRoundedIcon from "@mui/icons-material/HourglassBottomRounded";
+import CancelIcon from "@mui/icons-material/Cancel";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "@mui/material/Link";
@@ -60,7 +61,11 @@ const requestsToRows = ({
         key={projectOwner.githubId}
         style={{ width: "fit-content" }}
         avatar={
-          <Avatar firstName={projectOwner.firstName} email={projectOwner.email} lastName={projectOwner.lastName}/>
+          <Avatar
+            firstName={projectOwner.firstName}
+            email={projectOwner.email}
+            lastName={projectOwner.lastName}
+          />
         }
         label={`${projectOwner.firstName} ${projectOwner.lastName}`}
         variant="outlined"
@@ -70,7 +75,7 @@ const requestsToRows = ({
   technicalLeads: (
     <Stack direction="column" spacing={1}>
       {[primaryTechnicalLead, secondaryTechnicalLead]
-        .filter(Boolean)        
+        .filter(Boolean)
         .map(({ firstName, lastName, githubId, email }) => (
           <Link
             underline="hover"
@@ -80,7 +85,11 @@ const requestsToRows = ({
               key={githubId}
               style={{ width: "fit-content" }}
               avatar={
-                <Avatar firstName={firstName} email={email} lastName={lastName}/>
+                <Avatar
+                  firstName={firstName}
+                  email={email}
+                  lastName={lastName}
+                />
               }
               label={`${firstName} ${lastName}`}
               variant="outlined"
@@ -92,6 +101,9 @@ const requestsToRows = ({
   status: (
     <Box sx={{ display: "flex" }}>
       {decisionStatus === "APPROVED" ? <CircularProgress /> : null}
+      {decisionStatus === "REJECTED" ? (
+        <CancelIcon fontSize="small" color="error" sx={{ mt: 0.7 }} />
+      ) : null}
       {decisionStatus === "PENDING" ? (
         <HourglassBottomRoundedIcon
           fontSize="small"
@@ -126,6 +138,7 @@ const decisionStatusLookup = {
   APPROVED: "PROVISIONING",
   PENDING: "PENDING DECISION",
   PROVISIONED: "PROVISIONED",
+  REJECTED: "REJECTED",
 };
 
 const decisionStatusColourLookup = {
