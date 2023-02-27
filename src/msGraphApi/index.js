@@ -1,34 +1,117 @@
-import { PublicClientApplication } from "@azure/msal-browser";
+import {
+  PublicClientApplication,
+  InteractionRequiredAuthError,
+} from "@azure/msal-browser";
 import { msalConfig } from "./config";
 
-const myMSALObj = new PublicClientApplication(msalConfig);
+const msalInstance = new PublicClientApplication(msalConfig);
 
-async function getTokenPopup() {
-  /**
-   * See here for more info on account retrieval:
-   * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
-   */
-  const accounts = myMSALObj.getAllAccounts();
-
-  const request = {
-    scopes: ["User.ReadBasic.All"],
-    account: accounts[0]
-  };
-
-  let accessToken;
-
+// // POP UP
+async function getAccessToken() {
   try {
-    const result = await myMSALObj.acquireTokenSilent(request);
+    let account = msalInstance.getAllAccounts()[0];
 
-    accessToken = result.accessToken;
+    if (!account) {
+      const request = {
+        scopes: ["User.ReadBasic.All"],
+      };
+
+      const response = await msalInstance.loginPopup(request);
+      account = response.account;
+    }
+
+    const request = {
+      scopes: ["User.ReadBasic.All"],
+      account: account,
+    };
+
+    const response = await msalInstance.acquireTokenSilent(request);
+    const accessToken = response.accessToken;
+
+    return accessToken;
   } catch (error) {
-    console.log("silent token acquisition fails. acquiring token using popup");
-    const result = await myMSALObj.acquireTokenPopup(request);
-    accessToken = result.accessToken;
-  }
+    console.error(error);
 
-  return accessToken;
+    if (error instanceof InteractionRequiredAuthError) {
+      try {
+        const request = {
+          scopes: ["User.ReadBasic.All"],
+        };
+
+        const response = await msalInstance.acquireTokenPopup(request);
+        const accessToken = response.accessToken;
+
+        return accessToken;
+      } catch (error) {
+        console.error(error);
+        throw new Error("Error acquiring access token");
+      }
+    } else {
+      throw new Error("Error acquiring access token");
+    }
+  }
 }
+
+// export async function getAccessToken() {
+//   const accounts = msalInstance.getAllAccounts();
+
+//   console.log("Accounts: ", accounts)
+
+//   const request = {
+//     scopes: ["User.ReadBasic.All"],
+//     account: accounts[0],
+//   };
+
+//   try {
+//     const response = await msalInstance.acquireTokenSilent(request);
+//     const accessToken = response.accessToken;
+
+//     return accessToken;
+//   } catch (error) {
+//     console.error(error);
+
+//     if (error instanceof InteractionRequiredAuthError) {
+//       try {
+//         const response = await msalInstance.acquireTokenPopup(request);
+//         const accessToken = response.accessToken;
+
+//         return accessToken;
+//       } catch (error) {
+//         console.error(error);
+//         throw new Error("Error acquiring access token");
+//       }
+//     } else {
+//       throw new Error("Error acquiring access token");
+//     }
+//   }
+// }
+
+// async function getAccessToken() {
+//   /**
+//    * See here for more info on account retrieval:
+//    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
+//    */
+//   const accounts = msalInstance.getAllAccounts();
+
+//   const request = {
+//     scopes: ["User.ReadBasic.All"],
+//     account: accounts[0]
+//   };
+
+//   let accessToken;
+
+//   try {
+//     const result = await msalInstance.acquireTokenSilent(request);
+
+//     accessToken = result.accessToken;
+//   } catch (error) {
+//     console.log("silent token acquisition fails. acquiring token using popup");
+//     const result = await msalInstance.acquireTokenPopup(request);
+//     accessToken = result.accessToken;
+//   }
+
+//   return accessToken;
+// }
 
 export async function callMsGraph(endpoint, accessToken) {
   const headers = new Headers();
@@ -39,7 +122,7 @@ export async function callMsGraph(endpoint, accessToken) {
 
   const options = {
     method: "GET",
-    headers: headers
+    headers: headers,
   };
 
   return fetch(endpoint, options);
@@ -51,7 +134,7 @@ export async function getUsers(email) {
   let data;
 
   try {
-    const accessToken = await getTokenPopup();
+    const accessToken = await getAccessToken();
 
     if (!accessToken) {
       return [];
@@ -72,7 +155,7 @@ export async function getUser(email) {
   let user;
 
   try {
-    const accessToken = await getTokenPopup();
+    const accessToken = await getAccessToken();
 
     if (!accessToken) {
       return null;
@@ -93,7 +176,7 @@ export async function getUserPhoto(id) {
   let imageUrl;
 
   try {
-    const accessToken = await getTokenPopup();
+    const accessToken = await getAccessToken();
 
     if (!accessToken) {
       return null;
@@ -119,7 +202,7 @@ export async function getUserPhotoByEmail(email) {
   let imageUrl;
 
   try {
-    const accessToken = await getTokenPopup();
+    const accessToken = await getAccessToken();
 
     if (!accessToken) {
       return null;

@@ -12,7 +12,6 @@ import { useQuery, gql } from "@apollo/client";
 import UserProvider from "./providers/user";
 import SearchProvider from "./providers/search";
 import FilterProvider from "./providers/filter";
-import { getUserPhotoByEmail } from "./msGraphApi/index";
 
 const theme = createTheme({
   typography: {
@@ -81,7 +80,6 @@ function App() {
   } = useKeycloak();
 
   const { error, data } = useQuery(ME, { errorPolicy: "ignore" });
-  const photoUrl = getUserPhotoByEmail(data?.me?.email);
   const [mode, setMode] = useState(localStorage.getItem("appMode") || "light");
   theme.palette.mode = mode;
 
@@ -98,7 +96,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <ModeContext.Provider value={{ mode: mode, toggleMode: toggleMode }}>
-        <UserProvider user={{ photoUrl, ...data?.me }}>
+        <UserProvider user={{ ...data?.me }}>
           <SearchProvider>
             <FilterProvider>
               <AdminProvider>
