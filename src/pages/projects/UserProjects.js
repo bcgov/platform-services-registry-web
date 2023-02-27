@@ -64,6 +64,7 @@ export default function Projects() {
       onClickPath={"/private-cloud/user/product/"}
       columns={columns}
       rows={data.userPrivateCloudProjects.map(projectsToRows).reverse()}
+      count={loading ? 0 : data?.userPrivateCloudProjects?.length}
       title="Projects"
       loading={loading}
     />
