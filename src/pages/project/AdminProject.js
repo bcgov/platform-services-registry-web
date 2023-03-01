@@ -38,7 +38,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 
 const ADMIN_PROJECT = gql`
-  query Query($projectId: ID!) {
+  query PrivateCloudProjectById($projectId: ID!) {
     privateCloudProjectById(projectId: $projectId) {
       id
       name

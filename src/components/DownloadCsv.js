@@ -22,7 +22,10 @@ export const USER_FIELDS = gql`
 `;
 
 const GET_CSV_DATA = gql`
-  query Query($filter: FilterPrivateCloudProjectsInput, $search: String) {
+  query PrivateCloudProjectsWithFilterSearch(
+    $filter: FilterPrivateCloudProjectsInput
+    $search: String
+  ) {
     privateCloudProjectsWithFilterSearch(filter: $filter, search: $search) {
       id
       name
@@ -94,7 +97,7 @@ const transformSelectedFields = (selectedFields) => {
       "primaryTechnicalLeadName",
       "primaryTechnicalLeadEmail",
       "secondaryTechnicalLeadName",
-      "secondaryTechnicalLeadEmail",
+      "secondaryTechnicalLeadEmail"
     );
   }
 
