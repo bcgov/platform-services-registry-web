@@ -25,7 +25,7 @@ export default function StickyTable({
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    if(onNextPage) {onNextPage(newPage+1, rowsPerPage)}
+    onNextPage&&onNextPage(newPage+1, rowsPerPage)
   };
 
   const handleChangeRowsPerPage = (event) => {
