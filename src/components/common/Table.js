@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,15 +7,15 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Skeleton from "@mui/material/Skeleton";
 import { useNavigate } from "react-router-dom";
+import { TablePaginationActions } from "./TablePaginationActions"
 
 export default function StickyTable({
   columns,
   rows = [],
   loading,
-  onClickPath,
   onNextPage,
+  onClickPath,
   count,
 }) {
   const [page, setPage] = useState(0);
@@ -25,7 +25,9 @@ export default function StickyTable({
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    onNextPage(newPage, rowsPerPage);
+    if(onNextPage) {onNextPage(newPage, rowsPerPage);
+    console.log(newPage+1,rowsPerPage)
+    }
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -60,7 +62,6 @@ export default function StickyTable({
               ))}
             </TableRow>
           </TableHead>
-
           <TableBody>
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -74,7 +75,7 @@ export default function StickyTable({
                     key={row.code}
                   >
                     {columns.map((column) => {
-                      const value = row[column.id];                      
+                      const value = row[column.id];
                       return (
                         <TableCell
                           style={{
@@ -88,7 +89,7 @@ export default function StickyTable({
                           key={column.id}
                           align={column.align}
                         >
-                       {column.format && typeof value === "number"
+                          {column.format && typeof value === "number"
                             ? column.format(value)
                             : value}
                         </TableCell>
@@ -108,8 +109,9 @@ export default function StickyTable({
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Paper>
+        ActionsComponent={TablePaginationActions}
+        />
+        </Paper>
   );
 }
 

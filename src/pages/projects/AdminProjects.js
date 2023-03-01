@@ -72,12 +72,14 @@ export default function Projects() {
     pollInterval: 500,
   });
 
+  
   useEffect(() => {
     startPolling(7000);
   }, [startPolling]);
 
-  const getNextPage = useCallback(
+  const getNextPage = useCallback(   
     (page, pageSize) => {
+      console.log(page, pageSize)
       fetchMore({
         variables: {
           page,
