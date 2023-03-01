@@ -79,7 +79,6 @@ export default function Projects() {
 
   const getNextPage = useCallback(   
     (page, pageSize) => {
-      console.log(page, pageSize)
       fetchMore({
         variables: {
           page,
