@@ -51,7 +51,9 @@ export default function ApolloAuthProvider({ children }) {
             keyArgs: ["filter", "search"],
             merge(existing, incoming, { args }) {
               const merged = existing ? existing.projects.slice(0) : [];
-              const { offset = 0 } = args;
+              const { page, pageSize } = args;
+
+              const offset = (page - 1) * pageSize;
 
               if (incoming) {
                 if (args) {

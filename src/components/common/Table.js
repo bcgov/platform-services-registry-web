@@ -37,6 +37,8 @@ export default function StickyTable({
     navigate(onClickPath + id);
   };
 
+  console.log(rows);
+
   return (
     <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
       <TableContainer sx={{ height: "calc(100vh - 182px)" }}>
@@ -60,10 +62,9 @@ export default function StickyTable({
               ))}
             </TableRow>
           </TableHead>
-
           <TableBody>
             {rows
-              // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
                   <TableRow
