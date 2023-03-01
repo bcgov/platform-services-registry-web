@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import * as yup from "yup";
 import {
   CreateUserInputSchema,
@@ -26,6 +26,8 @@ import Container from "../components/common/Container";
 import Users from "../components/forms/Users";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
 
 const CREATE_USER_PROJECT = gql`
   mutation PrivateCloudProjectRequest(
@@ -75,9 +77,23 @@ const validationSchema = yup.object().shape({
     }),
 });
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 export default function Create({ requestsRoute }) {
   const navigate = useNavigate();
   const toastId = useRef(null);
+
+  const [open, setOpen] = useState(false);
 
   const [privateCloudProjectRequest, { data, loading, error }] = useMutation(
     CREATE_USER_PROJECT,
@@ -93,39 +109,50 @@ export default function Create({ requestsRoute }) {
   const formik = useFormik({
     initialValues,
     validationSchema,
-    onSubmit: (values) => {
-      toastId.current = toast("Your create request has been submitted", {
-        autoClose: false,
-      });
+    onSubmit: async (values) => {
+      const result = await formik.validateForm();
 
-      const variables = validationSchema.cast(values);
-
-      privateCloudProjectRequest({
-        variables,
-        onError: (error) => {
-          toast.update(toastId.current, {
-            render: `Error: ${error.message}`,
-            type: toast.TYPE.ERROR,
-            autoClose: 5000,
-          });
-        },
-
-        onCompleted: (data) => {
-          navigate(requestsRoute);
-
-          if (data?.privateCloudProjectRequest) {
-            toast.update(toastId.current, {
-              render: "Request successfuly created",
-              type: toast.TYPE.SUCCESS,
-              autoClose: 5000,
-            });
-          }
-        },
-      });
+      if (Object.keys(result).length === 0 && formik.dirty) {
+        // Submit the form only if there are no errors and the form has been touched
+        setOpen(true);
+      }
     },
   });
 
-  console.log(formik.errors);
+  const submitForm = () => {
+    const { values } = formik;
+
+    toastId.current = toast("Your create request has been submitted", {
+      autoClose: false,
+    });
+
+    const variables = validationSchema.cast(values);
+
+    privateCloudProjectRequest({
+      variables,
+      onError: (error) => {
+        toast.update(toastId.current, {
+          render: `Error: ${error.message}`,
+          type: toast.TYPE.ERROR,
+          autoClose: 5000,
+        });
+      },
+
+      onCompleted: (data) => {
+        navigate(requestsRoute);
+
+        if (data?.privateCloudProjectRequest) {
+          toast.update(toastId.current, {
+            render: "Request successfuly created",
+            type: toast.TYPE.SUCCESS,
+            autoClose: 5000,
+          });
+        }
+      },
+    });
+  };
+
+  const handleClose = () => setOpen(false);
 
   return (
     <div>
@@ -150,18 +177,41 @@ export default function Create({ requestsRoute }) {
             opportunity, if needed, to reach out and have an on-boarding
             conversation with you. Also, look out for our{" "}
             <b>Notification emails</b> that will provide you with valuable
-            information regarding your product status and details. By checking
-            this box, I confirm that I have read and understood the roles and
+            information regarding your product status and details. By
+            proceeding, I confirm that I have read and understood the roles and
             responsibilities as described in the Onboarding Guide."
           </Typography>
-
-          <Button
-            type="submit"
-            sx={{ mr: 1, width: "170px" }}
-            variant="contained"
-          >
-            Create
-          </Button>
+          <div>
+            <Button
+              type="submit"
+              sx={{ mr: 1, width: "170px" }}
+              variant="contained"
+            >
+              Create
+            </Button>
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Please Confirm Your Request
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                  Are you sure you want to create this project?
+                  <Button
+                    onClick={submitForm}
+                    sx={{ mr: 1, width: "170px", mt: 3 }}
+                    variant="contained"
+                  >
+                    Create
+                  </Button>
+                </Typography>
+              </Box>
+            </Modal>
+          </div>
         </Container>
       </form>
     </div>
