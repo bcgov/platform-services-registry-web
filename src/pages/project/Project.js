@@ -391,7 +391,7 @@ export default function Project({ requestsRoute }) {
                     sx={{ mr: 1, width: "170px", mt: 3 }}
                     variant="contained"
                   >
-                    Create
+                    Submit
                   </Button>
                 </Typography>
               </Box>
