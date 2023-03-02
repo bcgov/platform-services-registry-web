@@ -23,7 +23,7 @@ export default function MetaDataInput({ formik, isDisabled }) {
       <Box sx={{ display: "flex", p: 0 }}>
         <Box sx={{ mr: 0, width: 650 }}>
           <div>
-            <TitleTypography>Project Description</TitleTypography>
+            <TitleTypography>Product Description</TitleTypography>
             <Typography sx={{ mb: 1 }} color="text.primary">
               If this is your first time on the <b>OpenShift platform</b> you
               need to book an alignment meeting with the{" "}

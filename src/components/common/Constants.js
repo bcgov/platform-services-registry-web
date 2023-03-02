@@ -1,6 +1,25 @@
 const ministries = [
-  "AEST",
-  "AG",
+  {
+    value: "AF",
+humanFriendlyName:'Agriculture and Food'
+},
+{
+    value: "AG",
+humanFriendlyName:'Attorney General'
+},
+{
+  value: "CFD",
+humanFriendlyName:'Children and Family Development'
+},
+{
+  value: "CITZ",
+humanFriendlyName:"Citizens' Services"
+},
+{
+  value: "CITZ",
+humanFriendlyName:"Citizens' Services"
+},
+
   "AGRI",
   "ALC",
   "BCPC",
