@@ -6,7 +6,7 @@ import {
   ApolloLink,
   InMemoryCache,
   from,
-  concat
+  concat,
 } from "@apollo/client";
 import { offsetLimitPagination } from "@apollo/client/utilities";
 import { useKeycloak } from "@react-keycloak/web";
@@ -27,7 +27,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 export default function ApolloAuthProvider({ children }) {
   const { initialized, keycloak } = useKeycloak();
   const httpLink = new HttpLink({
-    uri: config.API_BASE_URL
+    uri: config.API_BASE_URL,
   });
 
   const authMiddleware = new ApolloLink((operation, forward) => {
@@ -36,8 +36,8 @@ export default function ApolloAuthProvider({ children }) {
     operation.setContext(({ headers = {} }) => ({
       headers: {
         ...headers,
-        authorization: `Bearer ${bearerToken}` || null
-      }
+        authorization: `Bearer ${bearerToken}` || null,
+      },
     }));
 
     return forward(operation);
@@ -48,17 +48,35 @@ export default function ApolloAuthProvider({ children }) {
       Query: {
         fields: {
           privateCloudProjectsPaginated: {
-            projects: offsetLimitPagination(["search", "filter"])
-          }
-        }
-      }
-    }
+            keyArgs: ["filter", "search"],
+            merge(existing, incoming, { args }) {
+              const merged = existing ? existing.projects.slice(0) : [];
+              const { page, pageSize } = args;
+
+              const offset = (page - 1) * pageSize;
+
+              if (incoming) {
+                if (args) {
+                  for (let i = 0; i < incoming.projects.length; ++i) {
+                    merged[offset + i] = incoming.projects[i];
+                  }
+                } else {
+                  throw Error("args not defined");
+                }
+              }
+
+              return { ...incoming, projects: merged };
+            },
+          },
+        },
+      },
+    },
   });
 
   const client = new ApolloClient({
     cache,
     connectToDevTools: true,
-    link: from([authMiddleware, errorLink, httpLink])
+    link: from([authMiddleware, errorLink, httpLink]),
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

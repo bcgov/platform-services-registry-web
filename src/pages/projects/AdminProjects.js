@@ -61,16 +61,19 @@ export default function Projects() {
   const { filter } = useContext(FilterContext);
   const { width } = useWindowSize();
 
-  const { loading, data, fetchMore, startPolling, error } = useQuery(ALL_PROJECTS, {
-    nextFetchPolicy: "cache-first",
-    variables: {
-      page: 1,
-      pageSize: 10,
-      search: debouncedSearch,
-      filter,
-    },
-    pollInterval: 500,
-  });
+  const { loading, data, fetchMore, startPolling, error } = useQuery(
+    ALL_PROJECTS,
+    {
+      nextFetchPolicy: "cache-first",
+      variables: {
+        page: 1,
+        pageSize: 10,
+        search: debouncedSearch,
+        filter,
+      },
+      pollInterval: 500,
+    }
+  );
 
   useEffect(() => {
     startPolling(7000);
@@ -80,7 +83,7 @@ export default function Projects() {
     (page, pageSize) => {
       fetchMore({
         variables: {
-          page,
+          page: page + 1,
           pageSize,
           search: debouncedSearch,
           filter,
@@ -103,8 +106,12 @@ export default function Projects() {
       columns={width < 900 ? columnsXs : columns}
       rows={
         width < 900
-          ? data?.privateCloudProjectsPaginated?.projects.map(projectsToRowsXs).reverse()
-          : data?.privateCloudProjectsPaginated?.projects.map(projectsToRows).reverse()
+          ? data?.privateCloudProjectsPaginated?.projects
+              .map(projectsToRowsXs)
+              .reverse()
+          : data?.privateCloudProjectsPaginated?.projects
+              .map(projectsToRows)
+              .reverse()
       }
       count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
       title="Products"

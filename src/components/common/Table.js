@@ -37,6 +37,8 @@ export default function StickyTable({
     navigate(onClickPath + id);
   };
 
+  console.log(rows);
+
   return (
     <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
       <TableContainer sx={{ height: "calc(100vh - 182px)" }}>
@@ -60,7 +62,6 @@ export default function StickyTable({
               ))}
             </TableRow>
           </TableHead>
-
           <TableBody>
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -74,7 +75,7 @@ export default function StickyTable({
                     key={row.code}
                   >
                     {columns.map((column) => {
-                      const value = row[column.id];                      
+                      const value = row[column.id];
                       return (
                         <TableCell
                           style={{
@@ -88,7 +89,7 @@ export default function StickyTable({
                           key={column.id}
                           align={column.align}
                         >
-                       {column.format && typeof value === "number"
+                          {column.format && typeof value === "number"
                             ? column.format(value)
                             : value}
                         </TableCell>

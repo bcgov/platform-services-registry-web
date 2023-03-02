@@ -19,7 +19,7 @@ import TitleTypography from "../../components/common/TitleTypography";
 import { Typography } from "@mui/material";
 
 const USER_REQUEST = gql`
-  query Query($requestId: ID!) {
+  query UserPrivateCloudRequestById($requestId: ID!) {
     userPrivateCloudRequestById(requestId: $requestId) {
       id
       createdBy {
@@ -126,7 +126,7 @@ const USER_REQUEST = gql`
 
 export default function UserRequest() {
   const { id } = useParams();
-  const [humanCommentText, setHumanCommentText] = useState(null)
+  const [humanCommentText, setHumanCommentText] = useState(null);
 
   const { data, loading, error } = useQuery(USER_REQUEST, {
     variables: { requestId: id },
@@ -147,7 +147,7 @@ export default function UserRequest() {
 
   useEffect(() => {
     if (request) {
-      setHumanCommentText(request.humanComment)
+      setHumanCommentText(request.humanComment);
     }
   }, [request]);
 
@@ -193,7 +193,8 @@ export default function UserRequest() {
             <TitleTypography> Reviewer’s comments</TitleTypography>,
             <Typography sx={{ mb: 6, maxWidth: 600 }} color="text.primary">
               {humanCommentText}
-            </Typography>]}
+            </Typography>,
+          ]}
         </div>
       </Container>
     </div>

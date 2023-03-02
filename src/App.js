@@ -64,7 +64,7 @@ const theme = createTheme({
 export const ModeContext = createContext();
 
 const ME = gql`
-  query Query {
+  query Me {
     me {
       id
       firstName

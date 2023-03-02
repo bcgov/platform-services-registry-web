@@ -25,7 +25,7 @@ import { Box } from "@mui/material";
 
 
 const ADMIN_REQUEST = gql`
-  query Query($requestId: ID!) {
+  query PrivateCloudActiveRequestById($requestId: ID!) {
     privateCloudActiveRequestById(requestId: $requestId) {
       id
       createdBy {
