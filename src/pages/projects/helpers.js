@@ -4,6 +4,7 @@ import GroupAvatars from "../../components/common/Contacts";
 import Avatar from "../../components/common/Avatar";
 import Link from "@mui/material/Link";
 import { stopPropagationRow } from "../../components/common/FormHelpers";
+import { ministriesNames, clusterNames } from '../../components/common/Constants';
 
 function truncate(str, n) {
   return str.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -41,8 +42,14 @@ const projectsToRows = ({
   description: (
     <span style={{ fontSize: 18 }}> {truncate(description, 130)}</span>
   ),
-  ministry,
-  cluster,
+  ministry: ministriesNames.filter(
+    (item) =>
+      item.name.toLowerCase() === ministry.toLowerCase()
+  )[0]?.humanFriendlyName,
+  cluster: clusterNames.filter(
+    (item) =>
+      item.name.toLowerCase() === cluster.toLowerCase()
+  )[0]?.humanFriendlyName,
   licencePlate: (
     <Link
       sx={{

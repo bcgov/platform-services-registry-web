@@ -157,7 +157,7 @@ export default function Create({ requestsRoute }) {
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
-        <NavToolbar title="Create Project"></NavToolbar>
+        <NavToolbar title="Create Product"></NavToolbar>
         <Container>
           <MetaDataInput formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />

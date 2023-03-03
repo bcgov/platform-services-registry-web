@@ -4,7 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FilterContext from "../context/filter";
-import { ministries, clusters } from "./common/Constants";
+import { ministriesNames, clusters } from "./common/Constants";
 
 export default function Filter() {
   const { setMinistry, setCluster, filter } = useContext(FilterContext);
@@ -26,9 +26,9 @@ export default function Filter() {
           }}
         >
           <MenuItem value={""}>All Ministries</MenuItem>
-          {ministries.map((ministry) => (
-            <MenuItem key={ministry} value={ministry}>
-              {ministry}
+          {ministriesNames.map((ministry) => (
+            <MenuItem key={ministry} value={ministry.name}>
+              {ministry.humanFriendlyName}
             </MenuItem>
           ))}
         </Select>
