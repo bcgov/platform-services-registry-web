@@ -90,16 +90,16 @@ const Login = () => {
     >
       <Box mb={3}>
         <Text as="h1" mb={3}>
-          Welcome to BC Gov's Platform as a Service(PaaS) Product Registry
+          Welcome to BC Gov's Platform as a Service(PaaS) Project Registry
         </Text>
       </Box>
       <Box mb={3}>
         <Text as="h2" mb={2}>
-          Make changes to an existing product
+          Make changes to an existing project
         </Text>
         <Text mb={2}>
           For existing application's hosted on OpenShift 4 Platform. You can
-          update/change all product details and request product resource quota
+          update/change all project details and request project resource quota
           increases and downgrades (including CPU/RAM/Storage.)
         </Text>
         <StyledButton onClick={() => keycloak.login({ idpHint: "idir" })}>
@@ -108,7 +108,7 @@ const Login = () => {
       </Box>
       <Box mb={3}>
         <Text as="h2" mb={2}>
-          Register a new product
+          Register a new project
         </Text>
         <Text mb={2}>
           Use this website if you are a Product Owner for a new cloud-native
@@ -163,7 +163,7 @@ const Login = () => {
             setShowWarningMessage(true);
           }}
         >
-          REGISTER A NEW product (log in with BC IDIR)
+          REGISTER A NEW PROJECT (log in with BC IDIR)
         </StyledButton>
         {showWarningMessage && (
           <Text as="p" color="red">
@@ -178,7 +178,7 @@ const Login = () => {
             A BC IDIR (you'll be asked to log in with your IDIR to get to the
             registry)
           </Text>
-          <Text as="li">A descriptive product name (no acronyms)</Text>
+          <Text as="li">A descriptive project name (no acronyms)</Text>
           <Text as="li">
             Contact details and Github IDs for a product owner and up to 2
             technical leads

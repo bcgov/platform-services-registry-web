@@ -109,7 +109,7 @@ const downloadCsv = (csvString) => {
   let encodedUri = encodeURI(csvContent);
   let link = document.createElement("a");
   link.setAttribute("href", encodedUri);
-  link.setAttribute("download", "Product_Registry.csv");
+  link.setAttribute("download", "Project_Registry.csv");
   const elem = document.getElementById("csv-download-box");
   elem.appendChild(link).click();
   elem.removeChild(link);
