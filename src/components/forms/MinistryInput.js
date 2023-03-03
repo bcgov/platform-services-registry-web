@@ -3,7 +3,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { ministries } from "../common/Constants";
+import { ministriesNames } from "../common/Constants";
 import TitleTypography from "../common/TitleTypography";
 import FormHelperText from "@mui/material/FormHelperText";
 import RequiredField from "../common/RequiredField";
@@ -16,7 +16,7 @@ const MinistryInput = ({ formik, isDisabled }) => {
       <div>
         <TitleTypography>Ministry</TitleTypography>
         <Typography sx={{ mb: 2 }} color="text.primary">
-          Select the government ministry that this project belongs to.
+          Select the government ministry that this product belongs to.
         </Typography>
       </div>
       <FormControl sx={{
@@ -42,9 +42,9 @@ const MinistryInput = ({ formik, isDisabled }) => {
           onChange={formik.handleChange}
           error={formik.touched.ministry && Boolean(formik.errors.ministry)}
         >
-          {ministries.map((ministryOption) => (
-            <MenuItem key={ministryOption} value={ministryOption}>
-              {ministryOption}
+          {ministriesNames.map((ministryOption) => (
+            <MenuItem key={ministryOption} value={ministryOption.name}>
+              {ministryOption.humanFriendlyName}
             </MenuItem>
           ))}
         </Select>
@@ -56,7 +56,7 @@ const MinistryInput = ({ formik, isDisabled }) => {
         * All product teams from the Ministries of Attorney General, Public Safety
         and Solicitor General and Emergency Management BC and BC Housing must
         engage with <a href="mailto:JAGMISO@gov.bc.ca">AG Security</a> prior to
-        submitting a request for a new project.{" "}
+        submitting a request for a new product.{" "}
       </Typography>
     </Box>
   );
