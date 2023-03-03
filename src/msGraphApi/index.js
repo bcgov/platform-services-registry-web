@@ -6,7 +6,7 @@ import { msalConfig } from "./config";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
-// // POP UP
+// POP UP
 async function getAccessToken() {
   try {
     let account = msalInstance.getAllAccounts()[0];
@@ -51,67 +51,6 @@ async function getAccessToken() {
     }
   }
 }
-
-// export async function getAccessToken() {
-//   const accounts = msalInstance.getAllAccounts();
-
-//   console.log("Accounts: ", accounts)
-
-//   const request = {
-//     scopes: ["User.ReadBasic.All"],
-//     account: accounts[0],
-//   };
-
-//   try {
-//     const response = await msalInstance.acquireTokenSilent(request);
-//     const accessToken = response.accessToken;
-
-//     return accessToken;
-//   } catch (error) {
-//     console.error(error);
-
-//     if (error instanceof InteractionRequiredAuthError) {
-//       try {
-//         const response = await msalInstance.acquireTokenPopup(request);
-//         const accessToken = response.accessToken;
-
-//         return accessToken;
-//       } catch (error) {
-//         console.error(error);
-//         throw new Error("Error acquiring access token");
-//       }
-//     } else {
-//       throw new Error("Error acquiring access token");
-//     }
-//   }
-// }
-
-// async function getAccessToken() {
-//   /**
-//    * See here for more info on account retrieval:
-//    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
-//    */
-//   const accounts = msalInstance.getAllAccounts();
-
-//   const request = {
-//     scopes: ["User.ReadBasic.All"],
-//     account: accounts[0]
-//   };
-
-//   let accessToken;
-
-//   try {
-//     const result = await msalInstance.acquireTokenSilent(request);
-
-//     accessToken = result.accessToken;
-//   } catch (error) {
-//     console.log("silent token acquisition fails. acquiring token using popup");
-//     const result = await msalInstance.acquireTokenPopup(request);
-//     accessToken = result.accessToken;
-//   }
-
-//   return accessToken;
-// }
 
 export async function callMsGraph(endpoint, accessToken) {
   const headers = new Headers();
