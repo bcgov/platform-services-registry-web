@@ -12,7 +12,7 @@ const Users = ({ formik, isDisabled }) => {
     <Box sx={{ display: "flex", mt: 6, mb: 7 }}>
       <Box sx={{ display: "flex", flexDirection: "column", mr: 14 }}>
         <div style={{ width: 500 }}>
-          <TitleTypography>Product Owner</TitleTypography>
+          <TitleTypography>Project Owner</TitleTypography>
           <Typography sx={{ mb: 4 }} color="text.primary">
             Tell us about the <b>Product Owner (PO).</b> This is typically the
             business owner of the application. We will use this information to

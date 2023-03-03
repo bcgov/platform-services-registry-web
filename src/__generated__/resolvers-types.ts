@@ -122,29 +122,33 @@ export type FilterPrivateCloudProjectsInput = {
 };
 
 export enum Ministry {
-  Af = 'AF',
+  Aest = 'AEST',
   Ag = 'AG',
-  Msfd = 'MSFD',
+  Agri = 'AGRI',
+  Alc = 'ALC',
+  Bcpc = 'BCPC',
   Citz = 'CITZ',
-  Ecc = 'ECC',
-  Emcr = 'EMCR',
-  Emli = 'EMLI',
+  Dbc = 'DBC',
+  Eao = 'EAO',
+  Educ = 'EDUC',
+  Embc = 'EMBC',
+  Empr = 'EMPR',
   Env = 'ENV',
   Fin = 'FIN',
-  For = 'FOR',
+  Flnr = 'FLNR',
   Hlth = 'HLTH',
-  Hous = 'HOUS',
   Irr = 'IRR',
-  Jedi = 'JEDI',
+  Jedc = 'JEDC',
   Lbr = 'LBR',
+  Ldb = 'LDB',
+  Mah = 'MAH',
+  Mcf = 'MCF',
   Mmha = 'MMHA',
-  Muni = 'MUNI',
-  Psfs = 'PSFS',
+  Psa = 'PSA',
   Pssg = 'PSSG',
   Sdpr = 'SDPR',
-  Tacs = 'TACS',
-  Moti = 'MOTI',
-  Wlrs = 'WLRS',
+  Tca = 'TCA',
+  Tran = 'TRAN'
 }
 
 export type Mutation = {
@@ -473,7 +477,7 @@ export function FilterPrivateCloudProjectsInputSchema(): yup.SchemaOf<FilterPriv
   })
 }
 
-export const MinistrySchema = yup.mixed().oneOf([Ministry.Af, Ministry.Ag, Ministry.Msfd, Ministry.Citz, Ministry.Ecc, Ministry.Emcr, Ministry.Emli, Ministry.Env, Ministry.Fin, Ministry.For, Ministry.Hlth, Ministry.Hous, Ministry.Irr, Ministry.Jedi, Ministry.Lbr, Ministry.Mmha, Ministry.Muni, Ministry.Psfs, Ministry.Pssg, Ministry.Sdpr, Ministry.Tacs, Ministry.Moti, Ministry.Wlrs]);
+export const MinistrySchema = yup.mixed().oneOf([Ministry.Aest, Ministry.Ag, Ministry.Agri, Ministry.Alc, Ministry.Bcpc, Ministry.Citz, Ministry.Dbc, Ministry.Eao, Ministry.Educ, Ministry.Embc, Ministry.Empr, Ministry.Env, Ministry.Fin, Ministry.Flnr, Ministry.Hlth, Ministry.Irr, Ministry.Jedc, Ministry.Lbr, Ministry.Ldb, Ministry.Mah, Ministry.Mcf, Ministry.Mmha, Ministry.Psa, Ministry.Pssg, Ministry.Sdpr, Ministry.Tca, Ministry.Tran]);
 
 export const PlatformSchema = yup.mixed().oneOf([Platform.PrivateCloud, Platform.PublicCloud]);
 
@@ -512,5 +516,3 @@ export function UpdateUserInputSchema(): yup.SchemaOf<UpdateUserInput> {
     technicalLead: yup.array().of(yup.string().defined()).optional()
   })
 }
-
-
