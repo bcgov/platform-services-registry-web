@@ -3,7 +3,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { ministries } from "../common/Constants";
+import { ministriesNames } from "../common/Constants";
 import TitleTypography from "../common/TitleTypography";
 import FormHelperText from "@mui/material/FormHelperText";
 import RequiredField from "../common/RequiredField";
@@ -42,9 +42,9 @@ const MinistryInput = ({ formik, isDisabled }) => {
           onChange={formik.handleChange}
           error={formik.touched.ministry && Boolean(formik.errors.ministry)}
         >
-          {ministries.map((ministryOption) => (
-            <MenuItem key={ministryOption} value={ministryOption}>
-              {ministryOption}
+          {ministriesNames.map((ministryOption) => (
+            <MenuItem key={ministryOption} value={ministryOption.name}>
+               {ministryOption.humanFriendlyName} ({ministryOption.name})
             </MenuItem>
           ))}
         </Select>
