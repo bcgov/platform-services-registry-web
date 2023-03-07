@@ -29,7 +29,9 @@ const NoMatch = () => {
 
 export const AppRouter = () => {
   const { initialized, keycloak } = useKeycloak();
-  const isAdmin = keycloak.hasResourceRole("admin");
+  const isAdmin =
+    keycloak.hasResourceRole("admin") ||
+    keycloak.hasResourceRole("read-only-admin");
 
   if (!initialized) {
     return <LoadingSpinner />;
@@ -54,7 +56,7 @@ export const AppRouter = () => {
           <Route
             path="admin"
             element={
-              <RequireAuth roles={["admin"]}>
+              <RequireAuth roles={["admin", "read-only-admin"]}>
                 <Outlet />
               </RequireAuth>
             }
