@@ -4,7 +4,7 @@ import {
   columns,
   columnsXs,
   projectsToRows,
-  projectsToRowsXs,
+  projectsToRowsXs
 } from "./helpers";
 import StickyTable from "../../components/common/Table";
 import SearchContext from "../../context/search";
@@ -69,9 +69,9 @@ export default function Projects() {
         page: 1,
         pageSize: 10,
         search: debouncedSearch,
-        filter,
+        filter
       },
-      pollInterval: 500,
+      pollInterval: 500
     }
   );
 
@@ -86,8 +86,8 @@ export default function Projects() {
           page: page + 1,
           pageSize,
           search: debouncedSearch,
-          filter,
-        },
+          filter
+        }
       });
     },
     [filter, debouncedSearch]
@@ -109,9 +109,7 @@ export default function Projects() {
           ? data?.privateCloudProjectsPaginated?.projects
               .map(projectsToRowsXs)
               .reverse()
-          : data?.privateCloudProjectsPaginated?.projects
-              .map(projectsToRows)
-              .reverse()
+          : data?.privateCloudProjectsPaginated?.projects.map(projectsToRows)
       }
       count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
       title="Products"
