@@ -375,7 +375,6 @@ const defaultStorageOptions = [
 ];
 
 export {
-
   ministriesNames,
   clusters,
   defaultCpuOptions,

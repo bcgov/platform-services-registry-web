@@ -23,7 +23,7 @@ export default function DenseAppBar() {
   const { width } = useWindowSize();
 
   const login = useCallback(() => {
-    keycloak?.login({ idpHint: "idir" });
+    keycloak?.login();
   }, [keycloak]);
 
   return (
@@ -35,7 +35,7 @@ export default function DenseAppBar() {
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
-            height: { xs: 10, sm: 60 }
+            height: { xs: 10, sm: 60 },
           }}
         >
           <div style={{ display: "flex", flexDirection: "row" }}>
@@ -50,7 +50,7 @@ export default function DenseAppBar() {
                     display: "inline-block",
                     fontWeight: "300",
                     fontSize: 20,
-                    font: "roboto"
+                    font: "roboto",
                   }}
                 >
                   BC Platform Services&nbsp;

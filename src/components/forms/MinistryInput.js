@@ -16,7 +16,7 @@ const MinistryInput = ({ formik, isDisabled }) => {
       <div>
         <TitleTypography>Ministry</TitleTypography>
         <Typography sx={{ mb: 2 }} color="text.primary">
-          Select the government ministry that this product belongs to.
+          Select the government ministry that this project belongs to.
         </Typography>
       </div>
       <FormControl sx={{
@@ -56,7 +56,7 @@ const MinistryInput = ({ formik, isDisabled }) => {
         * All product teams from the Ministries of Attorney General, Public Safety
         and Solicitor General and Emergency Management BC and BC Housing must
         engage with <a href="mailto:JAGMISO@gov.bc.ca">AG Security</a> prior to
-        submitting a request for a new product.{" "}
+        submitting a request for a new project.{" "}
       </Typography>
     </Box>
   );
