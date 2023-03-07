@@ -1,19 +1,20 @@
 import {
   PublicClientApplication,
-  InteractionRequiredAuthError,
+  InteractionRequiredAuthError
 } from "@azure/msal-browser";
 import { msalConfig } from "./config";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
-// POP UP
 async function getAccessToken() {
+  let account;
+
   try {
-    let account = msalInstance.getAllAccounts()[0];
+    account = msalInstance.getAllAccounts()[0];
 
     if (!account) {
       const request = {
-        scopes: ["User.ReadBasic.All"],
+        scopes: ["User.ReadBasic.All"]
       };
 
       const response = await msalInstance.loginPopup(request);
@@ -22,7 +23,7 @@ async function getAccessToken() {
 
     const request = {
       scopes: ["User.ReadBasic.All"],
-      account: account,
+      account: account
     };
 
     const response = await msalInstance.acquireTokenSilent(request);
@@ -32,14 +33,25 @@ async function getAccessToken() {
   } catch (error) {
     console.error(error);
 
-    if (error instanceof InteractionRequiredAuthError) {
+    if (
+      error instanceof InteractionRequiredAuthError &&
+      error.errorCode === "AADSTS700084"
+    ) {
       try {
         const request = {
-          scopes: ["User.ReadBasic.All"],
+          scopes: ["User.ReadBasic.All"]
         };
 
-        const response = await msalInstance.acquireTokenPopup(request);
-        const accessToken = response.accessToken;
+        const response = await msalInstance.loginPopup(request);
+        account = response.account;
+
+        const request2 = {
+          scopes: ["User.ReadBasic.All"],
+          account: account
+        };
+
+        const response2 = await msalInstance.acquireTokenSilent(request2);
+        const accessToken = response2.accessToken;
 
         return accessToken;
       } catch (error) {
@@ -52,6 +64,52 @@ async function getAccessToken() {
   }
 }
 
+// POP UP
+// async function getAccessToken() {
+//   try {
+//     let account = msalInstance.getAllAccounts()[0];
+
+//     if (!account) {
+//       const request = {
+//         scopes: ["User.ReadBasic.All"],
+//       };
+
+//       const response = await msalInstance.loginPopup(request);
+//       account = response.account;
+//     }
+
+//     const request = {
+//       scopes: ["User.ReadBasic.All"],
+//       account: account,
+//     };
+
+//     const response = await msalInstance.acquireTokenSilent(request);
+//     const accessToken = response.accessToken;
+
+//     return accessToken;
+//   } catch (error) {
+//     console.error(error);
+
+//     if (error instanceof InteractionRequiredAuthError) {
+//       try {
+//         const request = {
+//           scopes: ["User.ReadBasic.All"],
+//         };
+
+//         const response = await msalInstance.acquireTokenPopup(request);
+//         const accessToken = response.accessToken;
+
+//         return accessToken;
+//       } catch (error) {
+//         console.error(error);
+//         throw new Error("Error acquiring access token");
+//       }
+//     } else {
+//       throw new Error("Error acquiring access token");
+//     }
+//   }
+// }
+
 export async function callMsGraph(endpoint, accessToken) {
   const headers = new Headers();
   const bearer = `Bearer ${accessToken}`;
@@ -61,7 +119,7 @@ export async function callMsGraph(endpoint, accessToken) {
 
   const options = {
     method: "GET",
-    headers: headers,
+    headers: headers
   };
 
   return fetch(endpoint, options);
