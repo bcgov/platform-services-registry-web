@@ -28,7 +28,7 @@ export default function Filter() {
           <MenuItem value={""}>All Ministries</MenuItem>
           {ministriesNames.map((ministry) => (
             <MenuItem key={ministry} value={ministry.name}>
-              {ministry.humanFriendlyName}
+              {ministry.humanFriendlyName} ({ministry.name})
             </MenuItem>
           ))}
         </Select>

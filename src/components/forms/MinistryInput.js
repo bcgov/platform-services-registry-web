@@ -44,7 +44,7 @@ const MinistryInput = ({ formik, isDisabled }) => {
         >
           {ministriesNames.map((ministryOption) => (
             <MenuItem key={ministryOption} value={ministryOption.name}>
-              {ministryOption.humanFriendlyName}
+               {ministryOption.humanFriendlyName} ({ministryOption.name})
             </MenuItem>
           ))}
         </Select>

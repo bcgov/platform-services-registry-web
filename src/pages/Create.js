@@ -178,7 +178,7 @@ export default function Create({ requestsRoute }) {
             conversation with you. Also, look out for our{" "}
             <b>Notification emails</b> that will provide you with valuable
             information regarding your product status and details. By
-            proceeding, I confirm that I have read and understood the roles and
+            proceeding, you confirm that you have read and understood the roles and
             responsibilities as described in the Onboarding Guide."
           </Typography>
           <div>
