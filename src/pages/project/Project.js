@@ -330,7 +330,7 @@ export default function Project({ requestsRoute }) {
                 Please Confirm Your Delete Request
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Are you sure you want to delete this project?
+                Are you sure you want to delete this product?
                 <Button
                   onClick={deleteOnClick}
                   sx={{ mr: 1, width: "170px", mt: 3 }}
@@ -385,7 +385,7 @@ export default function Project({ requestsRoute }) {
                   Please Confirm Your Request
                 </Typography>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  Are you sure you want to edit this project?
+                  Are you sure you want to edit this product?
                   <Button
                     onClick={submitForm}
                     sx={{ mr: 1, width: "170px", mt: 3 }}

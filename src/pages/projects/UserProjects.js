@@ -63,7 +63,7 @@ export default function Projects() {
     <StickyTable
       onClickPath={"/private-cloud/user/product/"}
       columns={columns}
-      rows={data.userPrivateCloudProjects.map(projectsToRows).reverse()}
+      rows={data.userPrivateCloudProjects.map(projectsToRows)}
       count={loading ? 0 : data?.userPrivateCloudProjects?.length}
       title="Projects"
       loading={loading}

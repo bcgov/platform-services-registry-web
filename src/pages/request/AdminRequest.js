@@ -6,7 +6,7 @@ import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
   projectInitialValues as initialValues,
-  replaceNullsWithEmptyString,
+  replaceNullsWithEmptyString
 } from "../../components/common/FormHelpers";
 import TitleTypography from "../../components/common/TitleTypography";
 import { Button } from "@mui/material";
@@ -22,7 +22,6 @@ import Quotas from "../../components/forms/Quotas";
 import Namespaces from "../../components/Namespaces";
 import TextField from "@mui/material/TextField";
 import { Box } from "@mui/material";
-
 
 const ADMIN_REQUEST = gql`
   query PrivateCloudActiveRequestById($requestId: ID!) {
@@ -134,9 +133,23 @@ const MAKE_REQUEST_DECISION = gql`
   mutation PrivateCloudRequestDecision(
     $requestId: ID!
     $decision: RequestDecision!
-    $humanComment: String,
+    $humanComment: String
   ) {
-    privateCloudRequestDecision(requestId: $requestId, decision: $decision, humanComment: $humanComment) {
+    privateCloudRequestDecision(
+      requestId: $requestId
+      decision: $decision
+      humanComment: $humanComment
+    ) {
+      id
+      decisionStatus
+      humanComment
+    }
+  }
+`;
+
+const RE_PROVISION_REQUEST = gql`
+  mutation PrivateCloudReProvisionRequest($requestId: ID!) {
+    privateCloudRequestDecision(requestId: $requestId) {
       id
       decisionStatus
       humanComment
@@ -148,10 +161,10 @@ export default function AdminRequest() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
-  const [humanCommentInput, setHumanCommentInput] = useState(null)
+  const [humanCommentInput, setHumanCommentInput] = useState(null);
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
-    variables: { requestId: id },
+    variables: { requestId: id }
   });
 
   const { project, requestedProject, ...request } =
@@ -159,14 +172,25 @@ export default function AdminRequest() {
 
   const [
     privateCloudRequestDecision,
-    { data: decisionData, loading: decisionLoading, error: decisionError },
+    { data: decisionData, loading: decisionLoading, error: decisionError }
   ] = useMutation(MAKE_REQUEST_DECISION, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+  });
+
+  const [
+    privateCloudReProvisionRequest,
+    {
+      data: reprovisionData,
+      loading: reprovisionLoading,
+      error: reprovisionError
+    }
+  ] = useMutation(RE_PROVISION_REQUEST, {
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
 
   const makeDecisionOnClick = (decision) => {
     toastId.current = toast("Your decision has been submitted", {
-      autoClose: false,
+      autoClose: false
     });
     privateCloudRequestDecision({
       variables: { requestId: id, decision, humanComment: humanCommentInput },
@@ -175,7 +199,7 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000,
+          autoClose: 5000
         });
       },
       onCompleted: () => {
@@ -183,9 +207,9 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: "Decision successful",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000,
+          autoClose: 5000
         });
-      },
+      }
     });
   };
 
@@ -193,7 +217,7 @@ export default function AdminRequest() {
     initialValues,
     onSubmit: (values) => {
       alert(JSON.stringify(values, null, 2));
-    },
+    }
   });
 
   useEffect(() => {
@@ -205,11 +229,12 @@ export default function AdminRequest() {
 
   useEffect(() => {
     if (request.humanComment) {
-      setHumanCommentInput(request.humanComment)
+      setHumanCommentInput(request.humanComment);
     }
   }, [request.humanComment]);
 
-  const name = request?.type === "CREATE" ? requestedProject?.name : project?.name;
+  const name =
+    request?.type === "CREATE" ? requestedProject?.name : project?.name;
   const isDisabled = !requestedProject || request?.decisionStatus !== "PENDING";
 
   return (
@@ -256,14 +281,14 @@ export default function AdminRequest() {
           value={humanCommentInput}
           onChange={(e) => setHumanCommentInput(e.target.value)}
           size="small"
-          style={{ display: 'block', width: "700px", maxWidth: '100%' }}
+          style={{ display: "block", width: "700px", maxWidth: "100%" }}
           multiline
           rows={4}
         />
         <Box sx={{ mt: 3, mb: 3 }}>
           <Button
             disabled={isDisabled}
-            sx={{ mr: 1, minWidth: '120px' }}
+            sx={{ mr: 1, minWidth: "120px" }}
             onClick={() => makeDecisionOnClick("APPROVED")}
             variant="contained"
           >
@@ -271,7 +296,7 @@ export default function AdminRequest() {
           </Button>
           <Button
             disabled={isDisabled}
-            sx={{ mr: 1, minWidth: '120px' }}
+            sx={{ mr: 1, minWidth: "120px" }}
             onClick={() => makeDecisionOnClick("REJECTED")}
             variant="outlined"
           >
