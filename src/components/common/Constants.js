@@ -25,11 +25,6 @@ const ministriesNames = [
     humanFriendlyName: "British Columbia Provincial Committee"
   },
   {
-    id: 5,
-    name: "BCPC",
-    humanFriendlyName: "British Columbia Provincial Committee"
-  },
-  {
     id: 6,
     name: "CITZ",
     humanFriendlyName: "Citizens' Services"
@@ -66,11 +61,6 @@ const ministriesNames = [
   },
   {
     id: 13,
-    name: "FIN",
-    humanFriendlyName: "Finance"
-  },
-  {
-    id: 14,
     name: "FIN",
     humanFriendlyName: "Finance"
   },
