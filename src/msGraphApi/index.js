@@ -31,38 +31,88 @@ async function getAccessToken() {
 
     return accessToken;
   } catch (error) {
-    console.error(error);
+    try {
+      const request = {
+        scopes: ["User.ReadBasic.All"]
+      };
 
-    if (
-      error instanceof InteractionRequiredAuthError &&
-      error.errorCode === "AADSTS700084"
-    ) {
-      try {
-        const request = {
-          scopes: ["User.ReadBasic.All"]
-        };
+      const response = await msalInstance.loginPopup(request);
+      account = response.account;
 
-        const response = await msalInstance.loginPopup(request);
-        account = response.account;
+      const request2 = {
+        scopes: ["User.ReadBasic.All"],
+        account: account
+      };
 
-        const request2 = {
-          scopes: ["User.ReadBasic.All"],
-          account: account
-        };
+      const response2 = await msalInstance.acquireTokenSilent(request2);
+      const accessToken = response2.accessToken;
 
-        const response2 = await msalInstance.acquireTokenSilent(request2);
-        const accessToken = response2.accessToken;
-
-        return accessToken;
-      } catch (error) {
-        console.error(error);
-        throw new Error("Error acquiring access token");
-      }
-    } else {
+      return accessToken;
+    } catch (error) {
+      console.error(error);
       throw new Error("Error acquiring access token");
     }
   }
 }
+
+// Old: Mar 9th
+// async function getAccessToken() {
+//   let account;
+
+//   try {
+//     account = msalInstance.getAllAccounts()[0];
+
+//     if (!account) {
+//       const request = {
+//         scopes: ["User.ReadBasic.All"]
+//       };
+
+//       const response = await msalInstance.loginPopup(request);
+//       account = response.account;
+//     }
+
+//     const request = {
+//       scopes: ["User.ReadBasic.All"],
+//       account: account
+//     };
+
+//     const response = await msalInstance.acquireTokenSilent(request);
+//     const accessToken = response.accessToken;
+
+//     return accessToken;
+//   } catch (error) {
+//     console.error(error);
+
+//     if (
+//       error instanceof InteractionRequiredAuthError &&
+//       error.errorCode === "AADSTS700084"
+//     ) {
+//       try {
+//         const request = {
+//           scopes: ["User.ReadBasic.All"]
+//         };
+
+//         const response = await msalInstance.loginPopup(request);
+//         account = response.account;
+
+//         const request2 = {
+//           scopes: ["User.ReadBasic.All"],
+//           account: account
+//         };
+
+//         const response2 = await msalInstance.acquireTokenSilent(request2);
+//         const accessToken = response2.accessToken;
+
+//         return accessToken;
+//       } catch (error) {
+//         console.error(error);
+//         throw new Error("Error acquiring access token");
+//       }
+//     } else {
+//       throw new Error("Error acquiring access token");
+//     }
+//   }
+// }
 
 // POP UP
 // async function getAccessToken() {
