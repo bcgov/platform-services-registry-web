@@ -68,7 +68,7 @@ export type CreateUserInput = {
   email: Scalars['EmailAddress'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
-  ministry: Ministry;
+  ministry?: InputMaybe<Ministry>;
 };
 
 export enum DecisionStatus {
@@ -391,10 +391,6 @@ export enum RequestType {
   Edit = 'EDIT'
 }
 
-export type SignUpInput = {
-  ministry: Ministry;
-};
-
 export enum SortOrder {
   Ascending = 'ASCENDING',
   Descending = 'DESCENDING'
@@ -464,7 +460,7 @@ export function CreateUserInputSchema(): yup.SchemaOf<CreateUserInput> {
     email: yup.string().defined(),
     firstName: yup.string().defined(),
     lastName: yup.string().defined(),
-    ministry: yup.mixed().defined()
+    ministry: yup.mixed()
   })
 }
 
@@ -504,12 +500,6 @@ export function QuotaInputSchema(): yup.SchemaOf<QuotaInput> {
 export const RequestDecisionSchema = yup.mixed().oneOf([RequestDecision.Approved, RequestDecision.Rejected]);
 
 export const RequestTypeSchema = yup.mixed().oneOf([RequestType.Create, RequestType.Delete, RequestType.Edit]);
-
-export function SignUpInputSchema(): yup.SchemaOf<SignUpInput> {
-  return yup.object({
-    ministry: yup.mixed().defined()
-  })
-}
 
 export const SortOrderSchema = yup.mixed().oneOf([SortOrder.Ascending, SortOrder.Descending]);
 
