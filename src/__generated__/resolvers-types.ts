@@ -85,7 +85,8 @@ export enum DefaultCpuOptions {
   CpuRequest_4Limit_8 = 'CPU_REQUEST_4_LIMIT_8',
   CpuRequest_8Limit_16 = 'CPU_REQUEST_8_LIMIT_16',
   CpuRequest_16Limit_32 = 'CPU_REQUEST_16_LIMIT_32',
-  CpuRequest_32Limit_64 = 'CPU_REQUEST_32_LIMIT_64'
+  CpuRequest_32Limit_64 = 'CPU_REQUEST_32_LIMIT_64',
+  CpuRequest_64Limit_128 = 'CPU_REQUEST_64_LIMIT_128'
 }
 
 export enum DefaultMemoryOptions {
@@ -104,7 +105,7 @@ export enum DefaultStorageOptions {
   Storage_16 = 'STORAGE_16',
   Storage_32 = 'STORAGE_32',
   Storage_64 = 'STORAGE_64',
-  Storage_124 = 'STORAGE_124',
+  Storage_128 = 'STORAGE_128',
   Storage_256 = 'STORAGE_256',
   Storage_512 = 'STORAGE_512'
 }
@@ -157,6 +158,7 @@ export type Mutation = {
   privateCloudProjectDeleteRequest: PrivateCloudRequest;
   privateCloudProjectEditRequest: PrivateCloudRequest;
   privateCloudProjectRequest: PrivateCloudRequest;
+  privateCloudReProvisionRequest?: Maybe<PrivateCloudRequest>;
   privateCloudRequestDecision?: Maybe<PrivateCloudRequest>;
   signUp: User;
 };
@@ -200,8 +202,14 @@ export type MutationPrivateCloudProjectRequestArgs = {
 };
 
 
+export type MutationPrivateCloudReProvisionRequestArgs = {
+  requestId: Scalars['ID'];
+};
+
+
 export type MutationPrivateCloudRequestDecisionArgs = {
   decision: RequestDecision;
+  humanComment?: InputMaybe<Scalars['String']>;
   requestId: Scalars['ID'];
 };
 
@@ -238,11 +246,11 @@ export type PrivateCloudRequest = {
   __typename?: 'PrivateCloudRequest';
   active: Scalars['Boolean'];
   created: Scalars['DateTime'];
-  createdBy: User;
+  createdBy?: Maybe<User>;
   decisionDate?: Maybe<Scalars['DateTime']>;
   decisionMaker?: Maybe<User>;
   decisionStatus: DecisionStatus;
-  humanComment: Scalars['String'];
+  humanComment?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   project?: Maybe<PrivateCloudProject>;
   requestedProject?: Maybe<PrivateCloudProject>;
@@ -411,7 +419,7 @@ export type User = {
   id: Scalars['ID'];
   lastName: Scalars['String'];
   lastSeen?: Maybe<Scalars['DateTime']>;
-  ministry: Ministry;
+  ministry?: Maybe<Ministry>;
   privateCloudProjectOwner: Array<Maybe<PrivateCloudProject>>;
   privateCloudProjectPrimaryTechnicalLead: Array<Maybe<PrivateCloudProject>>;
   privateCloudProjectSecondaryTechnicalLead: Array<Maybe<PrivateCloudProject>>;
@@ -462,11 +470,11 @@ export function CreateUserInputSchema(): yup.SchemaOf<CreateUserInput> {
 
 export const DecisionStatusSchema = yup.mixed().oneOf([DecisionStatus.Approved, DecisionStatus.Pending, DecisionStatus.Provisioned, DecisionStatus.Rejected]);
 
-export const DefaultCpuOptionsSchema = yup.mixed().oneOf([DefaultCpuOptions.CpuRequest_0_5Limit_1_5, DefaultCpuOptions.CpuRequest_1Limit_2, DefaultCpuOptions.CpuRequest_2Limit_4, DefaultCpuOptions.CpuRequest_4Limit_8, DefaultCpuOptions.CpuRequest_8Limit_16, DefaultCpuOptions.CpuRequest_16Limit_32, DefaultCpuOptions.CpuRequest_32Limit_64]);
+export const DefaultCpuOptionsSchema = yup.mixed().oneOf([DefaultCpuOptions.CpuRequest_0_5Limit_1_5, DefaultCpuOptions.CpuRequest_1Limit_2, DefaultCpuOptions.CpuRequest_2Limit_4, DefaultCpuOptions.CpuRequest_4Limit_8, DefaultCpuOptions.CpuRequest_8Limit_16, DefaultCpuOptions.CpuRequest_16Limit_32, DefaultCpuOptions.CpuRequest_32Limit_64, DefaultCpuOptions.CpuRequest_64Limit_128]);
 
 export const DefaultMemoryOptionsSchema = yup.mixed().oneOf([DefaultMemoryOptions.MemoryRequest_2Limit_4, DefaultMemoryOptions.MemoryRequest_4Limit_8, DefaultMemoryOptions.MemoryRequest_8Limit_16, DefaultMemoryOptions.MemoryRequest_16Limit_32, DefaultMemoryOptions.MemoryRequest_32Limit_64, DefaultMemoryOptions.MemoryRequest_64Limit_128]);
 
-export const DefaultStorageOptionsSchema = yup.mixed().oneOf([DefaultStorageOptions.Storage_1, DefaultStorageOptions.Storage_2, DefaultStorageOptions.Storage_4, DefaultStorageOptions.Storage_16, DefaultStorageOptions.Storage_32, DefaultStorageOptions.Storage_64, DefaultStorageOptions.Storage_124, DefaultStorageOptions.Storage_256, DefaultStorageOptions.Storage_512]);
+export const DefaultStorageOptionsSchema = yup.mixed().oneOf([DefaultStorageOptions.Storage_1, DefaultStorageOptions.Storage_2, DefaultStorageOptions.Storage_4, DefaultStorageOptions.Storage_16, DefaultStorageOptions.Storage_32, DefaultStorageOptions.Storage_64, DefaultStorageOptions.Storage_128, DefaultStorageOptions.Storage_256, DefaultStorageOptions.Storage_512]);
 
 export const EnvironmentSchema = yup.mixed().oneOf([Environment.Development, Environment.Production, Environment.Test, Environment.Tools]);
 
