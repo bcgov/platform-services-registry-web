@@ -102,7 +102,7 @@ const Login = () => {
           update/change all project details and request project resource quota
           increases and downgrades (including CPU/RAM/Storage.)
         </Text>
-        <StyledButton onClick={() => keycloak.login({ idpHint: "idir" })}>
+        <StyledButton onClick={() => keycloak.login()}>
           Login
         </StyledButton>
       </Box>
@@ -157,7 +157,7 @@ const Login = () => {
         <StyledButton
           onClick={() => {
             if (isAttendedSession) {
-              keycloak.login({ idpHint: "idir" });
+              keycloak.login();
               return;
             }
             setShowWarningMessage(true);
