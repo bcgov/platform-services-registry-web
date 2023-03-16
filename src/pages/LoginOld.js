@@ -3,8 +3,7 @@ import { useKeycloak } from "@react-keycloak/web";
 import { Navigate } from "react-router-dom";
 import { Box, Text, Flex } from "rebass";
 import { Label, Checkbox } from "@rebass/forms";
-import styled from '@emotion/styled';
-
+import styled from "@emotion/styled";
 
 export const StyledButton = styled.button`
   padding: 8px 16px;
@@ -21,10 +20,10 @@ export const StyledButton = styled.button`
 
 const titleForAuthenticationState = (keycloak) => {
   if (keycloak.authenticated) {
-    return 'Logout';
+    return "Logout";
   }
 
-  return 'Login';
+  return "Login";
 };
 
 const actionForCurrentState = (keycloak) => {
@@ -42,7 +41,7 @@ const Button = (props) => {
 
   return (
     <StyledButton onClick={actionForCurrentState(keycloak)}>
-     LOGIN 
+      LOGIN
       {props.children}
     </StyledButton>
   );
@@ -52,7 +51,7 @@ Button.defaultProps = {
   children: null,
   onClick: () => {
     // this is intentional (required by Sonarcloud)
-  },
+  }
 };
 
 const StyledExternalLink = styled.a`
@@ -77,7 +76,6 @@ const Login = () => {
   const [isAttendedSession, SetIsAttendedSession] = useState(false);
   const [showWarningMessage, setShowWarningMessage] = useState(false);
 
-
   return (
     <Flex
       flexDirection="column"
@@ -85,30 +83,28 @@ const Login = () => {
         lineHeight: 2,
         maxHeight: 100,
         marginTop: 30,
-        marginLeft: 50,
+        marginLeft: 50
       }}
     >
       <Box mb={3}>
         <Text as="h1" mb={3}>
-          Welcome to BC Gov's Platform as a Service(PaaS) Project Registry
+          Welcome to BC Gov's Platform as a Service(PaaS) product Registry
         </Text>
       </Box>
       <Box mb={3}>
         <Text as="h2" mb={2}>
-          Make changes to an existing project
+          Make changes to an existing product
         </Text>
         <Text mb={2}>
           For existing application's hosted on OpenShift 4 Platform. You can
-          update/change all project details and request project resource quota
+          update/change all product details and request product resource quota
           increases and downgrades (including CPU/RAM/Storage.)
         </Text>
-        <StyledButton onClick={() => keycloak.login()}>
-          Login
-        </StyledButton>
+        <StyledButton onClick={() => keycloak.login()}>Login</StyledButton>
       </Box>
       <Box mb={3}>
         <Text as="h2" mb={2}>
-          Register a new project
+          Register a new product
         </Text>
         <Text mb={2}>
           Use this website if you are a Product Owner for a new cloud-native
@@ -135,10 +131,10 @@ const Login = () => {
           session, please contact the Platform Director(
           <StyledExternalLink
             rel="noopener noreferrer"
-            href="mailto:olena.mitovska@gov.bc.ca"
+            href="mailto:faisal.hamood@gov.bc.ca"
             target="_blank"
           >
-            olena.mitovska@gov.bc.ca
+            faisal.hamood@gov.bc.ca
           </StyledExternalLink>
           ) to book an onboarding session.
         </Text>
@@ -163,7 +159,7 @@ const Login = () => {
             setShowWarningMessage(true);
           }}
         >
-          REGISTER A NEW PROJECT (log in with BC IDIR)
+          REGISTER A NEW PRODUCT (log in with BC IDIR)
         </StyledButton>
         {showWarningMessage && (
           <Text as="p" color="red">
@@ -178,7 +174,7 @@ const Login = () => {
             A BC IDIR (you'll be asked to log in with your IDIR to get to the
             registry)
           </Text>
-          <Text as="li">A descriptive project name (no acronyms)</Text>
+          <Text as="li">A descriptive product name (no acronyms)</Text>
           <Text as="li">
             Contact details and Github IDs for a product owner and up to 2
             technical leads
