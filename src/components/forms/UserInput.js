@@ -102,14 +102,6 @@ export default function UserInput({
     }
   }, [debouncedEmail]);
 
-  console.log(
-    "Name: ",
-    formik.values[contact]?.firstName,
-    " ",
-    formik.values[contact]?.lastName
-  );
-  console.log("MINISTRY: ", formik.values[contact]?.ministry);
-
   return (
     <Card sx={{ mr: 8, width: 400 }}>
       <Box
