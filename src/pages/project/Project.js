@@ -154,12 +154,24 @@ const validationSchema = yup.object().shape({
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   cluster: ClusterSchema.required(),
-  projectOwner: CreateUserInputSchema(),
-  primaryTechnicalLead: CreateUserInputSchema(),
+  projectOwner: yup
+    .object(CreateUserInputSchema)
+    .transform((value, original) => {
+      return replaceEmptyStringWithNull(value);
+    }),
+  primaryTechnicalLead: yup
+    .object(CreateUserInputSchema)
+    .transform((value, original) => {
+      return replaceEmptyStringWithNull(value);
+    }),
   secondaryTechnicalLead: yup
     .object(CreateUserInputSchema)
     .nullable()
-    .transform((value) => (value?.email === "" ? null : value)),
+    .transform((value) => (value?.email === "" ? null : value))
+    .transform((value, original) => {
+      return replaceEmptyStringWithNull(value);
+    }),
+
   commonComponents: yup
     .object(CommonComponentsInputSchema)
     .transform((value, original) => {
@@ -169,7 +181,7 @@ const validationSchema = yup.object().shape({
   productionQuota: yup.object(QuotaInputSchema).required(),
   developmentQuota: yup.object(QuotaInputSchema).required(),
   toolsQuota: yup.object(QuotaInputSchema).required(),
-  testQuota: yup.object(QuotaInputSchema).required(),
+  testQuota: yup.object(QuotaInputSchema).required()
 });
 
 const style = {

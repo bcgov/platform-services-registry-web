@@ -39,6 +39,7 @@ const parseMinistryFromDisplayName = (displayName) => {
     const dividedString = displayName.split(/(\s+)/);
     if (dividedString[2]) {
       const ministry = dividedString[dividedString.length - 1].split(":", 1)[0];
+      console.log("Parse: ", ministry);
       return ministry;
     }
   }
@@ -49,7 +50,7 @@ export default function UserInput({
   label,
   defaultEditOpen = true,
   formik,
-  isDisabled = false,
+  isDisabled = false
 }) {
   const email = formik.values[contact]?.email;
 
@@ -63,7 +64,7 @@ export default function UserInput({
   const photoUrl = usePhotoUrl(email);
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
-    nextFetchPolicy: "cache-first",
+    nextFetchPolicy: "cache-first"
   });
 
   const getFilteredUsers = useCallback(async () => {
@@ -85,13 +86,13 @@ export default function UserInput({
       formik.setFieldValue(contact + ".lastName", user.surname || "");
       formik.setFieldValue(
         contact + ".ministry",
-        parseMinistryFromDisplayName(user.displayName) || ""
+        parseMinistryFromDisplayName(user.displayName) || null
       );
     } else if (!email) {
       formik.setFieldValue(contact + ".email", "");
       formik.setFieldValue(contact + ".firstName", "");
       formik.setFieldValue(contact + ".lastName", "");
-      formik.setFieldValue(contact + ".ministry", "");
+      formik.setFieldValue(contact + ".ministry", null);
     }
   }, [email]);
 
@@ -101,12 +102,20 @@ export default function UserInput({
     }
   }, [debouncedEmail]);
 
+  console.log(
+    "Name: ",
+    formik.values[contact]?.firstName,
+    " ",
+    formik.values[contact]?.lastName
+  );
+  console.log("MINISTRY: ", formik.values[contact]?.ministry);
+
   return (
     <Card sx={{ mr: 8, width: 400 }}>
       <Box
         sx={{
           p: 2,
-          display: "flex",
+          display: "flex"
         }}
       >
         <Avatar
@@ -156,7 +165,7 @@ export default function UserInput({
               display: "flex",
               flexDirection: "column",
               ml: 2,
-              width: "75%",
+              width: "75%"
             }}
           >
             <Autocomplete
@@ -180,9 +189,9 @@ export default function UserInput({
                   label="Email"
                   sx={{
                     "& .MuiInputBase-input.Mui-disabled": {
-                      WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                      WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
                     },
-                    mb: 2,
+                    mb: 2
                   }}
                   error={
                     formik.touched[contact]?.firstName &&
@@ -199,9 +208,9 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
                 },
-                mb: 2,
+                mb: 2
               }}
               variant="standard"
               id={contact + ".firstName"}
@@ -222,9 +231,9 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
                 },
-                mb: 2,
+                mb: 2
               }}
               variant="standard"
               id={contact + ".lastName"}
@@ -245,9 +254,9 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
                 },
-                mb: 2,
+                mb: 2
               }}
               variant="standard"
               id={contact + ".ministry"}
