@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Box from "@mui/material/Box";
-import Alert from "@mui/material/Alert";
 import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import { TextField } from "@mui/material";
 import Avatar from "../common/Avatar";
@@ -12,13 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import Edit from "@mui/icons-material/Edit";
 import Divider from "@mui/material/Divider";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
-import { ministries } from "../common/Constants";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
 import RequiredField from "../common/RequiredField";
-import FormHelperText from "@mui/material/FormHelperText";
 import Autocomplete from "@mui/material/Autocomplete";
 import { getUsers, getUserPhoto } from "../../msGraphApi";
 import usePhotoUrl from "../../msGraphApi/useAzurePhoto";
@@ -75,6 +68,7 @@ export default function UserInput({
 
   useEffect(() => {
     const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
+    console.log("User: ", user);
 
     if (user) {
       getUser({ variables: { email } });
@@ -86,13 +80,8 @@ export default function UserInput({
       formik.setFieldValue(contact + ".lastName", user.surname || "");
       formik.setFieldValue(
         contact + ".ministry",
-        parseMinistryFromDisplayName(user.displayName) || null
+        parseMinistryFromDisplayName(user.displayName) || ""
       );
-    } else if (!email) {
-      formik.setFieldValue(contact + ".email", "");
-      formik.setFieldValue(contact + ".firstName", "");
-      formik.setFieldValue(contact + ".lastName", "");
-      formik.setFieldValue(contact + ".ministry", null);
     }
   }, [email]);
 

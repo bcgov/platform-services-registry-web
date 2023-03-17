@@ -5,7 +5,7 @@ import {
   CommonComponentsInputSchema,
   QuotaInputSchema,
   MinistrySchema,
-  ClusterSchema,
+  ClusterSchema
 } from "../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
@@ -16,7 +16,7 @@ import {
   projectInitialValues,
   replaceNullsWithEmptyString,
   replaceEmptyStringWithNull,
-  stripTypeName,
+  stripTypeName
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/forms/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
@@ -193,7 +193,7 @@ const style = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4,
+  p: 4
 };
 
 export default function Project({ requestsRoute }) {
@@ -207,7 +207,7 @@ export default function Project({ requestsRoute }) {
 
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id },
-    nextFetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-and-network"
   });
 
   const [
@@ -215,19 +215,19 @@ export default function Project({ requestsRoute }) {
     {
       data: editProjectData,
       loading: editProjectLoading,
-      error: editProjectError,
-    },
+      error: editProjectError
+    }
   ] = useMutation(UPDATE_USER_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
 
   const [privateCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
 
   const deleteOnClick = () => {
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false,
+      autoClose: false
     });
 
     privateCloudProjectDeleteRequest({
@@ -236,7 +236,7 @@ export default function Project({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000,
+          autoClose: 5000
         });
       },
       onCompleted: () => {
@@ -244,9 +244,9 @@ export default function Project({ requestsRoute }) {
         toast.update(toastId.current, {
           render: "Delete request successfuly created",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000,
+          autoClose: 5000
         });
-      },
+      }
     });
   };
 
@@ -261,13 +261,13 @@ export default function Project({ requestsRoute }) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
       }
-    },
+    }
   });
 
   const submitForm = () => {
     const { values } = formik;
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false,
+      autoClose: false
     });
 
     const variables = validationSchema.cast(values);
@@ -278,7 +278,7 @@ export default function Project({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000,
+          autoClose: 5000
         });
       },
 
@@ -289,21 +289,32 @@ export default function Project({ requestsRoute }) {
           toast.update(toastId.current, {
             render: "Request successfuly created",
             type: toast.TYPE.SUCCESS,
-            autoClose: 5000,
+            autoClose: 5000
           });
         }
-      },
+      }
     });
   };
 
   useEffect(() => {
     if (data) {
       // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
-      setInitialValues(
-        stripTypeName(
-          replaceNullsWithEmptyString(data?.userPrivateCloudProjectById)
-        )
+      const formData = stripTypeName(
+        replaceNullsWithEmptyString(data?.userPrivateCloudProjectById)
       );
+
+      // Set give secondary technical lead an object with an empty string for all properties if null
+      formData.secondaryTechnicalLead =
+        formData.secondaryTechnicalLead !== ""
+          ? formData.secondaryTechnicalLead
+          : {
+              email: "",
+              firstName: "",
+              lastName: "",
+              phone: ""
+            };
+
+      setInitialValues(formData);
     }
   }, [data]);
 

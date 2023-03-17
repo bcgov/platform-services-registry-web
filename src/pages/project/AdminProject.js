@@ -300,11 +300,22 @@ export default function AdminProject({ requestsRoute }) {
   useEffect(() => {
     if (data) {
       // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
-      setInitialValues(
-        stripTypeName(
-          replaceNullsWithEmptyString(data?.privateCloudProjectById)
-        )
+      const formData = stripTypeName(
+        replaceNullsWithEmptyString(data?.privateCloudProjectById)
       );
+
+      // Set give secondary technical lead an object with an empty string for all properties if null
+      formData.secondaryTechnicalLead =
+        formData.secondaryTechnicalLead !== ""
+          ? formData.secondaryTechnicalLead
+          : {
+              email: "",
+              firstName: "",
+              lastName: "",
+              phone: ""
+            };
+
+      setInitialValues(formData);
     }
   }, [data]);
 
@@ -401,6 +412,7 @@ export default function AdminProject({ requestsRoute }) {
                   Are you sure you want to edit this project?
                   <Button
                     onClick={submitForm}
+                    disabled={!formik.dirty}
                     sx={{ mr: 1, width: "170px", mt: 3 }}
                     variant="contained"
                   >
