@@ -23,7 +23,7 @@ function Login() {
   return (
     <>
       <AppBar />
-      <LoginOld />;
+      <LoginOld />
     </>
   );
 }
