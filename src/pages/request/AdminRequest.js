@@ -266,7 +266,7 @@ export default function AdminRequest() {
     <div>
       <NavToolbar path={"request"} title={name}>
         <ReProvisionButton
-          style={{ right: 90 }}
+          
           onClickHandler={reProvisionOnClick}
         />
       </NavToolbar>
