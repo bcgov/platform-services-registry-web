@@ -32,7 +32,6 @@ const parseMinistryFromDisplayName = (displayName) => {
     const dividedString = displayName.split(/(\s+)/);
     if (dividedString[2]) {
       const ministry = dividedString[dividedString.length - 1].split(":", 1)[0];
-      console.log("Parse: ", ministry);
       return ministry;
     }
   }
@@ -68,7 +67,6 @@ export default function UserInput({
 
   useEffect(() => {
     const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
-    console.log("User: ", user);
 
     if (user) {
       getUser({ variables: { email } });
