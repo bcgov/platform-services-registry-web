@@ -22,6 +22,7 @@ import Quotas from "../../components/forms/Quotas";
 import Namespaces from "../../components/Namespaces";
 import TextField from "@mui/material/TextField";
 import { Box } from "@mui/material";
+import ReProvisionButton from "../../components/ReProvisionButton";
 
 const ADMIN_REQUEST = gql`
   query PrivateCloudActiveRequestById($requestId: ID!) {
@@ -149,10 +150,8 @@ const MAKE_REQUEST_DECISION = gql`
 
 const RE_PROVISION_REQUEST = gql`
   mutation PrivateCloudReProvisionRequest($requestId: ID!) {
-    privateCloudRequestDecision(requestId: $requestId) {
+    privateCloudReProvisionRequest(requestId: $requestId) {
       id
-      decisionStatus
-      humanComment
     }
   }
 `;
@@ -187,6 +186,32 @@ export default function AdminRequest() {
   ] = useMutation(RE_PROVISION_REQUEST, {
     refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
+
+  const reProvisionOnClick = () => {
+    toastId.current = toast("Re provisioning request has been submitted", {
+      autoClose: false
+    });
+
+    privateCloudReProvisionRequest({
+      variables: { requestId: id },
+      onError: (error) => {
+        console.log(error);
+        toast.update(toastId.current, {
+          render: `Error: ${error.message}`,
+          type: toast.TYPE.ERROR,
+          autoClose: 5000
+        });
+      },
+      onCompleted: () => {
+        navigate(-1);
+        toast.update(toastId.current, {
+          render: "Re provisioning request successful",
+          type: toast.TYPE.SUCCESS,
+          autoClose: 5000
+        });
+      }
+    });
+  };
 
   const makeDecisionOnClick = (decision) => {
     toastId.current = toast("Your decision has been submitted", {
@@ -239,7 +264,12 @@ export default function AdminRequest() {
 
   return (
     <div>
-      <NavToolbar path={"request"} title={name} />
+      <NavToolbar path={"request"} title={name}>
+        <ReProvisionButton
+          style={{ right: 90 }}
+          onClickHandler={reProvisionOnClick}
+        />
+      </NavToolbar>
       <Container>
         <MetaDataInput formik={formik} isDisabled={true} />
         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
