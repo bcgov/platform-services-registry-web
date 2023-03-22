@@ -264,7 +264,7 @@ export default function AdminRequest() {
 
   return (
     <div>
-      <NavToolbar path={"request"} title={name}>
+      <NavToolbar path={"admin/dashboard/requests"} title={name}>
         {request?.decisionStatus === "APPROVED" && request?.active === true ? (
           <ReProvisionButton onClickHandler={reProvisionOnClick} />
         ) : null}

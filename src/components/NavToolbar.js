@@ -5,11 +5,17 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 
 export default function NavToolbar({ title, path, children }) {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const navigateToPath = () => {
+    const currentBasePath = location.pathname.split("/")[1];
+    navigate(`/${currentBasePath}/${path}`);
+  };
 
   return (
     <Toolbar style={{ width: "97%" }}>
@@ -31,7 +37,7 @@ export default function NavToolbar({ title, path, children }) {
       <Divider orientation="vertical" variant="middle" flexItem />
       <Box sx={{ display: "flex", flexDirection: "row", width: "100%" }}>
         <IconButton
-          onClick={() => navigate(-1)}
+          onClick={() => navigateToPath(path)}
           aria-label="back"
           color="primary"
         >

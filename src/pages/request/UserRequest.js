@@ -157,7 +157,7 @@ export default function UserRequest() {
 
   return (
     <div>
-      <NavToolbar path={"request"} title={name}></NavToolbar>
+      <NavToolbar path={"user/dashboard/requests"} title={name}></NavToolbar>
       <Container>
         <MetaDataInput formik={formik} isDisabled={true} />
         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />

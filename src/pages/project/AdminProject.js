@@ -373,7 +373,7 @@ export default function AdminProject({ requestsRoute }) {
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
-        <NavToolbar path={"product"} title={name}>
+        <NavToolbar path={"admin/dashboard/products"} title={name}>
           <IconButton
             disabled={!formik.dirty}
             onClick={() => formik.resetForm()}
