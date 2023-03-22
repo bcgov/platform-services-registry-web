@@ -265,7 +265,9 @@ export default function AdminRequest() {
   return (
     <div>
       <NavToolbar path={"request"} title={name}>
-        <ReProvisionButton onClickHandler={reProvisionOnClick} />
+        {request?.decisionStatus === "APPROVED" && request?.active === true ? (
+          <ReProvisionButton onClickHandler={reProvisionOnClick} />
+        ) : null}
       </NavToolbar>
       <Container>
         <MetaDataInput formik={formik} isDisabled={true} />

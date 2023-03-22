@@ -5,7 +5,7 @@ import {
   CommonComponentsInputSchema,
   QuotaInputSchema,
   MinistrySchema,
-  ClusterSchema,
+  ClusterSchema
 } from "../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
@@ -16,7 +16,7 @@ import {
   projectInitialValues,
   replaceNullsWithEmptyString,
   replaceEmptyStringWithNull,
-  stripTypeName,
+  stripTypeName
 } from "../../components/common/FormHelpers";
 import CommonComponents from "../../components/forms/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
@@ -36,6 +36,7 @@ import Namespaces from "../../components/Namespaces";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import ReProvisionButton from "../../components/ReProvisionButton";
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -149,6 +150,14 @@ const DELETE_USER_PROJECT = gql`
   }
 `;
 
+const RE_PROVISION_PROJECT = gql`
+  mutation PrivateCloudReProvisionProject($projectId: ID!) {
+    privateCloudReProvisionProject(projectId: $projectId) {
+      id
+    }
+  }
+`;
+
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
@@ -181,7 +190,7 @@ const validationSchema = yup.object().shape({
   productionQuota: yup.object(QuotaInputSchema).required(),
   developmentQuota: yup.object(QuotaInputSchema).required(),
   toolsQuota: yup.object(QuotaInputSchema).required(),
-  testQuota: yup.object(QuotaInputSchema).required(),
+  testQuota: yup.object(QuotaInputSchema).required()
 });
 
 const style = {
@@ -193,7 +202,7 @@ const style = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4,
+  p: 4
 };
 
 export default function AdminProject({ requestsRoute }) {
@@ -207,7 +216,7 @@ export default function AdminProject({ requestsRoute }) {
 
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id },
-    nextFetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-and-network"
   });
 
   const [
@@ -215,19 +224,19 @@ export default function AdminProject({ requestsRoute }) {
     {
       data: editProjectData,
       loading: editProjectLoading,
-      error: editProjectError,
-    },
+      error: editProjectError
+    }
   ] = useMutation(UPDATE_USER_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
 
   const [privateCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
 
   const deleteOnClick = () => {
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false,
+      autoClose: false
     });
 
     privateCloudProjectDeleteRequest({
@@ -236,7 +245,7 @@ export default function AdminProject({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000,
+          autoClose: 5000
         });
       },
       onCompleted: () => {
@@ -244,9 +253,46 @@ export default function AdminProject({ requestsRoute }) {
         toast.update(toastId.current, {
           render: "Delete request successfuly created",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000,
+          autoClose: 5000
+        });
+      }
+    });
+  };
+
+  const [
+    privateCloudReProvisionProject,
+    {
+      data: reprovisionData,
+      loading: reprovisionLoading,
+      error: reprovisionError
+    }
+  ] = useMutation(RE_PROVISION_PROJECT, {
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+  });
+
+  const reProvisionOnClick = () => {
+    toastId.current = toast("Re provisioning request has been submitted", {
+      autoClose: false
+    });
+
+    privateCloudReProvisionProject({
+      variables: { projectId: id },
+      onError: (error) => {
+        console.log(error);
+        toast.update(toastId.current, {
+          render: `Error: ${error.message}`,
+          type: toast.TYPE.ERROR,
+          autoClose: 5000
         });
       },
+      onCompleted: () => {
+        navigate(-1);
+        toast.update(toastId.current, {
+          render: "Re provisioning request successful",
+          type: toast.TYPE.SUCCESS,
+          autoClose: 5000
+        });
+      }
     });
   };
 
@@ -261,14 +307,14 @@ export default function AdminProject({ requestsRoute }) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
       }
-    },
+    }
   });
 
   const submitForm = () => {
     const { values } = formik;
 
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false,
+      autoClose: false
     });
 
     const variables = validationSchema.cast(values);
@@ -279,7 +325,7 @@ export default function AdminProject({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000,
+          autoClose: 5000
         });
       },
 
@@ -290,10 +336,10 @@ export default function AdminProject({ requestsRoute }) {
           toast.update(toastId.current, {
             render: "Request successfuly created",
             type: toast.TYPE.SUCCESS,
-            autoClose: 5000,
+            autoClose: 5000
           });
         }
-      },
+      }
     });
   };
 
@@ -312,7 +358,7 @@ export default function AdminProject({ requestsRoute }) {
               email: "",
               firstName: "",
               lastName: "",
-              ministry: "",
+              ministry: ""
             };
 
       setInitialValues(formData);
@@ -365,6 +411,7 @@ export default function AdminProject({ requestsRoute }) {
               </Typography>
             </Box>
           </Modal>
+          <ReProvisionButton onClickHandler={reProvisionOnClick} />
         </NavToolbar>
         {isDisabled ? (
           <ActiveRequestText
