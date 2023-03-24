@@ -133,8 +133,14 @@ const ministriesNames = [
     id: 29,
     name: "TRAN",
     humanFriendlyName: "Transportation and Infrastructure"
-  },
-].sort((item1, item2) => (item1.humanFriendlyName > item2.humanFriendlyName) ? 1 : (item1.humanFriendlyName < item2.humanFriendlyName) ? -1 : 0);
+  }
+].sort((item1, item2) =>
+  item1.humanFriendlyName > item2.humanFriendlyName
+    ? 1
+    : item1.humanFriendlyName < item2.humanFriendlyName
+    ? -1
+    : 0
+);
 
 // const ministriesNamesUpdated = [
 //   {
@@ -285,11 +291,11 @@ const clusterNames = [
     name: "GOLD",
     humanFriendlyName: "Gold Kamloops"
   },
-  {
-    id: 5,
-    name: "GOLDDR",
-    humanFriendlyName: "Gold (DR) Calgary"
-  },
+  // {
+  //   id: 5,
+  //   name: "GOLDDR",
+  //   humanFriendlyName: "Gold (DR) Calgary"
+  // },
   {
     id: 6,
     name: "KLAB2",
@@ -318,7 +324,7 @@ const defaultMemoryOptionsLookup = {
   MEMORY_REQUEST_8_LIMIT_16: "8 GB Request, 16 GB Limit",
   MEMORY_REQUEST_16_LIMIT_32: "16 GB Request, 32 GB Limit",
   MEMORY_REQUEST_32_LIMIT_64: "32 GB Request, 64 GB Limit",
-  MEMORY_REQUEST_64_LIMIT_128: "64 GB Request, 128 GB Limit",
+  MEMORY_REQUEST_64_LIMIT_128: "64 GB Request, 128 GB Limit"
 };
 
 const defaultStorageOptionsLookup = {
