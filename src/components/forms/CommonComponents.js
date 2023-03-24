@@ -86,7 +86,7 @@ export default function CommonComponents({ formik, isDisabled }) {
 
 
   return (
-    <Box sx={{ mt: 6, mb: 4 }}>
+    <Box sx={{ mt: 6, mb: 4, width: 700 }}>
       <div >
         <TitleTypography>Common Components</TitleTypography>
         <Typography sx={{ mb: 2 }} color="text.primary">
@@ -129,7 +129,8 @@ export default function CommonComponents({ formik, isDisabled }) {
                 sx={{
                   "& .MuiFormControlLabel-label.Mui-disabled": {
                     WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-                  }
+                  },
+                  marginLeft: "180px"
                 }}
                 control={
                   <Radio
@@ -144,7 +145,7 @@ export default function CommonComponents({ formik, isDisabled }) {
             </RadioGroup>
           </div>
         ))}
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", marginTop: 15 }}>
           <Typography
             variant="body1"
             // color={isDisabled && "rgba(0, 0, 0, 0.38)"}
@@ -178,7 +179,8 @@ export default function CommonComponents({ formik, isDisabled }) {
           sx={{
             "& .MuiFormControlLabel-label.Mui-disabled": {
               WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-            }
+            },
+            marginTop: 2
           }}
           control={
             <Checkbox
