@@ -6,7 +6,7 @@ import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
   projectInitialValues as initialValues,
-  replaceNullsWithEmptyString,
+  replaceNullsWithEmptyString
 } from "../../components/common/FormHelpers";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
@@ -129,13 +129,13 @@ export default function UserRequest() {
   const [humanCommentText, setHumanCommentText] = useState(null);
 
   const { data, loading, error } = useQuery(USER_REQUEST, {
-    variables: { requestId: id },
+    variables: { requestId: id }
   });
 
   const { project, requestedProject, ...request } =
     data?.userPrivateCloudRequestById || {};
   const formik = useFormik({
-    initialValues,
+    initialValues
   });
 
   useEffect(() => {
@@ -157,7 +157,11 @@ export default function UserRequest() {
 
   return (
     <div>
-      <NavToolbar path={"user/dashboard/requests"} title={name}></NavToolbar>
+      <NavToolbar
+        label={"requests"}
+        path={"user/dashboard/requests"}
+        title={name}
+      ></NavToolbar>
       <Container>
         <MetaDataInput formik={formik} isDisabled={true} />
         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
@@ -193,7 +197,7 @@ export default function UserRequest() {
             <TitleTypography> Reviewer’s comments</TitleTypography>,
             <Typography sx={{ mb: 6, maxWidth: 600 }} color="text.primary">
               {humanCommentText}
-            </Typography>,
+            </Typography>
           ]}
         </div>
       </Container>

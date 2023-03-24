@@ -8,7 +8,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate, useLocation } from "react-router-dom";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 
-export default function NavToolbar({ title, path, children }) {
+export default function NavToolbar({ title, label, path, children }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -56,7 +56,7 @@ export default function NavToolbar({ title, path, children }) {
           <Breadcrumbs aria-label="breadcrumb">
             {path && (
               <Typography sx={{ fontSize: 18 }} variant="body">
-                {path}
+                {label}
               </Typography>
             )}
             <Typography

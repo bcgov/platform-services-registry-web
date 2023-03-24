@@ -264,7 +264,11 @@ export default function AdminRequest() {
 
   return (
     <div>
-      <NavToolbar path={"admin/dashboard/requests"} title={name}>
+      <NavToolbar
+        label={"requests"}
+        path={"admin/dashboard/requests"}
+        title={name}
+      >
         {request?.decisionStatus === "APPROVED" && request?.active === true ? (
           <ReProvisionButton onClickHandler={reProvisionOnClick} />
         ) : null}
@@ -299,9 +303,11 @@ export default function AdminRequest() {
             isDisabled={true}
             currentProjectQuota={data?.privateCloudActiveRequestById?.project}
           />
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <Divider variant="middle" sx={{  mb: 6 }} />
         </div>
-        <TitleTypography> Reviewer’s comments</TitleTypography>
+        <TitleTypography sx={{ mt: 3, mb: 1 }}>
+          Reviewer’s comments
+        </TitleTypography>
         <TextField
           fullWidth
           id="humanComment"
