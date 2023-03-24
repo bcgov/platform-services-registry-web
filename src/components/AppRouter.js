@@ -47,7 +47,7 @@ export const AppRouter = () => {
             isAdmin ? (
               <Navigate to="/private-cloud/admin/dashboard/products" replace />
             ) : (
-              <Navigate to="/private-cloud/user/dashboard/requests" replace />
+              <Navigate to="/private-cloud/user/dashboard/products" replace />
             )
           }
         />
