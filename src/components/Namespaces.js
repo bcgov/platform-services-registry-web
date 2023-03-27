@@ -8,7 +8,7 @@ function Namespaces({ cluster, licencePlate }) {
     <Box sx={{ mt: 5, mb: 5 }}>
       <TitleTypography>Namespaces</TitleTypography>
       <Typography sx={{ mb: 2, width: 600 }} color="text.primary">
-        These are the <b>namespaces</b> that have been created for your project.
+        These are the <b>namespaces</b> that have been created for your product.
         You can access the <b>openshift console</b> by clicking on the links
         below.
       </Typography>

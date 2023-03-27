@@ -157,7 +157,7 @@ export default function Create({ requestsRoute }) {
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
-        <NavToolbar title="Create Project"></NavToolbar>
+        <NavToolbar title="Create Product"></NavToolbar>
         <Container>
           <MetaDataInput formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
@@ -200,7 +200,7 @@ export default function Create({ requestsRoute }) {
                   Please Confirm Your Request
                 </Typography>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  Are you sure you want to create this project?
+                  Are you sure you want to create this product?
                   <Button
                     onClick={submitForm}
                     sx={{ mr: 1, width: "170px", mt: 3 }}

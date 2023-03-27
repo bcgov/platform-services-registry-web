@@ -460,7 +460,7 @@ export default function AdminProject({ requestsRoute }) {
                   Please Confirm Your Request
                 </Typography>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  Are you sure you want to edit this project?
+                  Are you sure you want to edit this product?
                   <Button
                     onClick={submitForm}
                     disabled={!formik.dirty}
