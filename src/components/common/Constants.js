@@ -308,6 +308,24 @@ const clusterNames = [
   }
 ];
 
+const clusterNamesUserCreate = [
+  {
+    id: 3,
+    name: "SILVER",
+    humanFriendlyName: "Silver Kamloops"
+  },
+  {
+    id: 4,
+    name: "GOLD",
+    humanFriendlyName: "Gold Kamloops"
+  },
+  {
+    id: 7,
+    name: "EMERALD",
+    humanFriendlyName: "Emerald Hosting Tier"
+  }
+];
+
 const defaultCpuOptionsLookup = {
   CPU_REQUEST_0_5_LIMIT_1_5: "0.5 CPU Request, 1.5 CPU Limit",
   CPU_REQUEST_1_LIMIT_2: "1 CPU Request, 2 CPU Limit",
@@ -377,6 +395,7 @@ export {
   defaultMemoryOptions,
   defaultStorageOptions,
   clusterNames,
+  clusterNamesUserCreate,
   defaultCpuOptionsLookup,
   defaultMemoryOptionsLookup,
   defaultStorageOptionsLookup
