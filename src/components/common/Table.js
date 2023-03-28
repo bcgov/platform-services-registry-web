@@ -30,6 +30,7 @@ export default function StickyTable({
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
+    onNextPage(0, +event.target.value);
     setPage(0);
   };
 
@@ -100,8 +101,7 @@ export default function StickyTable({
         </Table>
       </TableContainer>
       <TablePagination
-        // rowsPerPageOptions={[10, 25, 100]}
-        rowsPerPageOptions={[10]}
+        rowsPerPageOptions={[10, 25, 50]}
         component="div"
         count={count}
         rowsPerPage={rowsPerPage}
