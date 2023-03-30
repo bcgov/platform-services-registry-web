@@ -1,8 +1,6 @@
-import { useLocation } from "react-router-dom";
 import UserInput from "./UserInput";
 import Box from "@mui/material/Box";
 import TitleTypography from "../common/TitleTypography";
-import Typography from "@mui/material/Typography";
 
 const Users = ({
   projectOwner,

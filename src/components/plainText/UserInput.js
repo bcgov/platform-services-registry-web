@@ -1,21 +1,13 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
-import { gql, useLazyQuery, useQuery } from "@apollo/client";
-import { TextField } from "@mui/material";
 import Avatar from "../common/Avatar";
-import useDebounce from "../../hooks/useDebounce";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import Edit from "@mui/icons-material/Edit";
 import Divider from "@mui/material/Divider";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
-import RequiredField from "../common/RequiredField";
-import Autocomplete from "@mui/material/Autocomplete";
-import { getUsers, getUserPhoto } from "../../msGraphApi";
-import usePhotoUrl from "../../msGraphApi/useAzurePhoto";
 
 export default function UserInput({
   label, // e.g "projectOwner" or "primaryTechnicalLead" or "secondaryTechnicalLead"

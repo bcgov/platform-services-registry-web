@@ -1,6 +1,4 @@
-import React from "react";
 import Box from "@mui/material/Box";
-import TitleTypography from "../common/TitleTypography";
 import Typography from "@mui/material/Typography";
 
 export default function MetaDataInput({ name, description }) {
