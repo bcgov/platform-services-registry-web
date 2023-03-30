@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
 import StickyTable from "../../components/common/Table";
 import { requestsToRows, columns } from "./helpers";
@@ -42,6 +42,7 @@ export const USER_REQUESTS = gql`
 
 export default function Requests() {
   const { loading, error, data, startPolling } = useQuery(USER_REQUESTS);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     startPolling(8000);
@@ -61,6 +62,8 @@ export default function Requests() {
       count={loading ? 0 : data?.userPrivateCloudRequests?.length}
       title="Active Requests"
       loading={loading}
+      rowsPerPage={rowsPerPage}
+      setRowsPerPage={setRowsPerPage}
     />
   ) : null;
 }
