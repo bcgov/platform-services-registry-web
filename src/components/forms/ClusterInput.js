@@ -16,7 +16,6 @@ export default function ClusterInput({ formik, isDisabled }) {
   const isAdmin = useContext(AdminContext);
   const clusterNamesInput = isAdmin.admin ? clusterNames : clusterNamesUserCreate;
 
-console.log(isAdmin.admin)
   return (
     <Box
       sx={{
