@@ -99,8 +99,9 @@ export default function Projects() {
   } else if (error) {
     return <ErrorAlert error={error} />;
   }
-
-  return !loading ? (
+  return !loading ? 
+  <>
+    <div className="Loaded-indicator" />
     <StickyTable
       onClickPath={"/private-cloud/admin/product/"}
       onNextPage={getNextPage}
@@ -118,5 +119,6 @@ export default function Projects() {
       rowsPerPage={rowsPerPage}
       setRowsPerPage={setRowsPerPage}
     />
-  ) : null;
+    </>
+   : null;
 }
