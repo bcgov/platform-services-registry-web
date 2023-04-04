@@ -11,7 +11,6 @@ import {
 } from "../common/Constants";
 import TitleTypography from "../common/TitleTypography";
 import Typography from "@mui/material/Typography";
-import Styled from "styled-components";
 
 String.prototype.capitalizeFirstLetter = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);

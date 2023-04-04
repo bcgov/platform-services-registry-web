@@ -1,6 +1,5 @@
 import QuotaInput from "./QuotaInput";
 import Box from "@mui/material/Box";
-import TitleTypography from "../common/TitleTypography";
 
 const Quotas = ({ project = {}, requestedProject = {} }) => {
   return (

@@ -6,8 +6,6 @@ import {
   defaultStorageOptionsLookup,
 } from "../common/Constants";
 import TitleTypography from "../common/TitleTypography";
-import Badge from "@mui/material/Badge";
-import MailIcon from "@mui/icons-material/Mail";
 
 String.prototype.capitalizeFirstLetter = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
