@@ -271,7 +271,7 @@ export default function AdminRequest() {
             secondaryTechnicalLead={requestedProject?.secondaryTechnicalLead}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas project={requestedProject} />
+          <Quotas project={project} requestedProject={requestedProject} />
           <Divider variant="middle" sx={{ mb: 6 }} />
         </div>
         <TitleTypography sx={{ mt: 3, mb: 1 }}>

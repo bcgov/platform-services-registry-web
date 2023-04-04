@@ -2,23 +2,29 @@ import QuotaInput from "./QuotaInput";
 import Box from "@mui/material/Box";
 import TitleTypography from "../common/TitleTypography";
 
-const Quotas = ({ project = {} }) => {
+const Quotas = ({ project = {}, requestedProject = {} }) => {
   return (
     <Box sx={{ mt: 6 }}>
-      <TitleTypography>Quota</TitleTypography>
       <div style={{ display: "flex" }}>
         <QuotaInput
           nameSpace={"production"}
-          quota={project?.productionQuota}
+          quota={requestedProject?.productionQuota}
+          currentQuota={project?.productionQuota}
         />
-        <QuotaInput nameSpace={"test"} quota={project?.testQuota} />
+        <QuotaInput
+          nameSpace={"test"}
+          quota={project?.testQuota}
+          currentQuota={project?.productionQuota}
+        />
         <QuotaInput
           nameSpace={"tools"}
-          quota={project?.toolsQuota}
+          quota={requestedProject?.toolsQuota}
+          currentQuota={project?.toolsQuota}
         />
         <QuotaInput
           nameSpace={"development"}
-          quota={project?.developmentQuota}
+          quota={requestedProject?.developmentQuota}
+          currentQuota={project?.developmentQuota}
         />
       </div>
     </Box>
