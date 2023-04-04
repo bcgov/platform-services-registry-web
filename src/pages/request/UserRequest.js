@@ -146,45 +146,40 @@ export default function UserRequest() {
         title={name}
       ></NavToolbar>
       <Container>
-        <MetaDataInput formik={formik} isDisabled={true} />
-        <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+        <MetaDataInput
+          name={requestedProject?.name}
+          description={requestedProject?.description}
+        />
+        <MinistryInput ministry={requestedProject?.ministry} />
+        <ClusterInput cluster={requestedProject?.cluster} />
         <div>
-          <div style={{ display: "flex" }}>
-            <MinistryInput formik={formik} isDisabled={true} />
-            <ClusterInput formik={formik} isDisabled={true} />
-          </div>
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           {request?.type !== "CREATE" ? (
             <div>
               <Namespaces
-                cluster={
-                  data?.userPrivateCloudRequestById?.requestedProject?.cluster
-                }
-                licencePlate={
-                  data?.userPrivateCloudRequestById?.requestedProject
-                    ?.licencePlate
-                }
+                cluster={requestedProject?.cluster}
+                licencePlate={requestedProject?.licencePlate}
               />
               <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             </div>
           ) : null}
-          <Users formik={formik} isDisabled={true} />
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas
-            formik={formik}
-            isDisabled={isDisabled}
-            currentProjectQuota={data?.userPrivateCloudRequestById?.project}
+          <Users
+            projectOwner={requestedProject?.projectOwner}
+            primaryTechnicalLead={requestedProject?.primaryTechnicalLead}
+            secondaryTechnicalLead={requestedProject?.secondaryTechnicalLead}
           />
-          {request?.humanCommentText && (
-            <>
-              <Divider variant="middle" sx={{ mt: 1, mb: 5 }} />,
-              <TitleTypography> Reviewer’s comments</TitleTypography>,
-              <Typography sx={{ mb: 6, maxWidth: 600 }} color="text.primary">
-                {request?.humanCommentText}
-              </Typography>
-            </>
-          )}
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <Quotas project={project} requestedProject={requestedProject} />
+          <Divider variant="middle" sx={{ mb: 6 }} />
         </div>
+        {request?.humanCommentText && (
+          <>
+            <Divider variant="middle" sx={{ mt: 1, mb: 5 }} />,
+            <TitleTypography> Reviewer’s comments</TitleTypography>,
+            <Typography sx={{ mb: 6, maxWidth: 600 }} color="text.primary">
+              {request?.humanCommentText}
+            </Typography>
+          </>
+        )}
       </Container>
     </div>
   );
