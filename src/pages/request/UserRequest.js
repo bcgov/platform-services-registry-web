@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
-import MetaDataInput from "../../components/forms/MetaDataInput";
-import ClusterInput from "../../components/forms/ClusterInput";
-import MinistryInput from "../../components/forms/MinistryInput";
+import MetaDataInput from "../../components/plainText/MetaDataInput";
+import ClusterInput from "../../components/plainText/ClusterInput";
+import MinistryInput from "../../components/plainText/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import { projectInitialValues as initialValues } from "../../components/common/FormHelpers";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import Container from "../../components/common/Container";
-import Users from "../../components/forms/Users";
+import Users from "../../components/plainText/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../components/forms/Quotas";
+import Quotas from "../../components/plainText/Quotas";
 import Namespaces from "../../components/Namespaces";
 import TitleTypography from "../../components/common/TitleTypography";
 import { Typography } from "@mui/material";
@@ -130,13 +130,9 @@ export default function UserRequest() {
 
   const { project, requestedProject, ...request } =
     data?.userPrivateCloudRequestById || {};
-  const formik = useFormik({
-    initialValues,
-  });
 
   const name =
     request?.type === "CREATE" ? requestedProject?.name : project?.name;
-  const isDisabled = !requestedProject || request?.decisionStatus !== "PENDING";
 
   return (
     <div>
