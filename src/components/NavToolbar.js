@@ -14,7 +14,11 @@ export default function NavToolbar({ title, label, path, children }) {
 
   const navigateToPath = () => {
     const currentBasePath = location.pathname.split("/")[1];
-    navigate(`/${currentBasePath}/${path}`);
+    if (path) {
+      navigate(`/${currentBasePath}/${path}`);
+    } else {
+      navigate(-1);
+    }
   };
 
   return (
@@ -29,7 +33,7 @@ export default function NavToolbar({ title, label, path, children }) {
           fontWeight: 400,
           color: "rgba(0, 0, 0, 0.6)",
           fontSize: 20,
-          minWidth: 170
+          minWidth: 170,
         }}
       >
         PRIVATE CLOUD
@@ -49,7 +53,7 @@ export default function NavToolbar({ title, label, path, children }) {
             marginTop: "7px",
             color: "#212121",
             flexGrow: 1,
-            minWidth: 170
+            minWidth: 170,
             // fontSize: 20,
           }}
         >

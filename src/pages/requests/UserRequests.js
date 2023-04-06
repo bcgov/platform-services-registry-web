@@ -62,6 +62,8 @@ export default function Requests() {
       count={loading ? 0 : data?.userPrivateCloudRequests?.length}
       title="Active Requests"
       loading={loading}
+      rowsPerPage={rowsPerPage}
+      setRowsPerPage={setRowsPerPage}
     />
   ) : null;
 }

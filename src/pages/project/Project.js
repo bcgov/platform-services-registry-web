@@ -327,7 +327,7 @@ export default function Project({ requestsRoute }) {
     <div>
       <form onSubmit={formik.handleSubmit}>
         <NavToolbar
-          label={"requests"}
+          label={"products"}
           path={"user/dashboard/products"}
           title={name}
         >

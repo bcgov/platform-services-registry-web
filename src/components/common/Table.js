@@ -17,9 +17,10 @@ export default function StickyTable({
   onClickPath,
   onNextPage = () => "",
   count,
+  rowsPerPage = 10,
+  setRowsPerPage = () => "",
 }) {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const navigate = useNavigate();
 

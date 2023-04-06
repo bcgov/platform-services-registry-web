@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useCallback } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import { useQuery, gql } from "@apollo/client";
 import {
   columns,
   columnsXs,
   projectsToRows,
-  projectsToRowsXs
+  projectsToRowsXs,
 } from "./helpers";
 import StickyTable from "../../components/common/Table";
 import SearchContext from "../../context/search";
@@ -58,6 +58,7 @@ const ALL_PROJECTS = gql`
 
 export default function Projects() {
   const { debouncedSearch } = useContext(SearchContext);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const { filter } = useContext(FilterContext);
   const { width } = useWindowSize();
 
@@ -67,11 +68,11 @@ export default function Projects() {
       nextFetchPolicy: "cache-first",
       variables: {
         page: 1,
-        pageSize: 10,
+        pageSize: rowsPerPage,
         search: debouncedSearch,
-        filter
+        filter,
       },
-      pollInterval: 500
+      pollInterval: 500,
     }
   );
 
@@ -86,8 +87,8 @@ export default function Projects() {
           page: page + 1,
           pageSize,
           search: debouncedSearch,
-          filter
-        }
+          filter,
+        },
       });
     },
     [filter, debouncedSearch]
@@ -98,8 +99,9 @@ export default function Projects() {
   } else if (error) {
     return <ErrorAlert error={error} />;
   }
-
-  return !loading ? (
+  return !loading ? 
+  <>
+    <div className="Loaded-indicator" />
     <StickyTable
       onClickPath={"/private-cloud/admin/product/"}
       onNextPage={getNextPage}
@@ -114,6 +116,9 @@ export default function Projects() {
       count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
       title="Products"
       loading={loading}
+      rowsPerPage={rowsPerPage}
+      setRowsPerPage={setRowsPerPage}
     />
-  ) : null;
+    </>
+   : null;
 }

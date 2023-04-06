@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { clusterNames } from "../common/Constants";
+import { clusterNames, clusterNamesUserCreate } from "../common/Constants";
 import TitleTypography from "../common/TitleTypography";
 import FormHelperText from "@mui/material/FormHelperText";
 import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
+import AdminContext from "../../context/admin";
 
 export default function ClusterInput({ formik, isDisabled }) {
+  const isAdmin = useContext(AdminContext);
+  const clusterNamesInput = isAdmin.admin
+    ? clusterNames
+    : clusterNamesUserCreate;
+
   return (
     <Box
       sx={{
@@ -24,22 +30,27 @@ export default function ClusterInput({ formik, isDisabled }) {
       <div>
         <TitleTypography>Cluster</TitleTypography>
         <Typography sx={{ mb: 2 }} color="text.primary">
-          Select your cluster. Select <b>CLAB</b> or <b>KLAB</b> for testing
-          purposes.
+          Select your cluster. <b>GOLD</b> will also create a <b>GOLDDR</b> cluster.
         </Typography>
       </div>
-      <FormControl sx={{
-        "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input": {
-          WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-        },
-        "& .MuiInputLabel-root": {
-          WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-        },
-        "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline": {
-          borderColor: "rgba(0, 0, 0, 0.87)",
-        },
-        width: 250, mt: 1
-      }} size="small">
+      <FormControl
+        sx={{
+          "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input":
+            {
+              WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+            },
+          "& .MuiInputLabel-root": {
+            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+          },
+          "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "rgba(0, 0, 0, 0.87)",
+            },
+          width: 250,
+          mt: 1,
+        }}
+        size="small"
+      >
         <InputLabel id="cluster-label">Cluster</InputLabel>
         <Select
           id="cluster"
@@ -52,7 +63,7 @@ export default function ClusterInput({ formik, isDisabled }) {
           labelId="select-cluster"
           label="Cluster"
         >
-          {clusterNames.map((clusterOption) => (
+          {clusterNamesInput.map((clusterOption) => (
             <MenuItem key={clusterOption.id} value={clusterOption.name}>
               {clusterOption.humanFriendlyName}
             </MenuItem>
