@@ -1,24 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
-import MetaDataInput from "../../components/forms/MetaDataInput";
-import ClusterInput from "../../components/forms/ClusterInput";
-import MinistryInput from "../../components/forms/MinistryInput";
+import MetaDataInput from "../../components/plainText/MetaDataInput";
+import ClusterInput from "../../components/plainText/ClusterInput";
+import MinistryInput from "../../components/plainText/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
-import {
-  projectInitialValues as initialValues,
-  replaceNullsWithEmptyString
-} from "../../components/common/FormHelpers";
 import TitleTypography from "../../components/common/TitleTypography";
 import { Button } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { USER_REQUESTS } from "../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
 import { toast } from "react-toastify";
-import { useFormik } from "formik";
 import Container from "../../components/common/Container";
-import Users from "../../components/forms/Users";
+import Users from "../../components/plainText/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../components/forms/Quotas";
+import Quotas from "../../components/plainText/Quotas";
 import Namespaces from "../../components/Namespaces";
 import TextField from "@mui/material/TextField";
 import { Box } from "@mui/material";
@@ -163,7 +158,7 @@ export default function AdminRequest() {
   const [humanCommentInput, setHumanCommentInput] = useState(null);
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
-    variables: { requestId: id }
+    variables: { requestId: id },
   });
 
   const { project, requestedProject, ...request } =
@@ -171,9 +166,9 @@ export default function AdminRequest() {
 
   const [
     privateCloudRequestDecision,
-    { data: decisionData, loading: decisionLoading, error: decisionError }
+    { data: decisionData, loading: decisionLoading, error: decisionError },
   ] = useMutation(MAKE_REQUEST_DECISION, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
   const [
@@ -181,15 +176,15 @@ export default function AdminRequest() {
     {
       data: reprovisionData,
       loading: reprovisionLoading,
-      error: reprovisionError
-    }
+      error: reprovisionError,
+    },
   ] = useMutation(RE_PROVISION_REQUEST, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
   const reProvisionOnClick = () => {
     toastId.current = toast("Re provisioning request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     privateCloudReProvisionRequest({
@@ -199,7 +194,7 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
       onCompleted: () => {
@@ -207,15 +202,15 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: "Re provisioning request successful",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000
+          autoClose: 5000,
         });
-      }
+      },
     });
   };
 
   const makeDecisionOnClick = (decision) => {
     toastId.current = toast("Your decision has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
     privateCloudRequestDecision({
       variables: { requestId: id, decision, humanComment: humanCommentInput },
@@ -224,7 +219,7 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
       onCompleted: () => {
@@ -232,31 +227,11 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: "Decision successful",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000
+          autoClose: 5000,
         });
-      }
+      },
     });
   };
-
-  const formik = useFormik({
-    initialValues,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-    }
-  });
-
-  useEffect(() => {
-    if (data) {
-      // Form values cannon be null (uncontrolled input error), so replace nulls with empty strings
-      formik.setValues(replaceNullsWithEmptyString(requestedProject));
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (request.humanComment) {
-      setHumanCommentInput(request.humanComment);
-    }
-  }, [request.humanComment]);
 
   const name =
     request?.type === "CREATE" ? requestedProject?.name : project?.name;
@@ -274,36 +249,30 @@ export default function AdminRequest() {
         ) : null}
       </NavToolbar>
       <Container>
-        <MetaDataInput formik={formik} isDisabled={true} />
-        <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+        <MetaDataInput
+          name={requestedProject?.name}
+          description={requestedProject?.description}
+        />
+        <MinistryInput ministry={requestedProject?.ministry} />
+        <ClusterInput cluster={requestedProject?.cluster} />
         <div>
-          <div style={{ display: "flex" }}>
-            <MinistryInput formik={formik} isDisabled={true} />
-            <ClusterInput formik={formik} isDisabled={true} />
-          </div>
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           {request?.type !== "CREATE" ? (
             <div>
               <Namespaces
-                cluster={
-                  data?.privateCloudActiveRequestById?.requestedProject?.cluster
-                }
-                licencePlate={
-                  data?.privateCloudActiveRequestById?.requestedProject
-                    ?.licencePlate
-                }
+                cluster={requestedProject?.cluster}
+                licencePlate={requestedProject?.licencePlate}
               />
               <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             </div>
           ) : null}
-          <Users formik={formik} isDisabled={true} />
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas
-            formik={formik}
-            isDisabled={true}
-            currentProjectQuota={data?.privateCloudActiveRequestById?.project}
+          <Users
+            projectOwner={requestedProject?.projectOwner}
+            primaryTechnicalLead={requestedProject?.primaryTechnicalLead}
+            secondaryTechnicalLead={requestedProject?.secondaryTechnicalLead}
           />
-          <Divider variant="middle" sx={{  mb: 6 }} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <Quotas project={project} requestedProject={requestedProject} />
+          <Divider variant="middle" sx={{ mb: 6 }} />
         </div>
         <TitleTypography sx={{ mt: 3, mb: 1 }}>
           Reviewer’s comments
@@ -313,7 +282,7 @@ export default function AdminRequest() {
           id="humanComment"
           name="humanComment"
           placeholder="Provide feedback to the PO/TC regarding your decision for this product"
-          value={humanCommentInput}
+          value={request?.humanComment}
           onChange={(e) => setHumanCommentInput(e.target.value)}
           size="small"
           style={{ display: "block", width: "700px", maxWidth: "100%" }}

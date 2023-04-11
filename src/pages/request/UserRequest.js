@@ -1,19 +1,16 @@
 import { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
-import MetaDataInput from "../../components/forms/MetaDataInput";
-import ClusterInput from "../../components/forms/ClusterInput";
-import MinistryInput from "../../components/forms/MinistryInput";
+import MetaDataInput from "../../components/plainText/MetaDataInput";
+import ClusterInput from "../../components/plainText/ClusterInput";
+import MinistryInput from "../../components/plainText/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
-import {
-  projectInitialValues as initialValues,
-  replaceNullsWithEmptyString
-} from "../../components/common/FormHelpers";
+import { projectInitialValues as initialValues } from "../../components/common/FormHelpers";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import Container from "../../components/common/Container";
-import Users from "../../components/forms/Users";
+import Users from "../../components/plainText/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../components/forms/Quotas";
+import Quotas from "../../components/plainText/Quotas";
 import Namespaces from "../../components/Namespaces";
 import TitleTypography from "../../components/common/TitleTypography";
 import { Typography } from "@mui/material";
@@ -126,34 +123,16 @@ const USER_REQUEST = gql`
 
 export default function UserRequest() {
   const { id } = useParams();
-  const [humanCommentText, setHumanCommentText] = useState(null);
 
   const { data, loading, error } = useQuery(USER_REQUEST, {
-    variables: { requestId: id }
+    variables: { requestId: id },
   });
 
   const { project, requestedProject, ...request } =
     data?.userPrivateCloudRequestById || {};
-  const formik = useFormik({
-    initialValues
-  });
-
-  useEffect(() => {
-    if (requestedProject) {
-      // Form values cannon be null (uncontrolled input error), so replace nulls with empty strings
-      formik.setValues(replaceNullsWithEmptyString(requestedProject));
-    }
-  }, [requestedProject]);
-
-  useEffect(() => {
-    if (request) {
-      setHumanCommentText(request.humanComment);
-    }
-  }, [request]);
 
   const name =
     request?.type === "CREATE" ? requestedProject?.name : project?.name;
-  const isDisabled = !requestedProject || request?.decisionStatus !== "PENDING";
 
   return (
     <div>
@@ -163,43 +142,40 @@ export default function UserRequest() {
         title={name}
       ></NavToolbar>
       <Container>
-        <MetaDataInput formik={formik} isDisabled={true} />
-        <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+        <MetaDataInput
+          name={requestedProject?.name}
+          description={requestedProject?.description}
+        />
+        <MinistryInput ministry={requestedProject?.ministry} />
+        <ClusterInput cluster={requestedProject?.cluster} />
         <div>
-          <div style={{ display: "flex" }}>
-            <MinistryInput formik={formik} isDisabled={true} />
-            <ClusterInput formik={formik} isDisabled={true} />
-          </div>
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           {request?.type !== "CREATE" ? (
             <div>
               <Namespaces
-                cluster={
-                  data?.userPrivateCloudRequestById?.requestedProject?.cluster
-                }
-                licencePlate={
-                  data?.userPrivateCloudRequestById?.requestedProject
-                    ?.licencePlate
-                }
+                cluster={requestedProject?.cluster}
+                licencePlate={requestedProject?.licencePlate}
               />
               <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             </div>
           ) : null}
-          <Users formik={formik} isDisabled={true} />
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas
-            formik={formik}
-            isDisabled={isDisabled}
-            currentProjectQuota={data?.userPrivateCloudRequestById?.project}
+          <Users
+            projectOwner={requestedProject?.projectOwner}
+            primaryTechnicalLead={requestedProject?.primaryTechnicalLead}
+            secondaryTechnicalLead={requestedProject?.secondaryTechnicalLead}
           />
-          {humanCommentText && [
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <Quotas project={project} requestedProject={requestedProject} />
+          <Divider variant="middle" sx={{ mb: 6 }} />
+        </div>
+        {request?.humanCommentText && (
+          <>
             <Divider variant="middle" sx={{ mt: 1, mb: 5 }} />,
             <TitleTypography> Reviewer’s comments</TitleTypography>,
             <Typography sx={{ mb: 6, maxWidth: 600 }} color="text.primary">
-              {humanCommentText}
+              {request?.humanCommentText}
             </Typography>
-          ]}
-        </div>
+          </>
+        )}
       </Container>
     </div>
   );
