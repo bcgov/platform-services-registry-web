@@ -11,7 +11,17 @@ String.prototype.capitalizeFirstLetter = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
-export default function QuotaInput({ nameSpace, quota, currentQuota }) {
+export default function QuotaInput({
+  nameSpace,
+  requestedQuota,
+  currentQuota,
+}) {
+  const isCreateRequest = currentQuota === undefined;
+  const isCupQuotaChanged = currentQuota?.cpu !== requestedQuota?.cpu;
+  const isMemoryQuotaChanged = currentQuota?.memory !== requestedQuota?.memory;
+  const isStorageQuotaChanged =
+    currentQuota?.storage !== requestedQuota?.storage;
+
   return (
     <Box sx={{ width: 340, mt: 3, mb: 5, mr: 4 }}>
       <TitleTypography>
@@ -20,19 +30,34 @@ export default function QuotaInput({ nameSpace, quota, currentQuota }) {
 
       <Box sx={{ display: "flex", flexDirection: "column", mt: 4 }}>
         <Box sx={{ mb: 3 }}>
-          <Typography sx={{ fontSize: 18, fontWeight: "500" }}>
+          <Typography
+            sx={{ fontSize: 18, fontWeight: "500" }}
+            color={isCupQuotaChanged ? "text.primary" : "text.disabled"}
+          >
             Current Cpu
           </Typography>
-          <Typography sx={{ mb: 1 }} color="text.primary">
-            {defaultCpuOptionsLookup[quota?.cpu]}
-          </Typography>
-          <Typography sx={{ fontSize: 18, fontWeight: "500" }}>
-            Requested Cpu
-          </Typography>
-          {currentQuota?.cpu !== quota?.cpu ? (
-            <Typography sx={{ mb: 1 }} color="text.primary">
+          {isCreateRequest ? (
+            <Typography sx={{ mb: 1 }} color="text.disabled">
+              None
+            </Typography>
+          ) : (
+            <Typography
+              sx={{ mb: 1 }}
+              color={isCupQuotaChanged ? "text.primary" : "text.disabled"}
+            >
               {defaultCpuOptionsLookup[currentQuota?.cpu]}
             </Typography>
+          )}
+          <Typography
+            sx={{ fontSize: 18, fontWeight: "500" }}
+            color={isCupQuotaChanged ? "text.primary" : "text.disabled"}
+          >
+            Requested Cpu
+          </Typography>
+          {isCupQuotaChanged ? (
+            <Typography sx={{ mb: 1 }} color="text.primary">
+              {defaultCpuOptionsLookup[requestedQuota?.cpu]}
+            </Typography>
           ) : (
             <Typography sx={{ mb: 1 }} color="text.disabled">
               No change
@@ -40,18 +65,33 @@ export default function QuotaInput({ nameSpace, quota, currentQuota }) {
           )}
         </Box>
         <Box sx={{ mb: 3 }}>
-          <Typography sx={{ fontSize: 18, fontWeight: "500" }}>
+          <Typography
+            sx={{ fontSize: 18, fontWeight: "500" }}
+            color={isMemoryQuotaChanged ? "text.primary" : "text.disabled"}
+          >
             Current Memory
           </Typography>
-          <Typography sx={{ mb: 1 }} color="text.primary">
-            {defaultMemoryOptionsLookup[currentQuota?.memory]}
-          </Typography>
-          <Typography sx={{ fontSize: 18, fontWeight: "500" }}>
+          {isCreateRequest ? (
+            <Typography sx={{ mb: 1 }} color="text.disabled">
+              None
+            </Typography>
+          ) : (
+            <Typography
+              sx={{ mb: 1 }}
+              color={isMemoryQuotaChanged ? "text.primary" : "text.disabled"}
+            >
+              {defaultMemoryOptionsLookup[currentQuota?.memory]}
+            </Typography>
+          )}
+          <Typography
+            sx={{ fontSize: 18, fontWeight: "500" }}
+            color={isMemoryQuotaChanged ? "text.primary" : "text.disabled"}
+          >
             Requested Memory
           </Typography>
-          {currentQuota?.cpu !== quota?.cpu ? (
+          {isMemoryQuotaChanged ? (
             <Typography sx={{ mb: 1 }} color="text.primary">
-              {defaultMemoryOptionsLookup[currentQuota?.memory]}
+              {defaultMemoryOptionsLookup[requestedQuota?.memory]}
             </Typography>
           ) : (
             <Typography sx={{ mb: 1 }} color="text.disabled">
@@ -60,18 +100,33 @@ export default function QuotaInput({ nameSpace, quota, currentQuota }) {
           )}
         </Box>
         <Box sx={{ mb: 3 }}>
-          <Typography sx={{ fontSize: 18, fontWeight: "500" }}>
+          <Typography
+            sx={{ fontSize: 18, fontWeight: "500" }}
+            color={isStorageQuotaChanged ? "text.primary" : "text.disabled"}
+          >
             Current Storage
           </Typography>
-          <Typography sx={{ mb: 1 }} color="text.primary">
-            {defaultStorageOptionsLookup[currentQuota?.storage]}
-          </Typography>
-          <Typography sx={{ fontSize: 18, fontWeight: "500" }}>
+          {isCreateRequest ? (
+            <Typography sx={{ mb: 1 }} color="text.disabled">
+              None
+            </Typography>
+          ) : (
+            <Typography
+              sx={{ mb: 1 }}
+              color={isStorageQuotaChanged ? "text.primary" : "text.disabled"}
+            >
+              {defaultStorageOptionsLookup[currentQuota?.storage]}
+            </Typography>
+          )}
+          <Typography
+            sx={{ fontSize: 18, fontWeight: "500" }}
+            color={isStorageQuotaChanged ? "text.primary" : "text.disabled"}
+          >
             Requested Storage
           </Typography>
-          {currentQuota?.cpu !== quota?.cpu ? (
+          {isStorageQuotaChanged ? (
             <Typography sx={{ mb: 1 }} color="text.primary">
-              {defaultStorageOptionsLookup[currentQuota?.storage]}
+              {defaultStorageOptionsLookup[requestedQuota?.storage]}
             </Typography>
           ) : (
             <Typography sx={{ mb: 1 }} color="text.disabled">

@@ -7,22 +7,22 @@ const Quotas = ({ project = {}, requestedProject = {} }) => {
       <div style={{ display: "flex" }}>
         <QuotaInput
           nameSpace={"production"}
-          quota={requestedProject?.productionQuota}
+          requestedQuota={requestedProject?.productionQuota}
           currentQuota={project?.productionQuota}
         />
         <QuotaInput
           nameSpace={"test"}
-          quota={project?.testQuota}
+          requestedQuota={requestedProject?.testQuota}
           currentQuota={project?.productionQuota}
         />
         <QuotaInput
           nameSpace={"tools"}
-          quota={requestedProject?.toolsQuota}
+          requestedQuota={requestedProject?.toolsQuota}
           currentQuota={project?.toolsQuota}
         />
         <QuotaInput
           nameSpace={"development"}
-          quota={requestedProject?.developmentQuota}
+          requestedQuota={requestedProject?.developmentQuota}
           currentQuota={project?.developmentQuota}
         />
       </div>
