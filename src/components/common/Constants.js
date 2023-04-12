@@ -310,7 +310,8 @@ const clusterNames = [
 
 const routesUser = [
   "/private-cloud/user/dashboard/requests",
-  "/private-cloud/user/dashboard/products"
+  "/private-cloud/user/dashboard/products",
+  "/private-cloud/user/create",
 ]
 
 const routesAdmin = [

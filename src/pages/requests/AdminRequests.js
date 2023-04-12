@@ -3,6 +3,7 @@ import { useQuery, gql } from "@apollo/client";
 import StickyTable from "../../components/common/Table";
 import { requestsToRows, columns } from "./helpers";
 import { EmptyAlert, ErrorAlert } from "../../components/common/Alert";
+import EmptyList from "../../components/common/EmptyList";
 
 export const ALL_ACTIVE_REQUESTS = gql`
   query PrivateCloudActiveRequests {
@@ -56,7 +57,7 @@ export default function Requests() {
   }
 
   return !loading ? (
-    <StickyTable
+    data?.privateCloudActiveRequests?.length > 0 ? <StickyTable
       onClickPath={"/private-cloud/admin/request/"}
       columns={columns}
       rows={data.privateCloudActiveRequests.map(requestsToRows).reverse()}
@@ -65,6 +66,9 @@ export default function Requests() {
       count={loading ? 0 : data?.privateCloudActiveRequests?.length}
       rowsPerPage={rowsPerPage}
       setRowsPerPage={setRowsPerPage}
+    /> : <EmptyList
+      title='There are no requests to be displayed'
+      subtitle='You currently have no provisioning requests for the Private Cloud OpenShift platform.'
     />
   ) : null;
 }

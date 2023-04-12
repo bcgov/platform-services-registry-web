@@ -68,7 +68,7 @@ export default function Projects() {
   const { filter } = useContext(FilterContext);
   const { sortOrder } = useContext(SortContext);
   const { width } = useWindowSize();
-  
+
   const { loading, data, fetchMore, startPolling, error } = useQuery(
     ALL_PROJECTS,
     {
@@ -109,11 +109,11 @@ export default function Projects() {
   } else if (error) {
     return <ErrorAlert error={error} />;
   }
-  
+
   return !loading ?
     <>
       <div className="Loaded-indicator" />
-      {data.privateCloudProjectsPaginated?.projects.length>0 ? <StickyTable
+      {data.privateCloudProjectsPaginated?.projects.length > 0 ? <StickyTable
         onClickPath={"/private-cloud/admin/product/"}
         onNextPage={getNextPage}
         columns={width < 900 ? columnsXs : columns}
@@ -129,9 +129,12 @@ export default function Projects() {
         loading={loading}
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
-      />:
-    <EmptyList />
-    }
+      /> :
+        <EmptyList
+          title='There are no products to be displayed'
+          subtitle='You currently have no products hosted on the Private Cloud OpenShift platform.'
+        />
+      }
     </>
     : null;
 }

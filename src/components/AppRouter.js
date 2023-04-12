@@ -47,7 +47,7 @@ export const AppRouter = () => {
             isAdmin ? (
               <Navigate to={routesAdmin[1]} replace />
             ) : (
-              <Navigate to="/private-cloud/user/dashboard/products" replace />
+              <Navigate to={routesUser[1]} replace />
             )
           }
         />
@@ -99,11 +99,8 @@ export const AppRouter = () => {
               path="dashboard"
               element={
                 <TabsToolbar
-                  routes={[
-                    "/private-cloud/user/dashboard/requests",
-                    "/private-cloud/user/dashboard/products"
-                  ]}
-                  createButtonRoute={"/private-cloud/user/create"}
+                  routes={routesUser}
+                  createButtonRoute={routesUser[2]}
                 />
               }
             >
@@ -113,14 +110,14 @@ export const AppRouter = () => {
             <Route
               path="product/:id"
               element={
-                <Project requestsRoute="/private-cloud/user/dashboard/requests" />
+                <Project requestsRoute={routesUser[0]} />
               }
             />
             <Route path="request/:id" element={<UserRequest />} />
             <Route
               path="create"
               element={
-                <Create requestsRoute="/private-cloud/user/dashboard/requests" />
+                <Create requestsRoute={routesUser[0]} />
               }
             />
           </Route>

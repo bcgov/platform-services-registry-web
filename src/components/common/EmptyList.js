@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import EmptyListImage from '../assets/noProducts.png';
 import CreateBtn from "./CreateBtn"; 
 
-export default function EmptyList() {
+export default function EmptyList({title, subtitle}) {
     return <Box
         display='flex'
         flex='1'
@@ -18,8 +18,8 @@ export default function EmptyList() {
             alt="no products"
             loading="lazy"
         />
-        <Typography variant="h5">There are no requests to be displayed</Typography>
-        <Typography variant="body2">You currently have no provisioning requests for the OpenShift 4 platform.</Typography>
+        <Typography variant="h5">{title}</Typography>
+        <Typography variant="body2" style={{maxWidth:'320px', textAlign:'center'}}>{subtitle}</Typography>
         <CreateBtn/>
     </Box>
 
