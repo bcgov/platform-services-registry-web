@@ -319,6 +319,7 @@ export type QueryPrivateCloudProjectsPaginatedArgs = {
   page: Scalars['Int'];
   pageSize: Scalars['Int'];
   search?: InputMaybe<Scalars['String']>;
+  sortOrder?: Scalars['Int'];
 };
 
 

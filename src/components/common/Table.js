@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,9 +7,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Skeleton from "@mui/material/Skeleton";
 import { useNavigate } from "react-router-dom";
-
+import SortOrderBtn from "../../components/common/SortOrderBtn"
+import { useLocation } from "react-router-dom";
+import {routesAdmin} from "./Constants"
 export default function StickyTable({
   columns,
   rows = [],
@@ -21,9 +22,8 @@ export default function StickyTable({
   setRowsPerPage = () => "",
 }) {
   const [page, setPage] = useState(0);
-
   const navigate = useNavigate();
-
+  const { pathname } = useLocation();
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     onNextPage(newPage, rowsPerPage);
@@ -57,7 +57,10 @@ export default function StickyTable({
                     paddingRight: 24,
                   }}
                 >
-                  {column.label}
+                  {column.label}&nbsp;
+                  {column.label === 'Name' 
+                  && pathname === routesAdmin[1] 
+                  && <SortOrderBtn />}
                 </TableCell>
               ))}
             </TableRow>

@@ -15,7 +15,7 @@ import Project from "../pages/project/Project";
 import Layout from "./Layout";
 import LoadingSpinner from "./common/LoadingSpinner";
 import TabsToolbar from "./TabsToolbar";
-
+import {routesUser, routesAdmin} from "./common/Constants";
 const NoMatch = () => {
   return (
     <div style={{ marginLeft: 24, marginTop: 20 }}>
@@ -45,7 +45,7 @@ export const AppRouter = () => {
           index
           element={
             isAdmin ? (
-              <Navigate to="/private-cloud/admin/dashboard/products" replace />
+              <Navigate to={routesAdmin[1]} replace />
             ) : (
               <Navigate to="/private-cloud/user/dashboard/products" replace />
             )
@@ -65,11 +65,7 @@ export const AppRouter = () => {
               path="dashboard"
               element={
                 <TabsToolbar
-                  routes={[
-                    "/private-cloud/admin/dashboard/requests",
-                    "/private-cloud/admin/dashboard/products"
-                  ]}
-                  createButtonRoute={"/private-cloud/admin/create"}
+                  routes={routesAdmin}
                 />
               }
             >
@@ -79,7 +75,7 @@ export const AppRouter = () => {
             <Route
               path="product/:id"
               element={
-                <AdminProject requestsRoute="/private-cloud/admin/dashboard/requests" />
+                <AdminProject requestsRoute={routesAdmin[0]} />
               }
             />
             <Route path="request/:id" element={<AdminRequest />} />
@@ -87,7 +83,7 @@ export const AppRouter = () => {
             <Route
               path="create"
               element={
-                <Create requestsRoute="/private-cloud/admin/dashboard/requests" />
+                <Create requestsRoute={routesAdmin[0]} />
               }
             />
           </Route>

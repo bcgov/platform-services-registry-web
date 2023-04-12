@@ -12,6 +12,7 @@ import { useQuery, gql } from "@apollo/client";
 import UserProvider from "./providers/user";
 import SearchProvider from "./providers/search";
 import FilterProvider from "./providers/filter";
+import SortProvider from "./providers/sort";
 
 const theme = createTheme({
   typography: {
@@ -99,9 +100,11 @@ function App() {
         <UserProvider user={{ ...data?.me }}>
           <SearchProvider>
             <FilterProvider>
+               <SortProvider>
               <AdminProvider>
                 <AppRouter />
               </AdminProvider>
+              </SortProvider>
             </FilterProvider>
           </SearchProvider>
         </UserProvider>
