@@ -1,7 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import UserInput from "./UserInput";
 import TitleTypography from "../common/TitleTypography";
 import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
