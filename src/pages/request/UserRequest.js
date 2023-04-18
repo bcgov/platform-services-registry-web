@@ -164,7 +164,7 @@ export default function UserRequest() {
             secondaryTechnicalLead={requestedProject?.secondaryTechnicalLead}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas project={project} requestedProject={requestedProject} />
+          <Quotas project={project} requestedProject={requestedProject} active={request.active} />
           <Divider variant="middle" sx={{ mb: 6 }} />
         </div>
         {request?.humanCommentText && (

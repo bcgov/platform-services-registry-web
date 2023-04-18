@@ -158,6 +158,7 @@ export type Mutation = {
   privateCloudProjectDeleteRequest: PrivateCloudRequest;
   privateCloudProjectEditRequest: PrivateCloudRequest;
   privateCloudProjectRequest: PrivateCloudRequest;
+  privateCloudReProvisionProject?: Maybe<PrivateCloudProject>;
   privateCloudReProvisionRequest?: Maybe<PrivateCloudRequest>;
   privateCloudRequestDecision?: Maybe<PrivateCloudRequest>;
   signUp: User;
@@ -199,6 +200,11 @@ export type MutationPrivateCloudProjectRequestArgs = {
   primaryTechnicalLead: CreateUserInput;
   projectOwner: CreateUserInput;
   secondaryTechnicalLead?: InputMaybe<CreateUserInput>;
+};
+
+
+export type MutationPrivateCloudReProvisionProjectArgs = {
+  projectId: Scalars['ID'];
 };
 
 
@@ -278,6 +284,7 @@ export type Query = {
   privateCloudProjectsById: Array<PrivateCloudProject>;
   privateCloudProjectsPaginated: ProjectsPaginatedOutput;
   privateCloudProjectsWithFilterSearch: Array<PrivateCloudProject>;
+  privateCloudRequestById: PrivateCloudRequest;
   privateCloudRequests: Array<PrivateCloudRequest>;
   user?: Maybe<User>;
   userByEmail?: Maybe<User>;
@@ -325,6 +332,11 @@ export type QueryPrivateCloudProjectsPaginatedArgs = {
 export type QueryPrivateCloudProjectsWithFilterSearchArgs = {
   filter?: InputMaybe<FilterPrivateCloudProjectsInput>;
   search?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryPrivateCloudRequestByIdArgs = {
+  requestId: Scalars['ID'];
 };
 
 

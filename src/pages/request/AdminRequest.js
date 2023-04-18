@@ -20,8 +20,8 @@ import { Box } from "@mui/material";
 import ReProvisionButton from "../../components/ReProvisionButton";
 
 const ADMIN_REQUEST = gql`
-  query PrivateCloudActiveRequestById($requestId: ID!) {
-    privateCloudActiveRequestById(requestId: $requestId) {
+  query PrivateCloudRequestById($requestId: ID!) {
+    privateCloudRequestById(requestId: $requestId) {
       id
       createdBy {
         firstName
@@ -162,7 +162,7 @@ export default function AdminRequest() {
   });
 
   const { project, requestedProject, ...request } =
-    data?.privateCloudActiveRequestById || {};
+    data?.privateCloudRequestById || {};
 
   const [
     privateCloudRequestDecision,
