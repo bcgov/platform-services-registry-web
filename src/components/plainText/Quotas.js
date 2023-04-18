@@ -13,7 +13,7 @@ const Quotas = ({ project = {}, requestedProject = {} }) => {
         <QuotaInput
           nameSpace={"test"}
           requestedQuota={requestedProject?.testQuota}
-          currentQuota={project?.productionQuota}
+          currentQuota={project?.testQuota}
         />
         <QuotaInput
           nameSpace={"tools"}
