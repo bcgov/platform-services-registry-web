@@ -6,13 +6,12 @@ import { Link, useLocation } from "react-router-dom";
 import Divider from "@mui/material/Divider";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
 import { Outlet } from "react-router-dom";
 import TabForm from "./forms/ResponsiveTabForm";
 import AdminContext from "../context/admin";
+import CreateBtn from "../components/common/CreateBtn"
 
-export default function TabsToolbar({ routes, createButtonRoute }) {
+export default function TabsToolbar({ routes }) {
   const { pathname } = useLocation();
   const { admin } = useContext(AdminContext);
 
@@ -55,16 +54,7 @@ export default function TabsToolbar({ routes, createButtonRoute }) {
           </Tabs>
         </Box>
         {pathname === routes[1] && admin ? <TabForm /> : null}
-        <Button
-          component={Link}
-          to={createButtonRoute}
-          variant="outlined"
-          style={{ border: "none", marginTop: 8, marginLeft: 15 }}
-          size="large"
-          endIcon={<AddIcon />}
-        >
-          Create
-        </Button>
+        <CreateBtn/>
       </Toolbar>
       <Outlet />
     </>

@@ -138,8 +138,8 @@ const ministriesNames = [
   item1.humanFriendlyName > item2.humanFriendlyName
     ? 1
     : item1.humanFriendlyName < item2.humanFriendlyName
-    ? -1
-    : 0
+      ? -1
+      : 0
 );
 
 // const ministriesNamesUpdated = [
@@ -308,6 +308,18 @@ const clusterNames = [
   }
 ];
 
+const routesUser = [
+  "/private-cloud/user/dashboard/requests",
+  "/private-cloud/user/dashboard/products",
+  "/private-cloud/user/create",
+]
+
+const routesAdmin = [
+  "/private-cloud/admin/dashboard/requests",
+  "/private-cloud/admin/dashboard/products",
+  "/private-cloud/admin/create",
+]
+
 const clusterNamesUserCreate = [
   {
     id: 3,
@@ -398,5 +410,7 @@ export {
   clusterNamesUserCreate,
   defaultCpuOptionsLookup,
   defaultMemoryOptionsLookup,
-  defaultStorageOptionsLookup
+  defaultStorageOptionsLookup,
+  routesUser,
+  routesAdmin,
 };
