@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import * as yup from "yup";
 import {
   CreateUserInputSchema,
@@ -37,6 +37,9 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import ReProvisionButton from "../../components/ReProvisionButton";
+import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
+import UserContext from "../../context/user";
+import Tooltip from '@mui/material/Tooltip';
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -209,7 +212,8 @@ export default function AdminProject({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
-
+  const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
+  const userContext = useContext(UserContext);
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -218,6 +222,13 @@ export default function AdminProject({ requestsRoute }) {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network"
   });
+
+
+  const readOnlyAdminIsAbleToEdit = (
+    userContext.email === data?.privateCloudProjectById.projectOwner.email ||
+    userContext.email === data?.privateCloudProjectById?.primaryTechnicalLead?.email ||
+    userContext.email === data?.privateCloudProjectById?.secondaryTechnicalLead?.email
+  )
 
   const [
     privateCloudProjectEditRequest,
@@ -355,11 +366,11 @@ export default function AdminProject({ requestsRoute }) {
         formData.secondaryTechnicalLead !== ""
           ? formData.secondaryTechnicalLead
           : {
-              email: "",
-              firstName: "",
-              lastName: "",
-              ministry: ""
-            };
+            email: "",
+            firstName: "",
+            lastName: "",
+            ministry: ""
+          };
 
       setInitialValues(formData);
     }
@@ -415,7 +426,7 @@ export default function AdminProject({ requestsRoute }) {
               </Typography>
             </Box>
           </Modal>
-          <ReProvisionButton onClickHandler={reProvisionOnClick} />
+          {!readOnlyAdmin && <ReProvisionButton onClickHandler={reProvisionOnClick} />}
         </NavToolbar>
         {isDisabled ? (
           <ActiveRequestText
@@ -441,14 +452,18 @@ export default function AdminProject({ requestsRoute }) {
             <Quotas formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
-            <Button
-              type="submit"
-              disabled={!formik.dirty}
-              sx={{ mr: 1, width: "170px" }}
-              variant="contained"
-            >
-              Submit
-            </Button>
+            <Tooltip title={`${readOnlyAdminIsAbleToEdit ? '' : 'you can not edit this product'}`} placement="top">
+              <span>
+                <Button
+                  type="submit"
+                  disabled={!(formik.dirty && readOnlyAdminIsAbleToEdit)}
+                  sx={{ mr: 1, width: "170px" }}
+                  variant="contained"
+                >
+                  Submit
+                </Button>
+              </span>
+            </Tooltip>
             <Modal
               open={open}
               onClose={handleClose}
@@ -463,7 +478,7 @@ export default function AdminProject({ requestsRoute }) {
                   Are you sure you want to edit this product?
                   <Button
                     onClick={submitForm}
-                    disabled={!formik.dirty}
+                    disabled={!(formik.dirty && readOnlyAdminIsAbleToEdit)}
                     sx={{ mr: 1, width: "170px", mt: 3 }}
                     variant="contained"
                   >
