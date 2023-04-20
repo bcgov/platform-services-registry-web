@@ -8,9 +8,9 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { useNavigate } from "react-router-dom";
-import SortOrderBtn from "../../components/common/SortOrderBtn"
+import SortOrderBtn from "../../components/common/SortOrderBtn";
 import { useLocation } from "react-router-dom";
-import {routesAdmin} from "./Constants"
+import { routesAdmin } from "./Constants";
 export default function StickyTable({
   columns,
   rows = [],
@@ -19,7 +19,7 @@ export default function StickyTable({
   onNextPage = () => "",
   count,
   rowsPerPage = 10,
-  setRowsPerPage = () => "",
+  setRowsPerPage = () => ""
 }) {
   const [page, setPage] = useState(0);
   const navigate = useNavigate();
@@ -39,6 +39,8 @@ export default function StickyTable({
     navigate(onClickPath + id);
   };
 
+  console.log("ROWS: ", rows.length);
+
   return (
     <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
       <TableContainer sx={{ height: "calc(100vh - 182px)" }}>
@@ -54,13 +56,13 @@ export default function StickyTable({
                     fontSize: 16,
                     color: "#3c4043",
                     paddingLeft: 24,
-                    paddingRight: 24,
+                    paddingRight: 24
                   }}
                 >
                   {column.label}&nbsp;
-                  {column.label === 'Name' 
-                  && pathname === routesAdmin[1] 
-                  && <SortOrderBtn />}
+                  {column.label === "Name" && pathname === routesAdmin[1] && (
+                    <SortOrderBtn />
+                  )}
                 </TableCell>
               ))}
             </TableRow>
@@ -87,7 +89,7 @@ export default function StickyTable({
                             fontSize: 18,
                             color: "#3c4043",
                             paddingLeft: 24,
-                            paddingRight: 24,
+                            paddingRight: 24
                           }}
                           key={column.id}
                           align={column.align}

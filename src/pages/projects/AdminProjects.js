@@ -4,7 +4,7 @@ import {
   columns,
   columnsXs,
   projectsToRows,
-  projectsToRowsXs,
+  projectsToRowsXs
 } from "./helpers";
 import StickyTable from "../../components/common/Table";
 import SearchContext from "../../context/search";
@@ -13,7 +13,6 @@ import SortContext from "../../context/sort";
 import useWindowSize from "../../hooks/useWindowSize";
 import { EmptyAlert, ErrorAlert } from "../../components/common/Alert";
 import EmptyList from "../../components/common/EmptyList";
-
 
 const ALL_PROJECTS = gql`
   query PrivateCloudProjectsPaginated(
@@ -78,27 +77,43 @@ export default function Projects() {
         pageSize: rowsPerPage,
         search: debouncedSearch,
         filter,
-        sortOrder,
-      },
-      pollInterval: 500,
+        sortOrder
+      }
     }
   );
 
   useEffect(() => {
-    startPolling(7000);
+    startPolling(25000);
   }, [startPolling]);
+
+  // Add this useEffect hook to handle rowsPerPage change
+  useEffect(() => {
+    fetchMore({
+      variables: {
+        page: 1,
+        pageSize: rowsPerPage,
+        search: debouncedSearch,
+        filter,
+        sortOrder
+      }
+    });
+    setPage(1);
+  }, [rowsPerPage, debouncedSearch, filter, sortOrder, fetchMore]);
 
   const getNextPage = useCallback(
     (page, pageSize) => {
-      setPage(page + 1)
-      fetchMore({
-        variables: {
-          page: page,
-          pageSize,
-          search: debouncedSearch,
-          filter,
-          sortOrder: sortOrder,
-        },
+      setPage((prevPage) => {
+        const nextPage = prevPage + 1;
+        fetchMore({
+          variables: {
+            page: nextPage,
+            pageSize,
+            search: debouncedSearch,
+            filter,
+            sortOrder
+          }
+        });
+        return nextPage;
       });
     },
     [filter, debouncedSearch, sortOrder]
@@ -110,31 +125,35 @@ export default function Projects() {
     return <ErrorAlert error={error} />;
   }
 
-  return !loading ?
+  return !loading ? (
     <>
       <div className="Loaded-indicator" />
-      {data.privateCloudProjectsPaginated?.projects.length > 0 ? <StickyTable
-        onClickPath={"/private-cloud/admin/product/"}
-        onNextPage={getNextPage}
-        columns={width < 900 ? columnsXs : columns}
-        rows={
-          width < 900
-            ? data?.privateCloudProjectsPaginated?.projects
-              .map(projectsToRowsXs)
-              .reverse()
-            : data?.privateCloudProjectsPaginated?.projects.map(projectsToRows)
-        }
-        count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
-        title="Products"
-        loading={loading}
-        rowsPerPage={rowsPerPage}
-        setRowsPerPage={setRowsPerPage}
-      /> :
-        <EmptyList
-          title='There are no products to be displayed'
-          subtitle='You currently have no products hosted on the Private Cloud OpenShift platform.'
+      {data.privateCloudProjectsPaginated?.projects.length > 0 ? (
+        <StickyTable
+          onClickPath={"/private-cloud/admin/product/"}
+          onNextPage={getNextPage}
+          columns={width < 900 ? columnsXs : columns}
+          rows={
+            width < 900
+              ? data?.privateCloudProjectsPaginated?.projects
+                  .map(projectsToRowsXs)
+                  .reverse()
+              : data?.privateCloudProjectsPaginated?.projects.map(
+                  projectsToRows
+                )
+          }
+          count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
+          title="Products"
+          loading={loading}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
         />
-      }
+      ) : (
+        <EmptyList
+          title="There are no products to be displayed"
+          subtitle="You currently have no products hosted on the Private Cloud OpenShift platform."
+        />
+      )}
     </>
-    : null;
+  ) : null;
 }

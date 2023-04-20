@@ -261,11 +261,11 @@ const ministriesNames = [
 // ];
 
 const clusters = [
-  "CLAB",
+  // "CLAB",
   "KLAB",
   "SILVER",
   "GOLD",
-  "GOLDDR",
+  // "GOLDDR",
   "KLAB2",
   "EMERALD"
 ];

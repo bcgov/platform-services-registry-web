@@ -41,7 +41,7 @@ export default function Projects() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
-    startPolling(8000);
+    startPolling(15000);
   }, [startPolling]);
 
   if (error && error.message === "Not a user") {
