@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/plainText/MetaDataInput";
 import ClusterInput from "../../components/plainText/ClusterInput";
@@ -18,6 +18,7 @@ import Namespaces from "../../components/Namespaces";
 import TextField from "@mui/material/TextField";
 import { Box } from "@mui/material";
 import ReProvisionButton from "../../components/ReProvisionButton";
+import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
 
 const ADMIN_REQUEST = gql`
   query PrivateCloudRequestById($requestId: ID!) {
@@ -156,6 +157,7 @@ export default function AdminRequest() {
   const navigate = useNavigate();
   const toastId = useRef(null);
   const [humanCommentInput, setHumanCommentInput] = useState(null);
+  const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id },
@@ -289,7 +291,7 @@ export default function AdminRequest() {
           multiline
           rows={4}
         />
-        <Box sx={{ mt: 3, mb: 3 }}>
+        {!readOnlyAdmin && <Box sx={{ mt: 3, mb: 3 }}>
           <Button
             disabled={isDisabled}
             sx={{ mr: 1, minWidth: "120px" }}
@@ -306,7 +308,7 @@ export default function AdminRequest() {
           >
             Reject
           </Button>
-        </Box>
+        </Box>}
       </Container>
     </div>
   );

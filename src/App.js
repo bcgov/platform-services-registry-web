@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext, useCallback } from "react";
+import React, { useEffect, useState, createContext } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "./App.css";
 import { AppRouter } from "./components/AppRouter";
@@ -7,6 +7,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import AdminProvider from "./providers/admin";
+import ReadOnlyAdminProvider from "./providers/readOnlyAdmin";
 import { useKeycloak } from "@react-keycloak/web";
 import { useQuery, gql } from "@apollo/client";
 import UserProvider from "./providers/user";
@@ -31,9 +32,9 @@ const theme = createTheme({
             "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
           },
           ".css-1sl9rdz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
-            {
-              "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
-            },
+          {
+            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
+          },
         },
       },
     },
@@ -48,9 +49,9 @@ const theme = createTheme({
           },
 
           ".css-1sl9rdz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
-            {
-              "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
-            },
+          {
+            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
+          },
         },
       },
     },
@@ -100,10 +101,12 @@ function App() {
         <UserProvider user={{ ...data?.me }}>
           <SearchProvider>
             <FilterProvider>
-               <SortProvider>
-              <AdminProvider>
-                <AppRouter />
-              </AdminProvider>
+              <SortProvider>
+                <ReadOnlyAdminProvider>
+                  <AdminProvider>
+                    <AppRouter />
+                  </AdminProvider>
+                </ReadOnlyAdminProvider>
               </SortProvider>
             </FilterProvider>
           </SearchProvider>
