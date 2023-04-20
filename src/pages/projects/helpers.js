@@ -37,7 +37,11 @@ const projectsToRows = ({
   licencePlate,
 }) => ({
   id,
-  name: <span style={{ fontSize: 18, fontWeight: "450" }}>{name}</span>,
+  name: (
+    <span style={{ fontSize: 18, fontWeight: "450" }}>
+      {name.replace("(dev)", "").trim()}
+    </span>
+  ),
   description: (
     <span style={{ fontSize: 18 }}> {truncate(description, 130)}</span>
   ),
@@ -70,7 +74,11 @@ const projectsToRows = ({
         // key={projectOwner.githubId + licencePlate + "po"}
         style={{ width: "fit-content" }}
         avatar={
-          <Avatar email={projectOwner.email} firstName={projectOwner.firstName} lastName={projectOwner.lastName} />
+          <Avatar
+            email={projectOwner.email}
+            firstName={projectOwner.firstName}
+            lastName={projectOwner.lastName}
+          />
         }
         label={`${projectOwner.firstName} ${projectOwner.lastName}`}
         variant="outlined"
@@ -89,7 +97,13 @@ const projectsToRows = ({
             <Chip
               key={firstName + i + "project"}
               style={{ width: "fit-content" }}
-              avatar={<Avatar firstName={firstName} email={email} lastName={lastName} />}
+              avatar={
+                <Avatar
+                  firstName={firstName}
+                  email={email}
+                  lastName={lastName}
+                />
+              }
               label={`${firstName} ${lastName}`}
               variant="outlined"
             />

@@ -76,8 +76,11 @@ export default function QuotaInput({
         <div>
           <Box sx={{ display: "flex", flexDirection: "column", mt: 4 }}>
             <Box sx={{ mb: 3 }}>
+              <TitleTypography>
+                {nameSpace.capitalizeFirstLetter()} Quota
+              </TitleTypography>
               <Typography
-                sx={{ fontSize: 18, fontWeight: "500" }}
+                sx={{ fontSize: 18, fontWeight: "500", mt: 2 }}
                 color={isCupQuotaChanged ? "text.primary" : "text.disabled"}
               >
                 Current Cpu
