@@ -55,7 +55,7 @@ const MinistryInput = ({ formik, isDisabled }) => {
       <Typography sx={{ width: 700, mt: 5 }} variant="subtitle2" color="text.secondary">
         * All product teams from the Ministries of Attorney General, Public Safety
         and Solicitor General and Emergency Management BC and BC Housing must
-        engage with <a href="mailto:JAGMISO@gov.bc.ca">AG Security</a> prior to
+        engage with <a target="_blank" rel="noopener noreferrer" href="mailto:JAGMISO@gov.bc.ca">AG Security</a> prior to
         submitting a request for a new product.{" "}
       </Typography>
     </Box>

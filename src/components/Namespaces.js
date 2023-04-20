@@ -15,7 +15,7 @@ function Namespaces({ cluster, licencePlate }) {
       {namespaces.map((namespace) => (
         <Typography sx={{ mb: 1 }} color="text.primary">
           <b>{namespace}:</b>{" "}
-          <a
+          <a target="_blank" rel="noopener noreferrer"
             href={`https://console.apps.${cluster?.toLowerCase()}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-${namespace}`}
           >
             {`${licencePlate}-${namespace}`}
