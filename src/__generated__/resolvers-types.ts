@@ -326,7 +326,7 @@ export type QueryPrivateCloudProjectsPaginatedArgs = {
   page: Scalars['Int'];
   pageSize: Scalars['Int'];
   search?: InputMaybe<Scalars['String']>;
-  sortOrder?: Scalars['Int'];
+  sortOrder?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -424,9 +424,9 @@ export type User = {
   archived: Scalars['Boolean'];
   created: Scalars['DateTime'];
   email: Scalars['EmailAddress'];
-  firstName: Scalars['String'];
+  firstName?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
-  lastName: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
   lastSeen?: Maybe<Scalars['DateTime']>;
   ministry?: Maybe<Scalars['String']>;
   privateCloudProjectOwner: Array<Maybe<PrivateCloudProject>>;
