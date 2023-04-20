@@ -9,6 +9,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import RequiredField from "../common/RequiredField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 
 const MinistryInput = ({ formik, isDisabled }) => {
   return (
@@ -55,8 +56,8 @@ const MinistryInput = ({ formik, isDisabled }) => {
       <Typography sx={{ width: 700, mt: 5 }} variant="subtitle2" color="text.secondary">
         * All product teams from the Ministries of Attorney General, Public Safety
         and Solicitor General and Emergency Management BC and BC Housing must
-        engage with <a target="_blank" rel="noopener noreferrer" href="mailto:JAGMISO@gov.bc.ca">AG Security</a> prior to
-        submitting a request for a new product.{" "}
+        engage with <a target="_blank" rel="noopener noreferrer" href="mailto: JAGMISO@gov.bc.ca">AG Security</a> to
+prior to submitting a request for a new product.
       </Typography>
     </Box>
   );

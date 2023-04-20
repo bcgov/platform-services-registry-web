@@ -10,6 +10,7 @@ import TitleTypography from "../common/TitleTypography";
 import TextField from "@mui/material/TextField";
 import Checkbox from "@mui/material/Checkbox";
 import FormHelperText from "@mui/material/FormHelperText";
+import Link from "@mui/material/Link";
 
 
 const commonComponents = [
@@ -93,6 +94,20 @@ export default function CommonComponents({ formik, isDisabled }) {
           Please indicate what services you expect to utilize as part of your
           product?
         </Typography>
+        <Link
+          sx={{
+            mb: 2,
+            display:'inline-block',
+            "&:hover": {
+              cursor: "pointer",
+            },
+          }}
+          target="_blank" rel="noopener noreferrer"
+          underline="hover"
+          href='https://digital.gov.bc.ca/common-components/'
+        >
+          Click to read more about Common Components avaliable in BC Goverments
+        </Link>
       </div>
       <FormControl>
         {commonComponents.map(({ name, description }) => (
