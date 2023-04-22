@@ -8,11 +8,11 @@ export const msalConfig = {
     clientId: "5afdfc62-637b-41cf-b186-b2de816faaf9",
     authority:
       "https://login.microsoftonline.com/6fdb5200-3d0d-4a8a-b036-d3685e359adc", // This is a URL (e.g. https://login.microsoftonline.com/{your tenant ID})
-    redirectUri: "/"
+    redirectUri: "/",
   },
   system: {
-    iframeHashTimeout: 10000
-  }
+    iframeHashTimeout: 10000,
+  },
   // cache: {
   //   cacheLocation: "localStorage",
   //   storeAuthStateInCookie: true,
@@ -25,5 +25,5 @@ export const msalConfig = {
 
 // Add scopes here for ID token to be used at Microsoft identity platform endpoints.
 export const loginRequest = {
-  scopes: ["User.ReadBasic.All"]
+  scopes: ["User.ReadBasic.All"],
 };

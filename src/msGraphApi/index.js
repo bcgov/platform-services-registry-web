@@ -1,6 +1,6 @@
 import {
   PublicClientApplication,
-  InteractionRequiredAuthError
+  InteractionRequiredAuthError,
 } from "@azure/msal-browser";
 import { msalConfig } from "./config";
 
@@ -14,7 +14,7 @@ async function getAccessToken() {
 
     if (!account) {
       const request = {
-        scopes: ["User.ReadBasic.All"]
+        scopes: ["User.ReadBasic.All"],
       };
 
       const response = await msalInstance.loginPopup(request);
@@ -23,7 +23,7 @@ async function getAccessToken() {
 
     const request = {
       scopes: ["User.ReadBasic.All"],
-      account: account
+      account: account,
     };
 
     const response = await msalInstance.acquireTokenSilent(request);
@@ -33,7 +33,7 @@ async function getAccessToken() {
   } catch (error) {
     try {
       const request = {
-        scopes: ["User.ReadBasic.All"]
+        scopes: ["User.ReadBasic.All"],
       };
 
       const response = await msalInstance.loginPopup(request);
@@ -41,7 +41,7 @@ async function getAccessToken() {
 
       const request2 = {
         scopes: ["User.ReadBasic.All"],
-        account: account
+        account: account,
       };
 
       const response2 = await msalInstance.acquireTokenSilent(request2);
@@ -169,7 +169,7 @@ export async function callMsGraph(endpoint, accessToken) {
 
   const options = {
     method: "GET",
-    headers: headers
+    headers: headers,
   };
 
   return fetch(endpoint, options);
