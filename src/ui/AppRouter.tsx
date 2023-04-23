@@ -12,21 +12,10 @@ import RequireAuth from "./utilities/RequireAuth";
 // import UserRequest from "../pages/request/UserRequest";
 // import Create from "../pages/Create";
 // import Project from "../pages/project/Project";
-import Layout from "./Layout";
+import NavLayout from "./Layouts/NavLayout";
+import CloudTabs from "./Layouts/CloudTabsLayout";
 // import LoadingSpinner from "./common/LoadingSpinner";
 // import TabsToolbar from "./TabsToolbar"
-
-const routesUser = [
-  "/private-cloud/user/dashboard/requests",
-  "/private-cloud/user/dashboard/products",
-  "/private-cloud/user/create",
-];
-
-const routesAdmin = [
-  "/private-cloud/admin/dashboard/requests",
-  "/private-cloud/admin/dashboard/products",
-  "/private-cloud/admin/create",
-];
 
 interface PlaceholderProps {
   name: string;
@@ -51,6 +40,12 @@ const Create = () => <Placeholder name="Create" />;
 const Project = () => <Placeholder name="Project" />;
 const LoadingSpinner = () => <Placeholder name="Loading Spinner" />;
 const TabsToolbar = () => <Placeholder name="Tabs Toolbar" />;
+const PrivateCloudProducts = () => (
+  <Placeholder name="Private Cloud Products" />
+);
+const PrivateCloudRequeststs = () => (
+  <Placeholder name="Private Cloud Requests" />
+);
 
 const NoMatch = () => {
   return (
@@ -73,9 +68,9 @@ const AdminRoutes = () => (
   </RequireAuth>
 );
 
-const UserRoutes = () => (
+const PrivateCloudRoutes = () => (
   <RequireAuth roles={[]}>
-    <Route path="products" element={<UserProjects />} />
+    <Route path="products" element={<PrivateCloudProducts />} />
     <Route path="requests" element={<UserRequests />} />
     <Route path="product/:id" element={<Project />} />
     <Route path="request/:id" element={<UserRequest />} />
@@ -96,22 +91,9 @@ export const AppRouter = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Layout />}>
-        <Route
-          index
-          element={
-            isAdmin ? (
-              <Navigate to={routesAdmin[1]} replace />
-            ) : (
-              <Navigate to={routesUser[1]} replace />
-            )
-          }
-        />
+      <Route path="/" element={<NavLayout />}>
+        <Route path="private-cloud" element={null}></Route>
         <Route path="*" element={<NoMatch />} />
-        <Route path="private-cloud">
-          <Route path="admin" element={<AdminRoutes />} />
-          <Route path="user" element={<UserRoutes />} />
-        </Route>
       </Route>
     </Routes>
   );
