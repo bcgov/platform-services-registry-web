@@ -33,7 +33,20 @@ export default function Tabs() {
                 type="button"
                 className="text-md shadow-smx relative inline-flex items-center gap-x-1.5 rounded-lg bg-bcorange px-3 py-2 font-bcsans font-thin text-bcblue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                <PlusIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-6 w-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
                 REQUEST A NEW PROJECT SET
               </button>
             </div>
