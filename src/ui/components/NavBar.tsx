@@ -5,7 +5,7 @@ import classNames from "../utilities/classnames";
 
 export default function NavBar() {
   return (
-    <nav className="border-b-2 border-bcorange bg-bcblue shadow">
+    <nav className="border-b-3 border-bcorange bg-bcblue shadow">
       <div className="test mx-auto px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 justify-between px-12">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">

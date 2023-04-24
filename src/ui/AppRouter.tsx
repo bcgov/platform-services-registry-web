@@ -13,7 +13,7 @@ import RequireAuth from "./utilities/RequireAuth";
 // import Create from "../pages/Create";
 // import Project from "../pages/project/Project";
 import NavLayout from "./Layouts/NavLayout";
-import CloudTabs from "./Layouts/CloudTabsLayout";
+import CloudTabsLayout from "./Layouts/CloudTabsLayout";
 // import LoadingSpinner from "./common/LoadingSpinner";
 // import TabsToolbar from "./TabsToolbar"
 
@@ -70,8 +70,6 @@ const AdminRoutes = () => (
 
 const PrivateCloudRoutes = () => (
   <RequireAuth roles={[]}>
-    <Route path="products" element={<PrivateCloudProducts />} />
-    <Route path="requests" element={<UserRequests />} />
     <Route path="product/:id" element={<Project />} />
     <Route path="request/:id" element={<UserRequest />} />
     <Route path="create" element={<Create />} />
@@ -92,7 +90,10 @@ export const AppRouter = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<NavLayout />}>
-        <Route path="private-cloud" element={null}></Route>
+        <Route path="private-cloud" element={<CloudTabsLayout />}>
+          <Route path="products" element={<PrivateCloudProducts />} />
+          <Route path="requests" element={<UserRequests />} />
+        </Route>
         <Route path="*" element={<NoMatch />} />
       </Route>
     </Routes>
