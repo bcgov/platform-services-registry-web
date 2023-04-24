@@ -62,6 +62,7 @@ const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
+  ministryAG: yup.boolean().oneOf([true], 'Message'),
   cluster: ClusterSchema.required(),
   projectOwner: CreateUserInputSchema(),
   primaryTechnicalLead: CreateUserInputSchema(),
@@ -94,6 +95,7 @@ export default function Create({ requestsRoute }) {
   const toastId = useRef(null);
 
   const [open, setOpen] = useState(false);
+  const [AGministries, setAGministries] = useState(false);
 
   const [privateCloudProjectRequest, { data, loading, error }] = useMutation(
     CREATE_USER_PROJECT,
@@ -111,8 +113,8 @@ export default function Create({ requestsRoute }) {
     validationSchema,
     onSubmit: async (values) => {
       const result = await formik.validateForm();
-
-      if (Object.keys(result).length === 0 && formik.dirty) {
+      
+      if (Object.keys(result).length === 0 && formik.dirty && !AGministries) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
       }
@@ -162,7 +164,7 @@ export default function Create({ requestsRoute }) {
           <MetaDataInput formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div style={{ display: "flex" }}>
-            <MinistryInput formik={formik} isDisabled={false} />
+            <MinistryInput formik={formik} setAGministries={setAGministries} />
             <ClusterInput formik={formik} isDisabled={false} />
           </div>
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
@@ -186,6 +188,7 @@ export default function Create({ requestsRoute }) {
               type="submit"
               sx={{ mr: 1, width: "170px" }}
               variant="contained"
+              onClick={() => console.log(formik.values)}
             >
               Create
             </Button>

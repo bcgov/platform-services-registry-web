@@ -1,3 +1,9 @@
+const checkBoxMinistries = [
+  "AG",
+  "PSSG",
+  "EMBC",
+]
+
 const ministriesNames = [
   {
     id: 1,
@@ -400,6 +406,45 @@ const defaultStorageOptions = [
   "STORAGE_512"
 ];
 
+const commonComponents = [
+  { name: "addressAndGeolocation", description: "Address and geolocation" },
+  {
+    name: "workflowManagement",
+    description: "Workflow Management (similar to Camunda)",
+  },
+  {
+    name: "formDesignAndSubmission",
+    description:
+      "Form Design and Submission (similar to CHEFS, Gravity, Orbeon)",
+  },
+  {
+    name: "identityManagement",
+    description: "Identity management (user authentication and authorization)",
+  },
+  {
+    name: "paymentServices",
+    description:
+      "Payment services (i.e. collection, processing, reconciliation, ledger management)",
+  },
+  {
+    name: "documentManagement",
+    description:
+      "Document Management (file storage and transfer, PDF and other document generation)",
+  },
+  {
+    name: "endUserNotificationAndSubscription",
+    description:
+      "End user notification and subscription service (email, text messages, automated phone calls, in-app pop up messages)",
+  },
+  { name: "publishing", description: "Publishing (web content management)" },
+  {
+    name: "businessIntelligence",
+    description:
+      "Business Intelligence Dashboard and Metrics reporting (i.e. diagrams and pie charts, report generation)",
+  },
+];
+
+
 export {
   ministriesNames,
   clusters,
@@ -413,4 +458,6 @@ export {
   defaultStorageOptionsLookup,
   routesUser,
   routesAdmin,
+  checkBoxMinistries,
+  commonComponents,
 };
