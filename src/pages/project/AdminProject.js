@@ -452,16 +452,23 @@ export default function AdminProject({ requestsRoute }) {
             <Quotas formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
-            <Tooltip title={`${readOnlyAdminIsAbleToEdit ? '' : 'you can not edit this product'}`} placement="top">
+            <Tooltip
+              title={`${
+                readOnlyAdminIsAbleToEdit ? "" : "you can not edit this product"
+              }`}
+              placement="top"
+            >
               <span>
-                <Button
-                  type="submit"
-                  disabled={!(formik.dirty && readOnlyAdminIsAbleToEdit)}
-                  sx={{ mr: 1, width: "170px" }}
-                  variant="contained"
-                >
-                  Submit
-                </Button>
+                {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
+                  <Button
+                    type="submit"
+                    disabled={!formik.dirty}
+                    sx={{ mr: 1, width: "170px" }}
+                    variant="contained"
+                  >
+                    Submit
+                  </Button>
+                ) : null}
               </span>
             </Tooltip>
             <Modal
@@ -478,7 +485,7 @@ export default function AdminProject({ requestsRoute }) {
                   Are you sure you want to edit this product?
                   <Button
                     onClick={submitForm}
-                    disabled={!(formik.dirty && readOnlyAdminIsAbleToEdit)}
+                    disabled={!formik.dirty}
                     sx={{ mr: 1, width: "170px", mt: 3 }}
                     variant="contained"
                   >
