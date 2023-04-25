@@ -40,7 +40,6 @@ import ReProvisionButton from "../../components/ReProvisionButton";
 import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
 import UserContext from "../../context/user";
 import Tooltip from '@mui/material/Tooltip';
-import Link from "@mui/material/Link";
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -381,6 +380,7 @@ export default function AdminProject({ requestsRoute }) {
   const isDisabled = !!data?.privateCloudProjectById?.activeEditRequest;
 
   const handleClose = () => setOpen(false);
+  console.log(readOnlyAdminIsAbleToEdit, formik.dirty)
 
   return (
     <div>
@@ -439,8 +439,7 @@ export default function AdminProject({ requestsRoute }) {
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>
             <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <ClusterInput formik={formik} isDisabled={true} />
+              <MinistryInput formik={formik} isDisabled={isDisabled} />              <ClusterInput formik={formik} isDisabled={true} />
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
@@ -453,11 +452,11 @@ export default function AdminProject({ requestsRoute }) {
             <Quotas formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
-            <Tooltip title={`${readOnlyAdminIsAbleToEdit ? '' : 'you can not edit this product'}`} placement="top">
+            <Tooltip title={`${readOnlyAdminIsAbleToEdit||!readOnlyAdmin ?  '':'you can not edit this product'}`} placement="top">
               <span>
                 <Button
                   type="submit"
-                  disabled={!(formik.dirty && readOnlyAdminIsAbleToEdit)}
+                  disabled={readOnlyAdminIsAbleToEdit ? !formik.dirty: !readOnlyAdminIsAbleToEdit }
                   sx={{ mr: 1, width: "170px" }}
                   variant="contained"
                 >
@@ -479,7 +478,7 @@ export default function AdminProject({ requestsRoute }) {
                   Are you sure you want to edit this product?
                   <Button
                     onClick={submitForm}
-                    disabled={!(formik.dirty && readOnlyAdminIsAbleToEdit)}
+                    disabled={readOnlyAdminIsAbleToEdit ? !formik.dirty: !readOnlyAdminIsAbleToEdit }
                     sx={{ mr: 1, width: "170px", mt: 3 }}
                     variant="contained"
                   >

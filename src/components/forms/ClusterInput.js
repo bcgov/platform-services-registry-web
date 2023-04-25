@@ -20,7 +20,7 @@ export default function ClusterInput({ formik, isDisabled }) {
   return (
     <Box
       sx={{
-        mb: 5,
+        mb: 1,
         mt: 5,
         width: 250,
       }}

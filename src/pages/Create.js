@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import * as yup from "yup";
 import {
   CreateUserInputSchema,
@@ -19,6 +19,7 @@ import MetaDataInput from "../components/forms/MetaDataInput";
 import ClusterInput from "../components/forms/ClusterInput";
 import MinistryInput from "../components/forms/MinistryInput";
 import CommonComponents from "../components/forms/CommonComponents";
+import AGMinistry from "../components/forms/AGMinistry";
 import { USER_REQUESTS } from "./requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "./requests/AdminRequests";
 import { toast } from "react-toastify";
@@ -28,6 +29,9 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { checkBoxMinistries } from "../components/common/Constants";
 
 const CREATE_USER_PROJECT = gql`
   mutation PrivateCloudProjectRequest(
@@ -93,6 +97,7 @@ const style = {
 export default function Create({ requestsRoute }) {
   const navigate = useNavigate();
   const toastId = useRef(null);
+  const [AGministry, setAGministry] = useState(false)
 
   const [open, setOpen] = useState(false);
   const [AGministries, setAGministries] = useState(false);
@@ -113,7 +118,7 @@ export default function Create({ requestsRoute }) {
     validationSchema,
     onSubmit: async (values) => {
       const result = await formik.validateForm();
-      
+
       if (Object.keys(result).length === 0 && formik.dirty && !AGministries) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
@@ -121,7 +126,19 @@ export default function Create({ requestsRoute }) {
     },
   });
 
-  const submitForm = () => {
+  
+  useEffect(() => {
+    setAGministries(checkBoxMinistries.indexOf(formik.values.ministry) !== -1 ? !AGministry : false)
+
+  })
+
+  useEffect(() => {
+    setAGministries(checkBoxMinistries.indexOf(formik.values.ministry) !== -1 ? !AGministry : false)
+
+  }, [AGministry, formik.values.ministry, setAGministries])
+
+
+    const submitForm = () => {
     const { values } = formik;
 
     toastId.current = toast("Your create request has been submitted", {
@@ -163,9 +180,15 @@ export default function Create({ requestsRoute }) {
         <Container>
           <MetaDataInput formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <div style={{ display: "flex" }}>
-            <MinistryInput formik={formik} setAGministries={setAGministries} />
-            <ClusterInput formik={formik} isDisabled={false} />
+          <div>
+            <div style={{ display: "flex" }}>
+              <MinistryInput formik={formik} isDisabled={false} />
+              <ClusterInput formik={formik} isDisabled={false} />
+            </div>      
+             <AGMinistry
+             formik={formik}
+             setAGministries={setAGministries}
+             />
           </div>
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Users formik={formik} isDisabled={false} />
