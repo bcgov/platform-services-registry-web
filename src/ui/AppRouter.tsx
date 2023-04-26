@@ -12,8 +12,8 @@ import RequireAuth from "./utilities/RequireAuth";
 // import UserRequest from "../pages/request/UserRequest";
 // import Create from "../pages/Create";
 // import Project from "../pages/project/Project";
-import NavLayout from "./Layouts/NavLayout";
-import CloudTabsLayout from "./Layouts/CloudTabsLayout";
+import NavLayout from "./layouts/NavLayout";
+import CloudTabsLayout from "./layouts/CloudTabsLayout";
 // import LoadingSpinner from "./common/LoadingSpinner";
 // import TabsToolbar from "./TabsToolbar"
 

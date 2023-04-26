@@ -5,9 +5,9 @@ import classNames from "../utilities/classnames";
 
 export default function NavBar() {
   return (
-    <nav className="border-b-3 border-bcorange bg-bcblue shadow">
-      <div className="test mx-auto px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 justify-between px-12">
+    <nav className="border-b-2 border-bcorange bg-bcblue shadow">
+      <div className="test mx-auto border-y-3 border-bcblue px-2 sm:px-6 lg:px-8">
+        <div className="relative flex h-14 justify-between px-12">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             {/* Mobile menu button */}
           </div>
@@ -19,15 +19,15 @@ export default function NavBar() {
                 alt="BC Gov"
               />
               <img
-                className="hidden h-10 w-auto lg:block"
+                className="hidden h-9 w-auto lg:block"
                 src={Logo}
                 alt="BC Gov"
               />
-              <span className="ml-7 hidden items-center text-2xl leading-none text-white md:inline">
+              <span className="ml-5 hidden items-center text-xl leading-none text-white md:inline">
                 <span className="mr-2 font-roboto font-thin">
                   BC Plaftorm Services
                 </span>
-                <span className="font- font-roboto font-normal">
+                <span className="font-roboto font-normal">
                   Product Registry
                 </span>
               </span>
@@ -40,7 +40,7 @@ export default function NavBar() {
                 <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                   <span className="sr-only">Open user menu</span>
                   <img
-                    className="h-10 w-10 rounded-full"
+                    className="h-9 w-9 rounded-full"
                     src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                     alt=""
                   />
