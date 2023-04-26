@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import * as yup from "yup";
 import {
   CreateUserInputSchema,
@@ -29,9 +29,6 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { checkBoxMinistries } from "../components/common/Constants";
 
 const CREATE_USER_PROJECT = gql`
   mutation PrivateCloudProjectRequest(
@@ -97,8 +94,6 @@ const style = {
 export default function Create({ requestsRoute }) {
   const navigate = useNavigate();
   const toastId = useRef(null);
-  const [AGministry, setAGministry] = useState(false)
-
   const [open, setOpen] = useState(false);
   const [AGministries, setAGministries] = useState(false);
 
@@ -125,18 +120,6 @@ export default function Create({ requestsRoute }) {
       }
     },
   });
-
-  
-  useEffect(() => {
-    setAGministries(checkBoxMinistries.indexOf(formik.values.ministry) !== -1 ? !AGministry : false)
-
-  })
-
-  useEffect(() => {
-    setAGministries(checkBoxMinistries.indexOf(formik.values.ministry) !== -1 ? !AGministry : false)
-
-  }, [AGministry, formik.values.ministry, setAGministries])
-
 
     const submitForm = () => {
     const { values } = formik;
