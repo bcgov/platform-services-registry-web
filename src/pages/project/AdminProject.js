@@ -439,7 +439,8 @@ export default function AdminProject({ requestsRoute }) {
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>
             <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={isDisabled} />              <ClusterInput formik={formik} isDisabled={true} />
+              <MinistryInput formik={formik} isDisabled={isDisabled} />             
+              <ClusterInput formik={formik} isDisabled={true} />
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
@@ -452,18 +453,16 @@ export default function AdminProject({ requestsRoute }) {
             <Quotas formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
-            <Tooltip title={`${readOnlyAdminIsAbleToEdit||!readOnlyAdmin ?  '':'you can not edit this product'}`} placement="top">
-              <span>
-                <Button
-                  type="submit"
-                  disabled={readOnlyAdminIsAbleToEdit ? !formik.dirty: !readOnlyAdminIsAbleToEdit }
-                  sx={{ mr: 1, width: "170px" }}
-                  variant="contained"
-                >
-                  Submit
-                </Button>
-              </span>
-            </Tooltip>
+            {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
+              <Button
+                type="submit"
+                disabled={!formik.dirty}
+                sx={{ mr: 1, width: "170px" }}
+                variant="contained"
+              >
+                Submit
+              </Button>
+            ) : null}
             <Modal
               open={open}
               onClose={handleClose}
@@ -478,7 +477,7 @@ export default function AdminProject({ requestsRoute }) {
                   Are you sure you want to edit this product?
                   <Button
                     onClick={submitForm}
-                    disabled={readOnlyAdminIsAbleToEdit ? !formik.dirty: !readOnlyAdminIsAbleToEdit }
+                    disabled={!formik.dirty}
                     sx={{ mr: 1, width: "170px", mt: 3 }}
                     variant="contained"
                   >
