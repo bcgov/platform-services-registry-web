@@ -261,7 +261,7 @@ const ministriesNames = [
 // ];
 
 const clusters = [
-  // "CLAB",
+  "CLAB",
   "KLAB",
   "SILVER",
   "GOLD",
