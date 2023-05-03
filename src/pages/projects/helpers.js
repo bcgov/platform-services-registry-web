@@ -58,6 +58,7 @@ const projectsToRows = ({
       onClick={(e) =>
         stopPropagationRow(
           e,
+          undefined,
           `https://console.apps.${cluster}.devops.gov.bc.ca/topology/ns/${licencePlate}-prod`
         )
       }
@@ -68,7 +69,7 @@ const projectsToRows = ({
   projectOwner: (
     <Link
       underline="hover"
-      onClick={(e) => stopPropagationRow(e, "mailto:" + projectOwner.email)}
+      onClick={(e) => stopPropagationRow(e, "mailto:" + projectOwner.email, undefined)}
     >
       <Chip
         // key={projectOwner.githubId + licencePlate + "po"}
@@ -92,7 +93,7 @@ const projectsToRows = ({
         .map(({ firstName, lastName, email }, i) => (
           <Link
             underline="hover"
-            onClick={(e) => stopPropagationRow(e, "mailto:" + email)}
+            onClick={(e) => stopPropagationRow(e, "mailto:" + email, undefined)}
           >
             <Chip
               key={firstName + i + "project"}
@@ -143,7 +144,8 @@ const projectsToRowsXs = ({
       underline="hover"
       onClick={(e) =>
         stopPropagationRow(
-          e,
+          e, 
+          undefined,          
           `https://console.apps.${cluster}.devops.gov.bc.ca/topology/ns/${licencePlate}-prod`
         )
       }

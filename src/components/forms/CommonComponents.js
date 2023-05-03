@@ -4,60 +4,16 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import { Typography } from "@mui/material";
-import styled from "styled-components";
+import {commonComponents} from "../common/Constants" ;
 import Box from "@mui/material/Box";
 import TitleTypography from "../common/TitleTypography";
 import TextField from "@mui/material/TextField";
 import Checkbox from "@mui/material/Checkbox";
 import FormHelperText from "@mui/material/FormHelperText";
+import Link from "@mui/material/Link";
 
 
-const commonComponents = [
-  { name: "addressAndGeolocation", description: "Address and geolocation" },
-  {
-    name: "workflowManagement",
-    description: "Workflow Management (similar to Camunda)",
-  },
-  {
-    name: "formDesignAndSubmission",
-    description:
-      "Form Design and Submission (similar to CHEFS, Gravity, Orbeon)",
-  },
-  {
-    name: "identityManagement",
-    description: "Identity management (user authentication and authorization)",
-  },
-  {
-    name: "paymentServices",
-    description:
-      "Payment services (i.e. collection, processing, reconciliation, ledger management)",
-  },
-  {
-    name: "documentManagement",
-    description:
-      "Document Management (file storage and transfer, PDF and other document generation)",
-  },
-  {
-    name: "endUserNotificationAndSubscription",
-    description:
-      "End user notification and subscription service (email, text messages, automated phone calls, in-app pop up messages)",
-  },
-  { name: "publishing", description: "Publishing (web content management)" },
-  {
-    name: "businessIntelligence",
-    description:
-      "Business Intelligence Dashboard and Metrics reporting (i.e. diagrams and pie charts, report generation)",
-  },
-];
 
-
-const StyledCheckboxContainer = styled.div`
-  min-width: 400px;
-  display: inline-block;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
 
 
 export default function CommonComponents({ formik, isDisabled }) {
@@ -93,6 +49,20 @@ export default function CommonComponents({ formik, isDisabled }) {
           Please indicate what services you expect to utilize as part of your
           product?
         </Typography>
+        <Link
+          sx={{
+            mb: 2,
+            display:'inline-block',
+            "&:hover": {
+              cursor: "pointer",
+            },
+          }}
+          target="_blank" rel="noopener noreferrer"
+          underline="hover"
+          href='https://digital.gov.bc.ca/common-components/'
+        >
+          Click to read more about Common Components avaliable in BC Goverments
+        </Link>
       </div>
       <FormControl>
         {commonComponents.map(({ name, description }) => (

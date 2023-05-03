@@ -44,26 +44,26 @@ export const Footer = () => {
         <StyledFooter>
           <StyledUl>
       <StyledLi>
-        <StyledLink href=".">Home</StyledLink>
+        <StyledLink rel="noopener noreferrer" href=".">Home</StyledLink>
       </StyledLi>
       <StyledLi>
-        <StyledLink href="https://www2.gov.bc.ca/gov/content/home/disclaimer">
+        <StyledLink  target="_blank" rel="noopener noreferrer" href="https://www2.gov.bc.ca/gov/content/home/disclaimer">
           Disclaimer
         </StyledLink>
       </StyledLi>
       <StyledLi>
-        <StyledLink href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</StyledLink>
+        <StyledLink target="_blank"  rel="noopener noreferrer"  href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</StyledLink>
       </StyledLi>
       <StyledLi>
-        <StyledLink href="https://www2.gov.bc.ca/gov/content/home/accessibility">
+        <StyledLink target="_blank"  rel="noopener noreferrer"  href="https://www2.gov.bc.ca/gov/content/home/accessibility">
           Accessibility
         </StyledLink>
       </StyledLi>
       <StyledLi>
-        <StyledLink href="https://www2.gov.bc.ca/gov/content/home/copyright">Copyright</StyledLink>
+        <StyledLink target="_blank"  rel="noopener noreferrer" href="https://www2.gov.bc.ca/gov/content/home/copyright">Copyright</StyledLink>
       </StyledLi>
       <StyledLi>
-        <StyledLink href="https://github.com/bcgov/platform-services-registry/issues">
+        <StyledLink target="_blank"  rel="noopener noreferrer"  href="https://github.com/bcgov/platform-services-registry/issues">
           Contact Us
         </StyledLink>
       </StyledLi>

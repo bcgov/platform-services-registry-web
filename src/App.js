@@ -72,6 +72,7 @@ const ME = gql`
       firstName
       lastName
       email
+      ministry
     }
   }
 `;

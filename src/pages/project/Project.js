@@ -308,11 +308,11 @@ export default function Project({ requestsRoute }) {
         formData.secondaryTechnicalLead !== ""
           ? formData.secondaryTechnicalLead
           : {
-              email: "",
-              firstName: "",
-              lastName: "",
-              ministry: ""
-            };
+            email: "",
+            firstName: "",
+            lastName: "",
+            ministry: ""
+          };
 
       setInitialValues(formData);
     }
