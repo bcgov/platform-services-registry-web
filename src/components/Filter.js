@@ -14,7 +14,7 @@ export default function Filter() {
   const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
   const userContext = useContext(UserContext);
   
-  if(readOnlyAdmin) setMinistry(userContext.ministry)
+  if(readOnlyAdmin) setMinistry(userContext.ministry||"")
 
   return (
     <div
@@ -22,7 +22,7 @@ export default function Filter() {
         display: "flex",
       }}
     >
-   {   !readOnlyAdmin&&<FormControl size="small" sx={{ minWidth: 120, pr: 2 }}>
+   {  (!readOnlyAdmin||!userContext.ministry)&&<FormControl size="small" sx={{ minWidth: 120, pr: 2 }}>
         <InputLabel>Ministry</InputLabel>
         <Select
           value={ministry}
