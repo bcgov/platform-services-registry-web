@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
 import { InfoAlert, ErrorAlert } from "../../components/common/Alert";
 import EmptyList from "../../components/common/EmptyList";
+import SearchContext from "../../context/search";
+import FilterContext from "../../context/filter";
+import SortContext from "../../context/sort";
 
 const USER_PROJECTS = gql`
   query UserProjects {
@@ -39,7 +42,10 @@ const USER_PROJECTS = gql`
 export default function Projects() {
   const { loading, error, data, startPolling } = useQuery(USER_PROJECTS);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
+  const { debouncedSearch } = useContext(SearchContext);
+  const [page, setPage] = useState(1);
+  const { filter } = useContext(FilterContext);
+  const { sortOrder } = useContext(SortContext);
   useEffect(() => {
     startPolling(15000);
   }, [startPolling]);
