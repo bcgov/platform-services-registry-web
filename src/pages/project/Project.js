@@ -36,6 +36,7 @@ import Namespaces from "../../components/Namespaces";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import ClusterInputText from "../../components/plainText/ClusterInput";
 
 const ADMIN_PROJECT = gql`
   query UserPrivateCloudProjectById($projectId: ID!) {
@@ -380,7 +381,9 @@ export default function Project({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <ClusterInput formik={formik} isDisabled={true} />
+              {isDisabled ? <ClusterInput formik={formik} isDisabled={true} /> :
+                <ClusterInputText cluster={formik.values.cluster} />
+              }
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces

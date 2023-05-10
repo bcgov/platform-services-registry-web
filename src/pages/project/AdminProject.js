@@ -39,7 +39,7 @@ import Modal from "@mui/material/Modal";
 import ReProvisionButton from "../../components/ReProvisionButton";
 import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
 import UserContext from "../../context/user";
-import Tooltip from '@mui/material/Tooltip';
+import ClusterInputText from "../../components/plainText/ClusterInput";
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -217,7 +217,6 @@ export default function AdminProject({ requestsRoute }) {
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network"
@@ -380,7 +379,6 @@ export default function AdminProject({ requestsRoute }) {
   const isDisabled = !!data?.privateCloudProjectById?.activeEditRequest;
 
   const handleClose = () => setOpen(false);
-  console.log(readOnlyAdminIsAbleToEdit, formik.dirty)
 
   return (
     <div>
@@ -439,8 +437,10 @@ export default function AdminProject({ requestsRoute }) {
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>
             <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={isDisabled} />             
-              <ClusterInput formik={formik} isDisabled={true} />
+              <MinistryInput formik={formik} isDisabled={isDisabled} />
+              {isDisabled ? <ClusterInput formik={formik} isDisabled={true} /> :
+                <ClusterInputText cluster={formik.values.cluster} />
+              }
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
