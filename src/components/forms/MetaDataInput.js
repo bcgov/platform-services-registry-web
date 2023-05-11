@@ -1,7 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import UserInput from "./UserInput";
 import TitleTypography from "../common/TitleTypography";
 import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
@@ -28,7 +27,7 @@ export default function MetaDataInput({ formik, isDisabled }) {
               If this is your first time on the <b>OpenShift platform</b> you
               need to book an alignment meeting with the{" "}
               <b>Platform Services team.</b> Reach out to{" "}
-              <a target="_blank" rel="noopener noreferrer" href="mailto: olena.mitovska@gov.bc.ca">Olena Mitovska</a> to
+              <a target="_blank" rel="noopener noreferrer" href="mailto: PlatformServicesTeam@gov.bc.ca">Platform Services</a> to
               get started.
             </Typography>
           </div>

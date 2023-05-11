@@ -135,7 +135,7 @@ function truncate(str, n) {
 }
 
 const decisionStatusLookup = {
-  APPROVED: "PROVISIONING",
+  APPROVED: "PROCESSING",
   PENDING: "PENDING DECISION",
   PROVISIONED: "PROVISIONED",
   REJECTED: "REJECTED",

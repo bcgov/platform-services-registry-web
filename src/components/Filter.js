@@ -5,10 +5,17 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FilterContext from "../context/filter";
 import { ministriesNames, clusters } from "./common/Constants";
+//readOnlyAdmin seeing only home ministry products functionality
+// import ReadOnlyAdminContext from "../context/readOnlyAdmin";
+// import UserContext from "../context/user";
 
 export default function Filter() {
   const { setMinistry, setCluster, filter } = useContext(FilterContext);
   const { ministry, cluster } = filter;
+  //readOnlyAdmin seeing only home ministry products functionality
+  // const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
+  // const userContext = useContext(UserContext);
+  // if(readOnlyAdmin) setMinistry(userContext.ministry)
 
   return (
     <div
@@ -16,7 +23,11 @@ export default function Filter() {
         display: "flex",
       }}
     >
-      <FormControl size="small" sx={{ minWidth: 120, pr: 2 }}>
+   {/* 
+    readOnlyAdmin seeing only home ministry products functionality
+   {  (!readOnlyAdmin||!userContext.ministry)&& 
+   */}
+   <FormControl size="small" sx={{ minWidth: 120, pr: 2 }}>
         <InputLabel>Ministry</InputLabel>
         <Select
           value={ministry}
@@ -33,6 +44,7 @@ export default function Filter() {
           ))}
         </Select>
       </FormControl>
+      {/* } */}
       <FormControl size="small" sx={{ minWidth: 120, pr: 2 }}>
         <InputLabel>Cluster</InputLabel>
         <Select

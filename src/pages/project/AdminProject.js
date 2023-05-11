@@ -380,7 +380,7 @@ export default function AdminProject({ requestsRoute }) {
   const isDisabled = !!data?.privateCloudProjectById?.activeEditRequest;
 
   const handleClose = () => setOpen(false);
-
+  
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -438,7 +438,7 @@ export default function AdminProject({ requestsRoute }) {
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>
             <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={isDisabled} />
+              <MinistryInput formik={formik} isDisabled={isDisabled} />             
               <ClusterInput formik={formik} isDisabled={true} />
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
@@ -452,25 +452,16 @@ export default function AdminProject({ requestsRoute }) {
             <Quotas formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
-            <Tooltip
-              title={`${
-                readOnlyAdminIsAbleToEdit ? "" : "you can not edit this product"
-              }`}
-              placement="top"
-            >
-              <span>
-                {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
-                  <Button
-                    type="submit"
-                    disabled={!formik.dirty}
-                    sx={{ mr: 1, width: "170px" }}
-                    variant="contained"
-                  >
-                    Submit
-                  </Button>
-                ) : null}
-              </span>
-            </Tooltip>
+            {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
+              <Button
+                type="submit"
+                disabled={!formik.dirty}
+                sx={{ mr: 1, width: "170px" }}
+                variant="contained"
+              >
+                Submit
+              </Button>
+            ) : null}
             <Modal
               open={open}
               onClose={handleClose}

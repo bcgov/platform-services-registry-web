@@ -9,11 +9,13 @@ import Typography from "@mui/material/Typography";
 import { Outlet } from "react-router-dom";
 import TabForm from "./forms/ResponsiveTabForm";
 import AdminContext from "../context/admin";
+import ReadOnlyAdminContext from "../context/readOnlyAdmin";
 import CreateBtn from "../components/common/CreateBtn"
 
 export default function TabsToolbar({ routes }) {
   const { pathname } = useLocation();
   const { admin } = useContext(AdminContext);
+  const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
 
   return (
     <>
@@ -53,7 +55,7 @@ export default function TabsToolbar({ routes }) {
             <Tab component={Link} label="Products" to={routes[1]} />
           </Tabs>
         </Box>
-        {pathname === routes[1] && admin ? <TabForm /> : null}
+        {pathname === routes[1] && (admin||readOnlyAdmin) ? <TabForm /> : null}
         <CreateBtn/>
       </Toolbar>
       <Outlet />
