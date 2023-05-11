@@ -10,7 +10,7 @@ import { Outlet } from "react-router-dom";
 import TabForm from "./forms/ResponsiveTabForm";
 import AdminContext from "../context/admin";
 import ReadOnlyAdminContext from "../context/readOnlyAdmin";
-import CreateBtn from "../components/common/CreateBtn"
+import CreateBtn from "../components/common/CreateBtn";
 
 export default function TabsToolbar({ routes }) {
   const { pathname } = useLocation();
@@ -30,12 +30,12 @@ export default function TabsToolbar({ routes }) {
             fontWeight: 400,
             color: "rgba(0, 0, 0, 0.6)",
             fontSize: 20,
-            minWidth: 170,
+            minWidth: 210,
             // sm: { display: "none", color: "red"}
-            display: { xs: "none", sm: "block" },
+            display: { xs: "none", sm: "block" }
           }}
         >
-          PRIVATE CLOUD
+          PRODUCT REGISTRY
         </Typography>
         <Divider
           orientation="vertical"
@@ -55,8 +55,10 @@ export default function TabsToolbar({ routes }) {
             <Tab component={Link} label="Products" to={routes[1]} />
           </Tabs>
         </Box>
-        {pathname === routes[1] && (admin||readOnlyAdmin) ? <TabForm /> : null}
-        <CreateBtn/>
+        {pathname === routes[1] && (admin || readOnlyAdmin) ? (
+          <TabForm />
+        ) : null}
+        <CreateBtn />
       </Toolbar>
       <Outlet />
     </>

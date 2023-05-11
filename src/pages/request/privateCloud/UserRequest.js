@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
-import MetaDataInput from "../../components/plainText/MetaDataInput";
-import ClusterInput from "../../components/plainText/ClusterInput";
-import MinistryInput from "../../components/plainText/MinistryInput";
-import NavToolbar from "../../components/NavToolbar";
-import { projectInitialValues as initialValues } from "../../components/common/FormHelpers";
+import MetaDataInput from "../../../components/plainText/MetaDataInput";
+import ClusterInput from "../../../components/plainText/ClusterInput";
+import MinistryInput from "../../../components/plainText/MinistryInput";
+import NavToolbar from "../../../components/NavToolbar";
+import { projectInitialValues as initialValues } from "../../../components/common/FormHelpers";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
-import Container from "../../components/common/Container";
-import Users from "../../components/plainText/Users";
+import Container from "../../../components/common/Container";
+import Users from "../../../components/plainText/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../components/plainText/Quotas";
-import Namespaces from "../../components/Namespaces";
-import TitleTypography from "../../components/common/TitleTypography";
+import Quotas from "../../../components/plainText/Quotas";
+import Namespaces from "../../../components/Namespaces";
+import TitleTypography from "../../../components/common/TitleTypography";
 import { Typography } from "@mui/material";
 
 const USER_REQUEST = gql`
@@ -125,7 +125,7 @@ export default function UserRequest() {
   const { id } = useParams();
 
   const { data, loading, error } = useQuery(USER_REQUEST, {
-    variables: { requestId: id },
+    variables: { requestId: id }
   });
 
   const { project, requestedProject, ...request } =
@@ -164,7 +164,11 @@ export default function UserRequest() {
             secondaryTechnicalLead={requestedProject?.secondaryTechnicalLead}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas project={project} requestedProject={requestedProject} active={request.active} />
+          <Quotas
+            project={project}
+            requestedProject={requestedProject}
+            active={request.active}
+          />
           <Divider variant="middle" sx={{ mb: 6 }} />
         </div>
         {request?.humanCommentText && (

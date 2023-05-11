@@ -1,50 +1,58 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import * as yup from "yup";
 import {
   CreateUserInputSchema,
   CommonComponentsInputSchema,
-  QuotaInputSchema,
   MinistrySchema,
-  ClusterSchema
-} from "../../__generated__/resolvers-types";
+  BudgetInputSchema,
+  ProviderSchema
+} from "../../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
-import MetaDataInput from "../../components/forms/MetaDataInput";
-import ClusterInput from "../../components/forms/ClusterInput";
-import MinistryInput from "../../components/forms/MinistryInput";
-import NavToolbar from "../../components/NavToolbar";
+import MetaDataInput from "../../../components/forms/MetaDataInput";
+import ProviderInput from "../../../components/forms/ProviderInput";
+import MinistryInput from "../../../components/forms/MinistryInput";
+import NavToolbar from "../../../components/NavToolbar";
 import {
   projectInitialValues,
   replaceNullsWithEmptyString,
   replaceEmptyStringWithNull,
   stripTypeName
-} from "../../components/common/FormHelpers";
-import CommonComponents from "../../components/forms/CommonComponents";
+} from "../../../components/common/FormHelpers";
+import CommonComponents from "../../../components/forms/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
-import { USER_REQUESTS } from "../requests/UserRequests";
-import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
+import { USER_REQUESTS } from "../../requests/UserRequests";
+import { ALL_ACTIVE_REQUESTS } from "../../requests/AdminRequests";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
-import Container from "../../components/common/Container";
+import Container from "../../../components/common/Container";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Button, IconButton } from "@mui/material";
-import ActiveRequestText from "../../components/common/ActiveRequestText";
+import ActiveRequestText from "../../../components/common/ActiveRequestText";
+import Users from "../../../components/forms/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../components/forms/Quotas";
-import Users from "../../components/forms/Users";
-import Namespaces from "../../components/Namespaces";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import ReadOnlyAdminContext from "../../../context/readOnlyAdmin";
+import UserContext from "../../../context/user";
+import BillingGroupInput from "../../../components/common/BillingGroup";
+import BudgetInput from "../../../components/common/Budget";
 
 const ADMIN_PROJECT = gql`
-  query UserPrivateCloudProjectById($projectId: ID!) {
-    userPrivateCloudProjectById(projectId: $projectId) {
+  query PublicCloudProjectById($projectId: ID!) {
+    publicCloudProjectById(projectId: $projectId) {
       id
       name
       licencePlate
       description
       status
+      billingGroup
+      budget {
+        prod
+        dev
+        test
+        tools
+      }
       activeEditRequest {
         active
         id
@@ -55,20 +63,14 @@ const ADMIN_PROJECT = gql`
         lastName
         ministry
       }
-      primaryTechnicalLead {
-        email
-        firstName
-        lastName
-        ministry
-      }
-      secondaryTechnicalLead {
+      technicalLeads {
         email
         firstName
         lastName
         ministry
       }
       ministry
-      cluster
+      provider
       commonComponents {
         addressAndGeolocation
         workflowManagement
@@ -82,69 +84,34 @@ const ADMIN_PROJECT = gql`
         noServices
         other
       }
-      productionQuota {
-        cpu
-        memory
-        storage
-      }
-      testQuota {
-        cpu
-        memory
-        storage
-      }
-      developmentQuota {
-        cpu
-        memory
-        storage
-      }
-      toolsQuota {
-        cpu
-        memory
-        storage
-      }
     }
   }
 `;
 
-const UPDATE_USER_PROJECT = gql`
+const UPDATE_PROJECT = gql`
   mutation Mutation(
     $projectId: ID!
     $name: String!
     $description: String!
     $ministry: Ministry!
+    $billingGroup: String!
+    $budget: BudgetInput!
     $projectOwner: CreateUserInput!
-    $primaryTechnicalLead: CreateUserInput!
-    $secondaryTechnicalLead: CreateUserInput
+    $technicalLeads: [CreateUserInput!]!
     $commonComponents: CommonComponentsInput!
-    $productionQuota: QuotaInput!
-    $developmentQuota: QuotaInput!
-    $testQuota: QuotaInput!
-    $toolsQuota: QuotaInput!
   ) {
-    privateCloudProjectEditRequest(
+    publicCloudProjectEditRequest(
       projectId: $projectId
       name: $name
       description: $description
       ministry: $ministry
       projectOwner: $projectOwner
-      primaryTechnicalLead: $primaryTechnicalLead
-      secondaryTechnicalLead: $secondaryTechnicalLead
-      commonComponents: $commonComponents
-      productionQuota: $productionQuota
-      developmentQuota: $developmentQuota
-      testQuota: $testQuota
-      toolsQuota: $toolsQuota
+      billingGroup: $billingGroup
+      budget: $budget
+      technicalLeads: $technicalLeads
     ) {
       id
       active
-    }
-  }
-`;
-
-const DELETE_USER_PROJECT = gql`
-  mutation Mutation($projectId: ID!) {
-    privateCloudProjectDeleteRequest(projectId: $projectId) {
-      id
     }
   }
 `;
@@ -153,35 +120,29 @@ const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
-  cluster: ClusterSchema.required(),
+  provider: ProviderSchema.required(),
+  billingGroup: yup.string().required(),
+  budget: BudgetInputSchema.required(),
   projectOwner: yup
     .object(CreateUserInputSchema)
     .transform((value, original) => {
       return replaceEmptyStringWithNull(value);
     }),
-  primaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
-  secondaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .nullable()
-    .transform((value) => (value?.email === "" ? null : value))
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
-
+  technicalLeads: yup
+    .array()
+    .of(
+      yup.object(CreateUserInputSchema).transform((value, original) => {
+        return replaceEmptyStringWithNull(value);
+      })
+    )
+    .min(1, "At least one technical lead is required")
+    .required("Technical leads are required"),
   commonComponents: yup
     .object(CommonComponentsInputSchema)
     .transform((value, original) => {
       return replaceEmptyStringWithNull(value);
-    }),
+    })
   // commonComponents: CommonComponentsInputSchema(),
-  productionQuota: yup.object(QuotaInputSchema).required(),
-  developmentQuota: yup.object(QuotaInputSchema).required(),
-  toolsQuota: yup.object(QuotaInputSchema).required(),
-  testQuota: yup.object(QuotaInputSchema).required()
 });
 
 const style = {
@@ -196,11 +157,12 @@ const style = {
   p: 4
 };
 
-export default function Project({ requestsRoute }) {
+export default function AdminProject({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
-
+  const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
+  const userContext = useContext(UserContext);
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -210,45 +172,23 @@ export default function Project({ requestsRoute }) {
     nextFetchPolicy: "cache-and-network"
   });
 
+  const readOnlyAdminIsAbleToEdit =
+    userContext.email === data?.publicCloudProjectById.projectOwner.email ||
+    userContext.email ===
+      data?.publicCloudProjectById?.primaryTechnicalLead?.email ||
+    userContext.email ===
+      data?.publicCloudProjectById?.secondaryTechnicalLead?.email;
+
   const [
-    privateCloudProjectEditRequest,
+    publicCloudProjectEditRequest,
     {
       data: editProjectData,
       loading: editProjectLoading,
       error: editProjectError
     }
-  ] = useMutation(UPDATE_USER_PROJECT, {
+  ] = useMutation(UPDATE_PROJECT, {
     refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
-
-  const [privateCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
-  });
-
-  const deleteOnClick = () => {
-    toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false
-    });
-
-    privateCloudProjectDeleteRequest({
-      variables: { projectId: id },
-      onError: (error) => {
-        toast.update(toastId.current, {
-          render: `Error: ${error.message}`,
-          type: toast.TYPE.ERROR,
-          autoClose: 5000
-        });
-      },
-      onCompleted: () => {
-        navigate(requestsRoute);
-        toast.update(toastId.current, {
-          render: "Delete request successfuly created",
-          type: toast.TYPE.SUCCESS,
-          autoClose: 5000
-        });
-      }
-    });
-  };
 
   const formik = useFormik({
     initialValues,
@@ -266,13 +206,14 @@ export default function Project({ requestsRoute }) {
 
   const submitForm = () => {
     const { values } = formik;
+
     toastId.current = toast("Your edit request has been submitted", {
       autoClose: false
     });
 
     const variables = validationSchema.cast(values);
 
-    privateCloudProjectEditRequest({
+    publicCloudProjectEditRequest({
       variables: { projectId: id, ...variables },
       onError: (error) => {
         toast.update(toastId.current, {
@@ -285,7 +226,7 @@ export default function Project({ requestsRoute }) {
       onCompleted: (data) => {
         navigate(requestsRoute);
 
-        if (data?.privateCloudProjectEditRequest) {
+        if (data?.publicCloudProjectEditRequest) {
           toast.update(toastId.current, {
             render: "Request successfuly created",
             type: toast.TYPE.SUCCESS,
@@ -300,7 +241,7 @@ export default function Project({ requestsRoute }) {
     if (data) {
       // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
       const formData = stripTypeName(
-        replaceNullsWithEmptyString(data?.userPrivateCloudProjectById)
+        replaceNullsWithEmptyString(data?.publicCloudProjectById)
       );
 
       // Set give secondary technical lead an object with an empty string for all properties if null
@@ -308,18 +249,18 @@ export default function Project({ requestsRoute }) {
         formData.secondaryTechnicalLead !== ""
           ? formData.secondaryTechnicalLead
           : {
-            email: "",
-            firstName: "",
-            lastName: "",
-            ministry: ""
-          };
+              email: "",
+              firstName: "",
+              lastName: "",
+              ministry: ""
+            };
 
       setInitialValues(formData);
     }
   }, [data]);
 
-  const name = data?.userPrivateCloudProjectById?.name;
-  const isDisabled = !!data?.userPrivateCloudProjectById?.activeEditRequest;
+  const name = data?.publicCloudProjectById?.name;
+  const isDisabled = !!data?.publicCloudProjectById?.activeEditRequest;
 
   const handleClose = () => setOpen(false);
 
@@ -328,7 +269,7 @@ export default function Project({ requestsRoute }) {
       <form onSubmit={formik.handleSubmit}>
         <NavToolbar
           label={"products"}
-          path={"user/dashboard/products"}
+          path={"admin/dashboard/products"}
           title={name}
         >
           <IconButton
@@ -339,39 +280,10 @@ export default function Project({ requestsRoute }) {
           >
             <RestartAltIcon />
           </IconButton>
-          <IconButton
-            disabled={isDisabled}
-            onClick={() => setDeleteOpen(true)}
-            aria-label="delete"
-          >
-            <DeleteForeverIcon />
-          </IconButton>
-          <Modal
-            open={deleteOpen}
-            onClose={() => setDeleteOpen(false)}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Please Confirm Your Delete Request
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Are you sure you want to delete this product?
-                <Button
-                  onClick={deleteOnClick}
-                  sx={{ mr: 1, width: "170px", mt: 3 }}
-                  variant="contained"
-                >
-                  Delete
-                </Button>
-              </Typography>
-            </Box>
-          </Modal>
         </NavToolbar>
         {isDisabled ? (
           <ActiveRequestText
-            requestId={data?.privateCloudProjectById?.activeEditRequest?.id}
+            requestId={data?.publicCloudProjectById?.activeEditRequest?.id}
           />
         ) : null}
         <Container>
@@ -380,27 +292,26 @@ export default function Project({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <ClusterInput formik={formik} isDisabled={true} />
+              <ProviderInput formik={formik} isDisabled={true} />
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Namespaces
-              cluster={data?.userPrivateCloudProjectById?.cluster}
-              licencePlate={data?.userPrivateCloudProjectById?.licencePlate}
-            />
+            <BillingGroupInput formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Users formik={formik} isDisabled={false} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Quotas formik={formik} isDisabled={isDisabled} />
+            <BudgetInput formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
-            <Button
-              type="submit"
-              disabled={!formik.dirty}
-              sx={{ mr: 1, width: "170px" }}
-              variant="contained"
-            >
-              Submit
-            </Button>
+            {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
+              <Button
+                type="submit"
+                disabled={!formik.dirty}
+                sx={{ mr: 1, width: "170px" }}
+                variant="contained"
+              >
+                Submit
+              </Button>
+            ) : null}
             <Modal
               open={open}
               onClose={handleClose}
@@ -415,6 +326,7 @@ export default function Project({ requestsRoute }) {
                   Are you sure you want to edit this product?
                   <Button
                     onClick={submitForm}
+                    disabled={!formik.dirty}
                     sx={{ mr: 1, width: "170px", mt: 3 }}
                     variant="contained"
                   >

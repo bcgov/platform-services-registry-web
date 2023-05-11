@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
-import StickyTable from "../../components/common/Table";
-import { InfoAlert, ErrorAlert } from "../../components/common/Alert";
-import EmptyList from "../../components/common/EmptyList";
+import StickyTable from "../../../components/common/Table";
+import { InfoAlert, ErrorAlert } from "../../../components/common/Alert";
+import EmptyList from "../../../components/common/EmptyList";
 
 const USER_PROJECTS = gql`
   query UserProjects {
@@ -62,19 +62,22 @@ export default function Projects() {
   }
 
   return !loading ? (
-    data?.userPrivateCloudProjects?.length > 0 ? <StickyTable
-      onClickPath={"/private-cloud/user/product/"}
-      columns={columns}
-      rows={data.userPrivateCloudProjects.map(projectsToRows)}
-      count={loading ? 0 : data?.userPrivateCloudProjects?.length}
-      title="Projects"
-      loading={loading}
-      rowsPerPage={rowsPerPage}
-      setRowsPerPage={setRowsPerPage}
-    /> :
-      <EmptyList
-        title='There are no products to be displayed'
-        subtitle='You currently have no products hosted on the Private Cloud OpenShift platform.'
+    data?.userPrivateCloudProjects?.length > 0 ? (
+      <StickyTable
+        onClickPath={"/registry/user/private-cloud/product/"}
+        columns={columns}
+        rows={data.userPrivateCloudProjects.map(projectsToRows)}
+        count={loading ? 0 : data?.userPrivateCloudProjects?.length}
+        title="Projects"
+        loading={loading}
+        rowsPerPage={rowsPerPage}
+        setRowsPerPage={setRowsPerPage}
       />
+    ) : (
+      <EmptyList
+        title="There are no products to be displayed"
+        subtitle="You currently have no products hosted on the Private Cloud OpenShift platform."
+      />
+    )
   ) : null;
 }

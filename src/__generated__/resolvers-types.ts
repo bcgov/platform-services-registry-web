@@ -20,6 +20,21 @@ export type AdditionalEntityFields = {
   type?: InputMaybe<Scalars['String']>;
 };
 
+export type Budget = {
+  __typename?: 'Budget';
+  dev: Scalars['Int'];
+  prod: Scalars['Int'];
+  test: Scalars['Int'];
+  tools: Scalars['Int'];
+};
+
+export type BudgetInput = {
+  dev: Scalars['Int'];
+  prod: Scalars['Int'];
+  test: Scalars['Int'];
+  tools: Scalars['Int'];
+};
+
 export enum Cluster {
   Clab = 'CLAB',
   Emerald = 'EMERALD',
@@ -52,7 +67,7 @@ export type CommonComponentsInput = {
   endUserNotificationAndSubscription?: InputMaybe<CommonComponentsOptions>;
   formDesignAndSubmission?: InputMaybe<CommonComponentsOptions>;
   identityManagement?: InputMaybe<CommonComponentsOptions>;
-  noServices?: InputMaybe<Scalars['Boolean']>;
+  noServices: Scalars['Boolean'];
   other?: InputMaybe<Scalars['String']>;
   paymentServices?: InputMaybe<CommonComponentsOptions>;
   publishing?: InputMaybe<CommonComponentsOptions>;
@@ -68,7 +83,7 @@ export type CreateUserInput = {
   email: Scalars['EmailAddress'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
-  ministry?: InputMaybe<Scalars['String']>;
+  ministry?: InputMaybe<Ministry>;
 };
 
 export enum DecisionStatus {
@@ -122,6 +137,11 @@ export type FilterPrivateCloudProjectsInput = {
   ministry?: InputMaybe<Ministry>;
 };
 
+export type FilterPublicCloudProjectsInput = {
+  ministry?: InputMaybe<Ministry>;
+  priovider?: InputMaybe<Provider>;
+};
+
 export enum Ministry {
   Aest = 'AEST',
   Ag = 'AG',
@@ -158,9 +178,12 @@ export type Mutation = {
   privateCloudProjectDeleteRequest: PrivateCloudRequest;
   privateCloudProjectEditRequest: PrivateCloudRequest;
   privateCloudProjectRequest: PrivateCloudRequest;
-  privateCloudReProvisionProject?: Maybe<PrivateCloudProject>;
-  privateCloudReProvisionRequest?: Maybe<PrivateCloudRequest>;
+  privateCloudReProvisionProject?: Maybe<Scalars['ID']>;
+  privateCloudReProvisionRequest?: Maybe<Scalars['ID']>;
   privateCloudRequestDecision?: Maybe<PrivateCloudRequest>;
+  publicCloudProjectEditRequest: PublicCloudRequest;
+  publicCloudProjectRequest: PublicCloudRequest;
+  publicCloudRequestDecision?: Maybe<PublicCloudRequest>;
   signUp: User;
 };
 
@@ -219,6 +242,39 @@ export type MutationPrivateCloudRequestDecisionArgs = {
   requestId: Scalars['ID'];
 };
 
+
+export type MutationPublicCloudProjectEditRequestArgs = {
+  billingGroup: Scalars['String'];
+  budget: BudgetInput;
+  commonComponents: CommonComponentsInput;
+  description: Scalars['String'];
+  ministry: Ministry;
+  name: Scalars['String'];
+  projectId: Scalars['ID'];
+  projectOwner: CreateUserInput;
+  technicalLeads: Array<CreateUserInput>;
+};
+
+
+export type MutationPublicCloudProjectRequestArgs = {
+  billingGroup: Scalars['String'];
+  budget: BudgetInput;
+  commonComponents: CommonComponentsInput;
+  description: Scalars['String'];
+  ministry: Ministry;
+  name: Scalars['String'];
+  projectOwner: CreateUserInput;
+  provider: Provider;
+  technicalLeads: Array<CreateUserInput>;
+};
+
+
+export type MutationPublicCloudRequestDecisionArgs = {
+  decision: RequestDecision;
+  humanComment?: InputMaybe<Scalars['String']>;
+  requestId: Scalars['ID'];
+};
+
 export enum Platform {
   PrivateCloud = 'PRIVATE_CLOUD',
   PublicCloud = 'PUBLIC_CLOUD'
@@ -227,7 +283,6 @@ export enum Platform {
 export type PrivateCloudProject = {
   __typename?: 'PrivateCloudProject';
   activeEditRequest?: Maybe<PrivateCloudRequest>;
-  archived: Scalars['Boolean'];
   cluster: Cluster;
   commonComponents: CommonComponents;
   count?: Maybe<Scalars['Int']>;
@@ -268,10 +323,48 @@ export enum ProjectStatus {
   Inactive = 'INACTIVE'
 }
 
+export enum Provider {
+  Aws = 'AWS',
+  Google = 'GOOGLE'
+}
+
 export enum PublicCloudPlatform {
   Aws = 'AWS',
   Google = 'GOOGLE'
 }
+
+export type PublicCloudProject = {
+  __typename?: 'PublicCloudProject';
+  activeEditRequest?: Maybe<PublicCloudRequest>;
+  billingGroup: Scalars['String'];
+  budget: Budget;
+  commonComponents: CommonComponents;
+  created: Scalars['DateTime'];
+  description: Scalars['String'];
+  id: Scalars['ID'];
+  licencePlate: Scalars['ID'];
+  ministry: Ministry;
+  name: Scalars['String'];
+  projectOwner: User;
+  provider: Provider;
+  requestHistory: Array<Maybe<PublicCloudRequest>>;
+  status: ProjectStatus;
+  technicalLeads: Array<Maybe<User>>;
+};
+
+export type PublicCloudRequest = {
+  __typename?: 'PublicCloudRequest';
+  active: Scalars['Boolean'];
+  createdBy?: Maybe<User>;
+  decisionDate?: Maybe<Scalars['DateTime']>;
+  decisionMaker?: Maybe<User>;
+  decisionStatus: DecisionStatus;
+  humanComment?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  project?: Maybe<PublicCloudProject>;
+  requestedProject?: Maybe<PublicCloudProject>;
+  type: RequestType;
+};
 
 export type Query = {
   __typename?: 'Query';
@@ -283,9 +376,17 @@ export type Query = {
   privateCloudProjects: Array<PrivateCloudProject>;
   privateCloudProjectsById: Array<PrivateCloudProject>;
   privateCloudProjectsPaginated: ProjectsPaginatedOutput;
-  privateCloudProjectsWithFilterSearch: Array<PrivateCloudProject>;
   privateCloudRequestById: PrivateCloudRequest;
   privateCloudRequests: Array<PrivateCloudRequest>;
+  publicCloudActiveRequestById: PublicCloudRequest;
+  publicCloudActiveRequests: Array<PublicCloudRequest>;
+  publicCloudActiveRequestsById: Array<PublicCloudRequest>;
+  publicCloudProjectById: PublicCloudProject;
+  publicCloudProjects: Array<PublicCloudProject>;
+  publicCloudProjectsById: Array<PublicCloudProject>;
+  publicCloudProjectsPaginated: ProjectsPaginatedOutput;
+  publicCloudRequestById: PublicCloudRequest;
+  publicCloudRequests: Array<PublicCloudRequest>;
   user?: Maybe<User>;
   userByEmail?: Maybe<User>;
   userPrivateCloudActiveRequestById: PrivateCloudRequest;
@@ -296,6 +397,14 @@ export type Query = {
   userPrivateCloudProjectsByIds: PrivateCloudProject;
   userPrivateCloudRequestById: PrivateCloudRequest;
   userPrivateCloudRequests: Array<PrivateCloudRequest>;
+  userPublicCloudActiveRequestById: PublicCloudRequest;
+  userPublicCloudActiveRequests: Array<PublicCloudRequest>;
+  userPublicCloudActiveRequestsByIds: PublicCloudRequest;
+  userPublicCloudProjectById: PublicCloudProject;
+  userPublicCloudProjects: Array<PublicCloudProject>;
+  userPublicCloudProjectsByIds: PublicCloudProject;
+  userPublicCloudRequestById: PublicCloudRequest;
+  userPublicCloudRequests: Array<PublicCloudRequest>;
   users: Array<User>;
   usersByIds: Array<User>;
 };
@@ -330,13 +439,41 @@ export type QueryPrivateCloudProjectsPaginatedArgs = {
 };
 
 
-export type QueryPrivateCloudProjectsWithFilterSearchArgs = {
-  filter?: InputMaybe<FilterPrivateCloudProjectsInput>;
-  search?: InputMaybe<Scalars['String']>;
+export type QueryPrivateCloudRequestByIdArgs = {
+  requestId: Scalars['ID'];
 };
 
 
-export type QueryPrivateCloudRequestByIdArgs = {
+export type QueryPublicCloudActiveRequestByIdArgs = {
+  requestId: Scalars['ID'];
+};
+
+
+export type QueryPublicCloudActiveRequestsByIdArgs = {
+  requestIds: Scalars['ID'];
+};
+
+
+export type QueryPublicCloudProjectByIdArgs = {
+  projectId: Scalars['ID'];
+};
+
+
+export type QueryPublicCloudProjectsByIdArgs = {
+  projectIds?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryPublicCloudProjectsPaginatedArgs = {
+  filter?: InputMaybe<FilterPublicCloudProjectsInput>;
+  page: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  search?: InputMaybe<Scalars['String']>;
+  sortOrder?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryPublicCloudRequestByIdArgs = {
   requestId: Scalars['ID'];
 };
 
@@ -372,6 +509,31 @@ export type QueryUserPrivateCloudProjectsByIdsArgs = {
 
 
 export type QueryUserPrivateCloudRequestByIdArgs = {
+  requestId: Scalars['ID'];
+};
+
+
+export type QueryUserPublicCloudActiveRequestByIdArgs = {
+  requestId: Scalars['ID'];
+};
+
+
+export type QueryUserPublicCloudActiveRequestsByIdsArgs = {
+  requestIds?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryUserPublicCloudProjectByIdArgs = {
+  projectId: Scalars['ID'];
+};
+
+
+export type QueryUserPublicCloudProjectsByIdsArgs = {
+  projectIds?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryUserPublicCloudRequestByIdArgs = {
   requestId: Scalars['ID'];
 };
 
@@ -432,6 +594,8 @@ export type User = {
   privateCloudProjectOwner: Array<Maybe<PrivateCloudProject>>;
   privateCloudProjectPrimaryTechnicalLead: Array<Maybe<PrivateCloudProject>>;
   privateCloudProjectSecondaryTechnicalLead: Array<Maybe<PrivateCloudProject>>;
+  publicCloudProjectOwner: Array<Maybe<PublicCloudProject>>;
+  publicCloudProjectTechnicalLead: Array<Maybe<PublicCloudProject>>;
 };
 
 export type ProjectsPaginatedOutput = {
@@ -448,6 +612,15 @@ export function AdditionalEntityFieldsSchema(): yup.SchemaOf<AdditionalEntityFie
   })
 }
 
+export function BudgetInputSchema(): yup.SchemaOf<BudgetInput> {
+  return yup.object({
+    dev: yup.number().defined(),
+    prod: yup.number().defined(),
+    test: yup.number().defined(),
+    tools: yup.number().defined()
+  })
+}
+
 export const ClusterSchema = yup.mixed().oneOf([Cluster.Clab, Cluster.Emerald, Cluster.Gold, Cluster.Golddr, Cluster.Klab, Cluster.Klab2, Cluster.Silver]);
 
 export function CommonComponentsInputSchema(): yup.SchemaOf<CommonComponentsInput> {
@@ -458,7 +631,7 @@ export function CommonComponentsInputSchema(): yup.SchemaOf<CommonComponentsInpu
     endUserNotificationAndSubscription: yup.mixed(),
     formDesignAndSubmission: yup.mixed(),
     identityManagement: yup.mixed(),
-    noServices: yup.boolean(),
+    noServices: yup.boolean().defined(),
     other: yup.string(),
     paymentServices: yup.mixed(),
     publishing: yup.mixed(),
@@ -473,7 +646,7 @@ export function CreateUserInputSchema(): yup.SchemaOf<CreateUserInput> {
     email: yup.string().defined(),
     firstName: yup.string().defined(),
     lastName: yup.string().defined(),
-    ministry: yup.string()
+    ministry: yup.mixed()
   })
 }
 
@@ -494,11 +667,20 @@ export function FilterPrivateCloudProjectsInputSchema(): yup.SchemaOf<FilterPriv
   })
 }
 
+export function FilterPublicCloudProjectsInputSchema(): yup.SchemaOf<FilterPublicCloudProjectsInput> {
+  return yup.object({
+    ministry: yup.mixed(),
+    priovider: yup.mixed()
+  })
+}
+
 export const MinistrySchema = yup.mixed().oneOf([Ministry.Aest, Ministry.Ag, Ministry.Agri, Ministry.Alc, Ministry.Bcpc, Ministry.Citz, Ministry.Dbc, Ministry.Eao, Ministry.Educ, Ministry.Embc, Ministry.Empr, Ministry.Env, Ministry.Fin, Ministry.Flnr, Ministry.Hlth, Ministry.Irr, Ministry.Jedc, Ministry.Lbr, Ministry.Ldb, Ministry.Mah, Ministry.Mcf, Ministry.Mmha, Ministry.Psa, Ministry.Pssg, Ministry.Sdpr, Ministry.Tca, Ministry.Tran]);
 
 export const PlatformSchema = yup.mixed().oneOf([Platform.PrivateCloud, Platform.PublicCloud]);
 
 export const ProjectStatusSchema = yup.mixed().oneOf([ProjectStatus.Active, ProjectStatus.Inactive]);
+
+export const ProviderSchema = yup.mixed().oneOf([Provider.Aws, Provider.Google]);
 
 export const PublicCloudPlatformSchema = yup.mixed().oneOf([PublicCloudPlatform.Aws, PublicCloudPlatform.Google]);
 

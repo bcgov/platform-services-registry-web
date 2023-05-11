@@ -57,18 +57,22 @@ export default function Requests() {
   }
 
   return !loading ? (
-    data?.privateCloudActiveRequests?.length > 0 ? <StickyTable
-      onClickPath={"/private-cloud/admin/request/"}
-      columns={columns}
-      rows={data.privateCloudActiveRequests.map(requestsToRows).reverse()}
-      title="Active Requests"
-      loading={loading}
-      count={loading ? 0 : data?.privateCloudActiveRequests?.length}
-      rowsPerPage={rowsPerPage}
-      setRowsPerPage={setRowsPerPage}
-    /> : <EmptyList
-      title='There are no requests to be displayed'
-      subtitle='You currently have no provisioning requests for the Private Cloud OpenShift platform.'
-    />
+    data?.privateCloudActiveRequests?.length > 0 ? (
+      <StickyTable
+        onClickPath={"/registry/admin/private-cloud/request/"}
+        columns={columns}
+        rows={data.privateCloudActiveRequests.map(requestsToRows).reverse()}
+        title="Active Requests"
+        loading={loading}
+        count={loading ? 0 : data?.privateCloudActiveRequests?.length}
+        rowsPerPage={rowsPerPage}
+        setRowsPerPage={setRowsPerPage}
+      />
+    ) : (
+      <EmptyList
+        title="There are no requests to be displayed"
+        subtitle="You currently have no provisioning requests for the Private Cloud OpenShift platform."
+      />
+    )
   ) : null;
 }

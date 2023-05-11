@@ -4,18 +4,18 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { clusterNames, clusterNamesUserCreate } from "../common/Constants";
 import TitleTypography from "../common/TitleTypography";
 import FormHelperText from "@mui/material/FormHelperText";
 import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
 import AdminContext from "../../context/admin";
 
-export default function ClusterInput({ formik, isDisabled }) {
+export default function ProviderInput({ formik, isDisabled }) {
   const isAdmin = useContext(AdminContext);
-  const clusterNamesInput = isAdmin.admin
-    ? clusterNames
-    : clusterNamesUserCreate;
+  const clusterNamesInput = {
+    name: "AWS",
+    humanFriendlyName: "Amazon Web Services"
+  };
 
   return (
     <Box

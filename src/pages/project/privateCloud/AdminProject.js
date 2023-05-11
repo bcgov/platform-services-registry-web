@@ -6,40 +6,40 @@ import {
   QuotaInputSchema,
   MinistrySchema,
   ClusterSchema
-} from "../../__generated__/resolvers-types";
+} from "../../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
-import MetaDataInput from "../../components/forms/MetaDataInput";
-import ClusterInput from "../../components/forms/ClusterInput";
-import MinistryInput from "../../components/forms/MinistryInput";
-import NavToolbar from "../../components/NavToolbar";
+import MetaDataInput from "../../../components/forms/MetaDataInput";
+import ClusterInput from "../../../components/forms/ClusterInput";
+import MinistryInput from "../../../components/forms/MinistryInput";
+import NavToolbar from "../../../components/NavToolbar";
 import {
   projectInitialValues,
   replaceNullsWithEmptyString,
   replaceEmptyStringWithNull,
   stripTypeName
-} from "../../components/common/FormHelpers";
-import CommonComponents from "../../components/forms/CommonComponents";
+} from "../../../components/common/FormHelpers";
+import CommonComponents from "../../../components/forms/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
-import { USER_REQUESTS } from "../requests/UserRequests";
-import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
+import { USER_REQUESTS } from "../../requests/UserRequests";
+import { ALL_ACTIVE_REQUESTS } from "../../requests/AdminRequests";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
-import Container from "../../components/common/Container";
+import Container from "../../../components/common/Container";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Button, IconButton } from "@mui/material";
-import ActiveRequestText from "../../components/common/ActiveRequestText";
-import Users from "../../components/forms/Users";
+import ActiveRequestText from "../../../components/common/ActiveRequestText";
+import Users from "../../../components/forms/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../components/forms/Quotas";
-import Namespaces from "../../components/Namespaces";
+import Quotas from "../../../components/forms/Quotas";
+import Namespaces from "../../../components/Namespaces";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import ReProvisionButton from "../../components/ReProvisionButton";
-import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
-import UserContext from "../../context/user";
-import Tooltip from '@mui/material/Tooltip';
+import ReProvisionButton from "../../../components/ReProvisionButton";
+import ReadOnlyAdminContext from "../../../context/readOnlyAdmin";
+import UserContext from "../../../context/user";
+import Tooltip from "@mui/material/Tooltip";
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -223,12 +223,12 @@ export default function AdminProject({ requestsRoute }) {
     nextFetchPolicy: "cache-and-network"
   });
 
-
-  const readOnlyAdminIsAbleToEdit = (
+  const readOnlyAdminIsAbleToEdit =
     userContext.email === data?.privateCloudProjectById.projectOwner.email ||
-    userContext.email === data?.privateCloudProjectById?.primaryTechnicalLead?.email ||
-    userContext.email === data?.privateCloudProjectById?.secondaryTechnicalLead?.email
-  )
+    userContext.email ===
+      data?.privateCloudProjectById?.primaryTechnicalLead?.email ||
+    userContext.email ===
+      data?.privateCloudProjectById?.secondaryTechnicalLead?.email;
 
   const [
     privateCloudProjectEditRequest,
@@ -366,11 +366,11 @@ export default function AdminProject({ requestsRoute }) {
         formData.secondaryTechnicalLead !== ""
           ? formData.secondaryTechnicalLead
           : {
-            email: "",
-            firstName: "",
-            lastName: "",
-            ministry: ""
-          };
+              email: "",
+              firstName: "",
+              lastName: "",
+              ministry: ""
+            };
 
       setInitialValues(formData);
     }
@@ -380,13 +380,13 @@ export default function AdminProject({ requestsRoute }) {
   const isDisabled = !!data?.privateCloudProjectById?.activeEditRequest;
 
   const handleClose = () => setOpen(false);
-  
+
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
         <NavToolbar
           label={"products"}
-          path={"admin/dashboard/products"}
+          path={"admin/dashboard/private-cloud-products"}
           title={name}
         >
           <IconButton
@@ -426,7 +426,9 @@ export default function AdminProject({ requestsRoute }) {
               </Typography>
             </Box>
           </Modal>
-          {!readOnlyAdmin && <ReProvisionButton onClickHandler={reProvisionOnClick} />}
+          {!readOnlyAdmin && (
+            <ReProvisionButton onClickHandler={reProvisionOnClick} />
+          )}
         </NavToolbar>
         {isDisabled ? (
           <ActiveRequestText
@@ -438,7 +440,7 @@ export default function AdminProject({ requestsRoute }) {
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>
             <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={isDisabled} />             
+              <MinistryInput formik={formik} isDisabled={isDisabled} />
               <ClusterInput formik={formik} isDisabled={true} />
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />

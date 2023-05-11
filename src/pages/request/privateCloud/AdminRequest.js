@@ -1,24 +1,24 @@
 import { useRef, useState, useContext } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
-import MetaDataInput from "../../components/plainText/MetaDataInput";
-import ClusterInput from "../../components/plainText/ClusterInput";
-import MinistryInput from "../../components/plainText/MinistryInput";
-import NavToolbar from "../../components/NavToolbar";
-import TitleTypography from "../../components/common/TitleTypography";
+import MetaDataInput from "../../../components/plainText/MetaDataInput";
+import ClusterInput from "../../../components/plainText/ClusterInput";
+import MinistryInput from "../../../components/plainText/MinistryInput";
+import NavToolbar from "../../../components/NavToolbar";
+import TitleTypography from "../../../components/common/TitleTypography";
 import { Button } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
-import { USER_REQUESTS } from "../requests/UserRequests";
-import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
+import { USER_REQUESTS } from "../../requests/UserRequests";
+import { ALL_ACTIVE_REQUESTS } from "../../requests/AdminRequests";
 import { toast } from "react-toastify";
-import Container from "../../components/common/Container";
-import Users from "../../components/plainText/Users";
+import Container from "../../../components/common/Container";
+import Users from "../../../components/plainText/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../components/plainText/Quotas";
-import Namespaces from "../../components/Namespaces";
+import Quotas from "../../../components/plainText/Quotas";
+import Namespaces from "../../../components/Namespaces";
 import TextField from "@mui/material/TextField";
 import { Box } from "@mui/material";
-import ReProvisionButton from "../../components/ReProvisionButton";
-import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
+import ReProvisionButton from "../../../components/ReProvisionButton";
+import ReadOnlyAdminContext from "../../../context/readOnlyAdmin";
 
 const ADMIN_REQUEST = gql`
   query PrivateCloudRequestById($requestId: ID!) {
@@ -160,7 +160,7 @@ export default function AdminRequest() {
   const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
-    variables: { requestId: id },
+    variables: { requestId: id }
   });
 
   const { project, requestedProject, ...request } =
@@ -168,9 +168,9 @@ export default function AdminRequest() {
 
   const [
     privateCloudRequestDecision,
-    { data: decisionData, loading: decisionLoading, error: decisionError },
+    { data: decisionData, loading: decisionLoading, error: decisionError }
   ] = useMutation(MAKE_REQUEST_DECISION, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
 
   const [
@@ -178,15 +178,15 @@ export default function AdminRequest() {
     {
       data: reprovisionData,
       loading: reprovisionLoading,
-      error: reprovisionError,
-    },
+      error: reprovisionError
+    }
   ] = useMutation(RE_PROVISION_REQUEST, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
 
   const reProvisionOnClick = () => {
     toastId.current = toast("Re provisioning request has been submitted", {
-      autoClose: false,
+      autoClose: false
     });
 
     privateCloudReProvisionRequest({
@@ -196,7 +196,7 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000,
+          autoClose: 5000
         });
       },
       onCompleted: () => {
@@ -204,15 +204,15 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: "Re provisioning request successful",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000,
+          autoClose: 5000
         });
-      },
+      }
     });
   };
 
   const makeDecisionOnClick = (decision) => {
     toastId.current = toast("Your decision has been submitted", {
-      autoClose: false,
+      autoClose: false
     });
     privateCloudRequestDecision({
       variables: { requestId: id, decision, humanComment: humanCommentInput },
@@ -221,7 +221,7 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000,
+          autoClose: 5000
         });
       },
       onCompleted: () => {
@@ -229,9 +229,9 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: "Decision successful",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000,
+          autoClose: 5000
         });
-      },
+      }
     });
   };
 
@@ -291,24 +291,26 @@ export default function AdminRequest() {
           multiline
           rows={4}
         />
-        {!readOnlyAdmin && <Box sx={{ mt: 3, mb: 3 }}>
-          <Button
-            disabled={isDisabled}
-            sx={{ mr: 1, minWidth: "120px" }}
-            onClick={() => makeDecisionOnClick("APPROVED")}
-            variant="contained"
-          >
-            Approve
-          </Button>
-          <Button
-            disabled={isDisabled}
-            sx={{ mr: 1, minWidth: "120px" }}
-            onClick={() => makeDecisionOnClick("REJECTED")}
-            variant="outlined"
-          >
-            Reject
-          </Button>
-        </Box>}
+        {!readOnlyAdmin && (
+          <Box sx={{ mt: 3, mb: 3 }}>
+            <Button
+              disabled={isDisabled}
+              sx={{ mr: 1, minWidth: "120px" }}
+              onClick={() => makeDecisionOnClick("APPROVED")}
+              variant="contained"
+            >
+              Approve
+            </Button>
+            <Button
+              disabled={isDisabled}
+              sx={{ mr: 1, minWidth: "120px" }}
+              onClick={() => makeDecisionOnClick("REJECTED")}
+              variant="outlined"
+            >
+              Reject
+            </Button>
+          </Box>
+        )}
       </Container>
     </div>
   );

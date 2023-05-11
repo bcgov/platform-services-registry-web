@@ -6,13 +6,13 @@ import {
   projectsToRows,
   projectsToRowsXs
 } from "./helpers";
-import StickyTable from "../../components/common/Table";
-import SearchContext from "../../context/search";
-import FilterContext from "../../context/filter";
-import SortContext from "../../context/sort";
-import useWindowSize from "../../hooks/useWindowSize";
-import { EmptyAlert, ErrorAlert } from "../../components/common/Alert";
-import EmptyList from "../../components/common/EmptyList";
+import StickyTable from "../../../components/common/Table";
+import SearchContext from "../../../context/search";
+import FilterContext from "../../../context/filter";
+import SortContext from "../../../context/sort";
+import useWindowSize from "../../../hooks/useWindowSize";
+import { EmptyAlert, ErrorAlert } from "../../../components/common/Alert";
+import EmptyList from "../../../components/common/EmptyList";
 
 const ALL_PROJECTS = gql`
   query PrivateCloudProjectsPaginated(
@@ -130,7 +130,7 @@ export default function Projects() {
       <div className="Loaded-indicator" />
       {data.privateCloudProjectsPaginated?.projects.length > 0 ? (
         <StickyTable
-          onClickPath={"/private-cloud/admin/product/"}
+          onClickPath={"/registry/admin/private-cloud/product/"}
           onNextPage={getNextPage}
           columns={width < 900 ? columnsXs : columns}
           rows={

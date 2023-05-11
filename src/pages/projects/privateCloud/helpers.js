@@ -1,9 +1,9 @@
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
-import GroupAvatars from "../../components/common/Contacts";
-import Avatar from "../../components/common/Avatar";
+import GroupAvatars from "../../../components/common/Contacts";
+import Avatar from "../../../components/common/Avatar";
 import Link from "@mui/material/Link";
-import { stopPropagationRow } from "../../components/common/FormHelpers";
+import { stopPropagationRow } from "../../../components/common/FormHelpers";
 
 function truncate(str, n) {
   return str.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -16,13 +16,13 @@ const columns = [
   { id: "cluster", label: "Cluster", minWidth: 0, width: 100 },
   { id: "projectOwner", label: "Project Owner", minWidth: 0, width: 180 },
   { id: "technicalLeads", label: "Technical Leads", minWidth: 0, width: 180 },
-  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 },
+  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 }
 ];
 
 const columnsXs = [
   { id: "name", label: "Name", minWidth: 40, width: 60 },
   { id: "contacts", label: "Contacts", minWidth: 0, width: 100 },
-  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 },
+  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 }
 ];
 
 const projectsToRows = ({
@@ -34,7 +34,7 @@ const projectsToRows = ({
   secondaryTechnicalLead,
   ministry,
   cluster,
-  licencePlate,
+  licencePlate
 }) => ({
   id,
   name: (
@@ -51,8 +51,8 @@ const projectsToRows = ({
     <Link
       sx={{
         "&:hover": {
-          cursor: "pointer",
-        },
+          cursor: "pointer"
+        }
       }}
       underline="hover"
       onClick={(e) =>
@@ -69,7 +69,9 @@ const projectsToRows = ({
   projectOwner: (
     <Link
       underline="hover"
-      onClick={(e) => stopPropagationRow(e, "mailto:" + projectOwner.email, undefined)}
+      onClick={(e) =>
+        stopPropagationRow(e, "mailto:" + projectOwner.email, undefined)
+      }
     >
       <Chip
         // key={projectOwner.githubId + licencePlate + "po"}
@@ -111,7 +113,7 @@ const projectsToRows = ({
           </Link>
         ))}
     </Stack>
-  ),
+  )
 });
 
 const projectsToRowsXs = ({
@@ -121,7 +123,7 @@ const projectsToRowsXs = ({
   primaryTechnicalLead,
   secondaryTechnicalLead,
   licencePlate,
-  cluster,
+  cluster
 }) => ({
   id,
   name: <span style={{ fontSize: 18, fontWeight: "450" }}>{name}</span>,
@@ -130,7 +132,7 @@ const projectsToRowsXs = ({
       users={[
         projectOwner,
         primaryTechnicalLead,
-        secondaryTechnicalLead,
+        secondaryTechnicalLead
       ].filter(Boolean)}
     />
   ),
@@ -138,21 +140,21 @@ const projectsToRowsXs = ({
     <Link
       sx={{
         "&:hover": {
-          cursor: "pointer",
-        },
+          cursor: "pointer"
+        }
       }}
       underline="hover"
       onClick={(e) =>
         stopPropagationRow(
-          e, 
-          undefined,          
+          e,
+          undefined,
           `https://console.apps.${cluster}.devops.gov.bc.ca/topology/ns/${licencePlate}-prod`
         )
       }
     >
       <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
     </Link>
-  ),
+  )
 });
 
 export { columns, columnsXs, projectsToRows, projectsToRowsXs };
