@@ -1,23 +1,20 @@
-import React, { useContext } from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { clusterNames, clusterNamesUserCreate } from "../common/Constants";
+import { adminClusters } from "../common/Constants";
 import TitleTypography from "../common/TitleTypography";
 import FormHelperText from "@mui/material/FormHelperText";
 import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
 import AdminContext from "../../context/admin";
 
-export default function ClusterInput({ formik, isDisabled }) {
-  const isAdmin = useContext(AdminContext);
-  const clusterNamesInput =
-    isAdmin.admin || isAdmin.readOnlyAdmin
-      ? clusterNames
-      : clusterNamesUserCreate;
-
+export default function ClusterInput({
+  formik,
+  isDisabled,
+  clusterOptions = adminClusters
+}) {
   return (
     <Box
       sx={{
@@ -65,7 +62,7 @@ export default function ClusterInput({ formik, isDisabled }) {
           labelId="select-cluster"
           label="Cluster"
         >
-          {clusterNamesInput.map((clusterOption) => (
+          {clusterOptions.map((clusterOption) => (
             <MenuItem key={clusterOption.id} value={clusterOption.name}>
               {clusterOption.humanFriendlyName}
             </MenuItem>
