@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect,useContext, useCallback } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
@@ -7,10 +7,26 @@ import EmptyList from "../../components/common/EmptyList";
 import SearchContext from "../../context/search";
 import FilterContext from "../../context/filter";
 import SortContext from "../../context/sort";
+import UserContext from "../../context/user";
 
 const USER_PROJECTS = gql`
-  query UserProjects {
-    userPrivateCloudProjects {
+query PrivateCloudProjectsPaginated(
+  $page: Int!
+  $pageSize: Int!
+  $filter: FilterPrivateCloudProjectsInput
+  $search: String
+  $sortOrder: Int
+  $userId:String
+) {
+  privateCloudProjectsPaginated(
+    page: $page
+    pageSize: $pageSize
+    filter: $filter
+    search: $search
+    sortOrder: $sortOrder
+    userId: $userId
+  ) {
+    projects {
       id
       name
       description
@@ -36,19 +52,71 @@ const USER_PROJECTS = gql`
         email
       }
     }
+    total
   }
+}
 `;
 
 export default function Projects() {
-  const { loading, error, data, startPolling } = useQuery(USER_PROJECTS);
+
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const { debouncedSearch } = useContext(SearchContext);
   const [page, setPage] = useState(1);
   const { filter } = useContext(FilterContext);
   const { sortOrder } = useContext(SortContext);
+  const userContext = useContext(UserContext);
+
+  const { loading, data, fetchMore, startPolling, error } = useQuery(USER_PROJECTS,
+    {
+      nextFetchPolicy: "cache-first",
+      variables: {
+        page: page,
+        pageSize: rowsPerPage,
+        search: debouncedSearch,
+        filter,
+        sortOrder,
+        userId:userContext.id,
+      }
+    }
+  );
+ console.log(data)
   useEffect(() => {
     startPolling(15000);
   }, [startPolling]);
+
+  useEffect(() => {
+    fetchMore({
+      variables: {
+        page: 1,
+        pageSize: rowsPerPage,
+        search: debouncedSearch,
+        filter,
+        sortOrder,
+        userId:userContext.id,
+      }
+    });
+    setPage(1);
+  }, [rowsPerPage, debouncedSearch, filter, sortOrder, fetchMore]);
+
+  const getNextPage = useCallback(
+    (page, pageSize) => {
+      setPage((prevPage) => {
+        const nextPage = prevPage + 1;
+        fetchMore({
+          variables: {
+            page: nextPage,
+            pageSize,
+            search: debouncedSearch,
+            filter,
+            sortOrder,
+            userId:userContext.id,
+          }
+        });
+        return nextPage;
+      });
+    },
+    [filter, debouncedSearch, sortOrder]
+  );
 
   if (error && error.message === "Not a user") {
     return (
@@ -68,12 +136,15 @@ export default function Projects() {
   }
 
   return !loading ? (
-    data?.userPrivateCloudProjects?.length > 0 ? <StickyTable
+    data?.privateCloudProjectsPaginated?.projects?.length > 0 ? <StickyTable
       onClickPath={"/private-cloud/user/product/"}
+      onNextPage={getNextPage}
       columns={columns}
-      rows={data.userPrivateCloudProjects.map(projectsToRows)}
+      rows={data?.privateCloudProjectsPaginated?.projects.map(
+        projectsToRows
+      )}
       count={loading ? 0 : data?.userPrivateCloudProjects?.length}
-      title="Projects"
+      title="Products"
       loading={loading}
       rowsPerPage={rowsPerPage}
       setRowsPerPage={setRowsPerPage}

@@ -40,8 +40,8 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "generate": "graphql-codegen --config codegen.yml",
-    "start": "react-scripts start",
+    "generate": "graphql-codegen --config codegen.yml",   
+    "start": "export SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
