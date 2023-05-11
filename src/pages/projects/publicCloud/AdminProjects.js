@@ -18,7 +18,7 @@ const ALL_PROJECTS = gql`
   query PublicCloudProjectsPaginated(
     $page: Int!
     $pageSize: Int!
-    $filter: FilterPrivateCloudProjectsInput
+    $filter: FilterPublicCloudProjectsInput
     $search: String
     $sortOrder: Int
   ) {
@@ -33,8 +33,8 @@ const ALL_PROJECTS = gql`
         id
         name
         description
-        cluster
         ministry
+        provider
         licencePlate
         projectOwner {
           email

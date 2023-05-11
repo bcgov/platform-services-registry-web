@@ -375,7 +375,7 @@ export type Query = {
   privateCloudProjectById: PrivateCloudProject;
   privateCloudProjects: Array<PrivateCloudProject>;
   privateCloudProjectsById: Array<PrivateCloudProject>;
-  privateCloudProjectsPaginated: ProjectsPaginatedOutput;
+  privateCloudProjectsPaginated: PrivateCloudProjectsPaginatedOutput;
   privateCloudRequestById: PrivateCloudRequest;
   privateCloudRequests: Array<PrivateCloudRequest>;
   publicCloudActiveRequestById: PublicCloudRequest;
@@ -384,7 +384,7 @@ export type Query = {
   publicCloudProjectById: PublicCloudProject;
   publicCloudProjects: Array<PublicCloudProject>;
   publicCloudProjectsById: Array<PublicCloudProject>;
-  publicCloudProjectsPaginated: ProjectsPaginatedOutput;
+  publicCloudProjectsPaginated: PublicCloudProjectsPaginatedOutput;
   publicCloudRequestById: PublicCloudRequest;
   publicCloudRequests: Array<PublicCloudRequest>;
   user?: Maybe<User>;
@@ -598,9 +598,15 @@ export type User = {
   publicCloudProjectTechnicalLead: Array<Maybe<PublicCloudProject>>;
 };
 
-export type ProjectsPaginatedOutput = {
-  __typename?: 'projectsPaginatedOutput';
+export type PrivateCloudProjectsPaginatedOutput = {
+  __typename?: 'privateCloudProjectsPaginatedOutput';
   projects: Array<PrivateCloudProject>;
+  total: Scalars['Int'];
+};
+
+export type PublicCloudProjectsPaginatedOutput = {
+  __typename?: 'publicCloudProjectsPaginatedOutput';
+  projects: Array<PublicCloudProject>;
   total: Scalars['Int'];
 };
 
