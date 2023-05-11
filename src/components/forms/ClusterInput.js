@@ -13,16 +13,17 @@ import AdminContext from "../../context/admin";
 
 export default function ClusterInput({ formik, isDisabled }) {
   const isAdmin = useContext(AdminContext);
-  const clusterNamesInput = isAdmin.admin
-    ? clusterNames
-    : clusterNamesUserCreate;
+  const clusterNamesInput =
+    isAdmin.admin || isAdmin.readOnlyAdmin
+      ? clusterNames
+      : clusterNamesUserCreate;
 
   return (
     <Box
       sx={{
         mb: 1,
         mt: 5,
-        width: 250,
+        width: 250
       }}
       noValidate
       autoComplete="off"
@@ -30,24 +31,25 @@ export default function ClusterInput({ formik, isDisabled }) {
       <div>
         <TitleTypography>Cluster</TitleTypography>
         <Typography sx={{ mb: 2 }} color="text.primary">
-          Select your cluster. <b>GOLD</b> will also create a <b>GOLDDR</b> cluster.
+          Select your cluster. <b>GOLD</b> will also create a <b>GOLDDR</b>{" "}
+          cluster.
         </Typography>
       </div>
       <FormControl
         sx={{
           "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input":
             {
-              WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+              WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
             },
           "& .MuiInputLabel-root": {
-            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
           },
           "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline":
             {
-              borderColor: "rgba(0, 0, 0, 0.87)",
+              borderColor: "rgba(0, 0, 0, 0.87)"
             },
           width: 250,
-          mt: 1,
+          mt: 1
         }}
         size="small"
       >
