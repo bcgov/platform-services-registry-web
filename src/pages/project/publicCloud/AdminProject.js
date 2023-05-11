@@ -13,7 +13,7 @@ import ProviderInput from "../../../components/forms/ProviderInput";
 import MinistryInput from "../../../components/forms/MinistryInput";
 import NavToolbar from "../../../components/NavToolbar";
 import {
-  projectInitialValues,
+  createPublicCloudProjectInputInitalValues as projectInitialValues,
   replaceNullsWithEmptyString,
   replaceEmptyStringWithNull,
   stripTypeName
@@ -35,8 +35,8 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import ReadOnlyAdminContext from "../../../context/readOnlyAdmin";
 import UserContext from "../../../context/user";
-import BillingGroupInput from "../../../components/common/BillingGroup";
-import BudgetInput from "../../../components/common/Budget";
+import BillingGroupInput from "../../../components/forms/BillingGroup";
+import BudgetInput from "../../../components/forms/Budget";
 
 const ADMIN_PROJECT = gql`
   query PublicCloudProjectById($projectId: ID!) {
@@ -122,21 +122,33 @@ const validationSchema = yup.object().shape({
   ministry: MinistrySchema.required(),
   provider: ProviderSchema.required(),
   billingGroup: yup.string().required(),
-  budget: BudgetInputSchema.required(),
+  budget: BudgetInputSchema().required(),
   projectOwner: yup
     .object(CreateUserInputSchema)
     .transform((value, original) => {
       return replaceEmptyStringWithNull(value);
     }),
-  technicalLeads: yup
-    .array()
-    .of(
-      yup.object(CreateUserInputSchema).transform((value, original) => {
-        return replaceEmptyStringWithNull(value);
-      })
-    )
-    .min(1, "At least one technical lead is required")
-    .required("Technical leads are required"),
+  primaryTechnicalLead: yup
+    .object(CreateUserInputSchema)
+    .transform((value, original) => {
+      return replaceEmptyStringWithNull(value);
+    }),
+  secondaryTechnicalLead: yup
+    .object(CreateUserInputSchema)
+    .nullable()
+    .transform((value) => (value?.email === "" ? null : value))
+    .transform((value, original) => {
+      return replaceEmptyStringWithNull(value);
+    }),
+  // technicalLeads: yup
+  //   .array()
+  //   .of(
+  //     yup.object(CreateUserInputSchema).transform((value, original) => {
+  //       return replaceEmptyStringWithNull(value);
+  //     })
+  //   )
+  //   .min(1, "At least one technical lead is required")
+  //   .required("Technical leads are required"),
   commonComponents: yup
     .object(CommonComponentsInputSchema)
     .transform((value, original) => {
@@ -211,7 +223,16 @@ export default function AdminProject({ requestsRoute }) {
       autoClose: false
     });
 
-    const variables = validationSchema.cast(values);
+    // Replace primary and secondary technical lead with an array of technical leads called technicalLeads
+    const technicalLeads = [
+      values.primaryTechnicalLead,
+      values.secondaryTechnicalLead
+    ].filter((lead) => lead !== null);
+
+    const variables = validationSchema.cast({
+      ...values,
+      technicalLeads
+    });
 
     publicCloudProjectEditRequest({
       variables: { projectId: id, ...variables },
@@ -244,7 +265,7 @@ export default function AdminProject({ requestsRoute }) {
         replaceNullsWithEmptyString(data?.publicCloudProjectById)
       );
 
-      // Set give secondary technical lead an object with an empty string for all properties if null
+      // Give secondary technical lead an object with an empty string for all properties if null
       formData.secondaryTechnicalLead =
         formData.secondaryTechnicalLead !== ""
           ? formData.secondaryTechnicalLead

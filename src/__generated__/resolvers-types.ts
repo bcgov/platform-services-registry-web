@@ -244,7 +244,7 @@ export type MutationPrivateCloudRequestDecisionArgs = {
 
 
 export type MutationPublicCloudProjectEditRequestArgs = {
-  billingGroup: Scalars['String'];
+  billingGroup?: InputMaybe<Scalars['String']>;
   budget: BudgetInput;
   commonComponents: CommonComponentsInput;
   description: Scalars['String'];
@@ -257,7 +257,7 @@ export type MutationPublicCloudProjectEditRequestArgs = {
 
 
 export type MutationPublicCloudProjectRequestArgs = {
-  billingGroup: Scalars['String'];
+  billingGroup?: InputMaybe<Scalars['String']>;
   budget: BudgetInput;
   commonComponents: CommonComponentsInput;
   description: Scalars['String'];

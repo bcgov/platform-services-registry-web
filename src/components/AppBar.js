@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -35,7 +35,7 @@ export default function DenseAppBar() {
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
-            height: { xs: 10, sm: 60 },
+            height: { xs: 10, sm: 60 }
           }}
         >
           <div style={{ display: "flex", flexDirection: "row" }}>
@@ -50,7 +50,7 @@ export default function DenseAppBar() {
                     display: "inline-block",
                     fontWeight: "300",
                     fontSize: 20,
-                    font: "roboto",
+                    font: "roboto"
                   }}
                 >
                   BC Platform Services&nbsp;

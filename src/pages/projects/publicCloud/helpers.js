@@ -33,7 +33,7 @@ const projectsToRows = ({
   primaryTechnicalLead,
   secondaryTechnicalLead,
   ministry,
-  cluster,
+  provider,
   licencePlate
 }) => ({
   id,
@@ -46,26 +46,8 @@ const projectsToRows = ({
     <span style={{ fontSize: 18 }}> {truncate(description, 130)}</span>
   ),
   ministry,
-  cluster,
-  licencePlate: (
-    <Link
-      sx={{
-        "&:hover": {
-          cursor: "pointer"
-        }
-      }}
-      underline="hover"
-      onClick={(e) =>
-        stopPropagationRow(
-          e,
-          undefined,
-          `https://console.apps.${cluster}.devops.gov.bc.ca/topology/ns/${licencePlate}-prod`
-        )
-      }
-    >
-      <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
-    </Link>
-  ),
+  provider,
+  licencePlate,
   projectOwner: (
     <Link
       underline="hover"
@@ -136,25 +118,7 @@ const projectsToRowsXs = ({
       ].filter(Boolean)}
     />
   ),
-  licencePlate: (
-    <Link
-      sx={{
-        "&:hover": {
-          cursor: "pointer"
-        }
-      }}
-      underline="hover"
-      onClick={(e) =>
-        stopPropagationRow(
-          e,
-          undefined,
-          `https://console.apps.${cluster}.devops.gov.bc.ca/topology/ns/${licencePlate}-prod`
-        )
-      }
-    >
-      <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
-    </Link>
-  )
+  licencePlate
 });
 
 export { columns, columnsXs, projectsToRows, projectsToRowsXs };

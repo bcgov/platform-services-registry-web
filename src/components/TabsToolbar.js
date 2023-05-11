@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -10,7 +10,64 @@ import { Outlet } from "react-router-dom";
 import TabForm from "./forms/ResponsiveTabForm";
 import AdminContext from "../context/admin";
 import ReadOnlyAdminContext from "../context/readOnlyAdmin";
-import CreateBtn from "../components/common/CreateBtn";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import { styled } from "@mui/material/styles";
+import { routesUser, routesAdmin } from "./AppRouter";
+import ButtonGroup from "@mui/material/ButtonGroup";
+
+import AddIcon from "@mui/icons-material/Add";
+
+const ColorButton = styled(Button)(({ theme }) => ({
+  color: "#003366",
+  backgroundColor: "white",
+  "&:hover": {
+    backgroundColor: "#f5f5f5",
+    boxShadow: "none"
+  },
+  boxShadow: "none",
+  border: "1px solid",
+  borderColor: "#bdbdbd"
+}));
+
+function CreateButtons({ privateCloudCreatePath, publicCloudCreatePath }) {
+  return (
+    <Stack
+      direction="row"
+      spacing={2}
+      sx={{ whiteSpace: "nowrap", minWidth: "auto" }}
+    >
+      <ColorButton
+        size="small"
+        variant="contained"
+        href={privateCloudCreatePath}
+      >
+        Create Private Cloud Project
+      </ColorButton>
+      <ColorButton
+        size="small"
+        variant="contained"
+        href={publicCloudCreatePath}
+      >
+        Create Public Cloud Project
+      </ColorButton>
+    </Stack>
+  );
+}
+
+// function CreateButtons({ privateCloudCreatePath, publicCloudCreatePath }) {
+//   return (
+//     <ButtonGroup
+//       disableElevation
+//       variant="text"
+//       aria-label="Disabled elevation buttons"
+//       sx={{ whiteSpace: "nowrap", minWidth: "auto" }}
+//     >
+//       <Button>Create Private Cloud Project</Button>
+//       <Button>Create Public Cloud Project</Button>
+//     </ButtonGroup>
+//   );
+// }
 
 export default function TabsToolbar({ routes }) {
   const { pathname } = useLocation();
@@ -19,7 +76,7 @@ export default function TabsToolbar({ routes }) {
 
   return (
     <>
-      <Toolbar style={{ width: "93.7%" }}>
+      <Toolbar style={{ width: "96%" }}>
         <Typography
           variant="button"
           color="inherit"
@@ -57,8 +114,16 @@ export default function TabsToolbar({ routes }) {
         </Box>
         {pathname === routes[1] && (admin || readOnlyAdmin) ? (
           <TabForm />
-        ) : null}
-        <CreateBtn />
+        ) : (
+          <CreateButtons
+            privateCloudCreatePath={
+              admin || readOnlyAdmin ? routesAdmin[2] : routesUser[2]
+            }
+            publicCloudCreatePath={
+              admin || readOnlyAdmin ? routesAdmin[4] : routesUser[4]
+            }
+          />
+        )}
       </Toolbar>
       <Outlet />
     </>

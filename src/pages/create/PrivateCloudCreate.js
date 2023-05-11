@@ -4,27 +4,27 @@ import {
   CreateUserInputSchema,
   CommonComponentsInputSchema,
   ClusterSchema,
-  MinistrySchema,
-} from "../__generated__/resolvers-types";
+  MinistrySchema
+} from "../../__generated__/resolvers-types";
 import {
   createProjectInputInitalValues as initialValues,
-  replaceEmptyStringWithNull,
-} from "../components/common/FormHelpers";
+  replaceEmptyStringWithNull
+} from "../../components/common/FormHelpers";
 import { useFormik } from "formik";
 import { useMutation, gql } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
-import NavToolbar from "../components/NavToolbar";
+import NavToolbar from "../../components/NavToolbar";
 import Button from "@mui/material/Button";
-import MetaDataInput from "../components/forms/MetaDataInput";
-import ClusterInput from "../components/forms/ClusterInput";
-import MinistryInput from "../components/forms/MinistryInput";
-import CommonComponents from "../components/forms/CommonComponents";
-import AGMinistry from "../components/forms/AGMinistry";
-import { USER_REQUESTS } from "./requests/UserRequests";
-import { ALL_ACTIVE_REQUESTS } from "./requests/AdminRequests";
+import MetaDataInput from "../../components/forms/MetaDataInput";
+import ClusterInput from "../../components/forms/ClusterInput";
+import MinistryInput from "../../components/forms/MinistryInput";
+import CommonComponents from "../../components/forms/CommonComponents";
+import AGMinistry from "../../components/forms/AGMinistry";
+import { USER_REQUESTS } from "../requests/UserRequests";
+import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
 import { toast } from "react-toastify";
-import Container from "../components/common/Container";
-import Users from "../components/forms/Users";
+import Container from "../../components/common/Container";
+import Users from "../../components/forms/Users";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -63,7 +63,7 @@ const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
-  ministryAG: yup.boolean().oneOf([true], 'Message'),
+  ministryAG: yup.boolean().oneOf([true], "Message"),
   cluster: ClusterSchema.required(),
   projectOwner: CreateUserInputSchema(),
   primaryTechnicalLead: CreateUserInputSchema(),
@@ -76,7 +76,7 @@ const validationSchema = yup.object().shape({
     .object(CommonComponentsInputSchema)
     .transform((value, original) => {
       return replaceEmptyStringWithNull(value);
-    }),
+    })
 });
 
 const style = {
@@ -88,7 +88,7 @@ const style = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4,
+  p: 4
 };
 
 export default function Create({ requestsRoute }) {
@@ -101,10 +101,7 @@ export default function Create({ requestsRoute }) {
     CREATE_USER_PROJECT,
     {
       errorPolicy: "ignore", // Query to refetch might not have been called yet, so ignore error
-      refetchQueries: [
-        { query: USER_REQUESTS },
-        { query: ALL_ACTIVE_REQUESTS },
-      ],
+      refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
     }
   );
 
@@ -118,14 +115,14 @@ export default function Create({ requestsRoute }) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
       }
-    },
+    }
   });
 
-    const submitForm = () => {
+  const submitForm = () => {
     const { values } = formik;
 
     toastId.current = toast("Your create request has been submitted", {
-      autoClose: false,
+      autoClose: false
     });
 
     const variables = validationSchema.cast(values);
@@ -136,7 +133,7 @@ export default function Create({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000,
+          autoClose: 5000
         });
       },
 
@@ -147,10 +144,10 @@ export default function Create({ requestsRoute }) {
           toast.update(toastId.current, {
             render: "Request successfuly created",
             type: toast.TYPE.SUCCESS,
-            autoClose: 5000,
+            autoClose: 5000
           });
         }
-      },
+      }
     });
   };
 
@@ -167,11 +164,8 @@ export default function Create({ requestsRoute }) {
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={false} />
               <ClusterInput formik={formik} isDisabled={false} />
-            </div>      
-             <AGMinistry
-             formik={formik}
-             setAGministries={setAGministries}
-             />
+            </div>
+            <AGMinistry formik={formik} setAGministries={setAGministries} />
           </div>
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Users formik={formik} isDisabled={false} />
@@ -186,8 +180,8 @@ export default function Create({ requestsRoute }) {
             conversation with you. Also, look out for our{" "}
             <b>Notification emails</b> that will provide you with valuable
             information regarding your product status and details. By
-            proceeding, you confirm that you have read and understood the roles and
-            responsibilities as described in the Onboarding Guide."
+            proceeding, you confirm that you have read and understood the roles
+            and responsibilities as described in the Onboarding Guide."
           </Typography>
           <div>
             <Button

@@ -12,10 +12,12 @@ import AdminContext from "../../context/admin";
 
 export default function ProviderInput({ formik, isDisabled }) {
   const isAdmin = useContext(AdminContext);
-  const clusterNamesInput = {
-    name: "AWS",
-    humanFriendlyName: "Amazon Web Services"
-  };
+  const providerNamesInput = [
+    {
+      name: "AWS",
+      humanFriendlyName: "Amazon Web Services"
+    }
+  ];
 
   return (
     <Box
@@ -64,8 +66,8 @@ export default function ProviderInput({ formik, isDisabled }) {
           labelId="select-cluster"
           label="Cluster"
         >
-          {clusterNamesInput.map((clusterOption) => (
-            <MenuItem key={clusterOption.id} value={clusterOption.name}>
+          {providerNamesInput.map((clusterOption, i) => (
+            <MenuItem key={i} value={clusterOption.name}>
               {clusterOption.humanFriendlyName}
             </MenuItem>
           ))}

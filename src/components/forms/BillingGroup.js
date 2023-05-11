@@ -22,7 +22,7 @@ export default function BillingGroup({ formik, isDisabled }) {
       <Box sx={{ display: "flex", p: 0 }}>
         <Box sx={{ mr: 0, width: 650 }}>
           <div>
-            <TitleTypography>Product Description</TitleTypography>
+            <TitleTypography>Billing Group</TitleTypography>
             <Typography sx={{ mb: 1 }} color="text.primary">
               Please provide a biling group for this project. If you do not
               provide a billing group, one will be created for you.
@@ -33,29 +33,13 @@ export default function BillingGroup({ formik, isDisabled }) {
             name="billingGroup"
             label="Billing Group"
             disabled={isDisabled}
-            value={formik.values.description}
+            value={formik.values.billingGroup}
             onChange={formik.handleChange}
             error={
-              formik.touched.description && Boolean(formik.errors.description)
+              formik.touched.billingGroup && Boolean(formik.errors.billingGroup)
             }
-            helperText={formik.touched.name && <RequiredField />}
+            helperText={formik.touched.nambillingGroupe && <RequiredField />}
             size="small"
-            sx={{
-              "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input":
-                {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
-                },
-              "& .MuiInputLabel-root": {
-                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
-              },
-              "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "rgba(0, 0, 0, 0.87)"
-                },
-              width: "100%"
-            }}
-            multiline
-            rows={4}
           />
         </Box>
       </Box>

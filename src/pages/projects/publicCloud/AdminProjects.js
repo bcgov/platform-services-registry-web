@@ -42,12 +42,6 @@ const ALL_PROJECTS = gql`
           lastName
           email
         }
-        primaryTechnicalLead {
-          email
-          firstName
-          lastName
-          email
-        }
         technicalLeads {
           email
           firstName

@@ -3,9 +3,9 @@ import * as yup from "yup";
 import {
   CreateUserInputSchema,
   CommonComponentsInputSchema,
-  QuotaInputSchema,
+  ProviderSchema,
   MinistrySchema,
-  ClusterSchema
+  BudgetInputSchema
 } from "../../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/forms/MetaDataInput";
@@ -123,21 +123,35 @@ const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
-  cluster: ClusterSchema.required(),
+  provider: ProviderSchema.required(),
+  billingGroup: yup.string().required(),
+  budget: BudgetInputSchema().required(),
   projectOwner: yup
     .object(CreateUserInputSchema)
     .transform((value, original) => {
       return replaceEmptyStringWithNull(value);
     }),
-  technicalLeads: yup
-    .array()
-    .of(
-      yup.object(CreateUserInputSchema).transform((value, original) => {
-        return replaceEmptyStringWithNull(value);
-      })
-    )
-    .min(1, "At least one technical lead is required")
-    .required("Technical leads are required"),
+  primaryTechnicalLead: yup
+    .object(CreateUserInputSchema)
+    .transform((value, original) => {
+      return replaceEmptyStringWithNull(value);
+    }),
+  secondaryTechnicalLead: yup
+    .object(CreateUserInputSchema)
+    .nullable()
+    .transform((value) => (value?.email === "" ? null : value))
+    .transform((value, original) => {
+      return replaceEmptyStringWithNull(value);
+    }),
+  // technicalLeads: yup
+  //   .array()
+  //   .of(
+  //     yup.object(CreateUserInputSchema).transform((value, original) => {
+  //       return replaceEmptyStringWithNull(value);
+  //     })
+  //   )
+  //   .min(1, "At least one technical lead is required")
+  //   .required("Technical leads are required"),
   commonComponents: yup
     .object(CommonComponentsInputSchema)
     .transform((value, original) => {
@@ -166,7 +180,6 @@ export default function AdminProject({ requestsRoute }) {
   const userContext = useContext(UserContext);
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id },
@@ -205,7 +218,16 @@ export default function AdminProject({ requestsRoute }) {
       autoClose: false
     });
 
-    const variables = validationSchema.cast(values);
+    // Replace primary and secondary technical lead with an array of technical leads called technicalLeads
+    const technicalLeads = [
+      values.primaryTechnicalLead,
+      values.secondaryTechnicalLead
+    ].filter((lead) => lead !== null);
+
+    const variables = validationSchema.cast({
+      ...values,
+      technicalLeads
+    });
 
     publicCloudProjectEditRequest({
       variables: { projectId: id, ...variables },
@@ -274,38 +296,6 @@ export default function AdminProject({ requestsRoute }) {
           >
             <RestartAltIcon />
           </IconButton>
-          <IconButton
-            disabled={isDisabled}
-            onClick={() => setDeleteOpen(true)}
-            aria-label="delete"
-          >
-            <DeleteForeverIcon />
-          </IconButton>
-          <Modal
-            open={deleteOpen}
-            onClose={() => setDeleteOpen(false)}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Please Confirm Your Delete Request
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Are you sure you want to delete this project?
-                <Button
-                  onClick={deleteOnClick}
-                  sx={{ mr: 1, width: "170px", mt: 3 }}
-                  variant="contained"
-                >
-                  Delete
-                </Button>
-              </Typography>
-            </Box>
-          </Modal>
-          {!readOnlyAdmin && (
-            <ReProvisionButton onClickHandler={reProvisionOnClick} />
-          )}
         </NavToolbar>
         {isDisabled ? (
           <ActiveRequestText
