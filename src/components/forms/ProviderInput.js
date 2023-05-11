@@ -30,10 +30,9 @@ export default function ProviderInput({ formik, isDisabled }) {
       autoComplete="off"
     >
       <div>
-        <TitleTypography>Cluster</TitleTypography>
+        <TitleTypography>Provider</TitleTypography>
         <Typography sx={{ mb: 2 }} color="text.primary">
-          Select your cluster. <b>GOLD</b> will also create a <b>GOLDDR</b>{" "}
-          cluster.
+          Select your public cloud provider.
         </Typography>
       </div>
       <FormControl
@@ -54,26 +53,26 @@ export default function ProviderInput({ formik, isDisabled }) {
         }}
         size="small"
       >
-        <InputLabel id="cluster-label">Cluster</InputLabel>
+        <InputLabel id="provider-label">Provider</InputLabel>
         <Select
-          id="cluster"
-          name="cluster"
-          value={formik.values.cluster}
+          id="provider"
+          name="provider"
+          value={formik.values.provider}
           onChange={formik.handleChange}
-          error={formik.touched.cluster && Boolean(formik.errors.cluster)}
-          helpertext={formik.touched.cluster && formik.errors.cluster}
+          error={formik.touched.provider && Boolean(formik.errors.provider)}
+          helpertext={formik.touched.provider && formik.errors.provider}
           disabled={isDisabled}
           labelId="select-cluster"
-          label="Cluster"
+          label="Provider"
         >
-          {providerNamesInput.map((clusterOption, i) => (
-            <MenuItem key={i} value={clusterOption.name}>
-              {clusterOption.humanFriendlyName}
+          {providerNamesInput.map((option, i) => (
+            <MenuItem key={i} value={option.name}>
+              {option.humanFriendlyName}
             </MenuItem>
           ))}
         </Select>
         <FormHelperText>
-          {formik.touched.cluster && <RequiredField />}
+          {formik.touched.provider && <RequiredField />}
         </FormHelperText>
       </FormControl>
     </Box>

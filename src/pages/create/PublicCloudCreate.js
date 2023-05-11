@@ -165,7 +165,11 @@ export default function Create({ requestsRoute }) {
       <form onSubmit={formik.handleSubmit}>
         <NavToolbar title="Create Product"></NavToolbar>
         <Container>
-          <MetaDataInput formik={formik} isDisabled={false} />
+          <MetaDataInput
+            formik={formik}
+            isDisabled={false}
+            cloudProvider={"Public Cloud platform"}
+          />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>
             <div style={{ display: "flex" }}>

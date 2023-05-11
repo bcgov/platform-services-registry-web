@@ -1,3 +1,4 @@
+import React from "react";
 import { useContext } from "react";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
@@ -14,9 +15,12 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import { routesUser, routesAdmin } from "./AppRouter";
-import ButtonGroup from "@mui/material/ButtonGroup";
-
 import AddIcon from "@mui/icons-material/Add";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import MenuIcon from "@mui/icons-material/Menu";
+import MenuList from "@mui/material/MenuList";
 
 const ColorButton = styled(Button)(({ theme }) => ({
   color: "#003366",
@@ -41,6 +45,7 @@ function CreateButtons({ privateCloudCreatePath, publicCloudCreatePath }) {
         size="small"
         variant="contained"
         href={privateCloudCreatePath}
+        endIcon={<AddIcon />}
       >
         Create Private Cloud Project
       </ColorButton>
@@ -48,6 +53,7 @@ function CreateButtons({ privateCloudCreatePath, publicCloudCreatePath }) {
         size="small"
         variant="contained"
         href={publicCloudCreatePath}
+        endIcon={<AddIcon />}
       >
         Create Public Cloud Project
       </ColorButton>
@@ -55,24 +61,46 @@ function CreateButtons({ privateCloudCreatePath, publicCloudCreatePath }) {
   );
 }
 
-// function CreateButtons({ privateCloudCreatePath, publicCloudCreatePath }) {
-//   return (
-//     <ButtonGroup
-//       disableElevation
-//       variant="text"
-//       aria-label="Disabled elevation buttons"
-//       sx={{ whiteSpace: "nowrap", minWidth: "auto" }}
-//     >
-//       <Button>Create Private Cloud Project</Button>
-//       <Button>Create Public Cloud Project</Button>
-//     </ButtonGroup>
-//   );
-// }
+function CreateButtonsDropdown({
+  privateCloudCreatePath,
+  publicCloudCreatePath,
+  handleClose
+}) {
+  return (
+    <MenuList>
+      <MenuItem
+        onClick={handleClose}
+        component={Link}
+        to={privateCloudCreatePath}
+      >
+        Create Private Cloud Project
+      </MenuItem>
+      <MenuItem
+        onClick={handleClose}
+        component={Link}
+        to={publicCloudCreatePath}
+      >
+        Create Public Cloud Project
+      </MenuItem>
+    </MenuList>
+  );
+}
 
 export default function TabsToolbar({ routes }) {
   const { pathname } = useLocation();
   const { admin } = useContext(AdminContext);
   const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <>
@@ -88,7 +116,6 @@ export default function TabsToolbar({ routes }) {
             color: "rgba(0, 0, 0, 0.6)",
             fontSize: 20,
             minWidth: 210,
-            // sm: { display: "none", color: "red"}
             display: { xs: "none", sm: "block" }
           }}
         >
@@ -109,21 +136,62 @@ export default function TabsToolbar({ routes }) {
               }
               to={routes[0]}
             />
-            <Tab component={Link} label="Products" to={routes[1]} />
+            <Tab
+              component={Link}
+              label="Private Cloud Products"
+              to={routes[1]}
+            />
+            <Tab
+              component={Link}
+              label="Public Cloud Products"
+              to={routes[1]}
+            />
           </Tabs>
         </Box>
         {pathname === routes[1] && (admin || readOnlyAdmin) ? (
           <TabForm />
         ) : (
-          <CreateButtons
-            privateCloudCreatePath={
-              admin || readOnlyAdmin ? routesAdmin[2] : routesUser[2]
-            }
-            publicCloudCreatePath={
-              admin || readOnlyAdmin ? routesAdmin[4] : routesUser[4]
-            }
-          />
+          <Box sx={{ display: { xs: "none", xl: "flex" } }}>
+            <CreateButtons
+              privateCloudCreatePath={
+                admin || readOnlyAdmin ? routesAdmin[2] : routesUser[2]
+              }
+              publicCloudCreatePath={
+                admin || readOnlyAdmin ? routesAdmin[4] : routesUser[4]
+              }
+            />
+          </Box>
         )}
+        <Box sx={{ display: { xs: "flex", xl: "none" } }}>
+          <IconButton onClick={handleClick} color="inherit">
+            <MenuIcon />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            onClick={handleClose}
+            PaperProps={{
+              elevation: 0,
+              sx: {
+                overflow: "visible",
+                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))"
+              }
+            }}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            <CreateButtonsDropdown
+              privateCloudCreatePath={
+                admin || readOnlyAdmin ? routesAdmin[2] : routesUser[2]
+              }
+              publicCloudCreatePath={
+                admin || readOnlyAdmin ? routesAdmin[4] : routesUser[4]
+              }
+              handleClose={handleClose}
+            />
+          </Menu>
+        </Box>
       </Toolbar>
       <Outlet />
     </>

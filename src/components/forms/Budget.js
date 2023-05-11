@@ -22,7 +22,7 @@ export default function Budget({ formik, isDisabled }) {
       <Box sx={{ display: "flex", p: 0 }}>
         <Box sx={{ mr: 0, width: 650 }}>
           <div>
-            <TitleTypography>Product Description</TitleTypography>
+            <TitleTypography>Budget</TitleTypography>
             <Typography sx={{ mb: 1 }} color="text.primary">
               Please provide your monthly budget for this project.
             </Typography>

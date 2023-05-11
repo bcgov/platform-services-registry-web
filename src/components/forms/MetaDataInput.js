@@ -5,7 +5,7 @@ import TitleTypography from "../common/TitleTypography";
 import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
 
-export default function MetaDataInput({ formik, isDisabled }) {
+export default function MetaDataInput({ formik, isDisabled, cloudProvider }) {
   return (
     <Box
       sx={{
@@ -14,7 +14,7 @@ export default function MetaDataInput({ formik, isDisabled }) {
         mt: 2,
         display: "flex",
         justifyContent: "space-between",
-        alignItems: "flex-end",
+        alignItems: "flex-end"
       }}
       noValidate
       autoComplete="off"
@@ -24,27 +24,33 @@ export default function MetaDataInput({ formik, isDisabled }) {
           <div>
             <TitleTypography>Product Description</TitleTypography>
             <Typography sx={{ mb: 1 }} color="text.primary">
-              If this is your first time on the <b>OpenShift platform</b> you
-              need to book an alignment meeting with the{" "}
+              If this is your first time on the <b>{cloudProvider}</b> you need
+              to book an alignment meeting with the{" "}
               <b>Platform Services team.</b> Reach out to{" "}
-              <a target="_blank" rel="noopener noreferrer" href="mailto: PlatformServicesTeam@gov.bc.ca">Platform Services</a> to
-              get started.
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="mailto: PlatformServicesTeam@gov.bc.ca"
+              >
+                Platform Services
+              </a>{" "}
+              to get started.
             </Typography>
           </div>
           <TextField
             sx={{
               "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input":
                 {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
                 },
               "& .MuiInputLabel-root": {
-                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
               },
               "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline":
                 {
-                  borderColor: "rgba(0, 0, 0, 0.87)",
+                  borderColor: "rgba(0, 0, 0, 0.87)"
                 },
-              width: "100%",
+              width: "100%"
             }}
             fullWidth
             id="name"
@@ -73,16 +79,16 @@ export default function MetaDataInput({ formik, isDisabled }) {
             sx={{
               "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input":
                 {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
                 },
               "& .MuiInputLabel-root": {
-                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
               },
               "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline":
                 {
-                  borderColor: "rgba(0, 0, 0, 0.87)",
+                  borderColor: "rgba(0, 0, 0, 0.87)"
                 },
-              width: "100%",
+              width: "100%"
             }}
             multiline
             rows={4}
