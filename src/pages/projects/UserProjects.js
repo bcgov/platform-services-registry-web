@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../components/common/Table";
@@ -75,11 +75,11 @@ export default function Projects() {
         search: debouncedSearch,
         filter,
         sortOrder,
-        userId:userContext.id,
+        userId: userContext.id,
       }
     }
   );
- console.log(data)
+
   useEffect(() => {
     startPolling(15000);
   }, [startPolling]);
@@ -92,7 +92,7 @@ export default function Projects() {
         search: debouncedSearch,
         filter,
         sortOrder,
-        userId:userContext.id,
+        userId: userContext.id,
       }
     });
     setPage(1);
@@ -109,7 +109,7 @@ export default function Projects() {
             search: debouncedSearch,
             filter,
             sortOrder,
-            userId:userContext.id,
+            userId: userContext.id,
           }
         });
         return nextPage;
@@ -136,22 +136,27 @@ export default function Projects() {
   }
 
   return !loading ? (
-    data?.privateCloudProjectsPaginated?.projects?.length > 0 ? <StickyTable
-      onClickPath={"/private-cloud/user/product/"}
-      onNextPage={getNextPage}
-      columns={columns}
-      rows={data?.privateCloudProjectsPaginated?.projects.map(
-        projectsToRows
+    <>
+      <div className="Loaded-indicator" />
+      {data.privateCloudProjectsPaginated?.projects.length > 0 ? (
+        <StickyTable
+          onClickPath={"/private-cloud/admin/product/"}
+          onNextPage={getNextPage}
+          columns={columns}
+          rows={data?.privateCloudProjectsPaginated?.projects.map(projectsToRows)
+          }
+          count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
+          title="Products"
+          loading={loading}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+        />
+      ) : (
+        <EmptyList
+          title="There are no products to be displayed"
+          subtitle="You currently have no products hosted on the Private Cloud OpenShift platform."
+        />
       )}
-      count={loading ? 0 : data?.userPrivateCloudProjects?.length}
-      title="Products"
-      loading={loading}
-      rowsPerPage={rowsPerPage}
-      setRowsPerPage={setRowsPerPage}
-    /> :
-      <EmptyList
-        title='There are no products to be displayed'
-        subtitle='You currently have no products hosted on the Private Cloud OpenShift platform.'
-      />
+    </>
   ) : null;
 }
