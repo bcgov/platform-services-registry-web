@@ -455,11 +455,12 @@ export default function AdminProject({ requestsRoute }) {
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
               <Button
                 type="submit"
-                disabled={!formik.dirty}
+                // disabled={!formik.dirty}
                 sx={{ mr: 1, width: "170px" }}
                 variant="contained"
+                onClick={() => console.log(formik.values)}
               >
-                Submit
+                Submitgggg
               </Button>
             ) : null}
             <Modal

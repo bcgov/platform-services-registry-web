@@ -14,7 +14,7 @@ import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRound
 import RequiredField from "../common/RequiredField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { getUsers, getUserPhoto } from "../../msGraphApi";
-import usePhotoUrl from "../../msGraphApi/useAzurePhoto";
+// import usePhotoUrl from "../../msGraphApi/useAzurePhoto";
 
 const USER_BY_EMAIL = gql`
   query UserByEmail($email: EmailAddress!) {
@@ -44,6 +44,7 @@ export default function UserInput({
   formik,
   isDisabled = false
 }) {
+  // console.log(formik.values)
   const email = formik.values[contact]?.email;
 
   const [edit, setEdit] = useState(defaultEditOpen);
@@ -53,26 +54,29 @@ export default function UserInput({
 
   const debouncedEmail = useDebounce(emailInput);
 
-  const photoUrl = usePhotoUrl(email);
+  // const photoUrl = usePhotoUrl(email);
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
     nextFetchPolicy: "cache-first"
   });
 
   const getFilteredUsers = useCallback(async () => {
+    
     const data = await getUsers(debouncedEmail);
 
     setUserOptions(data);
+   
   }, [debouncedEmail]);
 
   useEffect(() => {
     const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
-
+    // console.log(user)
+    // console.log(email)
     if (user) {
       getUser({ variables: { email } });
 
       setUserId(user.id);
-
+      // console.log(user.mail)
       formik.setFieldValue(contact + ".email", user.mail.toLowerCase() || "");
       formik.setFieldValue(contact + ".firstName", user.givenName || "");
       formik.setFieldValue(contact + ".lastName", user.surname || "");
@@ -81,7 +85,13 @@ export default function UserInput({
         parseMinistryFromDisplayName(user.displayName) || ""
       );
     }
-  }, [email]);
+    if (email===null){
+      formik.setFieldValue(contact + ".email", "");
+      formik.setFieldValue(contact + ".firstName", "");
+      formik.setFieldValue(contact + ".lastName","");
+      formik.setFieldValue(contact + ".ministry", "")
+    }
+  }, [email, emailInput]);
 
   useEffect(() => {
     if (debouncedEmail) {
@@ -149,7 +159,9 @@ export default function UserInput({
           >
             <Autocomplete
               disablePortal
+              
               options={userOptions.map((option) => option.mail?.toLowerCase())}
+              noOptionsText={'No IDIR linked email addresses found'}
               getOptionLabel={(mail) => mail || ""}
               sx={{ width: 300 }}
               id={contact + ".email"}
@@ -159,13 +171,15 @@ export default function UserInput({
               onChange={(e, value) =>
                 formik.setFieldValue(contact + ".email", value)
               }
-              value={email}
-              helperText={formik.touched[contact]?.email && <RequiredField />}
+              value={email||emailInput}
+              helperText={!formik.touched[contact]?.email && <RequiredField
+                />}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  onChange={(e) => setEmailInput(e.target.value)}
+                  onChange={(e) => {console.log(formik.touched[contact]?.email );setEmailInput(e.target.value)}}
                   label="Email"
+                  // required 
                   sx={{
                     "& .MuiInputBase-input.Mui-disabled": {
                       WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
@@ -173,11 +187,13 @@ export default function UserInput({
                     mb: 2
                   }}
                   error={
-                    formik.touched[contact]?.firstName &&
-                    Boolean(formik.errors[contact]?.firstName)
+                    formik.touched[contact]?.email &&
+                    Boolean(formik.errors[contact]?.email)
                   }
                   helperText={
-                    formik.touched[contact]?.email && <RequiredField />
+                    formik.touched[contact]?.email&&userOptions.indexOf(formik.touched[contact]?.email)!==-1 ? <RequiredField />:emailInput!==""&&<div style={{ fontSize: 16, color: "rgba(0, 0, 0, 0.45)" }}>
+                    Please enter a valid email address. This email address is not linked to any IDIR account
+                  </div>
                   }
                   variant="standard"
                   size="small"
