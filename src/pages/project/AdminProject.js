@@ -39,7 +39,8 @@ import Modal from "@mui/material/Modal";
 import ReProvisionButton from "../../components/ReProvisionButton";
 import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
 import UserContext from "../../context/user";
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip from "@mui/material/Tooltip";
+import Delete from "../../components/Delete";
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -146,8 +147,16 @@ const UPDATE_USER_PROJECT = gql`
 `;
 
 const DELETE_USER_PROJECT = gql`
-  mutation Mutation($projectId: ID!) {
-    privateCloudProjectDeleteRequest(projectId: $projectId) {
+  mutation Mutation(
+    $projectId: ID!
+    $licencePlate: String!
+    $projectOwnerEmail: EmailAddress!
+  ) {
+    privateCloudProjectDeleteRequest(
+      projectId: $projectId
+      licencePlate: $licencePlate
+      projectOwnerEmail: $projectOwnerEmail
+    ) {
       id
     }
   }
@@ -223,12 +232,12 @@ export default function AdminProject({ requestsRoute }) {
     nextFetchPolicy: "cache-and-network"
   });
 
-
-  const readOnlyAdminIsAbleToEdit = (
+  const readOnlyAdminIsAbleToEdit =
     userContext.email === data?.privateCloudProjectById.projectOwner.email ||
-    userContext.email === data?.privateCloudProjectById?.primaryTechnicalLead?.email ||
-    userContext.email === data?.privateCloudProjectById?.secondaryTechnicalLead?.email
-  )
+    userContext.email ===
+      data?.privateCloudProjectById?.primaryTechnicalLead?.email ||
+    userContext.email ===
+      data?.privateCloudProjectById?.secondaryTechnicalLead?.email;
 
   const [
     privateCloudProjectEditRequest,
@@ -245,13 +254,17 @@ export default function AdminProject({ requestsRoute }) {
     refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
 
-  const deleteOnClick = () => {
+  const deleteOnClick = (licencePlate, projectOwnerEmail) => {
     toastId.current = toast("Your edit request has been submitted", {
       autoClose: false
     });
 
     privateCloudProjectDeleteRequest({
-      variables: { projectId: id },
+      variables: {
+        projectId: id,
+        licencePlate,
+        projectOwnerEmail
+      },
       onError: (error) => {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
@@ -366,11 +379,11 @@ export default function AdminProject({ requestsRoute }) {
         formData.secondaryTechnicalLead !== ""
           ? formData.secondaryTechnicalLead
           : {
-            email: "",
-            firstName: "",
-            lastName: "",
-            ministry: ""
-          };
+              email: "",
+              firstName: "",
+              lastName: "",
+              ministry: ""
+            };
 
       setInitialValues(formData);
     }
@@ -380,7 +393,7 @@ export default function AdminProject({ requestsRoute }) {
   const isDisabled = !!data?.privateCloudProjectById?.activeEditRequest;
 
   const handleClose = () => setOpen(false);
-  
+
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -410,23 +423,19 @@ export default function AdminProject({ requestsRoute }) {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Please Confirm Your Delete Request
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Are you sure you want to delete this project?
-                <Button
-                  onClick={deleteOnClick}
-                  sx={{ mr: 1, width: "170px", mt: 3 }}
-                  variant="contained"
-                >
-                  Delete
-                </Button>
-              </Typography>
-            </Box>
+            <Delete
+              projectId={id}
+              name={data?.privateCloudProjectById?.name}
+              licencePlate={data?.privateCloudProjectById?.licencePlate}
+              projectOwnerEmail={
+                data?.privateCloudProjectById?.projectOwner?.email
+              }
+              deleteOnClick={deleteOnClick}
+            />
           </Modal>
-          {!readOnlyAdmin && <ReProvisionButton onClickHandler={reProvisionOnClick} />}
+          {!readOnlyAdmin && (
+            <ReProvisionButton onClickHandler={reProvisionOnClick} />
+          )}
         </NavToolbar>
         {isDisabled ? (
           <ActiveRequestText
@@ -438,7 +447,7 @@ export default function AdminProject({ requestsRoute }) {
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>
             <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={isDisabled} />             
+              <MinistryInput formik={formik} isDisabled={isDisabled} />
               <ClusterInput formik={formik} isDisabled={true} />
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />

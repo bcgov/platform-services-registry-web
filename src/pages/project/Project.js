@@ -36,6 +36,7 @@ import Namespaces from "../../components/Namespaces";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import Delete from "../../components/Delete";
 
 const ADMIN_PROJECT = gql`
   query UserPrivateCloudProjectById($projectId: ID!) {
@@ -142,8 +143,16 @@ const UPDATE_USER_PROJECT = gql`
 `;
 
 const DELETE_USER_PROJECT = gql`
-  mutation Mutation($projectId: ID!) {
-    privateCloudProjectDeleteRequest(projectId: $projectId) {
+  mutation Mutation(
+    $projectId: ID!
+    $licencePlate: String!
+    $projectOwnerEmail: EmailAddress!
+  ) {
+    privateCloudProjectDeleteRequest(
+      projectId: $projectId
+      licencePlate: $licencePlate
+      projectOwnerEmail: $projectOwnerEmail
+    ) {
       id
     }
   }
@@ -225,13 +234,17 @@ export default function Project({ requestsRoute }) {
     refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
 
-  const deleteOnClick = () => {
+  const deleteOnClick = (licencePlate, projectOwnerEmail) => {
     toastId.current = toast("Your edit request has been submitted", {
       autoClose: false
     });
 
     privateCloudProjectDeleteRequest({
-      variables: { projectId: id },
+      variables: {
+        projectId: id,
+        licencePlate,
+        projectOwnerEmail
+      },
       onError: (error) => {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
@@ -308,11 +321,11 @@ export default function Project({ requestsRoute }) {
         formData.secondaryTechnicalLead !== ""
           ? formData.secondaryTechnicalLead
           : {
-            email: "",
-            firstName: "",
-            lastName: "",
-            ministry: ""
-          };
+              email: "",
+              firstName: "",
+              lastName: "",
+              ministry: ""
+            };
 
       setInitialValues(formData);
     }
@@ -352,21 +365,13 @@ export default function Project({ requestsRoute }) {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Please Confirm Your Delete Request
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Are you sure you want to delete this product?
-                <Button
-                  onClick={deleteOnClick}
-                  sx={{ mr: 1, width: "170px", mt: 3 }}
-                  variant="contained"
-                >
-                  Delete
-                </Button>
-              </Typography>
-            </Box>
+            <Delete
+              projectId={id}
+              name={data?.name}
+              licensePlate={data?.licencePlate}
+              projectOwnerEmail={data?.projectOwner?.email}
+              deleteOnClick={deleteOnClick}
+            />
           </Modal>
         </NavToolbar>
         {isDisabled ? (
