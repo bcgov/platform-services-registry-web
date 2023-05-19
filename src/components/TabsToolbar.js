@@ -55,7 +55,7 @@ export default function TabsToolbar({ routes }) {
             <Tab component={Link} label="Products" to={routes[1]} />
           </Tabs>
         </Box>
-        {pathname === routes[1] && (admin||readOnlyAdmin) ? <TabForm /> : null}
+        {pathname === routes[1] ? <TabForm /> : null}
         <CreateBtn/>
       </Toolbar>
       <Outlet />
