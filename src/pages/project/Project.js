@@ -298,7 +298,7 @@ export default function Project({ requestsRoute }) {
 
 
   useEffect(() => {
-    setSubmitBtnIsDisabled(!formik.dirty && (formik.values.projectOwner.firstName === '' ||
+    setSubmitBtnIsDisabled((formik.values.projectOwner.firstName === '' ||
       formik.values.projectOwner.lastName === '' ||
       formik.values.projectOwner.ministry === '' ||
       formik.values.primaryTechnicalLead.firstName === '' ||
