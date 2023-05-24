@@ -95,15 +95,13 @@ export default function UserInput({
 
   useEffect(() => {
     formik.values[contact]?.email !== '' && setFirstNameError(formik.values[contact]?.firstName === "")
-  }, [contact, formik.values[contact]?.email, formik.values[contact]?.firstName]);
-
-  useEffect(() => {
     formik.values[contact]?.email !== '' && setLastNameError(formik.values[contact]?.lastName === "")
-  }, [contact, formik.values[contact]?.lastName, formik.values[contact]?.email]);
-
-  useEffect(() => {
     formik.values[contact]?.email !== '' && setMinistryError(formik.values[contact]?.ministry === "")
-  }, [contact, formik.values[contact]?.ministry, formik.values[contact]?.email]);
+  }, [contact,
+    formik.values[contact]?.ministry,
+    formik.values[contact]?.email,
+    formik.values[contact]?.lastName,
+    formik.values[contact]?.firstName]);
 
   return (
     <Card sx={{ mr: 8, width: 400 }}>
@@ -183,7 +181,7 @@ export default function UserInput({
                   {...params}
                   onChange={(e) => { setEmailInput(e.target.value) }}
                   label="Email"
-                  required
+
                   sx={{
                     "& .MuiInputBase-input.Mui-disabled": {
                       WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
@@ -213,7 +211,6 @@ export default function UserInput({
                 mb: 2
               }}
               variant="standard"
-              required
               id={contact + ".firstName"}
               name={contact + ".firstName"}
               label="First Name"
@@ -225,10 +222,9 @@ export default function UserInput({
                   Boolean(formik.errors[contact]?.firstName))
               }
               helperText={
-                formik.touched[contact]?.firstName ? <RequiredField /> :
-                  firstNameError && (userOptions.length !== 0) ? <div style={{ fontSize: 16, color: "red" }}>
-                    Please populate your IDIR account with your first name
-                  </div> : <span ></span>
+                firstNameError && (userOptions.length !== 0) ? <div style={{ fontSize: 16, color: "red" }}>
+                  Please populate your IDIR account with your first name </div> :
+                  formik.touched[contact]?.firstName ? <RequiredField /> : <span ></span>
               }
               size="small"
             />
@@ -240,7 +236,6 @@ export default function UserInput({
                 mb: 2
               }}
               variant="standard"
-              required
               id={contact + ".lastName"}
               name={contact + ".lastName"}
               label="Last Name"
@@ -252,10 +247,9 @@ export default function UserInput({
                   Boolean(formik.errors[contact]?.lastName))
               }
               helperText={
-                formik.touched[contact]?.lastName ? <RequiredField /> :
-                  lastNameError && (userOptions.length !== 0) ? <div style={{ fontSize: 16, color: "red" }}>
-                    Please populate your IDIR account with your last name
-                  </div> : <span ></span>
+                lastNameError && (userOptions.length !== 0) ? <div style={{ fontSize: 16, color: "red" }}>
+                  Please populate your IDIR account with your last name </div> :
+                  formik.touched[contact]?.lastName ? <RequiredField /> : <span ></span>
               }
               size="small"
             />
@@ -266,7 +260,6 @@ export default function UserInput({
                 },
                 mb: 2
               }}
-              required
               variant="standard"
               id={contact + ".ministry"}
               name={contact + ".ministry"}
@@ -275,14 +268,13 @@ export default function UserInput({
               value={formik.values[contact]?.ministry}
               onChange={formik.handleChange}
               error={
-                ministryError||(formik.touched[contact]?.ministry &&
-                Boolean(formik.errors[contact]?.ministry))
+                ministryError || (formik.touched[contact]?.ministry &&
+                  Boolean(formik.errors[contact]?.ministry))
               }
               helperText={
-                formik.touched[contact]?.ministry ? <RequiredField /> :
                 ministryError && (userOptions.length !== 0) ? <div style={{ fontSize: 16, color: "red" }}>
-                  Please populate your IDIR account with your home ministry name
-                </div> : <span ></span>
+                  Please populate your IDIR account with your home ministry name </div> :
+                  formik.touched[contact]?.ministry ? <RequiredField /> : <span ></span>
               }
               size="small"
             />

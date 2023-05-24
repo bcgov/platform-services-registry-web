@@ -354,7 +354,7 @@ export default function AdminProject({ requestsRoute }) {
   };
 
   useEffect(() => {
-    setSubmitBtnIsDisabled(!formik.dirty&&(formik.values.projectOwner.firstName === '' ||
+    setSubmitBtnIsDisabled(formik.values.projectOwner.firstName === '' ||
       formik.values.projectOwner.lastName === '' ||
       formik.values.projectOwner.ministry === '' ||
       formik.values.primaryTechnicalLead.firstName === '' ||
@@ -364,7 +364,7 @@ export default function AdminProject({ requestsRoute }) {
         formik.values.secondaryTechnicalLead.email !== null &&
         (formik.values.secondaryTechnicalLead.firstName === '' ||
           formik.values.secondaryTechnicalLead.lastName === '' ||
-          formik.values.secondaryTechnicalLead.ministry === ''))))
+          formik.values.secondaryTechnicalLead.ministry === '')))
   }, [formik.values])
 
   useEffect(() => {

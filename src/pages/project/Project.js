@@ -309,6 +309,8 @@ export default function Project({ requestsRoute }) {
         (formik.values.secondaryTechnicalLead.firstName === '' ||
           formik.values.secondaryTechnicalLead.lastName === '' ||
           formik.values.secondaryTechnicalLead.ministry === ''))))
+
+          
   }, [formik.values])
 
 
