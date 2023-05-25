@@ -2,7 +2,9 @@ import { createContext } from "react";
 
 const AdminContext = createContext({
   admin: false,
-  toggleAdmin: () => {},
+  readOnlyAdmin: false,
+  toggleReadOnlyAdmin: () => {},
+  toggleAdmin: () => {}
 });
 
 export default AdminContext;
