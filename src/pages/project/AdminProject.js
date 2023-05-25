@@ -438,9 +438,8 @@ export default function AdminProject({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-               <ClusterInput formik={formik} isDisabled={true} /> :
                  <Box
-                 sx={{ pt: 4}}
+                 sx={{ pt: 5}}
                  >
                  <ClusterInputText
                    cluster={formik.values.cluster} />
