@@ -9,7 +9,6 @@ import {
 } from "../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
-import ClusterInput from "../../components/forms/ClusterInput";
 import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
