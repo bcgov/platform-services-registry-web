@@ -14,7 +14,7 @@ import Quotas from "../../components/plainText/Quotas";
 import Namespaces from "../../components/Namespaces";
 import TitleTypography from "../../components/common/TitleTypography";
 import { Typography } from "@mui/material";
-
+import { Box } from "@mui/material"
 const USER_REQUEST = gql`
   query UserPrivateCloudRequestById($requestId: ID!) {
     userPrivateCloudRequestById(requestId: $requestId) {
@@ -147,7 +147,11 @@ export default function UserRequest() {
           description={requestedProject?.description}
         />
         <MinistryInput ministry={requestedProject?.ministry} />
-        <ClusterInput cluster={requestedProject?.cluster} />
+        <Box
+          sx={{ pt: 2 }}
+        >
+          <ClusterInput cluster={requestedProject?.cluster} />
+        </Box>
         <div>
           {request?.type !== "CREATE" ? (
             <div>

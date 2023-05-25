@@ -256,7 +256,11 @@ export default function AdminRequest() {
           description={requestedProject?.description}
         />
         <MinistryInput ministry={requestedProject?.ministry} />
-        <ClusterInput cluster={requestedProject?.cluster} />
+        <Box
+          sx={{ pt: 2 }}
+        >
+          <ClusterInput cluster={requestedProject?.cluster} />
+        </Box>
         <div>
           {request?.type !== "CREATE" ? (
             <div>
