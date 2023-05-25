@@ -9,7 +9,6 @@ import {
 } from "../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
-import ClusterInput from "../../components/forms/ClusterInput";
 import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
@@ -36,6 +35,7 @@ import Namespaces from "../../components/Namespaces";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import ClusterInputText from "../../components/plainText/ClusterInput";
 
 const ADMIN_PROJECT = gql`
   query UserPrivateCloudProjectById($projectId: ID!) {
@@ -380,7 +380,12 @@ export default function Project({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <ClusterInput formik={formik} isDisabled={true} />
+                <Box
+                sx={{ pt: 5}}
+                >
+                  <ClusterInputText
+                    cluster={formik.values.cluster} />
+                </Box>
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
