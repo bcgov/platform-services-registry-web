@@ -1,14 +1,14 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext } from "react";
 import * as yup from "yup";
 import {
   CreateUserInputSchema,
   CommonComponentsInputSchema,
   ClusterSchema,
-  MinistrySchema,
+  MinistrySchema
 } from "../__generated__/resolvers-types";
 import {
   createProjectInputInitalValues as initialValues,
-  replaceEmptyStringWithNull,
+  replaceEmptyStringWithNull
 } from "../components/common/FormHelpers";
 import { useFormik } from "formik";
 import { useMutation, gql } from "@apollo/client";
@@ -29,6 +29,11 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import {
+  adminClusters,
+  userClusters
+} from "../../src/components/common/Constants";
+import AdminContext from "../context/admin";
 
 const CREATE_USER_PROJECT = gql`
   mutation PrivateCloudProjectRequest(
@@ -63,7 +68,7 @@ const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
-  ministryAG: yup.boolean().oneOf([true], 'Message'),
+  ministryAG: yup.boolean().oneOf([true], "Message"),
   cluster: ClusterSchema.required(),
   projectOwner: CreateUserInputSchema(),
   primaryTechnicalLead: CreateUserInputSchema(),
@@ -76,7 +81,7 @@ const validationSchema = yup.object().shape({
     .object(CommonComponentsInputSchema)
     .transform((value, original) => {
       return replaceEmptyStringWithNull(value);
-    }),
+    })
 });
 
 const style = {
@@ -88,7 +93,7 @@ const style = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4,
+  p: 4
 };
 
 export default function Create({ requestsRoute }) {
@@ -96,15 +101,13 @@ export default function Create({ requestsRoute }) {
   const toastId = useRef(null);
   const [open, setOpen] = useState(false);
   const [AGministries, setAGministries] = useState(false);
+  const isAdmin = useContext(AdminContext);
 
   const [privateCloudProjectRequest, { data, loading, error }] = useMutation(
     CREATE_USER_PROJECT,
     {
       errorPolicy: "ignore", // Query to refetch might not have been called yet, so ignore error
-      refetchQueries: [
-        { query: USER_REQUESTS },
-        { query: ALL_ACTIVE_REQUESTS },
-      ],
+      refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
     }
   );
 
@@ -118,14 +121,14 @@ export default function Create({ requestsRoute }) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
       }
-    },
+    }
   });
 
-    const submitForm = () => {
+  const submitForm = () => {
     const { values } = formik;
 
     toastId.current = toast("Your create request has been submitted", {
-      autoClose: false,
+      autoClose: false
     });
 
     const variables = validationSchema.cast(values);
@@ -136,7 +139,7 @@ export default function Create({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000,
+          autoClose: 5000
         });
       },
 
@@ -147,10 +150,10 @@ export default function Create({ requestsRoute }) {
           toast.update(toastId.current, {
             render: "Request successfuly created",
             type: toast.TYPE.SUCCESS,
-            autoClose: 5000,
+            autoClose: 5000
           });
         }
-      },
+      }
     });
   };
 
@@ -166,12 +169,13 @@ export default function Create({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={false} />
-              <ClusterInput formik={formik} isDisabled={false} />
-            </div>      
-             <AGMinistry
-             formik={formik}
-             setAGministries={setAGministries}
-             />
+              <ClusterInput
+                formik={formik}
+                isDisabled={false}
+                clusterOptions={isAdmin.admin ? adminClusters : userClusters}
+              />
+            </div>
+            <AGMinistry formik={formik} setAGministries={setAGministries} />
           </div>
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Users formik={formik} isDisabled={false} />
@@ -186,8 +190,8 @@ export default function Create({ requestsRoute }) {
             conversation with you. Also, look out for our{" "}
             <b>Notification emails</b> that will provide you with valuable
             information regarding your product status and details. By
-            proceeding, you confirm that you have read and understood the roles and
-            responsibilities as described in the Onboarding Guide."
+            proceeding, you confirm that you have read and understood the roles
+            and responsibilities as described in the Onboarding Guide."
           </Typography>
           <div>
             <Button

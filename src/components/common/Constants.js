@@ -1,8 +1,4 @@
-const checkBoxMinistries = [
-  "AG",
-  "PSSG",
-  "EMBC",
-]
+const checkBoxMinistries = ["AG", "PSSG", "EMBC"];
 
 const ministriesNames = [
   {
@@ -144,8 +140,8 @@ const ministriesNames = [
   item1.humanFriendlyName > item2.humanFriendlyName
     ? 1
     : item1.humanFriendlyName < item2.humanFriendlyName
-      ? -1
-      : 0
+    ? -1
+    : 0
 );
 
 // const ministriesNamesUpdated = [
@@ -276,7 +272,7 @@ const clusters = [
   "EMERALD"
 ];
 
-const clusterNames = [
+const adminClusters = [
   {
     id: 1,
     name: "CLAB",
@@ -317,16 +313,16 @@ const clusterNames = [
 const routesUser = [
   "/private-cloud/user/dashboard/requests",
   "/private-cloud/user/dashboard/products",
-  "/private-cloud/user/create",
-]
+  "/private-cloud/user/create"
+];
 
 const routesAdmin = [
   "/private-cloud/admin/dashboard/requests",
   "/private-cloud/admin/dashboard/products",
-  "/private-cloud/admin/create",
-]
+  "/private-cloud/admin/create"
+];
 
-const clusterNamesUserCreate = [
+const userClusters = [
   {
     id: 3,
     name: "SILVER",
@@ -410,40 +406,39 @@ const commonComponents = [
   { name: "addressAndGeolocation", description: "Address and geolocation" },
   {
     name: "workflowManagement",
-    description: "Workflow Management (similar to Camunda)",
+    description: "Workflow Management (similar to Camunda)"
   },
   {
     name: "formDesignAndSubmission",
     description:
-      "Form Design and Submission (similar to CHEFS, Gravity, Orbeon)",
+      "Form Design and Submission (similar to CHEFS, Gravity, Orbeon)"
   },
   {
     name: "identityManagement",
-    description: "Identity management (user authentication and authorization)",
+    description: "Identity management (user authentication and authorization)"
   },
   {
     name: "paymentServices",
     description:
-      "Payment services (i.e. collection, processing, reconciliation, ledger management)",
+      "Payment services (i.e. collection, processing, reconciliation, ledger management)"
   },
   {
     name: "documentManagement",
     description:
-      "Document Management (file storage and transfer, PDF and other document generation)",
+      "Document Management (file storage and transfer, PDF and other document generation)"
   },
   {
     name: "endUserNotificationAndSubscription",
     description:
-      "End user notification and subscription service (email, text messages, automated phone calls, in-app pop up messages)",
+      "End user notification and subscription service (email, text messages, automated phone calls, in-app pop up messages)"
   },
   { name: "publishing", description: "Publishing (web content management)" },
   {
     name: "businessIntelligence",
     description:
-      "Business Intelligence Dashboard and Metrics reporting (i.e. diagrams and pie charts, report generation)",
-  },
+      "Business Intelligence Dashboard and Metrics reporting (i.e. diagrams and pie charts, report generation)"
+  }
 ];
-
 
 export {
   ministriesNames,
@@ -451,13 +446,13 @@ export {
   defaultCpuOptions,
   defaultMemoryOptions,
   defaultStorageOptions,
-  clusterNames,
-  clusterNamesUserCreate,
+  userClusters,
+  adminClusters,
   defaultCpuOptionsLookup,
   defaultMemoryOptionsLookup,
   defaultStorageOptionsLookup,
   routesUser,
   routesAdmin,
   checkBoxMinistries,
-  commonComponents,
+  commonComponents
 };
