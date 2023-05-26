@@ -38,7 +38,10 @@ import Modal from "@mui/material/Modal";
 import ReProvisionButton from "../../components/ReProvisionButton";
 import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
 import UserContext from "../../context/user";
+<<<<<<< HEAD
+=======
 import ClusterInputText from "../../components/plainText/ClusterInput";
+>>>>>>> 19c09e3dd9e5c19002e3f20dd6648bd6e239ad5b
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -216,6 +219,7 @@ export default function AdminProject({ requestsRoute }) {
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [submitBtnIsDisabled, setSubmitBtnIsDisabled] = useState(true);
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network"
@@ -353,6 +357,20 @@ export default function AdminProject({ requestsRoute }) {
   };
 
   useEffect(() => {
+    setSubmitBtnIsDisabled(formik.values.projectOwner.firstName === '' ||
+      formik.values.projectOwner.lastName === '' ||
+      formik.values.projectOwner.ministry === '' ||
+      formik.values.primaryTechnicalLead.firstName === '' ||
+      formik.values.primaryTechnicalLead.lastName === '' ||
+      formik.values.primaryTechnicalLead.ministry === '' ||
+      (formik.values.secondaryTechnicalLead.email !== '' &&
+        formik.values.secondaryTechnicalLead.email !== null &&
+        (formik.values.secondaryTechnicalLead.firstName === '' ||
+          formik.values.secondaryTechnicalLead.lastName === '' ||
+          formik.values.secondaryTechnicalLead.ministry === '')))
+  }, [formik.values])
+
+  useEffect(() => {
     if (data) {
       // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
       const formData = stripTypeName(
@@ -459,9 +477,10 @@ export default function AdminProject({ requestsRoute }) {
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
               <Button
                 type="submit"
-                disabled={!formik.dirty}
+                // disabled={!formik.dirty}
                 sx={{ mr: 1, width: "170px" }}
                 variant="contained"
+                disabled={submitBtnIsDisabled}
               >
                 Submit
               </Button>

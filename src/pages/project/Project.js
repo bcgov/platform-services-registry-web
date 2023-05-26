@@ -200,7 +200,7 @@ export default function Project({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
-
+  const [submitBtnIsDisabled, setSubmitBtnIsDisabled] = useState(true);
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -295,6 +295,24 @@ export default function Project({ requestsRoute }) {
       }
     });
   };
+
+
+  useEffect(() => {
+    setSubmitBtnIsDisabled((formik.values.projectOwner.firstName === '' ||
+      formik.values.projectOwner.lastName === '' ||
+      formik.values.projectOwner.ministry === '' ||
+      formik.values.primaryTechnicalLead.firstName === '' ||
+      formik.values.primaryTechnicalLead.lastName === '' ||
+      formik.values.primaryTechnicalLead.ministry === '' ||
+      (formik.values.secondaryTechnicalLead.email !== '' &&
+        formik.values.secondaryTechnicalLead.email !== null &&
+        (formik.values.secondaryTechnicalLead.firstName === '' ||
+          formik.values.secondaryTechnicalLead.lastName === '' ||
+          formik.values.secondaryTechnicalLead.ministry === ''))))
+
+          
+  }, [formik.values])
+
 
   useEffect(() => {
     if (data) {
@@ -400,9 +418,10 @@ export default function Project({ requestsRoute }) {
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             <Button
               type="submit"
-              disabled={!formik.dirty}
+              // disabled={!formik.dirty}
               sx={{ mr: 1, width: "170px" }}
               variant="contained"
+              disabled={submitBtnIsDisabled}
             >
               Submit
             </Button>
