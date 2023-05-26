@@ -9,7 +9,6 @@ import {
 } from "../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
-import ClusterInput from "../../components/forms/ClusterInput";
 import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
@@ -39,6 +38,10 @@ import Modal from "@mui/material/Modal";
 import ReProvisionButton from "../../components/ReProvisionButton";
 import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
 import UserContext from "../../context/user";
+<<<<<<< HEAD
+=======
+import ClusterInputText from "../../components/plainText/ClusterInput";
+>>>>>>> 19c09e3dd9e5c19002e3f20dd6648bd6e239ad5b
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -394,6 +397,7 @@ export default function AdminProject({ requestsRoute }) {
 
   const handleClose = () => setOpen(false);
 
+  
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -452,7 +456,12 @@ export default function AdminProject({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <ClusterInput formik={formik} isDisabled={true} />
+                 <Box
+                 sx={{ pt: 5}}
+                 >
+                 <ClusterInputText
+                   cluster={formik.values.cluster} />
+               </Box>              
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces

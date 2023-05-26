@@ -10,7 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import { useNavigate } from "react-router-dom";
 import SortOrderBtn from "../../components/common/SortOrderBtn";
 import { useLocation } from "react-router-dom";
-import { routesAdmin } from "./Constants";
+import { routesAdmin, routesUser } from "./Constants";
 export default function StickyTable({
   columns,
   rows = [],
@@ -60,9 +60,11 @@ export default function StickyTable({
                   }}
                 >
                   {column.label}&nbsp;
-                  {column.label === "Name" && pathname === routesAdmin[1] && (
-                    <SortOrderBtn />
-                  )}
+                  {column.label === "Name" &&
+                    (pathname === routesAdmin[1] || pathname === routesUser[1])
+                    && (
+                      <SortOrderBtn />
+                    )}
                 </TableCell>
               ))}
             </TableRow>
