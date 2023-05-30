@@ -38,10 +38,7 @@ import Modal from "@mui/material/Modal";
 import ReProvisionButton from "../../components/ReProvisionButton";
 import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
 import UserContext from "../../context/user";
-<<<<<<< HEAD
-=======
 import ClusterInputText from "../../components/plainText/ClusterInput";
->>>>>>> 19c09e3dd9e5c19002e3f20dd6648bd6e239ad5b
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -225,12 +222,12 @@ export default function AdminProject({ requestsRoute }) {
     nextFetchPolicy: "cache-and-network"
   });
 
-
-  const readOnlyAdminIsAbleToEdit = (
+  const readOnlyAdminIsAbleToEdit =
     userContext.email === data?.privateCloudProjectById.projectOwner.email ||
-    userContext.email === data?.privateCloudProjectById?.primaryTechnicalLead?.email ||
-    userContext.email === data?.privateCloudProjectById?.secondaryTechnicalLead?.email
-  )
+    userContext.email ===
+      data?.privateCloudProjectById?.primaryTechnicalLead?.email ||
+    userContext.email ===
+      data?.privateCloudProjectById?.secondaryTechnicalLead?.email;
 
   const [
     privateCloudProjectEditRequest,
@@ -357,18 +354,20 @@ export default function AdminProject({ requestsRoute }) {
   };
 
   useEffect(() => {
-    setSubmitBtnIsDisabled(formik.values.projectOwner.firstName === '' ||
-      formik.values.projectOwner.lastName === '' ||
-      formik.values.projectOwner.ministry === '' ||
-      formik.values.primaryTechnicalLead.firstName === '' ||
-      formik.values.primaryTechnicalLead.lastName === '' ||
-      formik.values.primaryTechnicalLead.ministry === '' ||
-      (formik.values.secondaryTechnicalLead.email !== '' &&
-        formik.values.secondaryTechnicalLead.email !== null &&
-        (formik.values.secondaryTechnicalLead.firstName === '' ||
-          formik.values.secondaryTechnicalLead.lastName === '' ||
-          formik.values.secondaryTechnicalLead.ministry === '')))
-  }, [formik.values])
+    setSubmitBtnIsDisabled(
+      formik.values.projectOwner.firstName === "" ||
+        formik.values.projectOwner.lastName === "" ||
+        formik.values.projectOwner.ministry === "" ||
+        formik.values.primaryTechnicalLead.firstName === "" ||
+        formik.values.primaryTechnicalLead.lastName === "" ||
+        formik.values.primaryTechnicalLead.ministry === "" ||
+        (formik.values.secondaryTechnicalLead.email !== "" &&
+          formik.values.secondaryTechnicalLead.email !== null &&
+          (formik.values.secondaryTechnicalLead.firstName === "" ||
+            formik.values.secondaryTechnicalLead.lastName === "" ||
+            formik.values.secondaryTechnicalLead.ministry === ""))
+    );
+  }, [formik.values]);
 
   useEffect(() => {
     if (data) {
@@ -382,11 +381,11 @@ export default function AdminProject({ requestsRoute }) {
         formData.secondaryTechnicalLead !== ""
           ? formData.secondaryTechnicalLead
           : {
-            email: "",
-            firstName: "",
-            lastName: "",
-            ministry: ""
-          };
+              email: "",
+              firstName: "",
+              lastName: "",
+              ministry: ""
+            };
 
       setInitialValues(formData);
     }
@@ -397,7 +396,6 @@ export default function AdminProject({ requestsRoute }) {
 
   const handleClose = () => setOpen(false);
 
-  
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -443,7 +441,9 @@ export default function AdminProject({ requestsRoute }) {
               </Typography>
             </Box>
           </Modal>
-          {!readOnlyAdmin && <ReProvisionButton onClickHandler={reProvisionOnClick} />}
+          {!readOnlyAdmin && (
+            <ReProvisionButton onClickHandler={reProvisionOnClick} />
+          )}
         </NavToolbar>
         {isDisabled ? (
           <ActiveRequestText
@@ -456,12 +456,9 @@ export default function AdminProject({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-                 <Box
-                 sx={{ pt: 5}}
-                 >
-                 <ClusterInputText
-                   cluster={formik.values.cluster} />
-               </Box>              
+              <Box sx={{ pt: 5 }}>
+                <ClusterInputText cluster={formik.values.cluster} />
+              </Box>
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
