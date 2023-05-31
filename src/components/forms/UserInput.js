@@ -70,7 +70,6 @@ export default function UserInput({
       }
     );
     const data = await response.json();
-    console.log(data);
 
     setUserOptions(data);
   }, [debouncedEmail]);
