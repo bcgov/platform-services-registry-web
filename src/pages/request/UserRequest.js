@@ -1,20 +1,16 @@
-import { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import MetaDataInput from "../../components/plainText/MetaDataInput";
 import ClusterInput from "../../components/plainText/ClusterInput";
 import MinistryInput from "../../components/plainText/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
-import { projectInitialValues as initialValues } from "../../components/common/FormHelpers";
 import { useParams } from "react-router-dom";
-import { useFormik } from "formik";
 import Container from "../../components/common/Container";
 import Users from "../../components/plainText/Users";
 import Divider from "@mui/material/Divider";
 import Quotas from "../../components/plainText/Quotas";
 import Namespaces from "../../components/Namespaces";
 import TitleTypography from "../../components/common/TitleTypography";
-import { Typography } from "@mui/material";
-
+import { Typography, Box } from "@mui/material";
 const USER_REQUEST = gql`
   query UserPrivateCloudRequestById($requestId: ID!) {
     userPrivateCloudRequestById(requestId: $requestId) {
@@ -147,7 +143,11 @@ export default function UserRequest() {
           description={requestedProject?.description}
         />
         <MinistryInput ministry={requestedProject?.ministry} />
-        <ClusterInput cluster={requestedProject?.cluster} />
+        <Box
+          sx={{ pt: 2 }}
+        >
+          <ClusterInput cluster={requestedProject?.cluster} />
+        </Box>
         <div>
           {request?.type !== "CREATE" ? (
             <div>

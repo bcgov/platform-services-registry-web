@@ -19,7 +19,6 @@ const Users = ({ formik, isDisabled }) => {
             contact them with any non-technical questions.
           </Typography>
         </div>
-
         <UserInput
           label={"Product Owner"}
           contact="projectOwner"
