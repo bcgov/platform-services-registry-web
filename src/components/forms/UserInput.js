@@ -62,7 +62,13 @@ export default function UserInput({
   const getFilteredUsers = useCallback(async () => {
     // const data = await getUsers(debouncedEmail);
     const response = await fetch(
-      `${process.env.REACT_APP_MSAL_ENDPOINT}/getIdirEmails?email=${debouncedEmail}`
+      `${process.env.REACT_APP_MSAL_ENDPOINT}/getIdirEmails?email=${debouncedEmail}`,
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      }
     );
     const data = await response.json();
     console.log(data);
