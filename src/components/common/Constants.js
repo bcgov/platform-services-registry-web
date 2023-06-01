@@ -272,7 +272,7 @@ const clusters = [
   "EMERALD"
 ];
 
-const clusterNames = [
+const adminClusters = [
   {
     id: 1,
     name: "CLAB",
@@ -310,7 +310,7 @@ const clusterNames = [
   }
 ];
 
-const clusterNamesUserCreate = [
+const userClusters = [
   {
     id: 3,
     name: "SILVER",
@@ -434,8 +434,8 @@ export {
   defaultCpuOptions,
   defaultMemoryOptions,
   defaultStorageOptions,
-  clusterNames,
-  clusterNamesUserCreate,
+  userClusters,
+  adminClusters,
   defaultCpuOptionsLookup,
   defaultMemoryOptionsLookup,
   defaultStorageOptionsLookup,

@@ -14,7 +14,7 @@ import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRound
 import RequiredField from "../common/RequiredField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { getUsers, getUserPhoto } from "../../msGraphApi";
-import usePhotoUrl from "../../msGraphApi/useAzurePhoto";
+// import usePhotoUrl from "../../msGraphApi/useAzurePhoto";
 
 const USER_BY_EMAIL = gql`
   query UserByEmail($email: EmailAddress!) {
@@ -42,18 +42,19 @@ export default function UserInput({
   label,
   defaultEditOpen = true,
   formik,
-  isDisabled = false
+  isDisabled = false,
 }) {
   const email = formik.values[contact]?.email;
-
   const [edit, setEdit] = useState(defaultEditOpen);
   const [userOptions, setUserOptions] = useState([email]);
-  const [userId, setUserId] = useState("");
+  // const [userId, setUserId] = useState("");
   const [emailInput, setEmailInput] = useState("");
-
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
+  const [ministryError, setMinistryError] = useState(false);
   const debouncedEmail = useDebounce(emailInput);
 
-  const photoUrl = usePhotoUrl(email);
+  // const photoUrl = usePhotoUrl(email);
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
     nextFetchPolicy: "cache-first"
@@ -61,17 +62,13 @@ export default function UserInput({
 
   const getFilteredUsers = useCallback(async () => {
     const data = await getUsers(debouncedEmail);
-
     setUserOptions(data);
   }, [debouncedEmail]);
 
   useEffect(() => {
     const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
-
     if (user) {
       getUser({ variables: { email } });
-
-      setUserId(user.id);
 
       formik.setFieldValue(contact + ".email", user.mail.toLowerCase() || "");
       formik.setFieldValue(contact + ".firstName", user.givenName || "");
@@ -81,13 +78,30 @@ export default function UserInput({
         parseMinistryFromDisplayName(user.displayName) || ""
       );
     }
-  }, [email]);
+    if (email === null) {
+      formik.setFieldValue(contact + ".email", "");
+      formik.setFieldValue(contact + ".firstName", "");
+      formik.setFieldValue(contact + ".lastName", "");
+      formik.setFieldValue(contact + ".ministry", "")
+      setUserOptions([])
+    }
+  }, [email, emailInput]);
 
   useEffect(() => {
     if (debouncedEmail) {
       getFilteredUsers();
     }
   }, [debouncedEmail]);
+
+  useEffect(() => {
+    formik.values[contact]?.email !== '' && setFirstNameError(formik.values[contact]?.firstName === "")
+    formik.values[contact]?.email !== '' && setLastNameError(formik.values[contact]?.lastName === "")
+    formik.values[contact]?.email !== '' && setMinistryError(formik.values[contact]?.ministry === "")
+  }, [contact,
+    formik.values[contact]?.ministry,
+    formik.values[contact]?.email,
+    formik.values[contact]?.lastName,
+    formik.values[contact]?.firstName]);
 
   return (
     <Card sx={{ mr: 8, width: 400 }}>
@@ -150,22 +164,24 @@ export default function UserInput({
             <Autocomplete
               disablePortal
               options={userOptions.map((option) => option.mail?.toLowerCase())}
+              noOptionsText={'No IDIR linked email addresses found'}
               getOptionLabel={(mail) => mail || ""}
               sx={{ width: 300 }}
               id={contact + ".email"}
               name={contact + ".email"}
               label="Email"
               disabled={isDisabled}
-              onChange={(e, value) =>
-                formik.setFieldValue(contact + ".email", value)
+              onChange={(e, value) => formik.setFieldValue(contact + ".email", value)
               }
-              value={email}
-              helperText={formik.touched[contact]?.email && <RequiredField />}
+              value={email || emailInput}
+              helperText={!formik.touched[contact]?.email && <RequiredField
+              />}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  onChange={(e) => setEmailInput(e.target.value)}
+                  onChange={(e) => { setEmailInput(e.target.value) }}
                   label="Email"
+
                   sx={{
                     "& .MuiInputBase-input.Mui-disabled": {
                       WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
@@ -173,11 +189,14 @@ export default function UserInput({
                     mb: 2
                   }}
                   error={
-                    formik.touched[contact]?.firstName &&
-                    Boolean(formik.errors[contact]?.firstName)
+                    formik.touched[contact]?.email &&
+                    Boolean(formik.errors[contact]?.email) && userOptions.length === 0
                   }
                   helperText={
-                    formik.touched[contact]?.email && <RequiredField />
+                    Boolean(formik.errors[contact]?.email) ? <RequiredField /> : userOptions.length === 0 ?
+                      <div style={{ fontSize: 16, color: "red" }}>
+                        Please enter a valid email address. This email address is not linked to any IDIR account
+                      </div> : <span ></span>
                   }
                   variant="standard"
                   size="small"
@@ -197,13 +216,15 @@ export default function UserInput({
               label="First Name"
               disabled={true}
               value={formik.values[contact]?.firstName}
-              onChange={formik.handleChange}
+              onChange={() => formik.handleChange()}
               error={
-                formik.touched[contact]?.firstName &&
-                Boolean(formik.errors[contact]?.firstName)
+                firstNameError || (formik.touched[contact]?.firstName &&
+                  Boolean(formik.errors[contact]?.firstName))
               }
               helperText={
-                formik.touched[contact]?.firstName && <RequiredField />
+                firstNameError && (userOptions.length !== 0) ? <div style={{ fontSize: 16, color: "red" }}>
+                  Please populate your IDIR account with your first name </div> :
+                  formik.touched[contact]?.firstName ? <RequiredField /> : <span ></span>
               }
               size="small"
             />
@@ -222,11 +243,13 @@ export default function UserInput({
               value={formik.values[contact]?.lastName}
               onChange={formik.handleChange}
               error={
-                formik.touched[contact]?.lastName &&
-                Boolean(formik.errors[contact]?.lastName)
+                lastNameError || (formik.touched[contact]?.lastName &&
+                  Boolean(formik.errors[contact]?.lastName))
               }
               helperText={
-                formik.touched[contact]?.lastName && <RequiredField />
+                lastNameError && (userOptions.length !== 0) ? <div style={{ fontSize: 16, color: "red" }}>
+                  Please populate your IDIR account with your last name </div> :
+                  formik.touched[contact]?.lastName ? <RequiredField /> : <span ></span>
               }
               size="small"
             />
@@ -245,11 +268,13 @@ export default function UserInput({
               value={formik.values[contact]?.ministry}
               onChange={formik.handleChange}
               error={
-                formik.touched[contact]?.ministry &&
-                Boolean(formik.errors[contact]?.ministry)
+                ministryError || (formik.touched[contact]?.ministry &&
+                  Boolean(formik.errors[contact]?.ministry))
               }
               helperText={
-                formik.touched[contact]?.ministry && <RequiredField />
+                ministryError && (userOptions.length !== 0) ? <div style={{ fontSize: 16, color: "red" }}>
+                  Please populate your IDIR account with your home ministry name </div> :
+                  formik.touched[contact]?.ministry ? <RequiredField /> : <span ></span>
               }
               size="small"
             />

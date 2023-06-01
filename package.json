@@ -40,7 +40,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "generate": "graphql-codegen --config codegen.yml",
+    "generate": "graphql-codegen --config codegen.yml",   
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

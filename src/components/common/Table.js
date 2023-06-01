@@ -58,9 +58,9 @@ export default function StickyTable({
                   }}
                 >
                   {column.label}&nbsp;
-                  {column.label === "Name" && pathname === routesAdmin[1] && (
-                    <SortOrderBtn />
-                  )}
+                  {column.label === "Name" &&
+                    (pathname === routesAdmin[1] ||
+                      pathname === routesUser[1]) && <SortOrderBtn />}
                 </TableCell>
               ))}
             </TableRow>
