@@ -8,7 +8,7 @@ import {
 } from "./helpers";
 import StickyTable from "../../../components/common/Table";
 import SearchContext from "../../../context/search";
-import FilterContext from "../../../context/filter";
+import FilterContext from "../../../context/publicCloudFilter";
 import SortContext from "../../../context/sort";
 import useWindowSize from "../../../hooks/useWindowSize";
 import { EmptyAlert, ErrorAlert } from "../../../components/common/Alert";

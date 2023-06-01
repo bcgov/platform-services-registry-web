@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import SearchContext from "../context/search";
 import useDebounce from "../hooks/useDebounce";
 
@@ -13,11 +13,7 @@ function SearchProvider({ children }) {
   );
 
   return (
-    <SearchContext.Provider
-      value={value}
-    >
-      {children}
-    </SearchContext.Provider>
+    <SearchContext.Provider value={value}>{children}</SearchContext.Provider>
   );
 }
 
