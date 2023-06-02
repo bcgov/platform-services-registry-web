@@ -117,6 +117,7 @@ const UPDATE_PROJECT = gql`
       budget: $budget
       primaryTechnicalLead: $primaryTechnicalLead
       secondaryTechnicalLead: $secondaryTechnicalLead
+      commonComponents: $commonComponents
     ) {
       id
       active
@@ -222,9 +223,7 @@ export default function AdminProject({ requestsRoute }) {
       autoClose: false
     });
 
-    const variables = validationSchema.cast({
-      values
-    });
+    const variables = validationSchema.cast(values);
 
     publicCloudProjectEditRequest({
       variables: { projectId: id, ...variables },

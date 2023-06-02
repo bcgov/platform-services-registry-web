@@ -6,7 +6,6 @@ import Typography from "@mui/material/Typography";
 import InputAdornment from "@mui/material/InputAdornment";
 
 export default function Budget({ formik, isDisabled }) {
-  console.log(formik.values);
   return (
     <Box
       sx={{

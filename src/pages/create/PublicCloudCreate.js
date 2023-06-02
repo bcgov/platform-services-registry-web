@@ -71,7 +71,7 @@ const validationSchema = yup.object().shape({
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   provider: ProviderSchema.required(),
-  billingGroup: yup.string().nullable(),
+  billingGroup: yup.string().required(),
   budget: BudgetInputSchema().required(),
   projectOwner: CreateUserInputSchema(),
   primaryTechnicalLead: CreateUserInputSchema(),
