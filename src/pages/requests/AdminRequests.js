@@ -89,9 +89,9 @@ export default function Requests() {
   }
 
   return !loading ? (
-    data?.privateCloudActiveRequests?.length > 0 ? (
+    data?.privateCloudActiveRequests?.length > 0 ||
+    data?.publicCloudActiveRequests?.length > 0 ? (
       <StickyTable
-        onClickPath={"/registry/admin/private-cloud/request/"}
         columns={columns}
         rows={[
           ...data.privateCloudActiveRequests,

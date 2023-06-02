@@ -38,6 +38,38 @@ export const USER_REQUESTS = gql`
         ministry
       }
     }
+    userPublicCloudRequests {
+      id
+      active
+      decisionStatus
+      type
+      created
+      requestedProject {
+        name
+        description
+        ministry
+        provider
+        licencePlate
+        projectOwner {
+          email
+          firstName
+          lastName
+          email
+        }
+        primaryTechnicalLead {
+          email
+          firstName
+          lastName
+          email
+        }
+        secondaryTechnicalLead {
+          email
+          firstName
+          lastName
+          email
+        }
+      }
+    }
   }
 `;
 
@@ -56,9 +88,9 @@ export default function Requests() {
   }
 
   return !loading ? (
-    data?.userPrivateCloudRequests?.length > 0 ? (
+    data?.userPrivateCloudRequests?.length > 0 ||
+    data?.userPublicCloudRequests?.length > 0 ? (
       <StickyTable
-        onClickPath={"/registry/user/private-cloud/request/"}
         columns={columns}
         rows={data.userPrivateCloudRequests.map(requestsToRows).reverse()}
         count={loading ? 0 : data?.userPrivateCloudRequests?.length}

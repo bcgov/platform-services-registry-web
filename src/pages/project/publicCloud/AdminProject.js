@@ -282,7 +282,7 @@ export default function AdminProject({ requestsRoute }) {
       <form onSubmit={formik.handleSubmit}>
         <NavToolbar
           label={"products"}
-          path={"admin/dashboard/products"}
+          path={"admin/dashboard/public-cloud-products"}
           title={name}
         >
           <IconButton

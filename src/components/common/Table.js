@@ -11,6 +11,9 @@ import { useNavigate } from "react-router-dom";
 import SortOrderBtn from "../../components/common/SortOrderBtn";
 import { useLocation } from "react-router-dom";
 import { routesAdmin, routesUser } from "../AppRouter";
+import AdminContext from "../../context/admin";
+import { useContext } from "react";
+
 export default function StickyTable({
   columns,
   rows = [],
@@ -24,6 +27,8 @@ export default function StickyTable({
   const [page, setPage] = useState(0);
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const isAdmin = useContext(AdminContext);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     onNextPage(newPage, rowsPerPage);
@@ -35,8 +40,8 @@ export default function StickyTable({
     setPage(0);
   };
 
-  const handleRowClick = (id) => {
-    navigate(onClickPath + id);
+  const handleRowClick = (row) => {
+    navigate(row.onClickPath(isAdmin));
   };
 
   return (
@@ -72,7 +77,7 @@ export default function StickyTable({
                 return (
                   <TableRow
                     hover
-                    onClick={() => handleRowClick(row.id)}
+                    onClick={() => handleRowClick(row)}
                     role="checkbox"
                     tabIndex={-1}
                     key={row.code}

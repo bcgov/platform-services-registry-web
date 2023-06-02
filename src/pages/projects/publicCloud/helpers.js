@@ -37,6 +37,8 @@ const projectsToRows = ({
   licencePlate
 }) => ({
   id,
+  onClickPath: (isAdmin) =>
+    `/registry/${isAdmin ? "admin" : "user"}/public-cloud/product/${id}`,
   name: (
     <span style={{ fontSize: 18, fontWeight: "450" }}>
       {name.replace("(dev)", "").trim()}

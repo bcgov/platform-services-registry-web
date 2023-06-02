@@ -1,8 +1,9 @@
 import { useRef, useState, useContext } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/plainText/MetaDataInput";
-import ClusterInput from "../../../components/plainText/ClusterInput";
 import MinistryInput from "../../../components/plainText/MinistryInput";
+import ProviderInput from "../../../components/plainText/ProviderInput";
+import BillinGroup from "../../../components/plainText/BillingGroup";
 import NavToolbar from "../../../components/NavToolbar";
 import TitleTypography from "../../../components/common/TitleTypography";
 import { Button } from "@mui/material";
@@ -224,7 +225,7 @@ export default function AdminRequest() {
           description={requestedProject?.description}
         />
         <MinistryInput ministry={requestedProject?.ministry} />
-        <ClusterInput cluster={requestedProject?.cluster} />
+        <ProviderInput provider={requestedProject?.provider} />
         <div>
           {request?.type !== "CREATE" ? (
             <div>
@@ -240,8 +241,7 @@ export default function AdminRequest() {
             primaryTechnicalLead={requestedProject?.primaryTechnicalLead}
             secondaryTechnicalLead={requestedProject?.secondaryTechnicalLead}
           />
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas project={project} requestedProject={requestedProject} />
+
           <Divider variant="middle" sx={{ mb: 6 }} />
         </div>
         <TitleTypography sx={{ mt: 3, mb: 1 }}>
