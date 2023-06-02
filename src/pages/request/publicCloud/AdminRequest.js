@@ -60,7 +60,13 @@ const ADMIN_REQUEST = gql`
           lastName
           ministry
         }
-        technicalLeads {
+        primaryTechnicalLead {
+          email
+          firstName
+          lastName
+          ministry
+        }
+        secondaryTechnicalLead {
           email
           firstName
           lastName
@@ -87,7 +93,7 @@ const ADMIN_REQUEST = gql`
 `;
 
 const MAKE_REQUEST_DECISION = gql`
-  mutation PrivateCloudRequestDecision(
+  mutation PublicCloudRequestDecision(
     $requestId: ID!
     $decision: RequestDecision!
     $humanComment: String
@@ -105,7 +111,7 @@ const MAKE_REQUEST_DECISION = gql`
 `;
 
 const RE_PROVISION_REQUEST = gql`
-  mutation PrivateCloudReProvisionRequest($requestId: ID!) {
+  mutation PublicCloudReProvisionRequest($requestId: ID!) {
     publicCloudReProvisionRequest(requestId: $requestId) {
       id
     }
@@ -122,6 +128,8 @@ export default function AdminRequest() {
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id }
   });
+
+  console.log(data);
 
   const { project, requestedProject, ...request } =
     data?.publicCloudRequestById || {};

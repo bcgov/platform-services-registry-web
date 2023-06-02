@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/plainText/MetaDataInput";
-import ClusterInput from "../../../components/plainText/ClusterInput";
+import BillingGroup from "../../../components/plainText/BillingGroup";
+import ProviderInput from "../../../components/plainText/ProviderInput";
 import MinistryInput from "../../../components/plainText/MinistryInput";
 import NavToolbar from "../../../components/NavToolbar";
 import { projectInitialValues as initialValues } from "../../../components/common/FormHelpers";
@@ -16,8 +17,8 @@ import TitleTypography from "../../../components/common/TitleTypography";
 import { Typography } from "@mui/material";
 
 const USER_REQUEST = gql`
-  query UserPrivateCloudRequestById($requestId: ID!) {
-    userPrivateCloudRequestById(requestId: $requestId) {
+  query UserPublicCloudRequestById($requestId: ID!) {
+    userPublicCloudRequestById(requestId: $requestId) {
       id
       createdBy {
         firstName
@@ -36,26 +37,6 @@ const USER_REQUEST = gql`
       decisionDate
       project {
         name
-        productionQuota {
-          cpu
-          memory
-          storage
-        }
-        testQuota {
-          cpu
-          memory
-          storage
-        }
-        developmentQuota {
-          cpu
-          memory
-          storage
-        }
-        toolsQuota {
-          cpu
-          memory
-          storage
-        }
       }
       requestedProject {
         id
@@ -63,6 +44,12 @@ const USER_REQUEST = gql`
         licencePlate
         description
         status
+        budget {
+          dev
+          test
+          prod
+          tools
+        }
         projectOwner {
           email
           firstName
@@ -82,7 +69,7 @@ const USER_REQUEST = gql`
           ministry
         }
         ministry
-        cluster
+        provider
         commonComponents {
           addressAndGeolocation
           workflowManagement
@@ -95,26 +82,6 @@ const USER_REQUEST = gql`
           businessIntelligence
           noServices
           other
-        }
-        productionQuota {
-          cpu
-          memory
-          storage
-        }
-        testQuota {
-          cpu
-          memory
-          storage
-        }
-        developmentQuota {
-          cpu
-          memory
-          storage
-        }
-        toolsQuota {
-          cpu
-          memory
-          storage
         }
       }
     }
@@ -129,7 +96,7 @@ export default function UserRequest() {
   });
 
   const { project, requestedProject, ...request } =
-    data?.userPrivateCloudRequestById || {};
+    data?.userPublicCloudRequestById || {};
 
   const name =
     request?.type === "CREATE" ? requestedProject?.name : project?.name;
@@ -147,7 +114,7 @@ export default function UserRequest() {
           description={requestedProject?.description}
         />
         <MinistryInput ministry={requestedProject?.ministry} />
-        <ClusterInput cluster={requestedProject?.cluster} />
+        <ProviderInput cluster={requestedProject?.provider} />
         <div>
           {request?.type !== "CREATE" ? (
             <div>

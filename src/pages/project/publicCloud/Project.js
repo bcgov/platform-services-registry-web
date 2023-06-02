@@ -66,7 +66,13 @@ const ADMIN_PROJECT = gql`
         lastName
         ministry
       }
-      technicalLeads {
+      primaryTechnicalLead {
+        email
+        firstName
+        lastName
+        ministry
+      }
+      secondaryTechnicalLead {
         email
         firstName
         lastName
@@ -100,7 +106,8 @@ const UPDATE_PROJECT = gql`
     $billingGroup: String!
     $budget: BudgetInput!
     $projectOwner: CreateUserInput!
-    $technicalLeads: [CreateUserInput!]!
+    $primaryTechnicalLead: CreateUserInput!
+    $secondaryTechnicalLead: CreateUserInput
     $commonComponents: CommonComponentsInput!
   ) {
     publicCloudProjectEditRequest(
@@ -111,7 +118,8 @@ const UPDATE_PROJECT = gql`
       projectOwner: $projectOwner
       billingGroup: $billingGroup
       budget: $budget
-      technicalLeads: $technicalLeads
+      primaryTechnicalLead: $primaryTechnicalLead
+      secondaryTechnicalLead: $secondaryTechnicalLead
     ) {
       id
       active
@@ -218,16 +226,7 @@ export default function AdminProject({ requestsRoute }) {
       autoClose: false
     });
 
-    // Replace primary and secondary technical lead with an array of technical leads called technicalLeads
-    const technicalLeads = [
-      values.primaryTechnicalLead,
-      values.secondaryTechnicalLead
-    ].filter((lead) => lead !== null);
-
-    const variables = validationSchema.cast({
-      ...values,
-      technicalLeads
-    });
+    const variables = validationSchema.cast(values);
 
     publicCloudProjectEditRequest({
       variables: { projectId: id, ...variables },

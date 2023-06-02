@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 import NavToolbar from "../../components/NavToolbar";
 import Button from "@mui/material/Button";
 import MetaDataInput from "../../components/forms/MetaDataInput";
-import ClusterInput from "../../components/forms/ClusterInput";
 import MinistryInput from "../../components/forms/MinistryInput";
 import CommonComponents from "../../components/forms/CommonComponents";
 import AGMinistry from "../../components/forms/AGMinistry";
@@ -42,7 +41,8 @@ const CREATE_USER_PROJECT = gql`
     $provider: Provider!
     $commonComponents: CommonComponentsInput!
     $projectOwner: CreateUserInput!
-    $technicalLeads: [CreateUserInput!]!
+    $primaryTechnicalLead: CreateUserInput!
+    $secondaryTechnicalLead: CreateUserInput
     $billingGroup: String
     $budget: BudgetInput!
   ) {
@@ -53,7 +53,8 @@ const CREATE_USER_PROJECT = gql`
       provider: $provider
       commonComponents: $commonComponents
       projectOwner: $projectOwner
-      technicalLeads: $technicalLeads
+      primaryTechnicalLead: $primaryTechnicalLead
+      secondaryTechnicalLead: $secondaryTechnicalLead
       billingGroup: $billingGroup
       budget: $budget
     ) {
@@ -77,7 +78,7 @@ const validationSchema = yup.object().shape({
   secondaryTechnicalLead: yup
     .object(CreateUserInputSchema)
     .nullable()
-    .transform((value) => (value.email === "" ? null : value)),
+    .transform((value) => (value?.email === "" ? null : value)),
   // commonComponents: CommonComponentsInputSchema(),
   commonComponents: yup
     .object(CommonComponentsInputSchema)

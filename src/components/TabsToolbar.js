@@ -48,7 +48,7 @@ function CreateButtons({ privateCloudCreatePath, publicCloudCreatePath }) {
         variant="contained"
         endIcon={<AddIcon />}
       >
-        Create Private Cloud Project
+        Create Private Cloud Product
       </ColorButton>
       <ColorButton
         component={Link}
@@ -57,7 +57,7 @@ function CreateButtons({ privateCloudCreatePath, publicCloudCreatePath }) {
         variant="contained"
         endIcon={<AddIcon />}
       >
-        Create Public Cloud Project
+        Create Public Cloud Product
       </ColorButton>
     </Stack>
   );
@@ -130,7 +130,10 @@ export default function TabsToolbar({ routes }) {
           sx={{ display: { xs: "none", sm: "block" } }}
         />
         <Box sx={{ width: "100%" }}>
-          <Tabs value={routes.indexOf(pathname)} aria-label="nav tabs">
+          <Tabs
+            value={[routes[0], routes[1], routes[3]].indexOf(pathname)}
+            aria-label="nav tabs"
+          >
             <Tab
               component={Link}
               label={
@@ -152,7 +155,9 @@ export default function TabsToolbar({ routes }) {
         </Box>
         {pathname === routes[1] && (admin || readOnlyAdmin) ? (
           <TabForm />
-        ) : (
+        ) : null}
+
+        {pathname === routes[0] ? (
           <Box sx={{ display: { xs: "none", xl: "flex" } }}>
             <CreateButtons
               privateCloudCreatePath={
@@ -163,7 +168,7 @@ export default function TabsToolbar({ routes }) {
               }
             />
           </Box>
-        )}
+        ) : null}
         {pathname.includes("requests") ? (
           <Box sx={{ display: { xs: "flex", xl: "none" } }}>
             <IconButton onClick={handleClick} color="inherit">

@@ -6,7 +6,7 @@ import { EmptyAlert, ErrorAlert } from "../../components/common/Alert";
 import EmptyList from "../../components/common/EmptyList";
 
 export const ALL_ACTIVE_REQUESTS = gql`
-  query PrivateCloudActiveRequests {
+  query AllActiveRequests {
     privateCloudActiveRequests {
       id
       active
@@ -18,6 +18,38 @@ export const ALL_ACTIVE_REQUESTS = gql`
         description
         ministry
         cluster
+        licencePlate
+        projectOwner {
+          email
+          firstName
+          lastName
+          email
+        }
+        primaryTechnicalLead {
+          email
+          firstName
+          lastName
+          email
+        }
+        secondaryTechnicalLead {
+          email
+          firstName
+          lastName
+          email
+        }
+      }
+    }
+    publicCloudActiveRequests {
+      id
+      active
+      decisionStatus
+      type
+      created
+      requestedProject {
+        name
+        description
+        ministry
+        provider
         licencePlate
         projectOwner {
           email
@@ -61,7 +93,13 @@ export default function Requests() {
       <StickyTable
         onClickPath={"/registry/admin/private-cloud/request/"}
         columns={columns}
-        rows={data.privateCloudActiveRequests.map(requestsToRows).reverse()}
+        rows={[
+          ...data.privateCloudActiveRequests,
+          ...data.publicCloudActiveRequests
+        ]
+          .sort((a, b) => (a.created > b.created ? 1 : -1))
+          .map(requestsToRows)
+          .reverse()}
         title="Active Requests"
         loading={loading}
         count={loading ? 0 : data?.privateCloudActiveRequests?.length}

@@ -251,9 +251,10 @@ export type MutationPublicCloudProjectEditRequestArgs = {
   description: Scalars['String'];
   ministry: Ministry;
   name: Scalars['String'];
+  primaryTechnicalLead: CreateUserInput;
   projectId: Scalars['ID'];
   projectOwner: CreateUserInput;
-  technicalLeads: Array<CreateUserInput>;
+  secondaryTechnicalLead?: InputMaybe<CreateUserInput>;
 };
 
 
@@ -264,9 +265,10 @@ export type MutationPublicCloudProjectRequestArgs = {
   description: Scalars['String'];
   ministry: Ministry;
   name: Scalars['String'];
+  primaryTechnicalLead: CreateUserInput;
   projectOwner: CreateUserInput;
   provider: Provider;
-  technicalLeads: Array<CreateUserInput>;
+  secondaryTechnicalLead?: InputMaybe<CreateUserInput>;
 };
 
 
@@ -346,16 +348,18 @@ export type PublicCloudProject = {
   licencePlate: Scalars['ID'];
   ministry: Ministry;
   name: Scalars['String'];
+  primaryTechnicalLead: User;
   projectOwner: User;
   provider: Provider;
   requestHistory: Array<Maybe<PublicCloudRequest>>;
+  secondaryTechnicalLead?: Maybe<User>;
   status: ProjectStatus;
-  technicalLeads: Array<Maybe<User>>;
 };
 
 export type PublicCloudRequest = {
   __typename?: 'PublicCloudRequest';
   active: Scalars['Boolean'];
+  created: Scalars['DateTime'];
   createdBy?: Maybe<User>;
   decisionDate?: Maybe<Scalars['DateTime']>;
   decisionMaker?: Maybe<User>;
@@ -377,6 +381,7 @@ export type Query = {
   privateCloudProjects: Array<PrivateCloudProject>;
   privateCloudProjectsById: Array<PrivateCloudProject>;
   privateCloudProjectsPaginated: PrivateCloudProjectsPaginatedOutput;
+  privateCloudProjectsWithFilterSearch: Array<PrivateCloudProject>;
   privateCloudRequestById: PrivateCloudRequest;
   privateCloudRequests: Array<PrivateCloudRequest>;
   publicCloudActiveRequestById: PublicCloudRequest;
@@ -437,6 +442,13 @@ export type QueryPrivateCloudProjectsPaginatedArgs = {
   pageSize: Scalars['Int'];
   search?: InputMaybe<Scalars['String']>;
   sortOrder?: InputMaybe<Scalars['Int']>;
+  userId?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryPrivateCloudProjectsWithFilterSearchArgs = {
+  filter?: InputMaybe<FilterPrivateCloudProjectsInput>;
+  search?: InputMaybe<Scalars['String']>;
 };
 
 

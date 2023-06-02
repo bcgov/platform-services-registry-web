@@ -27,7 +27,8 @@ const requestsToRows = ({
     secondaryTechnicalLead,
     ministry,
     cluster,
-  },
+    provider
+  }
 }) => ({
   id,
   name: <span style={{ fontSize: 18, fontWeight: "500" }}>{name}</span>,
@@ -36,8 +37,8 @@ const requestsToRows = ({
     <Link
       sx={{
         "&:hover": {
-          cursor: "pointer",
-        },
+          cursor: "pointer"
+        }
       }}
       underline="hover"
       onClick={(e) =>
@@ -51,7 +52,7 @@ const requestsToRows = ({
     </Link>
   ),
   ministry,
-  cluster,
+  provider: cluster || provider,
   projectOwner: (
     <Link
       underline="hover"
@@ -127,7 +128,7 @@ const requestsToRows = ({
     </Box>
   ),
 
-  type: <Chip style={{ borderRadius: 7 }} label={type} />,
+  type: <Chip style={{ borderRadius: 7 }} label={type} />
 });
 
 function truncate(str, n) {
@@ -138,14 +139,14 @@ const decisionStatusLookup = {
   APPROVED: "PROCESSING",
   PENDING: "PENDING DECISION",
   PROVISIONED: "PROVISIONED",
-  REJECTED: "REJECTED",
+  REJECTED: "REJECTED"
 };
 
 const decisionStatusColourLookup = {
   APPROVED: "success",
   PENDING: "secondary",
   REJECTED: "error",
-  PROVISIONED: "success",
+  PROVISIONED: "success"
 };
 
 const columns = [
@@ -153,11 +154,11 @@ const columns = [
   { id: "status", label: "Status", minWidth: 0 },
   { id: "name", label: "Name", minWidth: 0 },
   { id: "ministry", label: "Ministry", minWidth: 0 },
-  { id: "cluster", label: "Cluster", minWidth: 0 },
+  { id: "provider", label: "Provider", minWidth: 0 },
   { id: "projectOwner", label: "Project Owner", minWidth: 0 },
   { id: "technicalLeads", label: "Technical Leads", minWidth: 0 },
   { id: "created", label: "Created", minWidth: 200 },
-  { id: "licencePlate", label: "License Plate", minWidth: 0 },
+  { id: "licencePlate", label: "License Plate", minWidth: 0 }
 ];
 
 export { requestsToRows, columns };

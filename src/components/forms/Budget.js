@@ -3,6 +3,7 @@ import TextField from "@mui/material/TextField";
 import TitleTypography from "../common/TitleTypography";
 import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
+import InputAdornment from "@mui/material/InputAdornment";
 
 export default function Budget({ formik, isDisabled }) {
   console.log(formik.values);
@@ -20,7 +21,7 @@ export default function Budget({ formik, isDisabled }) {
       autoComplete="off"
     >
       <Box sx={{ display: "flex", p: 0 }}>
-        <Box sx={{ mr: 0, width: 650 }}>
+        <Box sx={{ mr: 0, width: 550 }}>
           <div>
             <TitleTypography>Budget</TitleTypography>
             <Typography sx={{ mb: 1 }} color="text.primary">
@@ -28,6 +29,13 @@ export default function Budget({ formik, isDisabled }) {
             </Typography>
           </div>
           <TextField
+            sx={{ mr: 3 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">$</InputAdornment>
+              )
+            }}
+            type="number"
             id="budgetProd"
             name="budget.prod"
             label="Production"
@@ -35,12 +43,19 @@ export default function Budget({ formik, isDisabled }) {
             value={formik.values.budget.prod}
             onChange={formik.handleChange}
             error={
-              formik.touched.budget?.prod && Boolean(formik.errors.budget.prod)
+              formik.touched.budget?.prod && Boolean(formik.errors.budget?.prod)
             }
             helperText={formik.touched?.budget?.prod && <RequiredField />}
             size="small"
           />
           <TextField
+            sx={{ mr: 3 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">$</InputAdornment>
+              )
+            }}
+            type="number"
             id="budgetTest"
             name="budget.test"
             label="Test"
@@ -55,6 +70,13 @@ export default function Budget({ formik, isDisabled }) {
           />
 
           <TextField
+            sx={{ mr: 3 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">$</InputAdornment>
+              )
+            }}
+            type="number"
             id="budgetDev"
             name="budget.dev"
             label="Development"
@@ -69,6 +91,13 @@ export default function Budget({ formik, isDisabled }) {
           />
 
           <TextField
+            sx={{ mr: 3 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">$</InputAdornment>
+              )
+            }}
+            type="number"
             id="budgetTools"
             name="budget.tools"
             label="Tools"

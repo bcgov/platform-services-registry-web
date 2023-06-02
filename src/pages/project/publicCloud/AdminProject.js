@@ -63,7 +63,13 @@ const ADMIN_PROJECT = gql`
         lastName
         ministry
       }
-      technicalLeads {
+      primaryTechnicalLead {
+        email
+        firstName
+        lastName
+        ministry
+      }
+      secondaryTechnicalLead {
         email
         firstName
         lastName
@@ -97,7 +103,8 @@ const UPDATE_PROJECT = gql`
     $billingGroup: String!
     $budget: BudgetInput!
     $projectOwner: CreateUserInput!
-    $technicalLeads: [CreateUserInput!]!
+    $primaryTechnicalLead: CreateUserInput!
+    $secondaryTechnicalLead: CreateUserInput
     $commonComponents: CommonComponentsInput!
   ) {
     publicCloudProjectEditRequest(
@@ -108,7 +115,8 @@ const UPDATE_PROJECT = gql`
       projectOwner: $projectOwner
       billingGroup: $billingGroup
       budget: $budget
-      technicalLeads: $technicalLeads
+      primaryTechnicalLead: $primaryTechnicalLead
+      secondaryTechnicalLead: $secondaryTechnicalLead
     ) {
       id
       active
@@ -140,15 +148,6 @@ const validationSchema = yup.object().shape({
     .transform((value, original) => {
       return replaceEmptyStringWithNull(value);
     }),
-  // technicalLeads: yup
-  //   .array()
-  //   .of(
-  //     yup.object(CreateUserInputSchema).transform((value, original) => {
-  //       return replaceEmptyStringWithNull(value);
-  //     })
-  //   )
-  //   .min(1, "At least one technical lead is required")
-  //   .required("Technical leads are required"),
   commonComponents: yup
     .object(CommonComponentsInputSchema)
     .transform((value, original) => {
@@ -223,15 +222,8 @@ export default function AdminProject({ requestsRoute }) {
       autoClose: false
     });
 
-    // Replace primary and secondary technical lead with an array of technical leads called technicalLeads
-    const technicalLeads = [
-      values.primaryTechnicalLead,
-      values.secondaryTechnicalLead
-    ].filter((lead) => lead !== null);
-
     const variables = validationSchema.cast({
-      ...values,
-      technicalLeads
+      values
     });
 
     publicCloudProjectEditRequest({
