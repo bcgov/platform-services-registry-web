@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 function usePhotoUrl(email) {
   const [url, setUrl] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchUserPhoto() {
@@ -20,13 +21,14 @@ function usePhotoUrl(email) {
         }
 
         setUrl(image);
+        setLoading(false);
       }
     }
 
     fetchUserPhoto();
-  }, [email]);
+  }, [email, loading]);
 
-  return url;
+  return { url, loading };
 }
 
 export default usePhotoUrl;

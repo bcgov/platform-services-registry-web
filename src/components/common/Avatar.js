@@ -22,21 +22,35 @@ const stringAvatar = (name) => {
   return {
     sx: {
       bgcolor: stringToColor(name),
-      color: "#ffffff!important",
+      color: "#ffffff!important"
     },
-    children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+    children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`
   };
 };
 
 export default function UserAvatar({ email, firstName, lastName, ...rest }) {
-  const photoUrl = usePhotoUrl(email);
-  return photoUrl || !(firstName && lastName) ? (
-    <Avatar {...rest} alt={firstName} src={photoUrl} />
-  ) : (
-    <Avatar
-      sx={{ color: "#ffffff" }}
-      {...rest}
-      {...stringAvatar(`${firstName.trim()} ${lastName.trim()}`)}
-    />
-  );
+  const { loading, url } = usePhotoUrl(email);
+
+  console.log(loading);
+  console.log(url);
+
+  let trimmedFirstName = firstName ? firstName.trim() : "";
+  let trimmedLastName = lastName ? lastName.trim() : "";
+
+  if (loading || !url || url === "undefined") {
+    return (
+      <Avatar
+        {...rest}
+        {...stringAvatar(`${trimmedFirstName} ${trimmedLastName}`)}
+      />
+    );
+  } else {
+    return (
+      <Avatar
+        {...rest}
+        alt={`${trimmedFirstName} ${trimmedLastName}`}
+        src={url}
+      />
+    );
+  }
 }
