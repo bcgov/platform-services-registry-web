@@ -35,9 +35,6 @@ const stringAvatar = (name) => {
 export default function UserAvatar({ email, firstName, lastName, ...rest }) {
   const { loading, url } = usePhotoUrl(email);
 
-  console.log(loading);
-  console.log(url);
-
   let trimmedFirstName = firstName ? firstName.trim() : "";
   let trimmedLastName = lastName ? lastName.trim() : "";
 
