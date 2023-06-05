@@ -10,55 +10,54 @@ import SortContext from "../../context/sort";
 import UserContext from "../../context/user";
 
 const USER_PROJECTS = gql`
-query PrivateCloudProjectsPaginated(
-  $page: Int!
-  $pageSize: Int!
-  $filter: FilterPrivateCloudProjectsInput
-  $search: String
-  $sortOrder: Int
-  $userId:String
-) {
-  privateCloudProjectsPaginated(
-    page: $page
-    pageSize: $pageSize
-    filter: $filter
-    search: $search
-    sortOrder: $sortOrder
-    userId: $userId
+  query PrivateCloudProjectsPaginated(
+    $page: Int!
+    $pageSize: Int!
+    $filter: FilterPrivateCloudProjectsInput
+    $search: String
+    $sortOrder: Int
+    $userId: String
   ) {
-    projects {
-      id
-      name
-      description
-      cluster
-      ministry
-      licencePlate
-      projectOwner {
-        email
-        firstName
-        lastName
-        email
+    privateCloudProjectsPaginated(
+      page: $page
+      pageSize: $pageSize
+      filter: $filter
+      search: $search
+      sortOrder: $sortOrder
+      userId: $userId
+    ) {
+      projects {
+        id
+        name
+        description
+        cluster
+        ministry
+        licencePlate
+        projectOwner {
+          email
+          firstName
+          lastName
+          email
+        }
+        primaryTechnicalLead {
+          email
+          firstName
+          lastName
+          email
+        }
+        secondaryTechnicalLead {
+          email
+          firstName
+          lastName
+          email
+        }
       }
-      primaryTechnicalLead {
-        email
-        firstName
-        lastName
-        email
-      }
-      secondaryTechnicalLead {
-        email
-        firstName
-        lastName
-        email
-      }
+      total
     }
-    total
   }
-}
 `;
 
 export default function Projects() {
-
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const { debouncedSearch } = useContext(SearchContext);
   const [page, setPage] = useState(1);
@@ -66,16 +65,16 @@ export default function Projects() {
   const { sortOrder } = useContext(SortContext);
   const userContext = useContext(UserContext);
 
-  const { loading, data, fetchMore, startPolling, error } = useQuery(USER_PROJECTS,
+  const { loading, data, fetchMore, startPolling, error } = useQuery(
+    USER_PROJECTS,
     {
-      nextFetchPolicy: "cache-first",
       variables: {
         page: page,
         pageSize: rowsPerPage,
         search: debouncedSearch,
         filter,
         sortOrder,
-        userId: userContext.id,
+        userId: userContext.id
       }
     }
   );
@@ -92,7 +91,7 @@ export default function Projects() {
         search: debouncedSearch,
         filter,
         sortOrder,
-        userId: userContext.id,
+        userId: userContext.id
       }
     });
     setPage(1);
@@ -109,7 +108,7 @@ export default function Projects() {
             search: debouncedSearch,
             filter,
             sortOrder,
-            userId: userContext.id,
+            userId: userContext.id
           }
         });
         return nextPage;
@@ -143,8 +142,9 @@ export default function Projects() {
           onClickPath={"/private-cloud/user/product/"}
           onNextPage={getNextPage}
           columns={columns}
-          rows={data?.privateCloudProjectsPaginated?.projects.map(projectsToRows)
-          }
+          rows={data?.privateCloudProjectsPaginated?.projects.map(
+            projectsToRows
+          )}
           count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
           title="Products"
           loading={loading}
