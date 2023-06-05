@@ -2,6 +2,10 @@ import Avatar from "@mui/material/Avatar";
 import usePhotoUrl from "../../msGraphApi/useAzurePhoto";
 
 const stringToColor = (string) => {
+  if (!string) {
+    return null;
+  }
+
   let hash = 0;
   let i;
 
@@ -36,6 +40,10 @@ export default function UserAvatar({ email, firstName, lastName, ...rest }) {
 
   let trimmedFirstName = firstName ? firstName.trim() : "";
   let trimmedLastName = lastName ? lastName.trim() : "";
+
+  if (!trimmedFirstName && !trimmedLastName) {
+    return <Avatar src="/broken-image.jpg" {...rest} />;
+  }
 
   if (loading || !url || url === "undefined") {
     return (
