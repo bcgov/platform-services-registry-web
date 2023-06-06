@@ -1,21 +1,34 @@
 import { useState, useEffect } from "react";
-import { getUserPhotoByEmail } from "../msGraphApi";
 
 function usePhotoUrl(email) {
   const [url, setUrl] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchUserPhoto() {
       if (email) {
-        const result = await getUserPhotoByEmail(email);
-        setUrl(result);
+        let image = localStorage.getItem(email);
+
+        if (!image) {
+          const result = await fetch(
+            `${process.env.REACT_APP_MSAL_ENDPOINT}/getIdirPhoto?email=${email}`
+          );
+
+          const data = await result.json();
+
+          image = data.imageUrl;
+          localStorage.setItem(email, image);
+        }
+
+        setUrl(image);
+        setLoading(false);
       }
     }
 
     fetchUserPhoto();
-  }, [email]);
+  }, [email, loading]);
 
-  return url;
+  return { url, loading };
 }
 
 export default usePhotoUrl;
