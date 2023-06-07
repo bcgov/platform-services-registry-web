@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
-import StickyTable from "../../components/common/Table";
-import { InfoAlert, ErrorAlert } from "../../components/common/Alert";
-import EmptyList from "../../components/common/EmptyList";
-import SearchContext from "../../context/search";
-import FilterContext from "../../context/filter";
-import SortContext from "../../context/sort";
-import UserContext from "../../context/user";
+import StickyTable from "../../../components/common/Table";
+import { InfoAlert, ErrorAlert } from "../../../components/common/Alert";
+import EmptyList from "../../../components/common/EmptyList";
+import SearchContext from "../../../context/search";
+import FilterContext from "../../../context/filter";
+import SortContext from "../../../context/sort";
+import UserContext from "../../../context/user";
 
 const USER_PROJECTS = gql`
   query PrivateCloudProjectsPaginated(
