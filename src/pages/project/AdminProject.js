@@ -9,7 +9,6 @@ import {
 } from "../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../components/forms/MetaDataInput";
-import ClusterInput from "../../components/forms/ClusterInput";
 import MinistryInput from "../../components/forms/MinistryInput";
 import NavToolbar from "../../components/NavToolbar";
 import {
@@ -39,8 +38,8 @@ import Modal from "@mui/material/Modal";
 import ReProvisionButton from "../../components/ReProvisionButton";
 import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
 import UserContext from "../../context/user";
-import Tooltip from "@mui/material/Tooltip";
 import Delete from "../../components/Delete";
+import ClusterInputText from "../../components/plainText/ClusterInput";
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -226,7 +225,7 @@ export default function AdminProject({ requestsRoute }) {
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-
+  const [submitBtnIsDisabled, setSubmitBtnIsDisabled] = useState(true);
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network"
@@ -368,6 +367,22 @@ export default function AdminProject({ requestsRoute }) {
   };
 
   useEffect(() => {
+    setSubmitBtnIsDisabled(
+      formik.values.projectOwner.firstName === "" ||
+        formik.values.projectOwner.lastName === "" ||
+        formik.values.projectOwner.ministry === "" ||
+        formik.values.primaryTechnicalLead.firstName === "" ||
+        formik.values.primaryTechnicalLead.lastName === "" ||
+        formik.values.primaryTechnicalLead.ministry === "" ||
+        (formik.values.secondaryTechnicalLead.email !== "" &&
+          formik.values.secondaryTechnicalLead.email !== null &&
+          (formik.values.secondaryTechnicalLead.firstName === "" ||
+            formik.values.secondaryTechnicalLead.lastName === "" ||
+            formik.values.secondaryTechnicalLead.ministry === ""))
+    );
+  }, [formik.values]);
+
+  useEffect(() => {
     if (data) {
       // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
       const formData = stripTypeName(
@@ -448,7 +463,9 @@ export default function AdminProject({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <ClusterInput formik={formik} isDisabled={true} />
+              <Box sx={{ pt: 5 }}>
+                <ClusterInputText cluster={formik.values.cluster} />
+              </Box>
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
@@ -464,9 +481,10 @@ export default function AdminProject({ requestsRoute }) {
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
               <Button
                 type="submit"
-                disabled={!formik.dirty}
+                // disabled={!formik.dirty}
                 sx={{ mr: 1, width: "170px" }}
                 variant="contained"
+                disabled={submitBtnIsDisabled}
               >
                 Submit
               </Button>

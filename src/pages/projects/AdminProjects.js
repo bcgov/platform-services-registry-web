@@ -71,7 +71,6 @@ export default function Projects() {
   const { loading, data, fetchMore, startPolling, error } = useQuery(
     ALL_PROJECTS,
     {
-      nextFetchPolicy: "cache-first",
       variables: {
         page: page,
         pageSize: rowsPerPage,
