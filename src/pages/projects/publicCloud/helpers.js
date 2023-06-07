@@ -48,7 +48,7 @@ const projectsToRows = ({
     <span style={{ fontSize: 18 }}> {truncate(description, 130)}</span>
   ),
   ministry,
-  provider,
+  cluster: provider === "AWS" ? "ROSA" : provider,
   licencePlate,
   projectOwner: (
     <Link

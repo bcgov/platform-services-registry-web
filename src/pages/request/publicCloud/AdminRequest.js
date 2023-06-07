@@ -243,6 +243,7 @@ export default function AdminRequest() {
           />
 
           <Divider variant="middle" sx={{ mb: 6 }} />
+          {/* <BillinGroup budget={requestedProject?.budget} /> */}
         </div>
         <TitleTypography sx={{ mt: 3, mb: 1 }}>
           Reviewer’s comments

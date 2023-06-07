@@ -41,7 +41,7 @@ const requestsToRows = ({
     <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
   ),
   ministry,
-  provider: cluster || provider,
+  cluster: provider === "AWS" ? "ROSA" : cluster,
   projectOwner: (
     <Link
       underline="hover"
@@ -143,7 +143,7 @@ const columns = [
   { id: "status", label: "Status", minWidth: 0 },
   { id: "name", label: "Name", minWidth: 0 },
   { id: "ministry", label: "Ministry", minWidth: 0 },
-  { id: "provider", label: "Provider", minWidth: 0 },
+  { id: "cluster", label: "Cluster", minWidth: 0 },
   { id: "projectOwner", label: "Project Owner", minWidth: 0 },
   { id: "technicalLeads", label: "Technical Leads", minWidth: 0 },
   { id: "created", label: "Created", minWidth: 200 },
