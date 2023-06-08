@@ -42,7 +42,7 @@ export default function UserInput({
   label,
   defaultEditOpen = true,
   formik,
-  isDisabled = false
+  isDisabled = false,
 }) {
   const email = formik.values[contact]?.email;
   const [edit, setEdit] = useState(defaultEditOpen);
@@ -56,17 +56,20 @@ export default function UserInput({
 
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
-    nextFetchPolicy: "cache-first"
+    nextFetchPolicy: "cache-first",
   });
+
+  console.log("REACT_APP_MSAL_ENDPOINT");
+  console.log(process.env.REACT_APP_MSAL_ENDPOINT);
 
   const getFilteredUsers = useCallback(async () => {
     const response = await fetch(
-      `http://localhost:4000/api/v1/getIdirEmails?email=${debouncedEmail}`,
+      process.env.REACT_APP_MSAL_ENDPOINT + "/getIdirEmails?email=" + debouncedEmail,
       {
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       }
     );
     const data = await response.json();
@@ -114,7 +117,7 @@ export default function UserInput({
     formik.values[contact]?.ministry,
     formik.values[contact]?.email,
     formik.values[contact]?.lastName,
-    formik.values[contact]?.firstName
+    formik.values[contact]?.firstName,
   ]);
 
   return (
@@ -122,7 +125,7 @@ export default function UserInput({
       <Box
         sx={{
           p: 2,
-          display: "flex"
+          display: "flex",
         }}
       >
         <Avatar
@@ -172,7 +175,7 @@ export default function UserInput({
               display: "flex",
               flexDirection: "column",
               ml: 2,
-              width: "75%"
+              width: "75%",
             }}
           >
             <Autocomplete
@@ -199,9 +202,9 @@ export default function UserInput({
                   label="Email"
                   sx={{
                     "& .MuiInputBase-input.Mui-disabled": {
-                      WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                      WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                     },
-                    mb: 2
+                    mb: 2,
                   }}
                   error={
                     formik.touched[contact]?.email &&
@@ -228,9 +231,9 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                 },
-                mb: 2
+                mb: 2,
               }}
               variant="standard"
               id={contact + ".firstName"}
@@ -260,9 +263,9 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                 },
-                mb: 2
+                mb: 2,
               }}
               variant="standard"
               id={contact + ".lastName"}
@@ -292,9 +295,9 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                 },
-                mb: 2
+                mb: 2,
               }}
               variant="standard"
               id={contact + ".ministry"}
