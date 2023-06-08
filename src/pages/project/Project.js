@@ -200,7 +200,7 @@ export default function Project({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
-  const [submitBtnIsDisabled, setSubmitBtnIsDisabled] = useState(true);
+
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -296,24 +296,6 @@ export default function Project({ requestsRoute }) {
     });
   };
 
-
-  useEffect(() => {
-    setSubmitBtnIsDisabled((formik.values.projectOwner.firstName === '' ||
-      formik.values.projectOwner.lastName === '' ||
-      formik.values.projectOwner.ministry === '' ||
-      formik.values.primaryTechnicalLead.firstName === '' ||
-      formik.values.primaryTechnicalLead.lastName === '' ||
-      formik.values.primaryTechnicalLead.ministry === '' ||
-      (formik.values.secondaryTechnicalLead.email !== '' &&
-        formik.values.secondaryTechnicalLead.email !== null &&
-        (formik.values.secondaryTechnicalLead.firstName === '' ||
-          formik.values.secondaryTechnicalLead.lastName === '' ||
-          formik.values.secondaryTechnicalLead.ministry === ''))))
-
-          
-  }, [formik.values])
-
-
   useEffect(() => {
     if (data) {
       // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
@@ -326,11 +308,11 @@ export default function Project({ requestsRoute }) {
         formData.secondaryTechnicalLead !== ""
           ? formData.secondaryTechnicalLead
           : {
-            email: "",
-            firstName: "",
-            lastName: "",
-            ministry: ""
-          };
+              email: "",
+              firstName: "",
+              lastName: "",
+              ministry: ""
+            };
 
       setInitialValues(formData);
     }
@@ -398,12 +380,9 @@ export default function Project({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-                <Box
-                sx={{ pt: 5}}
-                >
-                  <ClusterInputText
-                    cluster={formik.values.cluster} />
-                </Box>
+              <Box sx={{ pt: 5 }}>
+                <ClusterInputText cluster={formik.values.cluster} />
+              </Box>{" "}
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
@@ -418,10 +397,9 @@ export default function Project({ requestsRoute }) {
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             <Button
               type="submit"
-              // disabled={!formik.dirty}
+              disabled={!formik.dirty}
               sx={{ mr: 1, width: "170px" }}
               variant="contained"
-              disabled={submitBtnIsDisabled}
             >
               Submit
             </Button>
