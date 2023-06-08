@@ -39,8 +39,6 @@ export default function StickyTable({
     navigate(onClickPath + id);
   };
 
-  console.log("ROWS: ", rows.length);
-
   return (
     <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
       <TableContainer sx={{ height: "calc(100vh - 182px)" }}>
@@ -61,10 +59,8 @@ export default function StickyTable({
                 >
                   {column.label}&nbsp;
                   {column.label === "Name" &&
-                    (pathname === routesAdmin[1] || pathname === routesUser[1])
-                    && (
-                      <SortOrderBtn />
-                    )}
+                    (pathname === routesAdmin[1] ||
+                      pathname === routesUser[1]) && <SortOrderBtn />}
                 </TableCell>
               ))}
             </TableRow>
