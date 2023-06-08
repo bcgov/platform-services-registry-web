@@ -77,8 +77,8 @@ export default function Projects() {
         search: debouncedSearch,
         filter,
         sortOrder
-      },
-      fetchPolicy: "network-only"
+      }
+      // fetchPolicy: "network-only"
     }
   );
 
