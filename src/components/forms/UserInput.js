@@ -59,12 +59,11 @@ export default function UserInput({
     nextFetchPolicy: "cache-first",
   });
 
-  console.log("REACT_APP_MSAL_ENDPOINT");
-  console.log(process.env.REACT_APP_MSAL_ENDPOINT);
-
   const getFilteredUsers = useCallback(async () => {
     const response = await fetch(
-      process.env.REACT_APP_MSAL_ENDPOINT + "/getIdirEmails?email=" + debouncedEmail,
+      (process.env.REACT_APP_MSAL_ENDPOINT || '{{ env "MSAL_ENDPOINT" }}') +
+        "/getIdirEmails?email=" +
+        debouncedEmail,
       {
         headers: {
           Accept: "application/json",
