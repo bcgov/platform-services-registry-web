@@ -75,7 +75,8 @@ export default function Projects() {
         filter,
         sortOrder,
         userId: userContext.id
-      }
+      },
+      fetchPolicy: "network-only"
     }
   );
 
