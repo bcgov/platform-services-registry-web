@@ -74,6 +74,17 @@ export default function UserInput({
   }, [debouncedEmail]);
 
   useEffect(() => {
+    if (!email) {
+      if (contact === "secondaryTechnicalLead") {
+        formik.setFieldValue(contact, null);
+      } else {
+        formik.setFieldValue(contact + ".email", null);
+        formik.setFieldValue(contact + ".firstName", null);
+        formik.setFieldValue(contact + ".lastName", null);
+        formik.setFieldValue(contact + ".ministry", null);
+      }
+    }
+
     const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
 
     if (user) {
@@ -81,13 +92,15 @@ export default function UserInput({
 
       setUserId(user.id);
 
-      formik.setFieldValue(contact + ".email", user.mail.toLowerCase() || "");
-      formik.setFieldValue(contact + ".firstName", user.givenName || "");
-      formik.setFieldValue(contact + ".lastName", user.surname || "");
-      formik.setFieldValue(
-        contact + ".ministry",
-        parseMinistryFromDisplayName(user.displayName) || ""
-      );
+      if (email) {
+        formik.setFieldValue(contact + ".email", user.mail.toLowerCase());
+        formik.setFieldValue(contact + ".firstName", user.givenName);
+        formik.setFieldValue(contact + ".lastName", user.surname);
+        formik.setFieldValue(
+          contact + ".ministry",
+          parseMinistryFromDisplayName(user.displayName)
+        );
+      }
     }
   }, [email]);
 
@@ -165,9 +178,9 @@ export default function UserInput({
               name={contact + ".email"}
               label="Email"
               disabled={isDisabled}
-              onChange={(e, value) =>
-                formik.setFieldValue(contact + ".email", value)
-              }
+              onChange={(e, value) => {
+                formik.setFieldValue(contact + ".email", value);
+              }}
               value={email}
               helperText={formik.touched[contact]?.email && <RequiredField />}
               renderInput={(params) => (
@@ -205,7 +218,7 @@ export default function UserInput({
               name={contact + ".firstName"}
               label="First Name"
               disabled={true}
-              value={formik.values[contact]?.firstName}
+              value={formik.values[contact]?.firstName || ""}
               onChange={formik.handleChange}
               error={
                 formik.touched[contact]?.firstName &&
@@ -228,7 +241,7 @@ export default function UserInput({
               name={contact + ".lastName"}
               label="Last Name"
               disabled={true}
-              value={formik.values[contact]?.lastName}
+              value={formik.values[contact]?.lastName || ""}
               onChange={formik.handleChange}
               error={
                 formik.touched[contact]?.lastName &&
@@ -251,7 +264,7 @@ export default function UserInput({
               name={contact + ".ministry"}
               label="Ministry"
               disabled={true}
-              value={formik.values[contact]?.ministry}
+              value={formik.values[contact]?.ministry || ""}
               onChange={formik.handleChange}
               error={
                 formik.touched[contact]?.ministry &&
