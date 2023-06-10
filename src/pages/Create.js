@@ -1,7 +1,6 @@
 import React, { useRef, useState, useContext } from "react";
 import * as yup from "yup";
 import {
-  CreateUserInputSchema,
   CommonComponentsInputSchema,
   ClusterSchema,
   MinistrySchema
@@ -64,24 +63,28 @@ const CREATE_USER_PROJECT = gql`
   }
 `;
 
+const CreateUserInputSchema = yup.object({
+  email: yup.string().defined(),
+  firstName: yup.string().defined(),
+  lastName: yup.string().defined(),
+  ministry: yup.string()
+});
+
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
-  ministryAG: yup.boolean().oneOf([true], "Message"),
   cluster: ClusterSchema.required(),
-  projectOwner: CreateUserInputSchema(),
-  primaryTechnicalLead: CreateUserInputSchema(),
-  secondaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .nullable()
-    .transform((value) => (value.email === "" ? null : value)),
-  // commonComponents: CommonComponentsInputSchema(),
+  projectOwner: CreateUserInputSchema,
+  primaryTechnicalLead: CreateUserInputSchema,
+  secondaryTechnicalLead: CreateUserInputSchema.nullable(),
+
   commonComponents: yup
     .object(CommonComponentsInputSchema)
     .transform((value, original) => {
       return replaceEmptyStringWithNull(value);
     })
+  // commonComponents: CommonComponentsInputSchema(),
 });
 
 const style = {
