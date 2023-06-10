@@ -43,7 +43,35 @@ export default function ApolloAuthProvider({ children }) {
     return forward(operation);
   });
 
-  const cache = new InMemoryCache();
+  const cache = new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          privateCloudProjectsPaginated: {
+            keyArgs: ["filter", "search"],
+            merge(existing, incoming, { args }) {
+              const merged = existing ? existing.projects.slice(0) : [];
+              const { page, pageSize } = args;
+
+              const offset = (page - 1) * pageSize;
+
+              if (incoming) {
+                if (args) {
+                  for (let i = 0; i < incoming.projects.length; ++i) {
+                    merged[offset + i] = incoming.projects[i];
+                  }
+                } else {
+                  throw Error("args not defined");
+                }
+              }
+
+              return { ...incoming, projects: merged };
+            }
+          }
+        }
+      }
+    }
+  });
 
   const client = new ApolloClient({
     cache,
