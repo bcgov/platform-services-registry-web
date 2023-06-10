@@ -347,12 +347,7 @@ export default function AdminProject({ requestsRoute }) {
 
   useEffect(() => {
     if (data) {
-      // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
-      const formData = stripTypeName(
-        replaceNullsWithEmptyString(data?.privateCloudProjectById)
-      );
-
-      setInitialValues(formData);
+      setInitialValues(stripTypeName(data?.privateCloudProjectById));
     }
   }, [data]);
 
@@ -361,6 +356,10 @@ export default function AdminProject({ requestsRoute }) {
 
   const handleClose = () => setOpen(false);
 
+  console.log("formik.errors");
+  console.log(formik.errors);
+  console.log("formik.values");
+  console.log(formik.values);
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>

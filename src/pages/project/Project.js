@@ -291,12 +291,7 @@ export default function Project({ requestsRoute }) {
 
   useEffect(() => {
     if (data) {
-      // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
-      const formData = stripTypeName(
-        replaceNullsWithEmptyString(data?.userPrivateCloudProjectById)
-      );
-
-      setInitialValues(formData);
+      setInitialValues(stripTypeName(data?.userPrivateCloudProjectById));
     }
   }, [data]);
 
