@@ -37,19 +37,16 @@ const USER_PROJECTS = gql`
           email
           firstName
           lastName
-          email
         }
         primaryTechnicalLead {
           email
           firstName
           lastName
-          email
         }
         secondaryTechnicalLead {
           email
           firstName
           lastName
-          email
         }
       }
       total
