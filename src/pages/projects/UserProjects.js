@@ -95,6 +95,19 @@ export default function Projects() {
     setPage(1);
   }, [rowsPerPage, debouncedSearch, filter, sortOrder, fetchMore]);
 
+  useEffect(() => {
+    fetchMore({
+      variables: {
+        page: 1,
+        pageSize: rowsPerPage,
+        search: debouncedSearch,
+        filter,
+        sortOrder,
+        userId: userContext.id
+      }
+    });
+  }, []);
+
   const getNextPage = useCallback(
     (page, pageSize) => {
       setPage((prevPage) => {
