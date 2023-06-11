@@ -294,6 +294,7 @@ export type Query = {
   userPrivateCloudProjectById: PrivateCloudProject;
   userPrivateCloudProjects: Array<PrivateCloudProject>;
   userPrivateCloudProjectsByIds: PrivateCloudProject;
+  userPrivateCloudProjectsPaginated: ProjectsPaginatedOutput;
   userPrivateCloudRequestById: PrivateCloudRequest;
   userPrivateCloudRequests: Array<PrivateCloudRequest>;
   users: Array<User>;
@@ -327,6 +328,7 @@ export type QueryPrivateCloudProjectsPaginatedArgs = {
   pageSize: Scalars['Int'];
   search?: InputMaybe<Scalars['String']>;
   sortOrder?: InputMaybe<Scalars['Int']>;
+  userId?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -368,6 +370,16 @@ export type QueryUserPrivateCloudProjectByIdArgs = {
 
 export type QueryUserPrivateCloudProjectsByIdsArgs = {
   projectIds?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryUserPrivateCloudProjectsPaginatedArgs = {
+  filter?: InputMaybe<FilterPrivateCloudProjectsInput>;
+  page: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  search?: InputMaybe<Scalars['String']>;
+  sortOrder?: InputMaybe<Scalars['Int']>;
+  userId?: InputMaybe<Scalars['String']>;
 };
 
 
