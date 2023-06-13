@@ -83,7 +83,7 @@ export default function UserInput({
         formik.setFieldValue(contact + ".lastName", null);
         formik.setFieldValue(contact + ".ministry", null);
       }
-      setUserOptions([])
+      userOptions.length = 0
     }
 
     const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
