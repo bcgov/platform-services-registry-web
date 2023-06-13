@@ -48,7 +48,7 @@ export default function UserInput({
   const [userOptions, setUserOptions] = useState([email]);
   const [userId, setUserId] = useState("");
   const [emailInput, setEmailInput] = useState("");
-
+  const [inputValue, setInputValue] = useState('');
   const debouncedEmail = useDebounce(emailInput);
 
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
@@ -69,7 +69,6 @@ export default function UserInput({
       }
     );
     const data = await response.json();
-    console.log('data', data)
     setUserOptions(data);
   }, [debouncedEmail, email]);
 
@@ -179,11 +178,13 @@ export default function UserInput({
               name={contact + ".email"}
               label="Email"
               disabled={isDisabled}
-              onChange={(e, value) => {
-                formik.setFieldValue(contact + ".email", value);
-              }}
+              onChange={(e, value) => formik.setFieldValue(contact + ".email", value)}
               value={email}
               helperText={formik.touched[contact]?.email && <RequiredField />}
+              inputValue={inputValue}
+              onInputChange={(e, newInputValue) => {
+                setInputValue(newInputValue.trim());
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -212,6 +213,7 @@ export default function UserInput({
                       <RequiredField />
                     )
                   }
+                
                   variant="standard"
                   size="small"
                 />
