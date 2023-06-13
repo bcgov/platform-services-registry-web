@@ -356,10 +356,6 @@ export default function AdminProject({ requestsRoute }) {
 
   const handleClose = () => setOpen(false);
 
-  console.log("formik.errors");
-  console.log(formik.errors);
-  console.log("formik.values");
-  console.log(formik.values);
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>

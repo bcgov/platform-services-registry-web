@@ -4,7 +4,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import { Typography } from "@mui/material";
-import {commonComponents} from "../common/Constants" ;
+import { commonComponents } from "../common/Constants";
 import Box from "@mui/material/Box";
 import TitleTypography from "../common/TitleTypography";
 import TextField from "@mui/material/TextField";
@@ -12,16 +12,10 @@ import Checkbox from "@mui/material/Checkbox";
 import FormHelperText from "@mui/material/FormHelperText";
 import Link from "@mui/material/Link";
 
-
-
-
-
 export default function CommonComponents({ formik, isDisabled }) {
   const [dirty, setDirty] = useState(false);
 
-
   const noServices = formik.values.commonComponents.noServices;
-
 
   const onClick = (name) => (event) => {
     if (event.target.value === formik.values.commonComponents[name]) {
@@ -31,19 +25,16 @@ export default function CommonComponents({ formik, isDisabled }) {
     }
   };
 
-
   useEffect(() => {
     const { noServices, ...rest } = formik.values.commonComponents;
     const values = Object.values(rest).filter((value) => value !== "");
 
-
     setDirty(values.length !== 0);
   }, [formik.values.commonComponents]);
 
-
   return (
     <Box sx={{ mt: 6, mb: 4, width: 700 }}>
-      <div >
+      <div>
         <TitleTypography>Common Components</TitleTypography>
         <Typography sx={{ mb: 2 }} color="text.primary">
           Please indicate what services you expect to utilize as part of your
@@ -52,14 +43,15 @@ export default function CommonComponents({ formik, isDisabled }) {
         <Link
           sx={{
             mb: 2,
-            display:'inline-block',
+            display: "inline-block",
             "&:hover": {
-              cursor: "pointer",
-            },
+              cursor: "pointer"
+            }
           }}
-          target="_blank" rel="noopener noreferrer"
+          target="_blank"
+          rel="noopener noreferrer"
           underline="hover"
-          href='https://digital.gov.bc.ca/common-components/'
+          href="https://digital.gov.bc.ca/common-components/"
         >
           Click to read more about Common Components avaliable in BC Goverments
         </Link>
@@ -82,7 +74,7 @@ export default function CommonComponents({ formik, isDisabled }) {
               <FormControlLabel
                 sx={{
                   "& .MuiFormControlLabel-label.Mui-disabled": {
-                    WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                    WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
                   }
                 }}
                 control={
@@ -98,7 +90,7 @@ export default function CommonComponents({ formik, isDisabled }) {
               <FormControlLabel
                 sx={{
                   "& .MuiFormControlLabel-label.Mui-disabled": {
-                    WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                    WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
                   },
                   marginLeft: "180px"
                 }}
@@ -130,16 +122,19 @@ export default function CommonComponents({ formik, isDisabled }) {
             onChange={formik.handleChange}
             value={formik.values.commonComponents.other}
             sx={{
-              "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input": {
-                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-              },
+              "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input":
+                {
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                },
               "& .MuiInputLabel-root": {
-                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
               },
-              "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline": {
-                borderColor: "rgba(0, 0, 0, 0.87)",
-              },
-              ml: 3, width: "80%"
+              "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "rgba(0, 0, 0, 0.87)"
+                },
+              ml: 3,
+              width: "80%"
             }}
             disabled={isDisabled || !!noServices}
             size="small"
@@ -148,7 +143,7 @@ export default function CommonComponents({ formik, isDisabled }) {
         <FormControlLabel
           sx={{
             "& .MuiFormControlLabel-label.Mui-disabled": {
-              WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+              WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
             },
             marginTop: 2
           }}
@@ -158,7 +153,7 @@ export default function CommonComponents({ formik, isDisabled }) {
               name="commonComponents.noServices"
               type="checkbox"
               onChange={formik.handleChange}
-              disabled={isDisabled || dirty}
+              disabled={isDisabled}
               checked={Boolean(formik.values.commonComponents.noServices)}
               value={formik.values.commonComponents.noServices?.[0] === "on"}
             />
