@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import * as yup from "yup";
 import {
-  CreateUserInputSchema,
   CommonComponentsInputSchema,
   MinistrySchema,
   BudgetInputSchema,

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import * as yup from "yup";
 import {
-  CreateUserInputSchema,
   CommonComponentsInputSchema,
   ProviderSchema,
   MinistrySchema,
@@ -9,7 +8,7 @@ import {
 } from "../../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/forms/MetaDataInput";
-import ClusterInput from "../../../components/forms/ClusterInput";
+import ClusterInputText from "../../../components/plainText/ClusterInput";
 import MinistryInput from "../../../components/forms/MinistryInput";
 import NavToolbar from "../../../components/NavToolbar";
 import {
@@ -275,7 +274,9 @@ export default function AdminProject({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <ClusterInput formik={formik} isDisabled={true} />
+              <Box sx={{ pt: 5 }}>
+                <ClusterInputText cluster={formik.values.cluster} />
+              </Box>
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces

@@ -380,7 +380,7 @@ export type Query = {
   privateCloudProjectById: PrivateCloudProject;
   privateCloudProjects: Array<PrivateCloudProject>;
   privateCloudProjectsById: Array<PrivateCloudProject>;
-  privateCloudProjectsPaginated: PrivateCloudProjectsPaginatedOutput;
+  privateCloudProjectsPaginated: ProjectsPaginatedOutput;
   privateCloudProjectsWithFilterSearch: Array<PrivateCloudProject>;
   privateCloudRequestById: PrivateCloudRequest;
   privateCloudRequests: Array<PrivateCloudRequest>;
@@ -624,6 +624,12 @@ export type User = {
 
 export type PrivateCloudProjectsPaginatedOutput = {
   __typename?: 'privateCloudProjectsPaginatedOutput';
+  projects: Array<PrivateCloudProject>;
+  total: Scalars['Int'];
+};
+
+export type ProjectsPaginatedOutput = {
+  __typename?: 'projectsPaginatedOutput';
   projects: Array<PrivateCloudProject>;
   total: Scalars['Int'];
 };
