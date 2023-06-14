@@ -70,7 +70,7 @@ export default function UserInput({
     );
     const data = await response.json();
     setUserOptions(data);
-  }, [debouncedEmail, email]);
+  }, [debouncedEmail]);
 
   useEffect(() => {
     if (!email) {
