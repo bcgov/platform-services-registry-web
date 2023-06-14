@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
 import {
-  CreateUserInputSchema,
+  // CreateUserInputSchema,
   CommonComponentsInputSchema,
   QuotaInputSchema,
   MinistrySchema,
@@ -37,7 +37,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 
-const ADMIN_PROJECT = gql`
+const USER_PROJECT = gql`
   query UserPrivateCloudProjectById($projectId: ID!) {
     userPrivateCloudProjectById(projectId: $projectId) {
       id
@@ -149,28 +149,21 @@ const DELETE_USER_PROJECT = gql`
   }
 `;
 
+const CreateUserInputSchema = yup.object({
+  email: yup.string().defined(),
+  firstName: yup.string().defined(),
+  lastName: yup.string().defined(),
+  ministry: yup.string()
+});
+
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   cluster: ClusterSchema.required(),
-  projectOwner: yup
-    .object(CreateUserInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
-  primaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
-  secondaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .nullable()
-    .transform((value) => (value?.email === "" ? null : value))
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
+  projectOwner: CreateUserInputSchema,
+  primaryTechnicalLead: CreateUserInputSchema,
+  secondaryTechnicalLead: CreateUserInputSchema.nullable(),
 
   commonComponents: yup
     .object(CommonComponentsInputSchema)
@@ -205,7 +198,7 @@ export default function Project({ requestsRoute }) {
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
+  const { data, loading, error, refetch } = useQuery(USER_PROJECT, {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network"
   });
@@ -298,23 +291,7 @@ export default function Project({ requestsRoute }) {
 
   useEffect(() => {
     if (data) {
-      // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
-      const formData = stripTypeName(
-        replaceNullsWithEmptyString(data?.userPrivateCloudProjectById)
-      );
-
-      // Set give secondary technical lead an object with an empty string for all properties if null
-      formData.secondaryTechnicalLead =
-        formData.secondaryTechnicalLead !== ""
-          ? formData.secondaryTechnicalLead
-          : {
-              email: "",
-              firstName: "",
-              lastName: "",
-              ministry: ""
-            };
-
-      setInitialValues(formData);
+      setInitialValues(stripTypeName(data?.userPrivateCloudProjectById));
     }
   }, [data]);
 
@@ -380,7 +357,9 @@ export default function Project({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <ClusterInput formik={formik} isDisabled={true} />
+              <Box sx={{ pt: 5 }}>
+                <ClusterInputText cluster={formik.values.cluster} />
+              </Box>
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces

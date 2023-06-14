@@ -8,12 +8,9 @@ import Avatar from "../components/common/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Logout from "@mui/icons-material/Logout";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { ModeContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../context/user";
-import Divider from "@mui/material/Divider";
 
 export default function DropDownLoginMenu() {
   const { keycloak } = useKeycloak();

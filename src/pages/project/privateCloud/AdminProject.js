@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import * as yup from "yup";
 import {
-  CreateUserInputSchema,
+  // CreateUserInputSchema,
   CommonComponentsInputSchema,
   QuotaInputSchema,
   MinistrySchema,
@@ -161,28 +161,21 @@ const RE_PROVISION_PROJECT = gql`
   }
 `;
 
+const CreateUserInputSchema = yup.object({
+  email: yup.string().defined(),
+  firstName: yup.string().defined(),
+  lastName: yup.string().defined(),
+  ministry: yup.string()
+});
+
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   cluster: ClusterSchema.required(),
-  projectOwner: yup
-    .object(CreateUserInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
-  primaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
-  secondaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .nullable()
-    .transform((value) => (value?.email === "" ? null : value))
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
+  projectOwner: CreateUserInputSchema,
+  primaryTechnicalLead: CreateUserInputSchema,
+  secondaryTechnicalLead: CreateUserInputSchema.nullable(),
 
   commonComponents: yup
     .object(CommonComponentsInputSchema)
@@ -313,7 +306,6 @@ export default function AdminProject({ requestsRoute }) {
     enableReinitialize: true,
     onSubmit: async (values) => {
       const result = await formik.validateForm();
-
       if (Object.keys(result).length === 0 && formik.dirty) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
@@ -356,23 +348,7 @@ export default function AdminProject({ requestsRoute }) {
 
   useEffect(() => {
     if (data) {
-      // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
-      const formData = stripTypeName(
-        replaceNullsWithEmptyString(data?.privateCloudProjectById)
-      );
-
-      // Set give secondary technical lead an object with an empty string for all properties if null
-      formData.secondaryTechnicalLead =
-        formData.secondaryTechnicalLead !== ""
-          ? formData.secondaryTechnicalLead
-          : {
-              email: "",
-              firstName: "",
-              lastName: "",
-              ministry: ""
-            };
-
-      setInitialValues(formData);
+      setInitialValues(stripTypeName(data?.privateCloudProjectById));
     }
   }, [data]);
 

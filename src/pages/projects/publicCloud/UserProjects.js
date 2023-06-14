@@ -7,30 +7,27 @@ import EmptyList from "../../../components/common/EmptyList";
 
 const USER_PROJECTS = gql`
   query UserProjects {
-    userPrivateCloudProjects {
+    userPublicCloudProjects {
       id
       name
       description
-      cluster
       ministry
+      provider
       licencePlate
       projectOwner {
         email
         firstName
         lastName
-        email
       }
       primaryTechnicalLead {
         email
         firstName
         lastName
-        email
       }
       secondaryTechnicalLead {
         email
         firstName
         lastName
-        email
       }
     }
   }
