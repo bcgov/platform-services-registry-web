@@ -171,7 +171,9 @@ export type MutationCreateUserArgs = {
 
 
 export type MutationPrivateCloudProjectDeleteRequestArgs = {
+  licencePlate: Scalars['String'];
   projectId: Scalars['ID'];
+  projectOwnerEmail: Scalars['EmailAddress'];
 };
 
 
@@ -291,6 +293,7 @@ export type Query = {
   userPrivateCloudActiveRequestById: PrivateCloudRequest;
   userPrivateCloudActiveRequests: Array<PrivateCloudRequest>;
   userPrivateCloudActiveRequestsByIds: PrivateCloudRequest;
+  userPrivateCloudDeletionCheck: Scalars['Boolean'];
   userPrivateCloudProjectById: PrivateCloudProject;
   userPrivateCloudProjects: Array<PrivateCloudProject>;
   userPrivateCloudProjectsByIds: PrivateCloudProject;
@@ -360,6 +363,11 @@ export type QueryUserPrivateCloudActiveRequestByIdArgs = {
 
 export type QueryUserPrivateCloudActiveRequestsByIdsArgs = {
   requestIds?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryUserPrivateCloudDeletionCheckArgs = {
+  projectId: Scalars['ID'];
 };
 
 
