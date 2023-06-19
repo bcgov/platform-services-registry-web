@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import * as yup from "yup";
 import {
-  CreateUserInputSchema,
+  // CreateUserInputSchema,
   CommonComponentsInputSchema,
   QuotaInputSchema,
   MinistrySchema,
@@ -169,28 +169,21 @@ const RE_PROVISION_PROJECT = gql`
   }
 `;
 
+const CreateUserInputSchema = yup.object({
+  email: yup.string().defined(),
+  firstName: yup.string().defined(),
+  lastName: yup.string().defined(),
+  ministry: yup.string()
+});
+
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   cluster: ClusterSchema.required(),
-  projectOwner: yup
-    .object(CreateUserInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
-  primaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
-  secondaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .nullable()
-    .transform((value) => (value?.email === "" ? null : value))
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
+  projectOwner: CreateUserInputSchema,
+  primaryTechnicalLead: CreateUserInputSchema,
+  secondaryTechnicalLead: CreateUserInputSchema.nullable(),
 
   commonComponents: yup
     .object(CommonComponentsInputSchema)
@@ -225,7 +218,7 @@ export default function AdminProject({ requestsRoute }) {
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [submitBtnIsDisabled, setSubmitBtnIsDisabled] = useState(true);
+
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network"
@@ -325,7 +318,6 @@ export default function AdminProject({ requestsRoute }) {
     enableReinitialize: true,
     onSubmit: async (values) => {
       const result = await formik.validateForm();
-
       if (Object.keys(result).length === 0 && formik.dirty) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
@@ -367,40 +359,8 @@ export default function AdminProject({ requestsRoute }) {
   };
 
   useEffect(() => {
-    setSubmitBtnIsDisabled(
-      formik.values.projectOwner.firstName === "" ||
-        formik.values.projectOwner.lastName === "" ||
-        formik.values.projectOwner.ministry === "" ||
-        formik.values.primaryTechnicalLead.firstName === "" ||
-        formik.values.primaryTechnicalLead.lastName === "" ||
-        formik.values.primaryTechnicalLead.ministry === "" ||
-        (formik.values.secondaryTechnicalLead.email !== "" &&
-          formik.values.secondaryTechnicalLead.email !== null &&
-          (formik.values.secondaryTechnicalLead.firstName === "" ||
-            formik.values.secondaryTechnicalLead.lastName === "" ||
-            formik.values.secondaryTechnicalLead.ministry === ""))
-    );
-  }, [formik.values]);
-
-  useEffect(() => {
     if (data) {
-      // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
-      const formData = stripTypeName(
-        replaceNullsWithEmptyString(data?.privateCloudProjectById)
-      );
-
-      // Set give secondary technical lead an object with an empty string for all properties if null
-      formData.secondaryTechnicalLead =
-        formData.secondaryTechnicalLead !== ""
-          ? formData.secondaryTechnicalLead
-          : {
-              email: "",
-              firstName: "",
-              lastName: "",
-              ministry: ""
-            };
-
-      setInitialValues(formData);
+      setInitialValues(stripTypeName(data?.privateCloudProjectById));
     }
   }, [data]);
 
@@ -481,10 +441,9 @@ export default function AdminProject({ requestsRoute }) {
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
               <Button
                 type="submit"
-                // disabled={!formik.dirty}
+                disabled={!formik.dirty}
                 sx={{ mr: 1, width: "170px" }}
                 variant="contained"
-                disabled={submitBtnIsDisabled}
               >
                 Submit
               </Button>
