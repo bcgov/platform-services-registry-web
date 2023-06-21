@@ -21,6 +21,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuList from "@mui/material/MenuList";
+import CreateButtons from "../components/common/CreateButtons"; 
 
 const ColorButton = styled(Button)(({ theme }) => ({
   color: "#003366",
@@ -34,34 +35,34 @@ const ColorButton = styled(Button)(({ theme }) => ({
   borderColor: "#bdbdbd"
 }));
 
-function CreateButtons({ privateCloudCreatePath, publicCloudCreatePath }) {
-  return (
-    <Stack
-      direction="row"
-      spacing={2}
-      sx={{ whiteSpace: "nowrap", minWidth: "auto" }}
-    >
-      <ColorButton
-        component={Link}
-        to={privateCloudCreatePath}
-        size="small"
-        variant="contained"
-        endIcon={<AddIcon />}
-      >
-        Create Private Cloud Product
-      </ColorButton>
-      <ColorButton
-        component={Link}
-        to={publicCloudCreatePath}
-        size="small"
-        variant="contained"
-        endIcon={<AddIcon />}
-      >
-        Create Public Cloud Product
-      </ColorButton>
-    </Stack>
-  );
-}
+// function CreateButtons({ privateCloudCreatePath, publicCloudCreatePath }) {
+//   return (
+//     <Stack
+//       direction="row"
+//       spacing={2}
+//       sx={{ whiteSpace: "nowrap", minWidth: "auto" }}
+//     >
+//       <ColorButton
+//         component={Link}
+//         to={privateCloudCreatePath}
+//         size="small"
+//         variant="contained"
+//         endIcon={<AddIcon />}
+//       >
+//         Create Private Cloud Product
+//       </ColorButton>
+//       <ColorButton
+//         component={Link}
+//         to={publicCloudCreatePath}
+//         size="small"
+//         variant="contained"
+//         endIcon={<AddIcon />}
+//       >
+//         Create Public Cloud Product
+//       </ColorButton>
+//     </Stack>
+//   );
+// }
 
 function CreateButtonsDropdown({
   privateCloudCreatePath,

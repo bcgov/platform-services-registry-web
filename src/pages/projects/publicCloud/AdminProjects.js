@@ -125,7 +125,7 @@ export default function Projects() {
   return !loading ? (
     <>
       <div className="Loaded-indicator" />
-      {data.publicCloudProjectsPaginated?.projects.length > 0 ? (
+      {data.publicCloudProjectsPaginated?.projects.length < 0 ? (
         <StickyTable
           onClickPath={"/registry/admin/private-cloud/product/"}
           onNextPage={getNextPage}
@@ -147,6 +147,7 @@ export default function Projects() {
         <EmptyList
           title="There are no products to be displayed"
           subtitle="You currently have no products hosted on the Private Cloud OpenShift platform."
+          isPrivate={false}
         />
       )}
     </>
