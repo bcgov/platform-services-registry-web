@@ -1,21 +1,16 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Typography } from "@mui/material";
 import Box from '@mui/material/Box';
 import EmptyListImage from '../assets/noProducts.png';
 import CreateButtons from "./CreateButtons";
-import { useLocation } from "react-router-dom";
 import AdminContext from "../../context/admin";
 import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
 import { routesUser, routesAdmin } from "../AppRouter";
 
 
-export default function EmptyList({ title, subtitle, isPrivate }) {
-
-    const { pathname } = useLocation();
+export default function EmptyList({ title, subtitle, isPrivate, isPublic }) {
     const { admin } = useContext(AdminContext);
     const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
-
-
     return <Box
         display='flex'
         flex='1'
@@ -35,8 +30,8 @@ export default function EmptyList({ title, subtitle, isPrivate }) {
             privateCloudCreatePath={isPrivate ?
                 admin || readOnlyAdmin ? routesAdmin[2] : routesUser[2] : undefined
             }
-            publicCloudCreatePath={isPrivate ? undefined :
-                admin || readOnlyAdmin ? routesAdmin[4] : routesUser[4]
+            publicCloudCreatePath={isPublic ?
+                admin || readOnlyAdmin ? routesAdmin[4] : routesUser[4] : undefined
             }
         />
     </Box>

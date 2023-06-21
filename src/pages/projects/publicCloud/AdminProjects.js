@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import { useQuery, gql } from "@apollo/client";
 import {
   columns,
@@ -133,8 +133,8 @@ export default function Projects() {
           rows={
             width < 900
               ? data?.publicCloudProjectsPaginated?.projects
-                  .map(projectsToRowsXs)
-                  .reverse()
+                .map(projectsToRowsXs)
+                .reverse()
               : data?.publicCloudProjectsPaginated?.projects.map(projectsToRows)
           }
           count={loading ? 0 : data?.publicCloudProjectsPaginated?.total}
@@ -148,6 +148,7 @@ export default function Projects() {
           title="There are no products to be displayed"
           subtitle="You currently have no products hosted on the Private Cloud OpenShift platform."
           isPrivate={false}
+          isPublic={true}
         />
       )}
     </>

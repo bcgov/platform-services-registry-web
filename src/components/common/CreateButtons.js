@@ -17,14 +17,7 @@ const ColorButton = styled(Button)(({ theme }) => ({
   borderColor: "#bdbdbd"
 }));
 
-
-
-
-
 export default function CreateButtons({ privateCloudCreatePath, publicCloudCreatePath }) {
-
-
-
   return (
     <Stack
     direction="row"
