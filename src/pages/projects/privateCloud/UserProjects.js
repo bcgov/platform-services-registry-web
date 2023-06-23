@@ -166,6 +166,8 @@ export default function Projects() {
         <EmptyList
           title="There are no products to be displayed"
           subtitle="You currently have no products hosted on the Private Cloud OpenShift platform."
+          isPrivate={true}
+          isPublic={false}
         />
       )}
     </>

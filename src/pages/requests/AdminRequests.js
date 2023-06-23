@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
 import StickyTable from "../../components/common/Table";
 import { requestsToRows, columns } from "./helpers";
@@ -90,7 +90,7 @@ export default function Requests() {
 
   return !loading ? (
     data?.privateCloudActiveRequests?.length > 0 ||
-    data?.publicCloudActiveRequests?.length > 0 ? (
+      data?.publicCloudActiveRequests?.length > 0 ? (
       <StickyTable
         columns={columns}
         rows={[
@@ -110,6 +110,8 @@ export default function Requests() {
       <EmptyList
         title="There are no requests to be displayed"
         subtitle="You currently have no provisioning requests for the Private Cloud OpenShift platform."
+        isPublic={true}
+        isPrivate={true}
       />
     )
   ) : null;

@@ -11,57 +11,14 @@ import { Outlet } from "react-router-dom";
 import TabForm from "./forms/ResponsiveTabForm";
 import AdminContext from "../context/admin";
 import ReadOnlyAdminContext from "../context/readOnlyAdmin";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import { styled } from "@mui/material/styles";
 import { routesUser, routesAdmin } from "./AppRouter";
-import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuList from "@mui/material/MenuList";
+import CreateButtons from "../components/common/CreateButtons"; 
 
-const ColorButton = styled(Button)(({ theme }) => ({
-  color: "#003366",
-  backgroundColor: "white",
-  "&:hover": {
-    backgroundColor: "#f5f5f5",
-    boxShadow: "none"
-  },
-  boxShadow: "none",
-  border: "1px solid",
-  borderColor: "#bdbdbd"
-}));
-
-function CreateButtons({ privateCloudCreatePath, publicCloudCreatePath }) {
-  return (
-    <Stack
-      direction="row"
-      spacing={2}
-      sx={{ whiteSpace: "nowrap", minWidth: "auto" }}
-    >
-      <ColorButton
-        component={Link}
-        to={privateCloudCreatePath}
-        size="small"
-        variant="contained"
-        endIcon={<AddIcon />}
-      >
-        Create Private Cloud Product
-      </ColorButton>
-      <ColorButton
-        component={Link}
-        to={publicCloudCreatePath}
-        size="small"
-        variant="contained"
-        endIcon={<AddIcon />}
-      >
-        Create Public Cloud Product
-      </ColorButton>
-    </Stack>
-  );
-}
 
 function CreateButtonsDropdown({
   privateCloudCreatePath,
@@ -156,7 +113,6 @@ export default function TabsToolbar({ routes }) {
         {pathname === routes[1] && (admin || readOnlyAdmin) ? (
           <TabForm />
         ) : null}
-
         {pathname === routes[0] ? (
           <Box sx={{ display: { xs: "none", xl: "flex" } }}>
             <CreateButtons

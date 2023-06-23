@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../../components/common/Table";
@@ -74,6 +74,8 @@ export default function Projects() {
       <EmptyList
         title="There are no products to be displayed"
         subtitle="You currently have no products hosted on the Private Cloud OpenShift platform."
+        isPrivate={false}
+        isPublic={true}
       />
     )
   ) : null;
