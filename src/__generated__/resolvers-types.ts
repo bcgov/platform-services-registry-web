@@ -255,6 +255,7 @@ export type PrivateCloudRequest = {
   active: Scalars['Boolean'];
   created: Scalars['DateTime'];
   createdBy?: Maybe<User>;
+  cluster?: Maybe<Cluster>;
   decisionDate?: Maybe<Scalars['DateTime']>;
   decisionMaker?: Maybe<User>;
   decisionStatus: DecisionStatus;
