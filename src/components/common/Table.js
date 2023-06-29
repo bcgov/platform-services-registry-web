@@ -18,11 +18,10 @@ export default function StickyTable({
   columns,
   rows = [],
   loading,
-  onClickPath,
   onNextPage = () => "",
   count,
   rowsPerPage = 10,
-  setRowsPerPage = () => ""
+  setRowsPerPage = () => "",
 }) {
   const [page, setPage] = useState(0);
   const navigate = useNavigate();
@@ -59,7 +58,7 @@ export default function StickyTable({
                     fontSize: 16,
                     color: "#3c4043",
                     paddingLeft: 24,
-                    paddingRight: 24
+                    paddingRight: 24,
                   }}
                 >
                   {column.label}&nbsp;
@@ -92,7 +91,7 @@ export default function StickyTable({
                             fontSize: 18,
                             color: "#3c4043",
                             paddingLeft: 24,
-                            paddingRight: 24
+                            paddingRight: 24,
                           }}
                           key={column.id}
                           align={column.align}

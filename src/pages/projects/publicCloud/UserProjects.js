@@ -61,7 +61,6 @@ export default function Projects() {
   return !loading ? (
     data?.userPrivateCloudProjects?.length > 0 ? (
       <StickyTable
-        onClickPath={"/registry/user/private-cloud/product/"}
         columns={columns}
         rows={data.userPrivateCloudProjects.map(projectsToRows)}
         count={loading ? 0 : data?.userPrivateCloudProjects?.length}

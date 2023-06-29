@@ -125,9 +125,8 @@ export default function Projects() {
   return !loading ? (
     <>
       <div className="Loaded-indicator" />
-      {data.publicCloudProjectsPaginated?.projects.length < 0 ? (
+      {data.publicCloudProjectsPaginated?.projects.length > 0 ? (
         <StickyTable
-          onClickPath={"/registry/admin/private-cloud/product/"}
           onNextPage={getNextPage}
           columns={width < 900 ? columnsXs : columns}
           rows={

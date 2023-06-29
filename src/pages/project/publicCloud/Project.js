@@ -163,7 +163,7 @@ const style = {
   p: 4
 };
 
-export default function AdminProject({ requestsRoute }) {
+export default function Project({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);

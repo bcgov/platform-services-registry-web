@@ -39,7 +39,7 @@ export const routesUser = [
   "/registry/user/dashboard/private-cloud-products",
   "/registry/user/private-cloud/create",
   "/registry/user/dashboard/public-cloud-products",
-  "/registry/user/public-cloud/create"
+  "/registry/user/public-cloud/create",
 ];
 
 export const routesAdmin = [
@@ -47,7 +47,7 @@ export const routesAdmin = [
   "/registry/admin/dashboard/private-cloud-products",
   "/registry/admin/private-cloud/create",
   "/registry/admin/dashboard/public-cloud-products",
-  "/registry/admin/public-cloud/create"
+  "/registry/admin/public-cloud/create",
 ];
 
 export const AppRouter = () => {
@@ -110,11 +110,13 @@ export const AppRouter = () => {
             />
             <Route
               path="private-cloud/create"
-              element={<PrivateCloudCreate requestsRoute={routesAdmin[0]} />}
+              element={<PrivateCloudCreate requestsRoute={routesUser[0]} />}
             />
             <Route
               path="public-cloud/product/:id"
-              element={<AdminPublicCloudProject />}
+              element={
+                <AdminPublicCloudProject requestsRoute={routesAdmin[0]} />
+              }
             />
             <Route
               path="public-cloud/request/:id"
@@ -168,7 +170,7 @@ export const AppRouter = () => {
             />
             <Route
               path="public-cloud/product/:id"
-              element={<UserPublicCloudProject />}
+              element={<UserPublicCloudProject requestsRoute={routesUser[0]} />}
             />
             <Route
               path="public-cloud/request/:id"

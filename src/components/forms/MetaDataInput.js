@@ -1,4 +1,3 @@
-import React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import TitleTypography from "../common/TitleTypography";
@@ -14,7 +13,7 @@ export default function MetaDataInput({ formik, isDisabled, cloudProvider }) {
         mt: 2,
         display: "flex",
         justifyContent: "space-between",
-        alignItems: "flex-end"
+        alignItems: "flex-end",
       }}
       noValidate
       autoComplete="off"
@@ -41,16 +40,16 @@ export default function MetaDataInput({ formik, isDisabled, cloudProvider }) {
             sx={{
               "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input":
                 {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                 },
               "& .MuiInputLabel-root": {
-                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
               },
               "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline":
                 {
-                  borderColor: "rgba(0, 0, 0, 0.87)"
+                  borderColor: "rgba(0, 0, 0, 0.87)",
                 },
-              width: "100%"
+              width: "100%",
             }}
             fullWidth
             id="name"
@@ -79,16 +78,16 @@ export default function MetaDataInput({ formik, isDisabled, cloudProvider }) {
             sx={{
               "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input":
                 {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                 },
               "& .MuiInputLabel-root": {
-                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
               },
               "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline":
                 {
-                  borderColor: "rgba(0, 0, 0, 0.87)"
+                  borderColor: "rgba(0, 0, 0, 0.87)",
                 },
-              width: "100%"
+              width: "100%",
             }}
             multiline
             rows={4}
