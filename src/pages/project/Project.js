@@ -381,7 +381,7 @@ export default function Project({ requestsRoute }) {
               type="submit"
               sx={{ mr: 1, width: "170px" }}
               variant="contained"
-              disabled={submitBtnIsDisabled || isDisabled || !formik.dirty}
+              disabled={isDisabled || !formik.dirty}
             >
               Submit
             </Button>
