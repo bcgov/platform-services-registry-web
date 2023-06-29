@@ -18,7 +18,7 @@ const USER_PROJECTS = gql`
     $sortOrder: Int
     $userId: String
   ) {
-    privateCloudProjectsPaginated(
+    userPrivateCloudProjectsPaginated(
       page: $page
       pageSize: $pageSize
       filter: $filter
@@ -37,19 +37,16 @@ const USER_PROJECTS = gql`
           email
           firstName
           lastName
-          email
         }
         primaryTechnicalLead {
           email
           firstName
           lastName
-          email
         }
         secondaryTechnicalLead {
           email
           firstName
           lastName
-          email
         }
       }
       total
@@ -76,6 +73,7 @@ export default function Projects() {
         sortOrder,
         userId: userContext.id
       }
+      // fetchPolicy: "network-only"
     }
   );
 
@@ -96,6 +94,19 @@ export default function Projects() {
     });
     setPage(1);
   }, [rowsPerPage, debouncedSearch, filter, sortOrder, fetchMore]);
+
+  useEffect(() => {
+    fetchMore({
+      variables: {
+        page: 1,
+        pageSize: rowsPerPage,
+        search: debouncedSearch,
+        filter,
+        sortOrder,
+        userId: userContext.id
+      }
+    });
+  }, []);
 
   const getNextPage = useCallback(
     (page, pageSize) => {
@@ -137,15 +148,15 @@ export default function Projects() {
   return !loading ? (
     <>
       <div className="Loaded-indicator" />
-      {data.privateCloudProjectsPaginated?.projects.length > 0 ? (
+      {data.userPrivateCloudProjectsPaginated?.projects.length > 0 ? (
         <StickyTable
           onClickPath={"/private-cloud/user/product/"}
           onNextPage={getNextPage}
           columns={columns}
-          rows={data?.privateCloudProjectsPaginated?.projects.map(
+          rows={data?.userPrivateCloudProjectsPaginated?.projects.map(
             projectsToRows
           )}
-          count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
+          count={loading ? 0 : data?.userPrivateCloudProjectsPaginated?.total}
           title="Products"
           loading={loading}
           rowsPerPage={rowsPerPage}
