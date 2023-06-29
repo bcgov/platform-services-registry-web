@@ -411,7 +411,7 @@ export default function Project({ requestsRoute }) {
               licencePlate={data?.userPrivateCloudProjectById?.licencePlate}
             />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Users formik={formik} isDisabled={false} />
+            <Users formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Quotas formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
@@ -421,7 +421,7 @@ export default function Project({ requestsRoute }) {
               // disabled={!formik.dirty}
               sx={{ mr: 1, width: "170px" }}
               variant="contained"
-              disabled={submitBtnIsDisabled}
+              disabled={submitBtnIsDisabled || isDisabled}
             >
               Submit
             </Button>
