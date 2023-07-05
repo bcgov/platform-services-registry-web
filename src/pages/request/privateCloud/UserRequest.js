@@ -82,7 +82,7 @@ const USER_REQUEST = gql`
           prod
           tools
         }
-        billingGroup
+        accountCoding
       }
     }
   }

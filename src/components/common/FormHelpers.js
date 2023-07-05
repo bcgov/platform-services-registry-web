@@ -313,7 +313,7 @@ export const createProjectInputInitalValues = {
 export const createPublicCloudProjectInputInitalValues = {
   name: "",
   description: "",
-  billingGroup: "",
+  accountCoding: "",
   budget: {
     dev: "",
     test: "",

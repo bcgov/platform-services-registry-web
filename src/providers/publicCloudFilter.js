@@ -4,16 +4,16 @@ import FilterContext from "../context/publicCloudFilter";
 function FilterProvider({ children }) {
   const [ministry, setMinistry] = useState("");
   const [provider, setProvider] = useState("");
-  const [billingGroup, setBillingGroup] = useState("");
+  const [accountCoding, setAccountCoding] = useState("");
 
   const filter = {
     ministry: ministry !== "" ? ministry : null,
     provider: provider !== "" ? provider : null,
-    billingGroup: billingGroup !== "" ? billingGroup : null
+    accountCoding: accountCoding !== "" ? accountCoding : null
   };
 
   const value = useMemo(
-    () => ({ filter, setProvider, setBillingGroup }),
+    () => ({ filter, setProvider, setAccountCoding }),
     [filter]
   );
 

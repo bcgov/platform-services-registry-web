@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/plainText/MetaDataInput";
-import BillingGroup from "../../../components/plainText/BillingGroup";
+import AccountCoding from "../../../components/plainText/AccountCoding";
 import ProviderInput from "../../../components/plainText/ProviderInput";
 import MinistryInput from "../../../components/plainText/MinistryInput";
 import NavToolbar from "../../../components/NavToolbar";

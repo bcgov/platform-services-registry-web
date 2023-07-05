@@ -34,7 +34,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import ReadOnlyAdminContext from "../../../context/readOnlyAdmin";
 import UserContext from "../../../context/user";
-import BillingGroupInput from "../../../components/forms/BillingGroup";
+import AccountCodingInput from "../../../components/forms/AccountCoding";
 import BudgetInput from "../../../components/forms/Budget";
 
 const ADMIN_PROJECT = gql`
@@ -45,7 +45,7 @@ const ADMIN_PROJECT = gql`
       licencePlate
       description
       status
-      billingGroup
+      accountCoding
       budget {
         prod
         dev
@@ -99,7 +99,7 @@ const UPDATE_PROJECT = gql`
     $name: String!
     $description: String!
     $ministry: Ministry!
-    $billingGroup: String!
+    $accountCoding: String!
     $budget: BudgetInput!
     $projectOwner: CreateUserInput!
     $primaryTechnicalLead: CreateUserInput!
@@ -112,7 +112,7 @@ const UPDATE_PROJECT = gql`
       description: $description
       ministry: $ministry
       projectOwner: $projectOwner
-      billingGroup: $billingGroup
+      accountCoding: $accountCoding
       budget: $budget
       primaryTechnicalLead: $primaryTechnicalLead
       secondaryTechnicalLead: $secondaryTechnicalLead
@@ -136,7 +136,10 @@ const validationSchema = yup.object().shape({
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   provider: ProviderSchema.required(),
-  billingGroup: yup.string().required(),
+  accountCoding: yup.string()
+  .transform((value) => value.replace(/\s/g, ''))
+  .max(24)
+  .required(),
   budget: BudgetInputSchema().required(),
   projectOwner: CreateUserInputSchema,
   primaryTechnicalLead: CreateUserInputSchema,
@@ -283,7 +286,7 @@ export default function AdminProject({ requestsRoute }) {
               <ProviderInput formik={formik} isDisabled={true} />
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <BillingGroupInput formik={formik} isDisabled={isDisabled} />
+            <AccountCodingInput formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Users formik={formik} isDisabled={false} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
