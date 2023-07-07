@@ -43,6 +43,7 @@ const USER_REQUEST = gql`
         name
         licencePlate
         description
+        accountCoding
         status
         budget {
           dev
@@ -115,6 +116,7 @@ export default function UserRequest() {
         />
         <MinistryInput ministry={requestedProject?.ministry} />
         <ProviderInput cluster={requestedProject?.provider} />
+        <AccountCoding accountCoding={requestedProject?.accountCoding} />
         <div>
           {request?.type !== "CREATE" ? (
             <div>

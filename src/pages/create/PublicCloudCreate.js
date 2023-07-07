@@ -74,6 +74,7 @@ const validationSchema = yup.object().shape({
   accountCoding: yup.string()
   .transform((value) => value.replace(/\s/g, ''))
   .max(24)
+  .min(24)
   .required(),
   budget: BudgetInputSchema().required(),
   projectOwner: CreateUserInputSchema(),

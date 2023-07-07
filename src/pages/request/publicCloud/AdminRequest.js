@@ -3,7 +3,7 @@ import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/plainText/MetaDataInput";
 import MinistryInput from "../../../components/plainText/MinistryInput";
 import ProviderInput from "../../../components/plainText/ProviderInput";
-import BillinGroup from "../../../components/plainText/AccountCoding";
+import AccountCoding from "../../../components/plainText/AccountCoding";
 import NavToolbar from "../../../components/NavToolbar";
 import TitleTypography from "../../../components/common/TitleTypography";
 import { Button } from "@mui/material";
@@ -48,6 +48,7 @@ const ADMIN_REQUEST = gql`
         name
         licencePlate
         description
+        accountCoding
         status
         budget {
           dev
@@ -226,6 +227,7 @@ export default function AdminRequest() {
         />
         <MinistryInput ministry={requestedProject?.ministry} />
         <ProviderInput provider={requestedProject?.provider} />
+        <AccountCoding accountCoding={requestedProject?.accountCoding} />
         <div>
           {request?.type !== "CREATE" ? (
             <div>
@@ -243,7 +245,7 @@ export default function AdminRequest() {
           />
 
           <Divider variant="middle" sx={{ mb: 6 }} />
-          {/* <BillinGroup budget={requestedProject?.budget} /> */}
+          
         </div>
         <TitleTypography sx={{ mt: 3, mb: 1 }}>
           Reviewer’s comments
