@@ -57,7 +57,7 @@ export default function Projects() {
   } else if (error) {
     return <ErrorAlert error={error} />;
   }
-
+console.log(data)
   return !loading ? (
     data?.userPrivateCloudProjects?.length > 0 ? (
       <StickyTable
