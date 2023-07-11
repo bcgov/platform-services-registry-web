@@ -29,7 +29,7 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import BillingGroup from "../../components/forms/BillingGroup";
+import AccountCoding from "../../components/forms/AccountCoding";
 import Budget from "../../components/forms/Budget";
 import ProviderInput from "../../components/forms/ProviderInput";
 
@@ -43,7 +43,7 @@ const CREATE_USER_PROJECT = gql`
     $projectOwner: CreateUserInput!
     $primaryTechnicalLead: CreateUserInput!
     $secondaryTechnicalLead: CreateUserInput
-    $billingGroup: String
+    $accountCoding: String
     $budget: BudgetInput!
   ) {
     publicCloudProjectRequest(
@@ -55,7 +55,7 @@ const CREATE_USER_PROJECT = gql`
       projectOwner: $projectOwner
       primaryTechnicalLead: $primaryTechnicalLead
       secondaryTechnicalLead: $secondaryTechnicalLead
-      billingGroup: $billingGroup
+      accountCoding: $accountCoding
       budget: $budget
     ) {
       id
@@ -71,7 +71,11 @@ const validationSchema = yup.object().shape({
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   provider: ProviderSchema.required(),
-  billingGroup: yup.string().required(),
+  accountCoding: yup.string()
+  .transform((value) => value.replace(/\s/g, ''))
+  .max(24)
+  .min(24)
+  .required(),
   budget: BudgetInputSchema().required(),
   projectOwner: CreateUserInputSchema(),
   primaryTechnicalLead: CreateUserInputSchema(),
@@ -182,7 +186,7 @@ export default function Create({ requestsRoute }) {
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Users formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <BillingGroup formik={formik} isDisabled={false} />
+          <AccountCoding formik={formik} isDisabled={false} />
           <Budget formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
 

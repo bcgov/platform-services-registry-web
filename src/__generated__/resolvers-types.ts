@@ -138,7 +138,7 @@ export type FilterPrivateCloudProjectsInput = {
 };
 
 export type FilterPublicCloudProjectsInput = {
-  billingGroup?: InputMaybe<Scalars['String']>;
+  accountCoding?: InputMaybe<Scalars['String']>;
   ministry?: InputMaybe<Ministry>;
   provider?: InputMaybe<Provider>;
 };
@@ -245,7 +245,7 @@ export type MutationPrivateCloudRequestDecisionArgs = {
 
 
 export type MutationPublicCloudProjectEditRequestArgs = {
-  billingGroup?: InputMaybe<Scalars['String']>;
+  accountCoding?: InputMaybe<Scalars['String']>;
   budget: BudgetInput;
   commonComponents: CommonComponentsInput;
   description: Scalars['String'];
@@ -259,7 +259,7 @@ export type MutationPublicCloudProjectEditRequestArgs = {
 
 
 export type MutationPublicCloudProjectRequestArgs = {
-  billingGroup?: InputMaybe<Scalars['String']>;
+  accountCoding?: InputMaybe<Scalars['String']>;
   budget: BudgetInput;
   commonComponents: CommonComponentsInput;
   description: Scalars['String'];
@@ -339,7 +339,7 @@ export enum PublicCloudPlatform {
 export type PublicCloudProject = {
   __typename?: 'PublicCloudProject';
   activeEditRequest?: Maybe<PublicCloudRequest>;
-  billingGroup: Scalars['String'];
+  accountCoding: Scalars['String'];
   budget: Budget;
   commonComponents: CommonComponents;
   created: Scalars['DateTime'];
@@ -705,7 +705,7 @@ export function FilterPrivateCloudProjectsInputSchema(): yup.SchemaOf<FilterPriv
 
 export function FilterPublicCloudProjectsInputSchema(): yup.SchemaOf<FilterPublicCloudProjectsInput> {
   return yup.object({
-    billingGroup: yup.string(),
+    accountCoding: yup.string(),
     ministry: yup.mixed(),
     provider: yup.mixed()
   })

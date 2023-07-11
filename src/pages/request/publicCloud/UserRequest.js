@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/plainText/MetaDataInput";
-import BillingGroup from "../../../components/plainText/BillingGroup";
+import AccountCoding from "../../../components/plainText/AccountCoding";
 import ProviderInput from "../../../components/plainText/ProviderInput";
 import MinistryInput from "../../../components/plainText/MinistryInput";
 import NavToolbar from "../../../components/NavToolbar";
@@ -43,6 +43,7 @@ const USER_REQUEST = gql`
         name
         licencePlate
         description
+        accountCoding
         status
         budget {
           dev
@@ -115,6 +116,7 @@ export default function UserRequest() {
         />
         <MinistryInput ministry={requestedProject?.ministry} />
         <ProviderInput cluster={requestedProject?.provider} />
+        <AccountCoding accountCoding={requestedProject?.accountCoding} />
         <div>
           {request?.type !== "CREATE" ? (
             <div>

@@ -48,7 +48,7 @@ const ADMIN_PROJECT = gql`
       licencePlate
       description
       status
-      billingGroup
+      accountCoding
       budget {
         prod
         dev
@@ -102,7 +102,7 @@ const UPDATE_PROJECT = gql`
     $name: String!
     $description: String!
     $ministry: Ministry!
-    $billingGroup: String!
+    $accountCoding: String!
     $budget: BudgetInput!
     $projectOwner: CreateUserInput!
     $primaryTechnicalLead: CreateUserInput!
@@ -115,7 +115,7 @@ const UPDATE_PROJECT = gql`
       description: $description
       ministry: $ministry
       projectOwner: $projectOwner
-      billingGroup: $billingGroup
+      accountCoding: $accountCoding
       budget: $budget
       primaryTechnicalLead: $primaryTechnicalLead
       secondaryTechnicalLead: $secondaryTechnicalLead
@@ -138,7 +138,7 @@ const validationSchema = yup.object().shape({
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   provider: ProviderSchema.required(),
-  billingGroup: yup.string().required(),
+  accountCoding: yup.string().required(),
   budget: BudgetInputSchema().required(),
   projectOwner: CreateUserInputSchema,
   primaryTechnicalLead: CreateUserInputSchema,

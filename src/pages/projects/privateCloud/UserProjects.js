@@ -18,7 +18,7 @@ const USER_PROJECTS = gql`
     $sortOrder: Int
     $userId: String
   ) {
-    userPrivateCloudProjectsPaginated(
+    privateCloudProjectsPaginated(
       page: $page
       pageSize: $pageSize
       filter: $filter
@@ -148,15 +148,15 @@ export default function Projects() {
   return !loading ? (
     <>
       <div className="Loaded-indicator" />
-      {data.userPrivateCloudProjectsPaginated?.projects.length > 0 ? (
+      {data.privateCloudProjectsPaginated?.projects.length > 0 ? (
         <StickyTable
           onClickPath={"/private-cloud/user/product/"}
           onNextPage={getNextPage}
           columns={columns}
-          rows={data?.userPrivateCloudProjectsPaginated?.projects.map(
+          rows={data?.privateCloudProjectsPaginated?.projects.map(
             projectsToRows
           )}
-          count={loading ? 0 : data?.userPrivateCloudProjectsPaginated?.total}
+          count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
           title="Products"
           loading={loading}
           rowsPerPage={rowsPerPage}
