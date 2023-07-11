@@ -14,6 +14,38 @@ import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRound
 import RequiredField from "../common/RequiredField";
 import Autocomplete from "@mui/material/Autocomplete";
 
+
+/*{
+    "businessPhones": [],
+    "displayName": "Kolesnyk, Zhanna CITZ:EX",
+    "givenName": "Zhanna",
+    "jobTitle": "Full Stack Developer",
+    "mail": "Zhanna.Kolesnyk@gov.bc.ca",
+    "mobilePhone": null,
+    "officeLocation": "DevOps and Cloud Services",
+    "preferredLanguage": null,
+    "surname": "Kolesnyk",
+    "userPrincipalName": "Zhanna.Kolesnyk@gov.bc.ca",
+    "id": "d7fe53d9-6711-4e1a-8dec-96ef7a95727e"
+} 
+
+{
+    "businessPhones": [
+        "250 405-4592"
+    ],
+    "displayName": "Barre, Steven ADSL:EX",
+    "givenName": "Steven",
+    "jobTitle": null,
+    "mail": "Steven.Barre@dxcas.com",
+    "mobilePhone": null,
+    "officeLocation": null,
+    "preferredLanguage": null,
+    "surname": "Barre",
+    "userPrincipalName": "SBARRE@gov.bc.ca",
+    "id": "22a4a9db-8c90-480d-a7dc-675f516b061e"
+} */
+
+
 const USER_BY_EMAIL = gql`
   query UserByEmail($email: EmailAddress!) {
     userByEmail(email: $email) {
@@ -69,6 +101,7 @@ export default function UserInput({
       }
     );
     const data = await response.json();
+ 
     setUserOptions(data);
   }, [debouncedEmail]);
 
