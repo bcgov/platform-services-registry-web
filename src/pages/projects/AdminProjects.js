@@ -37,19 +37,16 @@ const ALL_PROJECTS = gql`
         ministry
         licencePlate
         projectOwner {
-          email
           firstName
           lastName
           email
         }
         primaryTechnicalLead {
-          email
           firstName
           lastName
           email
         }
         secondaryTechnicalLead {
-          email
           firstName
           lastName
           email
@@ -78,6 +75,7 @@ export default function Projects() {
         filter,
         sortOrder
       }
+      // fetchPolicy: "network-only"
     }
   );
 
@@ -98,6 +96,18 @@ export default function Projects() {
     });
     setPage(1);
   }, [rowsPerPage, debouncedSearch, filter, sortOrder, fetchMore]);
+
+  useEffect(() => {
+    fetchMore({
+      variables: {
+        page: 1,
+        pageSize: rowsPerPage,
+        search: debouncedSearch,
+        filter,
+        sortOrder
+      }
+    });
+  }, []);
 
   const getNextPage = useCallback(
     (page, pageSize) => {

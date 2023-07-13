@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
 import {
-  CreateUserInputSchema,
+  // CreateUserInputSchema,
   CommonComponentsInputSchema,
   QuotaInputSchema,
   MinistrySchema,
@@ -35,9 +35,10 @@ import Namespaces from "../../components/Namespaces";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import Delete from "../../components/Delete";
 import ClusterInputText from "../../components/plainText/ClusterInput";
 
-const ADMIN_PROJECT = gql`
+const USER_PROJECT = gql`
   query UserPrivateCloudProjectById($projectId: ID!) {
     userPrivateCloudProjectById(projectId: $projectId) {
       id
@@ -142,35 +143,36 @@ const UPDATE_USER_PROJECT = gql`
 `;
 
 const DELETE_USER_PROJECT = gql`
-  mutation Mutation($projectId: ID!) {
-    privateCloudProjectDeleteRequest(projectId: $projectId) {
+  mutation Mutation(
+    $projectId: ID!
+    $licencePlate: String!
+    $projectOwnerEmail: EmailAddress!
+  ) {
+    privateCloudProjectDeleteRequest(
+      projectId: $projectId
+      licencePlate: $licencePlate
+      projectOwnerEmail: $projectOwnerEmail
+    ) {
       id
     }
   }
 `;
+
+const CreateUserInputSchema = yup.object({
+  email: yup.string().defined(),
+  firstName: yup.string().defined(),
+  lastName: yup.string().defined(),
+  ministry: yup.string()
+});
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   cluster: ClusterSchema.required(),
-  projectOwner: yup
-    .object(CreateUserInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
-  primaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
-  secondaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .nullable()
-    .transform((value) => (value?.email === "" ? null : value))
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
+  projectOwner: CreateUserInputSchema,
+  primaryTechnicalLead: CreateUserInputSchema,
+  secondaryTechnicalLead: CreateUserInputSchema.nullable(),
 
   commonComponents: yup
     .object(CommonComponentsInputSchema)
@@ -200,12 +202,12 @@ export default function Project({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
-  const [submitBtnIsDisabled, setSubmitBtnIsDisabled] = useState(true);
+
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
+  const { data, loading, error, refetch } = useQuery(USER_PROJECT, {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network"
   });
@@ -225,13 +227,17 @@ export default function Project({ requestsRoute }) {
     refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
 
-  const deleteOnClick = () => {
+  const deleteOnClick = (licencePlate, projectOwnerEmail) => {
     toastId.current = toast("Your edit request has been submitted", {
       autoClose: false
     });
 
     privateCloudProjectDeleteRequest({
-      variables: { projectId: id },
+      variables: {
+        projectId: id,
+        licencePlate,
+        projectOwnerEmail
+      },
       onError: (error) => {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
@@ -296,43 +302,9 @@ export default function Project({ requestsRoute }) {
     });
   };
 
-
-  useEffect(() => {
-    setSubmitBtnIsDisabled((formik.values.projectOwner.firstName === '' ||
-      formik.values.projectOwner.lastName === '' ||
-      formik.values.projectOwner.ministry === '' ||
-      formik.values.primaryTechnicalLead.firstName === '' ||
-      formik.values.primaryTechnicalLead.lastName === '' ||
-      formik.values.primaryTechnicalLead.ministry === '' ||
-      (formik.values.secondaryTechnicalLead.email !== '' &&
-        formik.values.secondaryTechnicalLead.email !== null &&
-        (formik.values.secondaryTechnicalLead.firstName === '' ||
-          formik.values.secondaryTechnicalLead.lastName === '' ||
-          formik.values.secondaryTechnicalLead.ministry === ''))))
-
-          
-  }, [formik.values])
-
-
   useEffect(() => {
     if (data) {
-      // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
-      const formData = stripTypeName(
-        replaceNullsWithEmptyString(data?.userPrivateCloudProjectById)
-      );
-
-      // Set give secondary technical lead an object with an empty string for all properties if null
-      formData.secondaryTechnicalLead =
-        formData.secondaryTechnicalLead !== ""
-          ? formData.secondaryTechnicalLead
-          : {
-            email: "",
-            firstName: "",
-            lastName: "",
-            ministry: ""
-          };
-
-      setInitialValues(formData);
+      setInitialValues(stripTypeName(data?.userPrivateCloudProjectById));
     }
   }, [data]);
 
@@ -370,21 +342,13 @@ export default function Project({ requestsRoute }) {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Please Confirm Your Delete Request
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Are you sure you want to delete this product?
-                <Button
-                  onClick={deleteOnClick}
-                  sx={{ mr: 1, width: "170px", mt: 3 }}
-                  variant="contained"
-                >
-                  Delete
-                </Button>
-              </Typography>
-            </Box>
+            <Delete
+              projectId={id}
+              name={data?.name}
+              licensePlate={data?.licencePlate}
+              projectOwnerEmail={data?.projectOwner?.email}
+              deleteOnClick={deleteOnClick}
+            />
           </Modal>
         </NavToolbar>
         {isDisabled ? (
@@ -398,12 +362,9 @@ export default function Project({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-                <Box
-                sx={{ pt: 5}}
-                >
-                  <ClusterInputText
-                    cluster={formik.values.cluster} />
-                </Box>
+              <Box sx={{ pt: 5 }}>
+                <ClusterInputText cluster={formik.values.cluster} />
+              </Box>{" "}
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
@@ -418,10 +379,9 @@ export default function Project({ requestsRoute }) {
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             <Button
               type="submit"
-              // disabled={!formik.dirty}
+              disabled={!formik.dirty}
               sx={{ mr: 1, width: "170px" }}
               variant="contained"
-              disabled={submitBtnIsDisabled || isDisabled}
             >
               Submit
             </Button>

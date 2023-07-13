@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Box from "@mui/material/Box";
 import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import { TextField } from "@mui/material";
@@ -13,8 +13,6 @@ import Divider from "@mui/material/Divider";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import RequiredField from "../common/RequiredField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { getUsers, getUserPhoto } from "../../msGraphApi";
-// import usePhotoUrl from "../../msGraphApi/useAzurePhoto";
 
 const USER_BY_EMAIL = gql`
   query UserByEmail($email: EmailAddress!) {
@@ -42,61 +40,69 @@ export default function UserInput({
   label,
   defaultEditOpen = true,
   formik,
-  isDisabled = false,
+  isDisabled = false
 }) {
   const email = formik.values[contact]?.email;
+
   const [edit, setEdit] = useState(defaultEditOpen);
   const [userOptions, setUserOptions] = useState([email]);
-  // const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState("");
   const [emailInput, setEmailInput] = useState("");
-  const [firstNameError, setFirstNameError] = useState(false);
-  const [lastNameError, setLastNameError] = useState(false);
-  const [ministryError, setMinistryError] = useState(false);
+  const [inputValue, setInputValue] = useState('');
   const debouncedEmail = useDebounce(emailInput);
 
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
-    nextFetchPolicy: "cache-first",
+    nextFetchPolicy: "cache-first"
   });
 
   const getFilteredUsers = useCallback(async () => {
     const response = await fetch(
       (process.env.REACT_APP_MSAL_ENDPOINT || '{{ env "MSAL_ENDPOINT" }}') +
-        "/getIdirEmails?email=" +
-        debouncedEmail,
+      "/getIdirEmails?email=" +
+      debouncedEmail,
       {
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       }
     );
     const data = await response.json();
-
     setUserOptions(data);
   }, [debouncedEmail]);
 
   useEffect(() => {
+    if (!email) {
+      if (contact === "secondaryTechnicalLead") {
+        formik.setFieldValue(contact, null);
+      } else {
+        formik.setFieldValue(contact + ".email", null);
+        formik.setFieldValue(contact + ".firstName", null);
+        formik.setFieldValue(contact + ".lastName", null);
+        formik.setFieldValue(contact + ".ministry", null);
+      }
+    }
+
     const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
+
     if (user) {
       getUser({ variables: { email } });
 
-      formik.setFieldValue(contact + ".email", user.mail.toLowerCase() || "");
-      formik.setFieldValue(contact + ".firstName", user.givenName || "");
-      formik.setFieldValue(contact + ".lastName", user.surname || "");
-      formik.setFieldValue(
-        contact + ".ministry",
-        parseMinistryFromDisplayName(user.displayName) || ""
-      );
+      setUserId(user.id);
+
+      if (email) {
+        formik.setFieldValue(contact + ".email", user.mail.toLowerCase());
+        formik.setFieldValue(contact + ".firstName", user.givenName);
+        formik.setFieldValue(contact + ".lastName", user.surname);
+        formik.setFieldValue(
+          contact + ".ministry",
+          parseMinistryFromDisplayName(user.displayName)
+        );
+      }
     }
-    if (email === null) {
-      formik.setFieldValue(contact + ".email", "");
-      formik.setFieldValue(contact + ".firstName", "");
-      formik.setFieldValue(contact + ".lastName", "");
-      formik.setFieldValue(contact + ".ministry", "");
-      setUserOptions([]);
-    }
-  }, [email, emailInput]);
+
+  }, [email]);
 
   useEffect(() => {
     if (debouncedEmail) {
@@ -104,27 +110,12 @@ export default function UserInput({
     }
   }, [debouncedEmail]);
 
-  useEffect(() => {
-    formik.values[contact]?.email !== "" &&
-      setFirstNameError(formik.values[contact]?.firstName === "");
-    formik.values[contact]?.email !== "" &&
-      setLastNameError(formik.values[contact]?.lastName === "");
-    formik.values[contact]?.email !== "" &&
-      setMinistryError(formik.values[contact]?.ministry === "");
-  }, [
-    contact,
-    formik.values[contact]?.ministry,
-    formik.values[contact]?.email,
-    formik.values[contact]?.lastName,
-    formik.values[contact]?.firstName,
-  ]);
-
   return (
     <Card sx={{ mr: 8, width: 400 }}>
       <Box
         sx={{
           p: 2,
-          display: "flex",
+          display: "flex"
         }}
       >
         <Avatar
@@ -174,54 +165,55 @@ export default function UserInput({
               display: "flex",
               flexDirection: "column",
               ml: 2,
-              width: "75%",
+              width: "75%"
             }}
           >
             <Autocomplete
+              noOptionsText={"No IDIR linked email addresses found"}
               disablePortal
               options={userOptions.map((option) => option.mail?.toLowerCase())}
-              noOptionsText={"No IDIR linked email addresses found"}
               getOptionLabel={(mail) => mail || ""}
               sx={{ width: 300 }}
               id={contact + ".email"}
               name={contact + ".email"}
               label="Email"
               disabled={isDisabled}
-              onChange={(e, value) =>
-                formik.setFieldValue(contact + ".email", value)
-              }
-              value={email || emailInput}
-              helperText={!formik.touched[contact]?.email && <RequiredField />}
+              onChange={(e, value) => formik.setFieldValue(contact + ".email", value)}
+              value={email}
+              helperText={formik.touched[contact]?.email && <RequiredField />}
+              inputValue={inputValue}
+              onInputChange={(e, newInputValue) => {
+                setInputValue(newInputValue.trim());
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  onChange={(e) => {
-                    setEmailInput(e.target.value);
-                  }}
+                  onChange={(e) => setEmailInput(e.target.value)}
                   label="Email"
                   sx={{
                     "& .MuiInputBase-input.Mui-disabled": {
-                      WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                      WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
                     },
-                    mb: 2,
+                    mb: 2
                   }}
                   error={
-                    formik.touched[contact]?.email &&
-                    Boolean(formik.errors[contact]?.email) &&
-                    userOptions.length === 0
+                    formik.touched[contact]?.firstName &&
+                    Boolean(formik.errors[contact]?.firstName)
                   }
                   helperText={
-                    Boolean(formik.errors[contact]?.email) ? (
-                      <RequiredField />
-                    ) : userOptions.length === 0 ? (
+                    // formik.touched[contact]?.email && <RequiredField />
+                    Boolean(formik.values[contact]?.email) ? (
+                      <span></span>
+                    ) : userOptions.length === 0 && formik.values[contact]?.email ? (
                       <div style={{ fontSize: 16, color: "red" }}>
                         Please enter a valid email address. This email address
                         is not linked to any IDIR account
                       </div>
                     ) : (
-                      <span></span>
+                      <RequiredField />
                     )
                   }
+                
                   variant="standard"
                   size="small"
                 />
@@ -230,24 +222,23 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
                 },
-                mb: 2,
+                mb: 2
               }}
               variant="standard"
               id={contact + ".firstName"}
               name={contact + ".firstName"}
               label="First Name"
               disabled={true}
-              value={formik.values[contact]?.firstName}
-              onChange={() => formik.handleChange()}
+              value={formik.values[contact]?.firstName || ""}
+              onChange={formik.handleChange}
               error={
-                firstNameError ||
-                (formik.touched[contact]?.firstName &&
-                  Boolean(formik.errors[contact]?.firstName))
+                formik.touched[contact]?.firstName &&
+                Boolean(formik.errors[contact]?.firstName)
               }
               helperText={
-                firstNameError && userOptions.length !== 0 ? (
+                Boolean(!formik.values[contact]?.firstName) && email ? (
                   <div style={{ fontSize: 16, color: "red" }}>
                     Please populate your IDIR account with your first name{" "}
                   </div>
@@ -262,28 +253,27 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
                 },
-                mb: 2,
+                mb: 2
               }}
               variant="standard"
               id={contact + ".lastName"}
               name={contact + ".lastName"}
               label="Last Name"
               disabled={true}
-              value={formik.values[contact]?.lastName}
+              value={formik.values[contact]?.lastName || ""}
               onChange={formik.handleChange}
               error={
-                lastNameError ||
-                (formik.touched[contact]?.lastName &&
-                  Boolean(formik.errors[contact]?.lastName))
+                formik.touched[contact]?.lastName &&
+                Boolean(formik.errors[contact]?.lastName)
               }
               helperText={
-                lastNameError && userOptions.length !== 0 ? (
+                Boolean(!formik.values[contact]?.lastName) && email ? (
                   <div style={{ fontSize: 16, color: "red" }}>
                     Please populate your IDIR account with your last name{" "}
                   </div>
-                ) : formik.touched[contact]?.lastName ? (
+                ) : formik.touched[contact]?.firstName ? (
                   <RequiredField />
                 ) : (
                   <span></span>
@@ -294,29 +284,27 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
                 },
-                mb: 2,
+                mb: 2
               }}
               variant="standard"
               id={contact + ".ministry"}
               name={contact + ".ministry"}
               label="Ministry"
               disabled={true}
-              value={formik.values[contact]?.ministry}
+              value={formik.values[contact]?.ministry || ""}
               onChange={formik.handleChange}
               error={
-                ministryError ||
-                (formik.touched[contact]?.ministry &&
-                  Boolean(formik.errors[contact]?.ministry))
+                formik.touched[contact]?.ministry &&
+                Boolean(formik.errors[contact]?.ministry)
               }
               helperText={
-                ministryError && userOptions.length !== 0 ? (
+                Boolean(!formik.values[contact]?.ministry) && email ? (
                   <div style={{ fontSize: 16, color: "red" }}>
-                    Please populate your IDIR account with your home ministry
-                    name{" "}
+                    Please populate your IDIR account with your home ministry name{" "}
                   </div>
-                ) : formik.touched[contact]?.ministry ? (
+                ) : formik.touched[contact]?.firstName ? (
                   <RequiredField />
                 ) : (
                   <span></span>
