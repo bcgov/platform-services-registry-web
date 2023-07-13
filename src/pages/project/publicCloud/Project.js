@@ -30,17 +30,16 @@ import { Button, IconButton } from "@mui/material";
 import ActiveRequestText from "../../../components/common/ActiveRequestText";
 import Users from "../../../components/forms/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../../components/forms/Quotas";
-import Namespaces from "../../../components/Namespaces";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import ReProvisionButton from "../../../components/ReProvisionButton";
 import ReadOnlyAdminContext from "../../../context/readOnlyAdmin";
 import UserContext from "../../../context/user";
-import Tooltip from "@mui/material/Tooltip";
-
-const ADMIN_PROJECT = gql`
+import AccountCodingInput from "../../../components/forms/AccountCoding";
+import BudgetInput from "../../../components/forms/Budget";
+import ProviderInput from "../../../components/forms/ProviderInput";
+const USER_PROJECT = gql`
   query UserPublicCloudProjectById($projectId: ID!) {
     userPublicCloudProjectById(projectId: $projectId) {
       id
@@ -138,7 +137,10 @@ const validationSchema = yup.object().shape({
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   provider: ProviderSchema.required(),
-  accountCoding: yup.string().required(),
+  accountCoding: yup.string()
+  .transform((value) => value.replace(/\s/g, ''))
+  .max(24)
+  .required(),
   budget: BudgetInputSchema().required(),
   projectOwner: CreateUserInputSchema,
   primaryTechnicalLead: CreateUserInputSchema,
@@ -167,12 +169,10 @@ export default function Project({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
-  const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
-  const userContext = useContext(UserContext);
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
 
-  const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
+  const { data, loading, error, refetch } = useQuery(USER_PROJECT, {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network"
   });
@@ -237,12 +237,13 @@ export default function Project({ requestsRoute }) {
 
   useEffect(() => {
     if (data) {
-      setInitialValues(stripTypeName(data?.publicCloudProjectById));
+      console.log(initialValues)
+      setInitialValues(stripTypeName(data?.userPublicCloudProjectById));
     }
   }, [data]);
 
-  const name = data?.publicCloudProjectById?.name;
-  const isDisabled = !!data?.publicCloudProjectById?.activeEditRequest;
+  const name = data?.userPublicCloudProjectById?.name;
+  const isDisabled = !!data?.userPublicCloudProjectById?.activeEditRequest;
 
   const handleClose = () => setOpen(false);
 
@@ -274,29 +275,26 @@ export default function Project({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <Box sx={{ pt: 5 }}>
-                <ClusterInputText cluster={formik.values.cluster} />
-              </Box>
+              <ProviderInput formik={formik} isDisabled={true} />
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Namespaces
-              cluster={data?.publicCloudProjectById?.cluster}
-              licencePlate={data?.publicCloudProjectById?.licencePlate}
-            />
+            <AccountCodingInput formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Users formik={formik} isDisabled={false} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Quotas formik={formik} isDisabled={isDisabled} />
+            <BudgetInput formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
-            <Button
-              type="submit"
-              disabled={!formik.dirty}
-              sx={{ mr: 1, width: "170px" }}
-              variant="contained"
-            >
-              Submit
-            </Button>
+         
+              <Button
+                type="submit"
+                disabled={!formik.dirty}
+                sx={{ mr: 1, width: "170px" }}
+                variant="contained"
+              >
+                Submit
+              </Button>
+            ) 
             <Modal
               open={open}
               onClose={handleClose}
