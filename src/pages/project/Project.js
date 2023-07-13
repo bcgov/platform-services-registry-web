@@ -345,7 +345,7 @@ export default function Project({ requestsRoute }) {
             <Delete
               projectId={id}
               name={data?.userPrivateCloudProjectById?.name}
-              licensePlate={data?.userPrivateCloudProjectById?.licencePlate}
+              licencePlate={data?.userPrivateCloudProjectById?.licencePlate}
               projectOwnerEmail={
                 data?.userPrivateCloudProjectById?.projectOwner?.email
               }
@@ -400,6 +400,7 @@ export default function Project({ requestsRoute }) {
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                   Are you sure you want to edit this product?
                   <Button
+                    color="error"
                     onClick={submitForm}
                     sx={{ mr: 1, width: "170px", mt: 3 }}
                     variant="contained"
