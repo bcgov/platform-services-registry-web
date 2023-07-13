@@ -344,9 +344,11 @@ export default function Project({ requestsRoute }) {
           >
             <Delete
               projectId={id}
-              name={data?.name}
-              licensePlate={data?.licencePlate}
-              projectOwnerEmail={data?.projectOwner?.email}
+              name={data?.userPrivateCloudProjectById?.name}
+              licensePlate={data?.userPrivateCloudProjectById?.licencePlate}
+              projectOwnerEmail={
+                data?.userPrivateCloudProjectById?.projectOwner?.email
+              }
               deleteOnClick={deleteOnClick}
             />
           </Modal>
