@@ -381,9 +381,9 @@ export default function Project({ requestsRoute }) {
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             <Button
               type="submit"
-              disabled={!formik.dirty}
               sx={{ mr: 1, width: "170px" }}
               variant="contained"
+              disabled={isDisabled || !formik.dirty}
             >
               Submit
             </Button>
