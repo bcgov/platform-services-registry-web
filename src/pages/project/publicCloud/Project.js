@@ -177,6 +177,7 @@ export default function Project({ requestsRoute }) {
     nextFetchPolicy: "cache-and-network"
   });
 
+  // console.log(data)
   const [
     publicCloudProjectEditRequest,
     {
@@ -237,10 +238,13 @@ export default function Project({ requestsRoute }) {
 
   useEffect(() => {
     if (data) {
-      console.log(initialValues)
       setInitialValues(stripTypeName(data?.userPublicCloudProjectById));
     }
   }, [data]);
+
+  // useEffect(() => {
+  //      console.log("initialValues", initialValues)
+  // }, [initialValues]);
 
   const name = data?.userPublicCloudProjectById?.name;
   const isDisabled = !!data?.userPublicCloudProjectById?.activeEditRequest;
@@ -249,7 +253,7 @@ export default function Project({ requestsRoute }) {
 
   return (
     <div>
-      <form onSubmit={formik.handleSubmit}>
+     <form onSubmit={formik.handleSubmit}>
         <NavToolbar
           label={"products"}
           path={"admin/dashboard/public-cloud-products"}
@@ -285,8 +289,7 @@ export default function Project({ requestsRoute }) {
             <BudgetInput formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
-         
-              <Button
+             <Button
                 type="submit"
                 disabled={!formik.dirty}
                 sx={{ mr: 1, width: "170px" }}
@@ -320,7 +323,7 @@ export default function Project({ requestsRoute }) {
             </Modal>
           </div>
         </Container>
-      </form>
+      </form> 
     </div>
   );
 }
