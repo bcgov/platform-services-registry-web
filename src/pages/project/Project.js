@@ -400,7 +400,6 @@ export default function Project({ requestsRoute }) {
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                   Are you sure you want to edit this product?
                   <Button
-                    color="error"
                     onClick={submitForm}
                     sx={{ mr: 1, width: "170px", mt: 3 }}
                     variant="contained"
