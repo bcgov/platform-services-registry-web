@@ -69,6 +69,8 @@ export type CreateUserInput = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   ministry?: InputMaybe<Scalars['String']>;
+  upn?: Scalars['String'];
+  idir?: Scalars['String'];
 };
 
 export enum DecisionStatus {
@@ -449,6 +451,8 @@ export type User = {
   lastName?: Maybe<Scalars['String']>;
   lastSeen?: Maybe<Scalars['DateTime']>;
   ministry?: Maybe<Scalars['String']>;
+  upn?: Maybe<Scalars['String']>;
+  idir?: Maybe<Scalars['String']>;
   privateCloudProjectOwner: Array<Maybe<PrivateCloudProject>>;
   privateCloudProjectPrimaryTechnicalLead: Array<Maybe<PrivateCloudProject>>;
   privateCloudProjectSecondaryTechnicalLead: Array<Maybe<PrivateCloudProject>>;
@@ -493,7 +497,9 @@ export function CreateUserInputSchema(): yup.SchemaOf<CreateUserInput> {
     email: yup.string().defined(),
     firstName: yup.string().defined(),
     lastName: yup.string().defined(),
-    ministry: yup.string()
+    ministry: yup.string(),
+    upn:yup.string(),
+    idir: yup.string(),
   })
 }
 
