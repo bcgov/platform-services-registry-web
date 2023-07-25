@@ -25,7 +25,7 @@ export default function EmptyList({ title, subtitle, isPrivate, isPublic }) {
             loading="lazy"
         />
         <Typography variant="h5">{title}</Typography>
-        <Typography variant="body2" style={{ maxWidth: '320px', textAlign: 'center' }}>{subtitle}</Typography>
+        <Typography variant="body2" style={{ maxWidth: '320px', textAlign: 'center', marginBottom: 30 }}>{subtitle}</Typography>
         <CreateButtons
             privateCloudCreatePath={isPrivate ?
                 admin || readOnlyAdmin ? routesAdmin[2] : routesUser[2] : undefined
