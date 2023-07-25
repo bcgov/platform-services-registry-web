@@ -12,8 +12,8 @@ function usePhotoUrl(email) {
         if (!image) {
           const result = await fetch(
             `${
-              process.env.REACT_APP_MSAL_ENDPOINT || '{{ env "MSAL_ENDPOINT" }}'
-            }/getIdirPhoto?email=${email}`
+              process.env.REACT_APP_API_URL || '{{ env "MSAL_ENDPOINT" }}'
+            }/api/v1/getIdirPhoto?email=${email}`
           );
 
           const data = await result.json();

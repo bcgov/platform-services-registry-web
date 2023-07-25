@@ -41,17 +41,9 @@ export default function UserInput({
   const debouncedEmail = useDebounce(emailInput);
 
   const getFilteredUsers = useCallback(async () => {
-    console.log((process.env.REACT_APP_API_URL || '{{ env "MSAL_ENDPOINT" }}') +
-    "/api/v1/getIdirEmails?email=" +
-    debouncedEmail)
-    // console.log((process.env.REACT_APP_MSAL_ENDPOINT || '{{ env "MSAL_ENDPOINT" }}') +
-    // "/getIdirEmails?email=" +
-    // debouncedEmail)
-    // http://localhost:4000/graphql/api/v1/getIdirEmails?email=f
-    // http://localhost:4000/api/v1/getIdirEmails?email=f
     const response = await fetch(
-      (process.env.REACT_APP_MSAL_ENDPOINT || '{{ env "MSAL_ENDPOINT" }}') +
-      "/getIdirEmails?email=" +
+      (process.env.REACT_APP_API_URL || '{{ env "MSAL_ENDPOINT" }}') +
+      "/api/v1/getIdirEmails?email=" +
       debouncedEmail,
       {
         headers: {
@@ -67,8 +59,8 @@ export default function UserInput({
   const getUserIdir = useCallback(async () => {
     if (userId) {
       const response = await fetch(
-        (process.env.REACT_APP_MSAL_ENDPOINT || '{{ env "MSAL_ENDPOINT" }}') +
-        "/getIdir?id=" +
+        (process.env.REACT_APP_API_URL || '{{ env "MSAL_ENDPOINT" }}') +
+        "/api/v1/getIdir?id=" +
         userId,
         {
           headers: {
@@ -165,7 +157,6 @@ export default function UserInput({
         )}
       </Box>
       <Divider />
-
       {edit ? (
         <Stack
           direction="row"
@@ -324,79 +315,79 @@ export default function UserInput({
               size="small"
             />
             <TextField
-                sx={{
-                  "& .MuiInputBase-input.Mui-disabled": {
-                    WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
-                  },
-                  mb: 2
-                }}
-                variant="standard"
-                id={contact + ".idir"}
-                name={contact + ".idir"}
-                label="IDIR"
-                disabled={true}
-                value={formik.values[contact]?.idir || ""}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched[contact]?.idir &&
-                  Boolean(formik.errors[contact]?.idir)
-                }
-                helperText={
-                  Boolean(!formik.values[contact]?.ministry) && email ? (
-                    <div style={{ fontSize: 16, color: "red" }}>
-                      Please populate your IDIR account with your IDIR
-                    </div>
-                  ) : formik.touched[contact]?.firstName ? (
-                    <RequiredField />
-                  ) : (
-                    <span></span>
-                  )
-                }
-                InputProps={{
-                  endAdornment: (
-                      <HelperIcon title="IDIR" 
-                                  description={'means Information Directory”, an electronic login identification that allows BC government employees, and their contractors, to access the BC government applications'}/> 
-                  ),
-                }}  
-                size="small"
-              />
-               <TextField
-                sx={{
-                  "& .MuiInputBase-input.Mui-disabled": {
-                    WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
-                  },
-                  mb: 2
-                }}
-                variant="standard"
-                id={contact + ".upn"}
-                name={contact + ".upn"}
-                label="UPN"
-                disabled={true}
-                value={formik.values[contact]?.upn || ""}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched[contact]?.upn &&
-                  Boolean(formik.errors[contact]?.upn)
-                }
-                helperText={
-                  Boolean(!formik.values[contact]?.ministry) && email ? (
-                    <div style={{ fontSize: 16, color: "red" }}>
-                      Please populate your IDIR account with your User Principal Name
-                    </div>
-                  ) : formik.touched[contact]?.firstName ? (
-                    <RequiredField />
-                  ) : (
-                    <span></span>
-                  )
-                }
-                InputProps={{
-                  endAdornment: (
-                      <HelperIcon title="User Principal Name" 
-                                  description={'The User Principal Name (UPN) attribute is an internet communication standard for user accounts. A UPN consists of a prefix (user account name) and a suffix (DNS domain name). The prefix joins the suffix using the "@" symbol. For example, someone@example.com. '}/> 
-                  ),
-                }}  
-                size="small"
-              />
+              sx={{
+                "& .MuiInputBase-input.Mui-disabled": {
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                },
+                mb: 2
+              }}
+              variant="standard"
+              id={contact + ".idir"}
+              name={contact + ".idir"}
+              label="IDIR"
+              disabled={true}
+              value={formik.values[contact]?.idir || ""}
+              onChange={formik.handleChange}
+              error={
+                formik.touched[contact]?.idir &&
+                Boolean(formik.errors[contact]?.idir)
+              }
+              helperText={
+                Boolean(!formik.values[contact]?.ministry) && email ? (
+                  <div style={{ fontSize: 16, color: "red" }}>
+                    Please populate your IDIR account with your IDIR
+                  </div>
+                ) : formik.touched[contact]?.firstName ? (
+                  <RequiredField />
+                ) : (
+                  <span></span>
+                )
+              }
+              InputProps={{
+                endAdornment: (
+                  <HelperIcon title="IDIR"
+                    description={'means Information Directory”, an electronic login identification that allows BC government employees, and their contractors, to access the BC government applications'} />
+                ),
+              }}
+              size="small"
+            />
+            <TextField
+              sx={{
+                "& .MuiInputBase-input.Mui-disabled": {
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                },
+                mb: 2
+              }}
+              variant="standard"
+              id={contact + ".upn"}
+              name={contact + ".upn"}
+              label="UPN"
+              disabled={true}
+              value={formik.values[contact]?.upn || ""}
+              onChange={formik.handleChange}
+              error={
+                formik.touched[contact]?.upn &&
+                Boolean(formik.errors[contact]?.upn)
+              }
+              helperText={
+                Boolean(!formik.values[contact]?.ministry) && email ? (
+                  <div style={{ fontSize: 16, color: "red" }}>
+                    Please populate your IDIR account with your User Principal Name
+                  </div>
+                ) : formik.touched[contact]?.firstName ? (
+                  <RequiredField />
+                ) : (
+                  <span></span>
+                )
+              }
+              InputProps={{
+                endAdornment: (
+                  <HelperIcon title="User Principal Name"
+                    description={'The User Principal Name (UPN) attribute is an internet communication standard for user accounts. A UPN consists of a prefix (user account name) and a suffix (DNS domain name). The prefix joins the suffix using the "@" symbol. For example, someone@example.com. '} />
+                ),
+              }}
+              size="small"
+            />
           </Box>
         </Stack>
       ) : null}
