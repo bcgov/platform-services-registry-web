@@ -179,8 +179,8 @@ export type Mutation = {
   privateCloudProjectDeleteRequest: PrivateCloudRequest;
   privateCloudProjectEditRequest: PrivateCloudRequest;
   privateCloudProjectRequest: PrivateCloudRequest;
-  privateCloudReProvisionProject?: Maybe<Scalars['ID']>;
-  privateCloudReProvisionRequest?: Maybe<Scalars['ID']>;
+  privateCloudReProvisionProject?: Maybe<PrivateCloudProject>;
+  privateCloudReProvisionRequest?: Maybe<PrivateCloudRequest>;
   privateCloudRequestDecision?: Maybe<PrivateCloudRequest>;
   publicCloudProjectEditRequest: PublicCloudRequest;
   publicCloudProjectRequest: PublicCloudRequest;
@@ -195,7 +195,9 @@ export type MutationCreateUserArgs = {
 
 
 export type MutationPrivateCloudProjectDeleteRequestArgs = {
+  licencePlate: Scalars['String'];
   projectId: Scalars['ID'];
+  projectOwnerEmail: Scalars['EmailAddress'];
 };
 
 
@@ -338,8 +340,8 @@ export enum PublicCloudPlatform {
 
 export type PublicCloudProject = {
   __typename?: 'PublicCloudProject';
-  activeEditRequest?: Maybe<PublicCloudRequest>;
   accountCoding: Scalars['String'];
+  activeEditRequest?: Maybe<PublicCloudRequest>;
   budget: Budget;
   commonComponents: CommonComponents;
   created: Scalars['DateTime'];
@@ -398,6 +400,7 @@ export type Query = {
   userPrivateCloudActiveRequestById: PrivateCloudRequest;
   userPrivateCloudActiveRequests: Array<PrivateCloudRequest>;
   userPrivateCloudActiveRequestsByIds: PrivateCloudRequest;
+  userPrivateCloudDeletionCheck: Scalars['Boolean'];
   userPrivateCloudProjectById: PrivateCloudProject;
   userPrivateCloudProjects: Array<PrivateCloudProject>;
   userPrivateCloudProjectsByIds: PrivateCloudProject;
@@ -484,6 +487,7 @@ export type QueryPublicCloudProjectsPaginatedArgs = {
   pageSize: Scalars['Int'];
   search?: InputMaybe<Scalars['String']>;
   sortOrder?: InputMaybe<Scalars['Int']>;
+  userId?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -509,6 +513,11 @@ export type QueryUserPrivateCloudActiveRequestByIdArgs = {
 
 export type QueryUserPrivateCloudActiveRequestsByIdsArgs = {
   requestIds?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryUserPrivateCloudDeletionCheckArgs = {
+  projectId: Scalars['ID'];
 };
 
 
@@ -612,6 +621,7 @@ export type User = {
   email: Scalars['EmailAddress'];
   firstName?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  isNew?: Maybe<Scalars['Boolean']>;
   lastName?: Maybe<Scalars['String']>;
   lastSeen?: Maybe<Scalars['DateTime']>;
   ministry?: Maybe<Scalars['String']>;
