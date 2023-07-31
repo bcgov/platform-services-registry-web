@@ -26,11 +26,15 @@ export default function AccountCoding({ formik, isDisabled }) {
   const handleChange = (e) => {
     if (hasSpecialCharacters(e.target.value)) {
       setErrorSpecialCharMessage("Wrong input only digits and Uppercase characters are allowed")
-      setError(true)
     }
     else if (e.target.value.replace(/[\s]/g, '').length !== 24) {
-      setErrorLengthMessage(`There are ${e.target.value.replace(/\s/g, '').length} characters - code should be 24 characters`)
-      setError(true)
+      if (e.target.value.replace(/[\s]/g, '').length < 24) {
+        setErrorLengthMessage(`There are ${e.target.value.replace(/\s/g, '').length} characters - code should be 24 characters`)
+        setError(true)
+      }
+      if (e.target.value.replace(/[\s]/g, '').length > 24) {
+        setErrorLengthMessage(`There are more than 24 characters - code should be 24 characters`)
+      }
     }
     else {
       setError(false)
@@ -76,7 +80,10 @@ export default function AccountCoding({ formik, isDisabled }) {
               (formik.touched.accountCoding && <RequiredField />) || (error && [<p>{errorLengthMessage}</p>, <p>{errorSpecialCharMessage}</p>])
             }
             size="small"
-            inputProps={{ maxLength: 28 }}
+            onInput={(e) => {
+              e.target.value = e.target.value.replace(/[\s]/g, '')
+            }}
+            inputProps={{ maxLength: 24 }}
           />
           <Typography sx={{ mb: 1 }} color="text.primary">
             Please make sure that the account coding entered above matches the account coding on the MoU for this project.                      If the account coding is changed at any point, all charges in the current quarter will be applied to the new account coding            </Typography>
