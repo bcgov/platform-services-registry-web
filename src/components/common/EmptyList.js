@@ -3,14 +3,12 @@ import { Typography } from "@mui/material";
 import Box from '@mui/material/Box';
 import EmptyListImage from '../assets/noProducts.png';
 import CreateButtons from "./CreateButtons";
-import AdminContext from "../../context/admin";
-import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
+import AdminContext from "../../context/roles";
 import { routesUser, routesAdmin } from "../AppRouter";
 
 
 export default function EmptyList({ title, subtitle, isPrivate, isPublic }) {
-    const { admin } = useContext(AdminContext);
-    const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
+    const { admin, readOnlyAdmin } = useContext(AdminContext);
     return <Box
         display='flex'
         flex='1'

@@ -8,7 +8,7 @@ import TitleTypography from "../common/TitleTypography";
 import FormHelperText from "@mui/material/FormHelperText";
 import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
-import AdminContext from "../../context/admin";
+import AdminContext from "../../context/roles";
 
 export default function ProviderInput({ formik, isDisabled }) {
   const isAdmin = useContext(AdminContext);

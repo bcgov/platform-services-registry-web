@@ -6,8 +6,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import AdminProvider from "./providers/admin";
-import ReadOnlyAdminProvider from "./providers/readOnlyAdmin";
+import RolesProvider from "./providers/roles";
 import { useKeycloak } from "@react-keycloak/web";
 import { useQuery, gql } from "@apollo/client";
 import UserProvider from "./providers/user";
@@ -105,11 +104,9 @@ function App() {
             <FilterProvider>
               <PublicCloudFilterProvider>
                 <SortProvider>
-                  <ReadOnlyAdminProvider>
-                    <AdminProvider>
+                    <RolesProvider>
                       <AppRouter />
-                    </AdminProvider>
-                  </ReadOnlyAdminProvider>
+                    </RolesProvider>
                 </SortProvider>
               </PublicCloudFilterProvider>
             </FilterProvider>

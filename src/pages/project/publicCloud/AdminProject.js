@@ -32,7 +32,7 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import ReadOnlyAdminContext from "../../../context/readOnlyAdmin";
+import RolesContext from "../../../context/roles";
 import UserContext from "../../../context/user";
 import AccountCodingInput from "../../../components/forms/AccountCoding";
 import BudgetInput from "../../../components/forms/Budget";
@@ -168,7 +168,7 @@ export default function AdminProject({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
-  const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
+  const { readOnlyAdmin } = useContext(RolesContext);
   const userContext = useContext(UserContext);
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);

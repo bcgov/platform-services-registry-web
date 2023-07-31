@@ -9,22 +9,22 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Outlet } from "react-router-dom";
 import TabForm from "./forms/ResponsiveTabForm";
-import AdminContext from "../context/admin";
-import ReadOnlyAdminContext from "../context/readOnlyAdmin";
+import RolesContext from "../context/roles";
 import { routesUser, routesAdmin } from "./AppRouter";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuList from "@mui/material/MenuList";
-import CreateButtons from "../components/common/CreateButtons"; 
-
+import CreateButtons from "../components/common/CreateButtons";
 
 function CreateButtonsDropdown({
   privateCloudCreatePath,
   publicCloudCreatePath,
-  handleClose
+  handleClose,
 }) {
+  const { featureTester } = useContext(RolesContext);
+
   return (
     <MenuList>
       <MenuItem
@@ -34,21 +34,22 @@ function CreateButtonsDropdown({
       >
         Create Private Cloud Project
       </MenuItem>
-      <MenuItem
-        onClick={handleClose}
-        component={Link}
-        to={publicCloudCreatePath}
-      >
-        Create Public Cloud Project
-      </MenuItem>
+      {featureTester && (
+        <MenuItem
+          onClick={handleClose}
+          component={Link}
+          to={publicCloudCreatePath}
+        >
+          Create Public Cloud Project
+        </MenuItem>
+      )}
     </MenuList>
   );
 }
 
 export default function TabsToolbar({ routes }) {
   const { pathname } = useLocation();
-  const { admin } = useContext(AdminContext);
-  const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
+  const { admin, readOnlyAdmin, featureTester } = useContext(RolesContext);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -75,7 +76,7 @@ export default function TabsToolbar({ routes }) {
             color: "rgba(0, 0, 0, 0.6)",
             fontSize: 20,
             minWidth: 210,
-            display: { xs: "none", sm: "block" }
+            display: { xs: "none", sm: "block" },
           }}
         >
           PRODUCT REGISTRY
@@ -103,11 +104,14 @@ export default function TabsToolbar({ routes }) {
               label="Private Cloud Products"
               to={routes[1]}
             />
-            <Tab
-              component={Link}
-              label="Public Cloud Products"
-              to={routes[3]}
-            />
+
+            {featureTester && (
+              <Tab
+                component={Link}
+                label="Public Cloud Products"
+                to={routes[3]}
+              />
+            )}
           </Tabs>
         </Box>
         {pathname === routes[1] && (admin || readOnlyAdmin) ? (
@@ -139,8 +143,8 @@ export default function TabsToolbar({ routes }) {
                 elevation: 0,
                 sx: {
                   overflow: "visible",
-                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))"
-                }
+                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                },
               }}
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}

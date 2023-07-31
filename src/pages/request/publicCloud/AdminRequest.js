@@ -19,7 +19,7 @@ import Namespaces from "../../../components/Namespaces";
 import TextField from "@mui/material/TextField";
 import { Box } from "@mui/material";
 import ReProvisionButton from "../../../components/ReProvisionButton";
-import ReadOnlyAdminContext from "../../../context/readOnlyAdmin";
+import RolesContext from "../../../context/roles";
 
 const ADMIN_REQUEST = gql`
   query PublicCloudRequestById($requestId: ID!) {
@@ -125,7 +125,7 @@ export default function AdminRequest() {
   const navigate = useNavigate();
   const toastId = useRef(null);
   const [humanCommentInput, setHumanCommentInput] = useState(null);
-  const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
+  const { readOnlyAdmin } = useContext(RolesContext);
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id }
