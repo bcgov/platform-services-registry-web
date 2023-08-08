@@ -27,14 +27,15 @@ const requestsToRows = ({
     secondaryTechnicalLead,
     ministry,
     cluster,
-    provider
-  }
+    provider,
+  },
 }) => ({
   id,
   onClickPath: (isAdmin) =>
-    `/registry/${isAdmin ? "admin" : "user"}/${
+    `/registry/${isAdmin.admin || isAdmin.readOnlyAdmin ? "admin" : "user"}/${
       provider && !cluster ? "public-cloud" : "private-cloud"
     }/request/${id}`,
+
   name: <span style={{ fontSize: 18, fontWeight: "500" }}>{name}</span>,
   created: <span style={{ fontSize: 16 }}> {dayjs(created).fromNow()}</span>,
   licencePlate: (
@@ -117,7 +118,7 @@ const requestsToRows = ({
     </Box>
   ),
 
-  type: <Chip style={{ borderRadius: 7 }} label={type} />
+  type: <Chip style={{ borderRadius: 7 }} label={type} />,
 });
 
 function truncate(str, n) {
@@ -128,14 +129,14 @@ const decisionStatusLookup = {
   APPROVED: "PROCESSING",
   PENDING: "PENDING DECISION",
   PROVISIONED: "PROVISIONED",
-  REJECTED: "REJECTED"
+  REJECTED: "REJECTED",
 };
 
 const decisionStatusColourLookup = {
   APPROVED: "success",
   PENDING: "secondary",
   REJECTED: "error",
-  PROVISIONED: "success"
+  PROVISIONED: "success",
 };
 
 const columns = [
@@ -147,7 +148,7 @@ const columns = [
   { id: "projectOwner", label: "Project Owner", minWidth: 0 },
   { id: "technicalLeads", label: "Technical Leads", minWidth: 0 },
   { id: "created", label: "Created", minWidth: 200 },
-  { id: "licencePlate", label: "License Plate", minWidth: 0 }
+  { id: "licencePlate", label: "License Plate", minWidth: 0 },
 ];
 
 export { requestsToRows, columns };

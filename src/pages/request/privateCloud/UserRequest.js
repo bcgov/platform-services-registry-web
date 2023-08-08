@@ -16,8 +16,8 @@ import TitleTypography from "../../../components/common/TitleTypography";
 import { Typography } from "@mui/material";
 
 const USER_REQUEST = gql`
-  query UserPublicCloudRequestById($requestId: ID!) {
-    userPublicCloudRequestById(requestId: $requestId) {
+  query UserPrivateCloudRequestById($requestId: ID!) {
+    userPrivateCloudRequestById(requestId: $requestId) {
       id
       createdBy {
         firstName
@@ -36,6 +36,26 @@ const USER_REQUEST = gql`
       decisionDate
       project {
         name
+        productionQuota {
+          cpu
+          memory
+          storage
+        }
+        testQuota {
+          cpu
+          memory
+          storage
+        }
+        developmentQuota {
+          cpu
+          memory
+          storage
+        }
+        toolsQuota {
+          cpu
+          memory
+          storage
+        }
       }
       requestedProject {
         id
@@ -62,7 +82,7 @@ const USER_REQUEST = gql`
           ministry
         }
         ministry
-        provider
+        cluster
         commonComponents {
           addressAndGeolocation
           workflowManagement
@@ -76,13 +96,26 @@ const USER_REQUEST = gql`
           noServices
           other
         }
-        budget {
-          dev
-          test
-          prod
-          tools
+        productionQuota {
+          cpu
+          memory
+          storage
         }
-        accountCoding
+        testQuota {
+          cpu
+          memory
+          storage
+        }
+        developmentQuota {
+          cpu
+          memory
+          storage
+        }
+        toolsQuota {
+          cpu
+          memory
+          storage
+        }
       }
     }
   }
@@ -91,12 +124,14 @@ const USER_REQUEST = gql`
 export default function UserRequest() {
   const { id } = useParams();
 
+  console.log(id);
+
   const { data, loading, error } = useQuery(USER_REQUEST, {
-    variables: { requestId: id }
+    variables: { requestId: id },
   });
 
   const { project, requestedProject, ...request } =
-    data?.userPublicCloudRequestById || {};
+    data?.userPrivateCloudRequestById || {};
 
   const name =
     request?.type === "CREATE" ? requestedProject?.name : project?.name;

@@ -137,10 +137,11 @@ const validationSchema = yup.object().shape({
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   provider: ProviderSchema.required(),
-  accountCoding: yup.string()
-  .transform((value) => value.replace(/\s/g, ''))
-  .max(24)
-  .required(),
+  accountCoding: yup
+    .string()
+    .transform((value) => value.replace(/\s/g, ""))
+    .max(24)
+    .required(),
   budget: BudgetInputSchema().required(),
   projectOwner: CreateUserInputSchema,
   primaryTechnicalLead: CreateUserInputSchema,
@@ -253,7 +254,7 @@ export default function Project({ requestsRoute }) {
 
   return (
     <div>
-     <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={formik.handleSubmit}>
         <NavToolbar
           label={"products"}
           path={"admin/dashboard/public-cloud-products"}
@@ -289,15 +290,14 @@ export default function Project({ requestsRoute }) {
             <BudgetInput formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
-             <Button
-                type="submit"
-                disabled={!formik.dirty}
-                sx={{ mr: 1, width: "170px" }}
-                variant="contained"
-              >
-                Submit
-              </Button>
-            ) 
+            <Button
+              type="submit"
+              disabled={!formik.dirty}
+              sx={{ mr: 1, width: "170px" }}
+              variant="contained"
+            >
+              Submit
+            </Button>
             <Modal
               open={open}
               onClose={handleClose}
@@ -323,7 +323,7 @@ export default function Project({ requestsRoute }) {
             </Modal>
           </div>
         </Container>
-      </form> 
+      </form>
     </div>
   );
 }

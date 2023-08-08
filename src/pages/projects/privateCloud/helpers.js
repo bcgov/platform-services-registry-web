@@ -16,13 +16,13 @@ const columns = [
   { id: "cluster", label: "Cluster", minWidth: 0, width: 100 },
   { id: "projectOwner", label: "Project Owner", minWidth: 0, width: 180 },
   { id: "technicalLeads", label: "Technical Leads", minWidth: 0, width: 180 },
-  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 }
+  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 },
 ];
 
 const columnsXs = [
   { id: "name", label: "Name", minWidth: 40, width: 60 },
   { id: "contacts", label: "Contacts", minWidth: 0, width: 100 },
-  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 }
+  { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 },
 ];
 
 const projectsToRows = ({
@@ -34,11 +34,13 @@ const projectsToRows = ({
   secondaryTechnicalLead,
   ministry,
   cluster,
-  licencePlate
+  licencePlate,
 }) => ({
   id,
   onClickPath: (isAdmin) =>
-    `/registry/${isAdmin ? "admin" : "user"}/private-cloud/product/${id}`,
+    `/registry/${
+      isAdmin.admin || isAdmin.readOnlyAdmin ? "admin" : "user"
+    }/private-cloud/product/${id}`,
   name: (
     <span style={{ fontSize: 18, fontWeight: "450" }}>
       {name.replace("(dev)", "").trim()}
@@ -53,8 +55,8 @@ const projectsToRows = ({
     <Link
       sx={{
         "&:hover": {
-          cursor: "pointer"
-        }
+          cursor: "pointer",
+        },
       }}
       underline="hover"
       onClick={(e) =>
@@ -115,7 +117,7 @@ const projectsToRows = ({
           </Link>
         ))}
     </Stack>
-  )
+  ),
 });
 
 const projectsToRowsXs = ({
@@ -125,7 +127,7 @@ const projectsToRowsXs = ({
   primaryTechnicalLead,
   secondaryTechnicalLead,
   licencePlate,
-  cluster
+  cluster,
 }) => ({
   id,
   name: <span style={{ fontSize: 18, fontWeight: "450" }}>{name}</span>,
@@ -134,7 +136,7 @@ const projectsToRowsXs = ({
       users={[
         projectOwner,
         primaryTechnicalLead,
-        secondaryTechnicalLead
+        secondaryTechnicalLead,
       ].filter(Boolean)}
     />
   ),
@@ -142,8 +144,8 @@ const projectsToRowsXs = ({
     <Link
       sx={{
         "&:hover": {
-          cursor: "pointer"
-        }
+          cursor: "pointer",
+        },
       }}
       underline="hover"
       onClick={(e) =>
@@ -156,7 +158,7 @@ const projectsToRowsXs = ({
     >
       <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
     </Link>
-  )
+  ),
 });
 
 export { columns, columnsXs, projectsToRows, projectsToRowsXs };

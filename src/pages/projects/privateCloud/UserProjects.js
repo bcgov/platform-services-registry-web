@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useQuery, gql } from "@apollo/client";
-import { columns, projectsToRows } from "./helpers";
+import {
+  columns,
+  columnsXs,
+  projectsToRows,
+  projectsToRowsXs,
+} from "./helpers";
 import StickyTable from "../../../components/common/Table";
 import { InfoAlert, ErrorAlert } from "../../../components/common/Alert";
 import EmptyList from "../../../components/common/EmptyList";
@@ -8,6 +13,7 @@ import SearchContext from "../../../context/search";
 import FilterContext from "../../../context/filter";
 import SortContext from "../../../context/sort";
 import UserContext from "../../../context/user";
+import useWindowSize from "../../../hooks/useWindowSize";
 
 const USER_PROJECTS = gql`
   query PrivateCloudProjectsPaginated(
@@ -49,8 +55,8 @@ const USER_PROJECTS = gql`
           lastName
         }
       }
+      total
     }
-    total
   }
 `;
 
@@ -61,6 +67,7 @@ export default function Projects() {
   const { filter } = useContext(FilterContext);
   const { sortOrder } = useContext(SortContext);
   const userContext = useContext(UserContext);
+  const { width } = useWindowSize();
 
   const { loading, data, fetchMore, startPolling, error } = useQuery(
     USER_PROJECTS,
@@ -153,9 +160,15 @@ export default function Projects() {
           onClickPath={"/private-cloud/user/product/"}
           onNextPage={getNextPage}
           columns={columns}
-          rows={data?.privateCloudProjectsPaginated?.projects.map(
-            projectsToRows
-          )}
+          rows={
+            width < 900
+              ? data?.privateCloudProjectsPaginated?.projects
+                  .map(projectsToRowsXs)
+                  .reverse()
+              : data?.privateCloudProjectsPaginated?.projects.map(
+                  projectsToRows
+                )
+          }
           count={loading ? 0 : data?.privateCloudProjectsPaginated?.total}
           title="Products"
           loading={loading}
