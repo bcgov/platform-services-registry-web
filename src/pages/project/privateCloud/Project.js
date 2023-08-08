@@ -5,7 +5,7 @@ import {
   CommonComponentsInputSchema,
   QuotaInputSchema,
   MinistrySchema,
-  ClusterSchema
+  ClusterSchema,
 } from "../../../__generated__/resolvers-types";
 import ClusterInputText from "../../../components/plainText/ClusterInput";
 import { useQuery, useMutation, gql } from "@apollo/client";
@@ -16,7 +16,7 @@ import {
   projectInitialValues,
   replaceNullsWithEmptyString,
   replaceEmptyStringWithNull,
-  stripTypeName
+  stripTypeName,
 } from "../../../components/common/FormHelpers";
 import CommonComponents from "../../../components/forms/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
@@ -142,8 +142,16 @@ const UPDATE_USER_PROJECT = gql`
 `;
 
 const DELETE_USER_PROJECT = gql`
-  mutation Mutation($projectId: ID!) {
-    privateCloudProjectDeleteRequest(projectId: $projectId) {
+  mutation Mutation(
+    $projectId: ID!
+    $licencePlate: String!
+    $projectOwnerEmail: EmailAddress!
+  ) {
+    privateCloudProjectDeleteRequest(
+      projectId: $projectId
+      licencePlate: $licencePlate
+      projectOwnerEmail: $projectOwnerEmail
+    ) {
       id
     }
   }
@@ -153,7 +161,7 @@ const CreateUserInputSchema = yup.object({
   email: yup.string().defined(),
   firstName: yup.string().defined(),
   lastName: yup.string().defined(),
-  ministry: yup.string()
+  ministry: yup.string(),
 });
 
 const validationSchema = yup.object().shape({
@@ -174,7 +182,7 @@ const validationSchema = yup.object().shape({
   productionQuota: yup.object(QuotaInputSchema).required(),
   developmentQuota: yup.object(QuotaInputSchema).required(),
   toolsQuota: yup.object(QuotaInputSchema).required(),
-  testQuota: yup.object(QuotaInputSchema).required()
+  testQuota: yup.object(QuotaInputSchema).required(),
 });
 
 const style = {
@@ -186,7 +194,7 @@ const style = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4
+  p: 4,
 };
 
 export default function Project({ requestsRoute }) {
@@ -200,7 +208,7 @@ export default function Project({ requestsRoute }) {
 
   const { data, loading, error, refetch } = useQuery(USER_PROJECT, {
     variables: { projectId: id },
-    nextFetchPolicy: "cache-and-network"
+    nextFetchPolicy: "cache-and-network",
   });
 
   const [
@@ -208,28 +216,32 @@ export default function Project({ requestsRoute }) {
     {
       data: editProjectData,
       loading: editProjectLoading,
-      error: editProjectError
-    }
+      error: editProjectError,
+    },
   ] = useMutation(UPDATE_USER_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
   const [privateCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
-  const deleteOnClick = () => {
+  const deleteOnClick = (licencePlate, projectOwnerEmail) => {
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     privateCloudProjectDeleteRequest({
-      variables: { projectId: id },
+      variables: {
+        projectId: id,
+        licencePlate,
+        projectOwnerEmail,
+      },
       onError: (error) => {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
       onCompleted: () => {
@@ -237,9 +249,9 @@ export default function Project({ requestsRoute }) {
         toast.update(toastId.current, {
           render: "Delete request successfuly created",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000
+          autoClose: 5000,
         });
-      }
+      },
     });
   };
 
@@ -254,13 +266,13 @@ export default function Project({ requestsRoute }) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
       }
-    }
+    },
   });
 
   const submitForm = () => {
     const { values } = formik;
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     const variables = validationSchema.cast(values);
@@ -271,7 +283,7 @@ export default function Project({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
 
@@ -282,10 +294,10 @@ export default function Project({ requestsRoute }) {
           toast.update(toastId.current, {
             render: "Request successfuly created",
             type: toast.TYPE.SUCCESS,
-            autoClose: 5000
+            autoClose: 5000,
           });
         }
-      }
+      },
     });
   };
 
@@ -329,21 +341,15 @@ export default function Project({ requestsRoute }) {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Please Confirm Your Delete Request
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Are you sure you want to delete this product?
-                <Button
-                  onClick={deleteOnClick}
-                  sx={{ mr: 1, width: "170px", mt: 3 }}
-                  variant="contained"
-                >
-                  Delete
-                </Button>
-              </Typography>
-            </Box>
+            <Delete
+              projectId={id}
+              name={data?.userPrivateCloudProjectById?.name}
+              licencePlate={data?.userPrivateCloudProjectById?.licencePlate}
+              projectOwnerEmail={
+                data?.userPrivateCloudProjectById?.projectOwner?.email
+              }
+              deleteOnClick={deleteOnClick}
+            />
           </Modal>
         </NavToolbar>
         {isDisabled ? (
@@ -367,16 +373,16 @@ export default function Project({ requestsRoute }) {
               licencePlate={data?.userPrivateCloudProjectById?.licencePlate}
             />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Users formik={formik} isDisabled={false} />
+            <Users formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Quotas formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             <Button
               type="submit"
-              disabled={!formik.dirty}
               sx={{ mr: 1, width: "170px" }}
               variant="contained"
+              disabled={isDisabled || !formik.dirty}
             >
               Submit
             </Button>

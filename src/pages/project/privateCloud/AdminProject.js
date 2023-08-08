@@ -5,7 +5,7 @@ import {
   CommonComponentsInputSchema,
   QuotaInputSchema,
   MinistrySchema,
-  ClusterSchema
+  ClusterSchema,
 } from "../../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/forms/MetaDataInput";
@@ -16,7 +16,7 @@ import {
   projectInitialValues,
   replaceNullsWithEmptyString,
   replaceEmptyStringWithNull,
-  stripTypeName
+  stripTypeName,
 } from "../../../components/common/FormHelpers";
 import CommonComponents from "../../../components/forms/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
@@ -146,8 +146,16 @@ const UPDATE_USER_PROJECT = gql`
 `;
 
 const DELETE_USER_PROJECT = gql`
-  mutation Mutation($projectId: ID!) {
-    privateCloudProjectDeleteRequest(projectId: $projectId) {
+  mutation Mutation(
+    $projectId: ID!
+    $licencePlate: String!
+    $projectOwnerEmail: EmailAddress!
+  ) {
+    privateCloudProjectDeleteRequest(
+      projectId: $projectId
+      licencePlate: $licencePlate
+      projectOwnerEmail: $projectOwnerEmail
+    ) {
       id
     }
   }
@@ -165,7 +173,7 @@ const CreateUserInputSchema = yup.object({
   email: yup.string().defined(),
   firstName: yup.string().defined(),
   lastName: yup.string().defined(),
-  ministry: yup.string()
+  ministry: yup.string(),
 });
 
 const validationSchema = yup.object().shape({
@@ -186,7 +194,7 @@ const validationSchema = yup.object().shape({
   productionQuota: yup.object(QuotaInputSchema).required(),
   developmentQuota: yup.object(QuotaInputSchema).required(),
   toolsQuota: yup.object(QuotaInputSchema).required(),
-  testQuota: yup.object(QuotaInputSchema).required()
+  testQuota: yup.object(QuotaInputSchema).required(),
 });
 
 const style = {
@@ -198,7 +206,7 @@ const style = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4
+  p: 4,
 };
 
 export default function AdminProject({ requestsRoute }) {
@@ -213,7 +221,7 @@ export default function AdminProject({ requestsRoute }) {
 
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id },
-    nextFetchPolicy: "cache-and-network"
+    nextFetchPolicy: "cache-and-network",
   });
 
   const readOnlyAdminIsAbleToEdit =
@@ -228,28 +236,32 @@ export default function AdminProject({ requestsRoute }) {
     {
       data: editProjectData,
       loading: editProjectLoading,
-      error: editProjectError
-    }
+      error: editProjectError,
+    },
   ] = useMutation(UPDATE_USER_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
   const [privateCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
-  const deleteOnClick = () => {
+  const deleteOnClick = (licencePlate, projectOwnerEmail) => {
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     privateCloudProjectDeleteRequest({
-      variables: { projectId: id },
+      variables: {
+        projectId: id,
+        licencePlate,
+        projectOwnerEmail,
+      },
       onError: (error) => {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
       onCompleted: () => {
@@ -257,9 +269,9 @@ export default function AdminProject({ requestsRoute }) {
         toast.update(toastId.current, {
           render: "Delete request successfuly created",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000
+          autoClose: 5000,
         });
-      }
+      },
     });
   };
 
@@ -268,15 +280,15 @@ export default function AdminProject({ requestsRoute }) {
     {
       data: reprovisionData,
       loading: reprovisionLoading,
-      error: reprovisionError
-    }
+      error: reprovisionError,
+    },
   ] = useMutation(RE_PROVISION_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
   const reProvisionOnClick = () => {
     toastId.current = toast("Re provisioning request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     privateCloudReProvisionProject({
@@ -286,7 +298,7 @@ export default function AdminProject({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
       onCompleted: () => {
@@ -294,9 +306,9 @@ export default function AdminProject({ requestsRoute }) {
         toast.update(toastId.current, {
           render: "Re provisioning request successful",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000
+          autoClose: 5000,
         });
-      }
+      },
     });
   };
 
@@ -310,14 +322,14 @@ export default function AdminProject({ requestsRoute }) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
       }
-    }
+    },
   });
 
   const submitForm = () => {
     const { values } = formik;
 
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     const variables = validationSchema.cast(values);
@@ -328,7 +340,7 @@ export default function AdminProject({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
 
@@ -339,10 +351,10 @@ export default function AdminProject({ requestsRoute }) {
           toast.update(toastId.current, {
             render: "Request successfuly created",
             type: toast.TYPE.SUCCESS,
-            autoClose: 5000
+            autoClose: 5000,
           });
         }
-      }
+      },
     });
   };
 
@@ -386,21 +398,15 @@ export default function AdminProject({ requestsRoute }) {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Please Confirm Your Delete Request
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Are you sure you want to delete this project?
-                <Button
-                  onClick={deleteOnClick}
-                  sx={{ mr: 1, width: "170px", mt: 3 }}
-                  variant="contained"
-                >
-                  Delete
-                </Button>
-              </Typography>
-            </Box>
+            <Delete
+              projectId={id}
+              name={data?.privateCloudProjectById?.name}
+              licencePlate={data?.privateCloudProjectById?.licencePlate}
+              projectOwnerEmail={
+                data?.privateCloudProjectById?.projectOwner?.email
+              }
+              deleteOnClick={deleteOnClick}
+            />
           </Modal>
           {!readOnlyAdmin && (
             <ReProvisionButton onClickHandler={reProvisionOnClick} />
@@ -427,7 +433,7 @@ export default function AdminProject({ requestsRoute }) {
               licencePlate={data?.privateCloudProjectById?.licencePlate}
             />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Users formik={formik} isDisabled={false} />
+            <Users formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Quotas formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
@@ -435,9 +441,9 @@ export default function AdminProject({ requestsRoute }) {
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
               <Button
                 type="submit"
-                disabled={!formik.dirty}
                 sx={{ mr: 1, width: "170px" }}
                 variant="contained"
+                disabled={isDisabled || !formik.dirty}
               >
                 Submit
               </Button>
