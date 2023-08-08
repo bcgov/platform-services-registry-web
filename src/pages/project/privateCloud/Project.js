@@ -36,6 +36,7 @@ import Namespaces from "../../../components/Namespaces";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import Delete from "../../../components/Delete";
 
 const USER_PROJECT = gql`
   query UserPrivateCloudProjectById($projectId: ID!) {

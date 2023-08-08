@@ -9,7 +9,6 @@ import {
 } from "../../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/forms/MetaDataInput";
-import ClusterInputText from "../../../components/plainText/ClusterInput";
 import MinistryInput from "../../../components/forms/MinistryInput";
 import NavToolbar from "../../../components/NavToolbar";
 import {
@@ -39,7 +38,8 @@ import Modal from "@mui/material/Modal";
 import ReProvisionButton from "../../../components/ReProvisionButton";
 import RolesContext from "../../../context/roles";
 import UserContext from "../../../context/user";
-import Tooltip from "@mui/material/Tooltip";
+import Delete from "../../../components/Delete";
+import ClusterInputText from "../../../components/plainText/ClusterInput";
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
