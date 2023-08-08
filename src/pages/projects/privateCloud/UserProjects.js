@@ -49,8 +49,8 @@ const USER_PROJECTS = gql`
           lastName
         }
       }
-      total
     }
+    total
   }
 `;
 
@@ -71,8 +71,8 @@ export default function Projects() {
         search: debouncedSearch,
         filter,
         sortOrder,
-        userId: userContext.id
-      }
+        userId: userContext.id,
+      },
       // fetchPolicy: "network-only"
     }
   );
@@ -89,8 +89,8 @@ export default function Projects() {
         search: debouncedSearch,
         filter,
         sortOrder,
-        userId: userContext.id
-      }
+        userId: userContext.id,
+      },
     });
     setPage(1);
   }, [rowsPerPage, debouncedSearch, filter, sortOrder, fetchMore]);
@@ -103,8 +103,8 @@ export default function Projects() {
         search: debouncedSearch,
         filter,
         sortOrder,
-        userId: userContext.id
-      }
+        userId: userContext.id,
+      },
     });
   }, []);
 
@@ -119,8 +119,8 @@ export default function Projects() {
             search: debouncedSearch,
             filter,
             sortOrder,
-            userId: userContext.id
-          }
+            userId: userContext.id,
+          },
         });
         return nextPage;
       });
