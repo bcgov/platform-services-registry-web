@@ -118,6 +118,7 @@ const UPDATE_PROJECT = gql`
       budget: $budget
       primaryTechnicalLead: $primaryTechnicalLead
       secondaryTechnicalLead: $secondaryTechnicalLead
+      commonComponents: $commonComponents
     ) {
       id
       active

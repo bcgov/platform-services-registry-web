@@ -202,7 +202,7 @@ export default function Project({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
-console.log('ffdf')
+  console.log("ffdf");
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -275,6 +275,8 @@ console.log('ffdf')
     toastId.current = toast("Your edit request has been submitted", {
       autoClose: false,
     });
+
+    console.log(values);
 
     const variables = validationSchema.cast(values);
 
