@@ -1,34 +1,13 @@
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
-import {  columns,
-  columnsXs,
-  projectsToRows,
-  projectsToRowsXs } from "./helpers";
+import { columns, projectsToRows } from "./helpers";
 import StickyTable from "../../../components/common/Table";
 import { InfoAlert, ErrorAlert } from "../../../components/common/Alert";
 import EmptyList from "../../../components/common/EmptyList";
-import SearchContext from "../../../context/search";
-import FilterContext from "../../../context/publicCloudFilter";
-import SortContext from "../../../context/sort";
-import UserContext from "../../../context/user";
-import useWindowSize from "../../../hooks/useWindowSize";
 
 const USER_PROJECTS = gql`
-query PublicCloudProjectsPaginated(
-  $page: Int!
-  $pageSize: Int!
-  $filter: FilterPublicCloudProjectsInput
-  $search: String
-  $sortOrder: Int
-) {
-  publicCloudProjectsPaginated(
-    page: $page
-    pageSize: $pageSize
-    filter: $filter
-    search: $search
-    sortOrder: $sortOrder
-  ) {
-    projects {
+  query UserProjects {
+    userPublicCloudProjects {
       id
       name
       description
@@ -51,73 +30,16 @@ query PublicCloudProjectsPaginated(
         lastName
       }
     }
-    total
   }
-}
 `;
 
 export default function Projects() {
-  const { debouncedSearch } = useContext(SearchContext);
+  const { loading, error, data, startPolling } = useQuery(USER_PROJECTS);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(1);
-  const { filter } = useContext(FilterContext);
-  const { sortOrder } = useContext(SortContext);
-  const userContext = useContext(UserContext);
-  const { width } = useWindowSize();
-
-  const { loading, data, fetchMore, startPolling, error } = useQuery(
-    USER_PROJECTS,
-    {
-      //nextFetchPolicy: "cache-first",
-      variables: {
-        page: page,
-        pageSize: rowsPerPage,
-        search: debouncedSearch,
-        filter,
-        sortOrder,
-        userId: userContext.id
-      }
-    }
-  );
 
   useEffect(() => {
-    startPolling(25000);
+    startPolling(15000);
   }, [startPolling]);
-
-  // Add this useEffect hook to handle rowsPerPage change
-  useEffect(() => {
-    fetchMore({
-      variables: {
-        page: 1,
-        pageSize: rowsPerPage,
-        search: debouncedSearch,
-        filter,
-        sortOrder,
-        userId: userContext.id,
-      }
-    });
-    setPage(1);
-  }, [rowsPerPage, debouncedSearch, filter, sortOrder, fetchMore]);
-
-  const getNextPage = useCallback(
-    (page, pageSize) => {
-      setPage((prevPage) => {
-        const nextPage = prevPage + 1;
-        fetchMore({
-          variables: {
-            page: nextPage,
-            pageSize,
-            search: debouncedSearch,
-            filter,
-            sortOrder,
-            userId: userContext.id,
-          }
-        });
-        return nextPage;
-      });
-    },
-    [filter, debouncedSearch, sortOrder]
-  );
 
   if (error && error.message === "Not a user") {
     return (
@@ -135,25 +57,18 @@ export default function Projects() {
   } else if (error) {
     return <ErrorAlert error={error} />;
   }
-
+console.log(data)
   return !loading ? (
-    data?.publicCloudProjectsPaginated?.projects.length > 0 ? (
+    data?.userPrivateCloudProjects?.length > 0 ? (
       <StickyTable
-      onNextPage={getNextPage}
-      columns={width < 900 ? columnsXs : columns}
-      rows={
-        width < 900
-          ? data?.publicCloudProjectsPaginated?.projects
-            .map(projectsToRowsXs)
-            .reverse()
-          : data?.publicCloudProjectsPaginated?.projects.map(projectsToRows)
-      }
-      count={loading ? 0 : data?.publicCloudProjectsPaginated?.total}
-      title="Products"
-      loading={loading}
-      rowsPerPage={rowsPerPage}
-      setRowsPerPage={setRowsPerPage}
-    />
+        columns={columns}
+        rows={data.userPrivateCloudProjects.map(projectsToRows)}
+        count={loading ? 0 : data?.userPrivateCloudProjects?.length}
+        title="Projects"
+        loading={loading}
+        rowsPerPage={rowsPerPage}
+        setRowsPerPage={setRowsPerPage}
+      />
     ) : (
       <EmptyList
         title="There are no products to be displayed"

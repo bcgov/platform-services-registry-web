@@ -5,7 +5,6 @@ import Avatar from "../../../components/common/Avatar";
 import Link from "@mui/material/Link";
 import { stopPropagationRow } from "../../../components/common/FormHelpers";
 
-
 function truncate(str, n) {
   return str.length > n ? str.substr(0, n - 1) + "..." : str;
 }
@@ -39,7 +38,7 @@ const projectsToRows = ({
 }) => ({
   id,
   onClickPath: (isAdmin) =>
-    `/registry/${isAdmin.admin||isAdmin.readOnlyAdmin ? "admin" : "user"}/public-cloud/product/${id}`,
+    `/registry/${isAdmin ? "admin" : "user"}/public-cloud/product/${id}`,
   name: (
     <span style={{ fontSize: 18, fontWeight: "450" }}>
       {name.replace("(dev)", "").trim()}

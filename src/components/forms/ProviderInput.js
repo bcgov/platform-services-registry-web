@@ -18,7 +18,7 @@ export default function ProviderInput({ formik, isDisabled }) {
       humanFriendlyName: "Amazon Web Services"
     }
   ];
-  
+
   return (
     <Box
       sx={{
@@ -38,16 +38,16 @@ export default function ProviderInput({ formik, isDisabled }) {
       <FormControl
         sx={{
           "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input":
-          {
-            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
-          },
+            {
+              WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+            },
           "& .MuiInputLabel-root": {
             WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
           },
           "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline":
-          {
-            borderColor: "rgba(0, 0, 0, 0.87)"
-          },
+            {
+              borderColor: "rgba(0, 0, 0, 0.87)"
+            },
           width: 250,
           mt: 1
         }}
@@ -55,15 +55,15 @@ export default function ProviderInput({ formik, isDisabled }) {
       >
         <InputLabel id="provider-label">Provider</InputLabel>
         <Select
-          value={formik.values.provider || ''}
-          id="select-provider"
+          id="provider"
           name="provider"
-          label="Provider"
-          labelId="select-provider"
-          disabled={isDisabled}
+          value={formik.values.provider}
           onChange={formik.handleChange}
           error={formik.touched.provider && Boolean(formik.errors.provider)}
           helpertext={formik.touched.provider && formik.errors.provider}
+          disabled={isDisabled}
+          labelId="select-cluster"
+          label="Provider"
         >
           {providerNamesInput.map((option, i) => (
             <MenuItem key={i} value={option.name}>

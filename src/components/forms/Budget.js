@@ -6,7 +6,6 @@ import Typography from "@mui/material/Typography";
 import InputAdornment from "@mui/material/InputAdornment";
 
 export default function Budget({ formik, isDisabled }) {
-
   return (
     <Box
       sx={{
@@ -40,7 +39,7 @@ export default function Budget({ formik, isDisabled }) {
             name="budget.prod"
             label="Production"
             disabled={isDisabled}
-            value={formik.values.budget=== undefined ?'0': formik.values.budget.prod}
+            value={formik.values.budget.prod}
             onChange={formik.handleChange}
             error={
               formik.touched.budget?.prod && Boolean(formik.errors.budget?.prod)
@@ -60,7 +59,7 @@ export default function Budget({ formik, isDisabled }) {
             name="budget.test"
             label="Test"
             disabled={isDisabled}
-            value={formik.values.budget=== undefined ?'0': formik.values.budget.test}
+            value={formik.values.budget.test}
             onChange={formik.handleChange}
             error={
               formik.touched.budget?.test && Boolean(formik.errors.budget?.test)
@@ -81,7 +80,7 @@ export default function Budget({ formik, isDisabled }) {
             name="budget.dev"
             label="Development"
             disabled={isDisabled}
-            value={formik.values.budget=== undefined ?'0': formik.values.budget.dev}
+            value={formik.values.budget.dev}
             onChange={formik.handleChange}
             error={
               formik.touched.budget?.dev && Boolean(formik.errors.budget?.dev)
@@ -102,7 +101,7 @@ export default function Budget({ formik, isDisabled }) {
             name="budget.tools"
             label="Tools"
             disabled={isDisabled}
-            value={formik.values.budget=== undefined ?'0': formik.values.budget.tools}
+            value={formik.values.budget.tools}
             onChange={formik.handleChange}
             error={
               formik.touched.budget?.tools &&

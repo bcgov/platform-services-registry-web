@@ -5,7 +5,7 @@ import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
 import InputAdornment from "@mui/material/InputAdornment";
 
-export default function Budget({ formik, isDisabled }) {
+export default function Budget({ budget }) {
   return (
     <Box
       sx={{
