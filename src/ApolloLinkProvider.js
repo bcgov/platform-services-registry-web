@@ -6,7 +6,7 @@ import {
   ApolloLink,
   InMemoryCache,
   from,
-  concat
+  concat,
 } from "@apollo/client";
 import { offsetLimitPagination } from "@apollo/client/utilities";
 import { useKeycloak } from "@react-keycloak/web";
@@ -27,7 +27,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 export default function ApolloAuthProvider({ children }) {
   const { initialized, keycloak } = useKeycloak();
   const httpLink = new HttpLink({
-    uri: config.API_BASE_URL
+    uri: config.API_BASE_URL,
   });
 
   const authMiddleware = new ApolloLink((operation, forward) => {
@@ -36,8 +36,8 @@ export default function ApolloAuthProvider({ children }) {
     operation.setContext(({ headers = {} }) => ({
       headers: {
         ...headers,
-        authorization: `Bearer ${bearerToken}` || null
-      }
+        authorization: `Bearer ${bearerToken}` || null,
+      },
     }));
 
     return forward(operation);
@@ -48,7 +48,7 @@ export default function ApolloAuthProvider({ children }) {
       Query: {
         fields: {
           privateCloudProjectsPaginated: {
-            keyArgs: ["filter", "search"],
+            keyArgs: ["filter", "search", "userId"],
             merge(existing, incoming, { args }) {
               const merged = existing ? existing.projects.slice(0) : [];
               const { page, pageSize } = args;
@@ -66,7 +66,7 @@ export default function ApolloAuthProvider({ children }) {
               }
 
               return { ...incoming, projects: merged };
-            }
+            },
           },
           userPrivateCloudProjectsPaginated: {
             keyArgs: ["filter", "search", "userId"],
@@ -87,7 +87,7 @@ export default function ApolloAuthProvider({ children }) {
               }
 
               return { ...incoming, projects: merged };
-            }
+            },
           },
           publicCloudProjectsPaginated: {
             keyArgs: ["filter", "search", "userId"],
@@ -108,7 +108,7 @@ export default function ApolloAuthProvider({ children }) {
               }
 
               return { ...incoming, projects: merged };
-            }
+            },
           },
           userPublicCloudProjects: {
             keyArgs: ["filter", "search", "userId"],
@@ -129,17 +129,17 @@ export default function ApolloAuthProvider({ children }) {
               }
 
               return { ...incoming, projects: merged };
-            }
-          }
-        }
-      }
-    }
+            },
+          },
+        },
+      },
+    },
   });
 
   const client = new ApolloClient({
     cache,
     connectToDevTools: true,
-    link: from([authMiddleware, errorLink, httpLink])
+    link: from([authMiddleware, errorLink, httpLink]),
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
