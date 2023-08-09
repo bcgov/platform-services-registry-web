@@ -102,8 +102,8 @@ export default function Requests() {
         count={
           loading
             ? 0
-            : data?.privateCloudActiveRequests?.length +
-              data?.publicCloudActiveRequests?.length
+            : data?.userPrivateCloudRequests?.length +
+              data?.userPublicCloudRequests?.length
         }
         title="Active Requests"
         loading={loading}
