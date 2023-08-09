@@ -114,9 +114,7 @@ export default function TabsToolbar({ routes }) {
             )}
           </Tabs>
         </Box>
-        {pathname === routes[1] && (admin || readOnlyAdmin) ? (
-          <TabForm />
-        ) : null}
+        {pathname === routes[1] ? <TabForm /> : null}
         {pathname === routes[0] ? (
           <Box sx={{ display: { xs: "none", xl: "flex" } }}>
             <CreateButtons
