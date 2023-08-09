@@ -90,19 +90,24 @@ export default function Requests() {
 
   return !loading ? (
     data?.privateCloudActiveRequests?.length > 0 ||
-      data?.publicCloudActiveRequests?.length > 0 ? (
+    data?.publicCloudActiveRequests?.length > 0 ? (
       <StickyTable
         columns={columns}
         rows={[
           ...data.privateCloudActiveRequests,
-          ...data.publicCloudActiveRequests
+          ...data.publicCloudActiveRequests,
         ]
           .sort((a, b) => (a.created > b.created ? 1 : -1))
           .map(requestsToRows)
           .reverse()}
         title="Active Requests"
         loading={loading}
-        count={loading ? 0 : data?.privateCloudActiveRequests?.length}
+        count={
+          loading
+            ? 0
+            : data?.privateCloudActiveRequests?.length +
+              data?.publicCloudActiveRequests?.length
+        }
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
       />

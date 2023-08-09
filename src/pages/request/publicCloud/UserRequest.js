@@ -115,7 +115,7 @@ export default function UserRequest() {
           description={requestedProject?.description}
         />
         <MinistryInput ministry={requestedProject?.ministry} />
-        <ProviderInput cluster={requestedProject?.provider} />
+        <ProviderInput provider={requestedProject?.provider} />
         <AccountCoding accountCoding={requestedProject?.accountCoding} />
         <div>
           {request?.type !== "CREATE" ? (
