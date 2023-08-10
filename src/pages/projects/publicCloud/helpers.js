@@ -51,7 +51,25 @@ const projectsToRows = ({
   ),
   ministry,
   cluster: provider === "AWS" ? "ROSA" : provider,
-  licencePlate,
+  licencePlate:(
+    <Link
+      sx={{
+        "&:hover": {
+          cursor: "pointer",
+        },
+      }}
+      underline="hover"
+      onClick={(e) =>
+        stopPropagationRow(
+          e,
+          undefined,
+          `https://login.nimbus.cloud.gov.bc.ca/api`
+        )
+      }
+    >
+      <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
+    </Link>
+  ),
   projectOwner: (
     <Link
       underline="hover"
