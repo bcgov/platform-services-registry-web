@@ -20,7 +20,7 @@ export default function TabForm() {
 
   return (
     <div>
-      <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+      <Box sx={{ flexGrow: 1, display: { xs: "flex", xl: "none" } }}>
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -45,9 +45,6 @@ export default function TabForm() {
           }}
           open={Boolean(anchorElNav)}
           onClose={handleCloseNavMenu}
-          sx={{
-            display: { xs: "block", md: "none" }
-          }}
         >
           <div
             style={{
@@ -63,7 +60,7 @@ export default function TabForm() {
           </div>
         </Menu>
       </Box>
-      <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+      <Box sx={{ flexGrow: 1, display: { xs: "none", xl: "flex" } }}>
         <Search />
         <Filter />
         <DownloadCsv />

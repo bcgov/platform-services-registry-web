@@ -6,61 +6,61 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import AdminProvider from "./providers/admin";
-import ReadOnlyAdminProvider from "./providers/readOnlyAdmin";
+import RolesProvider from "./providers/roles";
 import { useKeycloak } from "@react-keycloak/web";
 import { useQuery, gql } from "@apollo/client";
 import UserProvider from "./providers/user";
 import SearchProvider from "./providers/search";
 import FilterProvider from "./providers/filter";
+import PublicCloudFilterProvider from "./providers/publicCloudFilter";
 import SortProvider from "./providers/sort";
 
 const theme = createTheme({
   typography: {
     // In Chinese and Japanese the characters are usually larger,
     // so a smaller fontsize may be appropriate.
-    fontSize: 15,
+    fontSize: 15
   },
   components: {
     MuiTextField: {
       styleOverrides: {
         root: {
           ".Mui-disabled": {
-            color: "rgba(0, 0, 0, 0.87) !important",
+            color: "rgba(0, 0, 0, 0.87) !important"
           },
           ".css-xy0qn3.Mui-disabled": {
-            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
+            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important"
           },
           ".css-1sl9rdz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
-          {
-            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
-          },
-        },
-      },
+            {
+              "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important"
+            }
+        }
+      }
     },
     MuiSelect: {
       styleOverrides: {
         root: {
           ".Mui-disabled": {
-            color: "rgba(0, 0, 0, 0.87) !important",
+            color: "rgba(0, 0, 0, 0.87) !important"
           },
           ".css-xy0qn3.Mui-disabled": {
-            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
+            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important"
           },
 
           ".css-1sl9rdz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled":
-          {
-            "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important",
-          },
-        },
-      },
-    },
+            {
+              "-webkit-text-fill-color": "rgba(0, 0, 0, 0.87) !important"
+            }
+        }
+      }
+    }
   },
   palette: {
     primary: {
-      main: "#003366",
-    },
-  },
+      main: "#003366"
+    }
+  }
 });
 
 export const ModeContext = createContext();
@@ -79,7 +79,7 @@ const ME = gql`
 
 function App() {
   const {
-    keycloak: { authenticated },
+    keycloak: { authenticated }
   } = useKeycloak();
 
   const { error, data } = useQuery(ME, { errorPolicy: "ignore" });
@@ -102,13 +102,13 @@ function App() {
         <UserProvider user={{ ...data?.me }}>
           <SearchProvider>
             <FilterProvider>
-              <SortProvider>
-                <ReadOnlyAdminProvider>
-                  <AdminProvider>
-                    <AppRouter />
-                  </AdminProvider>
-                </ReadOnlyAdminProvider>
-              </SortProvider>
+              <PublicCloudFilterProvider>
+                <SortProvider>
+                    <RolesProvider>
+                      <AppRouter />
+                    </RolesProvider>
+                </SortProvider>
+              </PublicCloudFilterProvider>
             </FilterProvider>
           </SearchProvider>
         </UserProvider>

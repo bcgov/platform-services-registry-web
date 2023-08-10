@@ -14,6 +14,7 @@ export default function NavToolbar({ title, label, path, children }) {
 
   const navigateToPath = () => {
     const currentBasePath = location.pathname.split("/")[1];
+
     if (path) {
       navigate(`/${currentBasePath}/${path}`);
     } else {
@@ -33,10 +34,12 @@ export default function NavToolbar({ title, label, path, children }) {
           fontWeight: 400,
           color: "rgba(0, 0, 0, 0.6)",
           fontSize: 20,
-          minWidth: 170,
+          minWidth: 170
         }}
       >
-        PRIVATE CLOUD
+        {location.pathname.split("/").includes("private-cloud")
+          ? "PRIVATE CLOUD"
+          : "PUBLIC CLOUD"}
       </Typography>
       <Divider orientation="vertical" variant="middle" flexItem />
       <Box sx={{ display: "flex", flexDirection: "row", width: "100%" }}>
@@ -53,7 +56,7 @@ export default function NavToolbar({ title, label, path, children }) {
             marginTop: "7px",
             color: "#212121",
             flexGrow: 1,
-            minWidth: 170,
+            minWidth: 170
             // fontSize: 20,
           }}
         >

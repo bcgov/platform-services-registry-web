@@ -1,45 +1,49 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import * as yup from "yup";
 import {
-  CreateUserInputSchema,
+  // CreateUserInputSchema,
   CommonComponentsInputSchema,
   QuotaInputSchema,
   MinistrySchema,
-  ClusterSchema
-} from "../../__generated__/resolvers-types";
+  ClusterSchema,
+} from "../../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
-import MetaDataInput from "../../components/forms/MetaDataInput";
-import MinistryInput from "../../components/forms/MinistryInput";
-import NavToolbar from "../../components/NavToolbar";
+import MetaDataInput from "../../../components/forms/MetaDataInput";
+import MinistryInput from "../../../components/forms/MinistryInput";
+import NavToolbar from "../../../components/NavToolbar";
 import {
   projectInitialValues,
   replaceNullsWithEmptyString,
   replaceEmptyStringWithNull,
-  stripTypeName
-} from "../../components/common/FormHelpers";
-import CommonComponents from "../../components/forms/CommonComponents";
+  stripTypeName,
+} from "../../../components/common/FormHelpers";
+import CommonComponents from "../../../components/forms/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
-import { USER_REQUESTS } from "../requests/UserRequests";
-import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
+import { USER_REQUESTS } from "../../requests/UserRequests";
+import { ALL_ACTIVE_REQUESTS } from "../../requests/AdminRequests";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
-import Container from "../../components/common/Container";
+import Container from "../../../components/common/Container";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Button, IconButton } from "@mui/material";
-import ActiveRequestText from "../../components/common/ActiveRequestText";
+import ActiveRequestText from "../../../components/common/ActiveRequestText";
+import Users from "../../../components/forms/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../components/forms/Quotas";
-import Users from "../../components/forms/Users";
-import Namespaces from "../../components/Namespaces";
+import Quotas from "../../../components/forms/Quotas";
+import Namespaces from "../../../components/Namespaces";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import ClusterInputText from "../../components/plainText/ClusterInput";
+import ReProvisionButton from "../../../components/ReProvisionButton";
+import RolesContext from "../../../context/roles";
+import UserContext from "../../../context/user";
+import Delete from "../../../components/Delete";
+import ClusterInputText from "../../../components/plainText/ClusterInput";
 
 const ADMIN_PROJECT = gql`
-  query UserPrivateCloudProjectById($projectId: ID!) {
-    userPrivateCloudProjectById(projectId: $projectId) {
+  query PrivateCloudProjectById($projectId: ID!) {
+    privateCloudProjectById(projectId: $projectId) {
       id
       name
       licencePlate
@@ -142,35 +146,44 @@ const UPDATE_USER_PROJECT = gql`
 `;
 
 const DELETE_USER_PROJECT = gql`
-  mutation Mutation($projectId: ID!) {
-    privateCloudProjectDeleteRequest(projectId: $projectId) {
+  mutation Mutation(
+    $projectId: ID!
+    $licencePlate: String!
+    $projectOwnerEmail: EmailAddress!
+  ) {
+    privateCloudProjectDeleteRequest(
+      projectId: $projectId
+      licencePlate: $licencePlate
+      projectOwnerEmail: $projectOwnerEmail
+    ) {
       id
     }
   }
 `;
+
+const RE_PROVISION_PROJECT = gql`
+  mutation PrivateCloudReProvisionProject($projectId: ID!) {
+    privateCloudReProvisionProject(projectId: $projectId) {
+      id
+    }
+  }
+`;
+
+const CreateUserInputSchema = yup.object({
+  email: yup.string().defined(),
+  firstName: yup.string().defined(),
+  lastName: yup.string().defined(),
+  ministry: yup.string(),
+});
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   cluster: ClusterSchema.required(),
-  projectOwner: yup
-    .object(CreateUserInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
-  primaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
-  secondaryTechnicalLead: yup
-    .object(CreateUserInputSchema)
-    .nullable()
-    .transform((value) => (value?.email === "" ? null : value))
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
+  projectOwner: CreateUserInputSchema,
+  primaryTechnicalLead: CreateUserInputSchema,
+  secondaryTechnicalLead: CreateUserInputSchema.nullable(),
 
   commonComponents: yup
     .object(CommonComponentsInputSchema)
@@ -181,7 +194,7 @@ const validationSchema = yup.object().shape({
   productionQuota: yup.object(QuotaInputSchema).required(),
   developmentQuota: yup.object(QuotaInputSchema).required(),
   toolsQuota: yup.object(QuotaInputSchema).required(),
-  testQuota: yup.object(QuotaInputSchema).required()
+  testQuota: yup.object(QuotaInputSchema).required(),
 });
 
 const style = {
@@ -193,50 +206,62 @@ const style = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4
+  p: 4,
 };
 
-export default function Project({ requestsRoute }) {
+export default function AdminProject({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
-  const [submitBtnIsDisabled, setSubmitBtnIsDisabled] = useState(true);
+  const { readOnlyAdmin } = useContext(RolesContext);
+  const userContext = useContext(UserContext);
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id },
-    nextFetchPolicy: "cache-and-network"
+    nextFetchPolicy: "cache-and-network",
   });
+
+  const readOnlyAdminIsAbleToEdit =
+    userContext.email === data?.privateCloudProjectById.projectOwner.email ||
+    userContext.email ===
+      data?.privateCloudProjectById?.primaryTechnicalLead?.email ||
+    userContext.email ===
+      data?.privateCloudProjectById?.secondaryTechnicalLead?.email;
 
   const [
     privateCloudProjectEditRequest,
     {
       data: editProjectData,
       loading: editProjectLoading,
-      error: editProjectError
-    }
+      error: editProjectError,
+    },
   ] = useMutation(UPDATE_USER_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
   const [privateCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
-  const deleteOnClick = () => {
+  const deleteOnClick = (licencePlate, projectOwnerEmail) => {
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     privateCloudProjectDeleteRequest({
-      variables: { projectId: id },
+      variables: {
+        projectId: id,
+        licencePlate,
+        projectOwnerEmail,
+      },
       onError: (error) => {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
       onCompleted: () => {
@@ -244,9 +269,46 @@ export default function Project({ requestsRoute }) {
         toast.update(toastId.current, {
           render: "Delete request successfuly created",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000
+          autoClose: 5000,
         });
-      }
+      },
+    });
+  };
+
+  const [
+    privateCloudReProvisionProject,
+    {
+      data: reprovisionData,
+      loading: reprovisionLoading,
+      error: reprovisionError,
+    },
+  ] = useMutation(RE_PROVISION_PROJECT, {
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
+  });
+
+  const reProvisionOnClick = () => {
+    toastId.current = toast("Re provisioning request has been submitted", {
+      autoClose: false,
+    });
+
+    privateCloudReProvisionProject({
+      variables: { projectId: id },
+      onError: (error) => {
+        console.log(error);
+        toast.update(toastId.current, {
+          render: `Error: ${error.message}`,
+          type: toast.TYPE.ERROR,
+          autoClose: 5000,
+        });
+      },
+      onCompleted: () => {
+        navigate(-1);
+        toast.update(toastId.current, {
+          render: "Re provisioning request successful",
+          type: toast.TYPE.SUCCESS,
+          autoClose: 5000,
+        });
+      },
     });
   };
 
@@ -256,18 +318,18 @@ export default function Project({ requestsRoute }) {
     enableReinitialize: true,
     onSubmit: async (values) => {
       const result = await formik.validateForm();
-
       if (Object.keys(result).length === 0 && formik.dirty) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
       }
-    }
+    },
   });
 
   const submitForm = () => {
     const { values } = formik;
+
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     const variables = validationSchema.cast(values);
@@ -278,7 +340,7 @@ export default function Project({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
 
@@ -289,55 +351,21 @@ export default function Project({ requestsRoute }) {
           toast.update(toastId.current, {
             render: "Request successfuly created",
             type: toast.TYPE.SUCCESS,
-            autoClose: 5000
+            autoClose: 5000,
           });
         }
-      }
+      },
     });
   };
 
-
-  useEffect(() => {
-    setSubmitBtnIsDisabled((formik.values.projectOwner.firstName === '' ||
-      formik.values.projectOwner.lastName === '' ||
-      formik.values.projectOwner.ministry === '' ||
-      formik.values.primaryTechnicalLead.firstName === '' ||
-      formik.values.primaryTechnicalLead.lastName === '' ||
-      formik.values.primaryTechnicalLead.ministry === '' ||
-      (formik.values.secondaryTechnicalLead.email !== '' &&
-        formik.values.secondaryTechnicalLead.email !== null &&
-        (formik.values.secondaryTechnicalLead.firstName === '' ||
-          formik.values.secondaryTechnicalLead.lastName === '' ||
-          formik.values.secondaryTechnicalLead.ministry === ''))))
-
-          
-  }, [formik.values])
-
-
   useEffect(() => {
     if (data) {
-      // Form values cannot be null (uncontrolled input error), so replace nulls with empty strings
-      const formData = stripTypeName(
-        replaceNullsWithEmptyString(data?.userPrivateCloudProjectById)
-      );
-
-      // Set give secondary technical lead an object with an empty string for all properties if null
-      formData.secondaryTechnicalLead =
-        formData.secondaryTechnicalLead !== ""
-          ? formData.secondaryTechnicalLead
-          : {
-            email: "",
-            firstName: "",
-            lastName: "",
-            ministry: ""
-          };
-
-      setInitialValues(formData);
+      setInitialValues(stripTypeName(data?.privateCloudProjectById));
     }
   }, [data]);
 
-  const name = data?.userPrivateCloudProjectById?.name;
-  const isDisabled = !!data?.userPrivateCloudProjectById?.activeEditRequest;
+  const name = data?.privateCloudProjectById?.name;
+  const isDisabled = !!data?.privateCloudProjectById?.activeEditRequest;
 
   const handleClose = () => setOpen(false);
 
@@ -346,7 +374,7 @@ export default function Project({ requestsRoute }) {
       <form onSubmit={formik.handleSubmit}>
         <NavToolbar
           label={"products"}
-          path={"user/dashboard/products"}
+          path={"admin/dashboard/private-cloud-products"}
           title={name}
         >
           <IconButton
@@ -370,22 +398,19 @@ export default function Project({ requestsRoute }) {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Please Confirm Your Delete Request
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Are you sure you want to delete this product?
-                <Button
-                  onClick={deleteOnClick}
-                  sx={{ mr: 1, width: "170px", mt: 3 }}
-                  variant="contained"
-                >
-                  Delete
-                </Button>
-              </Typography>
-            </Box>
+            <Delete
+              projectId={id}
+              name={data?.privateCloudProjectById?.name}
+              licencePlate={data?.privateCloudProjectById?.licencePlate}
+              projectOwnerEmail={
+                data?.privateCloudProjectById?.projectOwner?.email
+              }
+              deleteOnClick={deleteOnClick}
+            />
           </Modal>
+          {!readOnlyAdmin && (
+            <ReProvisionButton onClickHandler={reProvisionOnClick} />
+          )}
         </NavToolbar>
         {isDisabled ? (
           <ActiveRequestText
@@ -398,33 +423,31 @@ export default function Project({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-                <Box
-                sx={{ pt: 5}}
-                >
-                  <ClusterInputText
-                    cluster={formik.values.cluster} />
-                </Box>
+              <Box sx={{ pt: 5 }}>
+                <ClusterInputText cluster={formik.values.cluster} />
+              </Box>
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
-              cluster={data?.userPrivateCloudProjectById?.cluster}
-              licencePlate={data?.userPrivateCloudProjectById?.licencePlate}
+              cluster={data?.privateCloudProjectById?.cluster}
+              licencePlate={data?.privateCloudProjectById?.licencePlate}
             />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Users formik={formik} isDisabled={false} />
+            <Users formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Quotas formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
-            <Button
-              type="submit"
-              // disabled={!formik.dirty}
-              sx={{ mr: 1, width: "170px" }}
-              variant="contained"
-              disabled={submitBtnIsDisabled}
-            >
-              Submit
-            </Button>
+            {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
+              <Button
+                type="submit"
+                sx={{ mr: 1, width: "170px" }}
+                variant="contained"
+                disabled={isDisabled || !formik.dirty}
+              >
+                Submit
+              </Button>
+            ) : null}
             <Modal
               open={open}
               onClose={handleClose}
@@ -439,6 +462,7 @@ export default function Project({ requestsRoute }) {
                   Are you sure you want to edit this product?
                   <Button
                     onClick={submitForm}
+                    disabled={!formik.dirty}
                     sx={{ mr: 1, width: "170px", mt: 3 }}
                     variant="contained"
                   >

@@ -10,20 +10,24 @@ import TableRow from "@mui/material/TableRow";
 import { useNavigate } from "react-router-dom";
 import SortOrderBtn from "../../components/common/SortOrderBtn";
 import { useLocation } from "react-router-dom";
-import { routesAdmin, routesUser } from "./Constants";
+import { routesAdmin, routesUser } from "../AppRouter";
+import AdminContext from "../../context/roles";
+import { useContext } from "react";
+
 export default function StickyTable({
   columns,
   rows = [],
   loading,
-  onClickPath,
   onNextPage = () => "",
   count,
   rowsPerPage = 10,
-  setRowsPerPage = () => ""
+  setRowsPerPage = () => "",
 }) {
   const [page, setPage] = useState(0);
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const isAdmin = useContext(AdminContext);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     onNextPage(newPage, rowsPerPage);
@@ -35,8 +39,8 @@ export default function StickyTable({
     setPage(0);
   };
 
-  const handleRowClick = (id) => {
-    navigate(onClickPath + id);
+  const handleRowClick = (row) => {
+    navigate(row.onClickPath(isAdmin));
   };
 
   return (
@@ -54,7 +58,7 @@ export default function StickyTable({
                     fontSize: 16,
                     color: "#3c4043",
                     paddingLeft: 24,
-                    paddingRight: 24
+                    paddingRight: 24,
                   }}
                 >
                   {column.label}&nbsp;
@@ -72,7 +76,7 @@ export default function StickyTable({
                 return (
                   <TableRow
                     hover
-                    onClick={() => handleRowClick(row.id)}
+                    onClick={() => handleRowClick(row)}
                     role="checkbox"
                     tabIndex={-1}
                     key={row.code}
@@ -87,7 +91,7 @@ export default function StickyTable({
                             fontSize: 18,
                             color: "#3c4043",
                             paddingLeft: 24,
-                            paddingRight: 24
+                            paddingRight: 24,
                           }}
                           key={column.id}
                           align={column.align}

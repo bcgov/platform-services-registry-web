@@ -48,7 +48,70 @@ export default function ApolloAuthProvider({ children }) {
       Query: {
         fields: {
           privateCloudProjectsPaginated: {
-            keyArgs: ["filter", "search"],
+            keyArgs: ["filter", "search", "userId"],
+            merge(existing, incoming, { args }) {
+              const merged = existing ? existing.projects.slice(0) : [];
+              const { page, pageSize } = args;
+
+              const offset = (page - 1) * pageSize;
+
+              if (incoming) {
+                if (args) {
+                  for (let i = 0; i < incoming.projects.length; ++i) {
+                    merged[offset + i] = incoming.projects[i];
+                  }
+                } else {
+                  throw Error("args not defined");
+                }
+              }
+
+              return { ...incoming, projects: merged };
+            },
+          },
+          userPrivateCloudProjectsPaginated: {
+            keyArgs: ["filter", "search", "userId"],
+            merge(existing, incoming, { args }) {
+              const merged = existing ? existing.projects.slice(0) : [];
+              const { page, pageSize } = args;
+
+              const offset = (page - 1) * pageSize;
+
+              if (incoming) {
+                if (args) {
+                  for (let i = 0; i < incoming.projects.length; ++i) {
+                    merged[offset + i] = incoming.projects[i];
+                  }
+                } else {
+                  throw Error("args not defined");
+                }
+              }
+
+              return { ...incoming, projects: merged };
+            },
+          },
+          publicCloudProjectsPaginated: {
+            keyArgs: ["filter", "search", "userId"],
+            merge(existing, incoming, { args }) {
+              const merged = existing ? existing.projects.slice(0) : [];
+              const { page, pageSize } = args;
+
+              const offset = (page - 1) * pageSize;
+
+              if (incoming) {
+                if (args) {
+                  for (let i = 0; i < incoming.projects.length; ++i) {
+                    merged[offset + i] = incoming.projects[i];
+                  }
+                } else {
+                  throw Error("args not defined");
+                }
+              }
+
+              return { ...incoming, projects: merged };
+            },
+          },
+          userPublicCloudProjects: {
+            keyArgs: ["filter", "search", "userId"],
             merge(existing, incoming, { args }) {
               const merged = existing ? existing.projects.slice(0) : [];
               const { page, pageSize } = args;

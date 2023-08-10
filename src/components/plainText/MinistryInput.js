@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 
 const MinistryInput = ({ ministry }) => {
   return (
-    <Box sx={{}}>
+    <Box>
       <div>
         <Typography sx={{ fontSize: 19, mb: 1, fontWeight: "bold" }}>
           Ministry

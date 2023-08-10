@@ -1,9 +1,9 @@
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
-import GroupAvatars from "../../components/common/Contacts";
-import Avatar from "../../components/common/Avatar";
+import GroupAvatars from "../../../components/common/Contacts";
+import Avatar from "../../../components/common/Avatar";
 import Link from "@mui/material/Link";
-import { stopPropagationRow } from "../../components/common/FormHelpers";
+import { stopPropagationRow } from "../../../components/common/FormHelpers";
 
 function truncate(str, n) {
   return str.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -37,6 +37,10 @@ const projectsToRows = ({
   licencePlate,
 }) => ({
   id,
+  onClickPath: (isAdmin) =>
+    `/registry/${
+      isAdmin.admin || isAdmin.readOnlyAdmin ? "admin" : "user"
+    }/private-cloud/product/${id}`,
   name: (
     <span style={{ fontSize: 18, fontWeight: "450" }}>
       {name.replace("(dev)", "").trim()}
@@ -69,7 +73,9 @@ const projectsToRows = ({
   projectOwner: (
     <Link
       underline="hover"
-      onClick={(e) => stopPropagationRow(e, "mailto:" + projectOwner.email, undefined)}
+      onClick={(e) =>
+        stopPropagationRow(e, "mailto:" + projectOwner.email, undefined)
+      }
     >
       <Chip
         // key={projectOwner.githubId + licencePlate + "po"}
@@ -144,8 +150,8 @@ const projectsToRowsXs = ({
       underline="hover"
       onClick={(e) =>
         stopPropagationRow(
-          e, 
-          undefined,          
+          e,
+          undefined,
           `https://console.apps.${cluster}.devops.gov.bc.ca/topology/ns/${licencePlate}-prod`
         )
       }

@@ -1,60 +1,62 @@
-import React, { useRef, useState, useContext } from "react";
+import React, { useRef, useState } from "react";
 import * as yup from "yup";
 import {
   CreateUserInputSchema,
   CommonComponentsInputSchema,
-  ClusterSchema,
+  ProviderSchema,
+  BudgetInputSchema,
   MinistrySchema
-} from "../__generated__/resolvers-types";
+} from "../../__generated__/resolvers-types";
 import {
-  createProjectInputInitalValues as initialValues,
+  createPublicCloudProjectInputInitalValues as initialValues,
   replaceEmptyStringWithNull
-} from "../components/common/FormHelpers";
+} from "../../components/common/FormHelpers";
 import { useFormik } from "formik";
 import { useMutation, gql } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
-import NavToolbar from "../components/NavToolbar";
+import NavToolbar from "../../components/NavToolbar";
 import Button from "@mui/material/Button";
-import MetaDataInput from "../components/forms/MetaDataInput";
-import ClusterInput from "../components/forms/ClusterInput";
-import MinistryInput from "../components/forms/MinistryInput";
-import CommonComponents from "../components/forms/CommonComponents";
-import AGMinistry from "../components/forms/AGMinistry";
-import { USER_REQUESTS } from "./requests/UserRequests";
-import { ALL_ACTIVE_REQUESTS } from "./requests/AdminRequests";
+import MetaDataInput from "../../components/forms/MetaDataInput";
+import MinistryInput from "../../components/forms/MinistryInput";
+import CommonComponents from "../../components/forms/CommonComponents";
+import AGMinistry from "../../components/forms/AGMinistry";
+import { USER_REQUESTS } from "../requests/UserRequests";
+import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
 import { toast } from "react-toastify";
-import Container from "../components/common/Container";
-import Users from "../components/forms/Users";
+import Container from "../../components/common/Container";
+import Users from "../../components/forms/Users";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import {
-  adminClusters,
-  userClusters
-} from "../../src/components/common/Constants";
-import AdminContext from "../context/admin";
+import AccountCoding from "../../components/forms/AccountCoding";
+import Budget from "../../components/forms/Budget";
+import ProviderInput from "../../components/forms/ProviderInput";
 
 const CREATE_USER_PROJECT = gql`
-  mutation PrivateCloudProjectRequest(
+  mutation PublicCloudProjectRequest(
     $name: String!
     $description: String!
     $ministry: Ministry!
-    $cluster: Cluster!
+    $provider: Provider!
     $commonComponents: CommonComponentsInput!
     $projectOwner: CreateUserInput!
     $primaryTechnicalLead: CreateUserInput!
     $secondaryTechnicalLead: CreateUserInput
+    $accountCoding: String
+    $budget: BudgetInput!
   ) {
-    privateCloudProjectRequest(
+    publicCloudProjectRequest(
       name: $name
       description: $description
       ministry: $ministry
-      cluster: $cluster
+      provider: $provider
       commonComponents: $commonComponents
       projectOwner: $projectOwner
       primaryTechnicalLead: $primaryTechnicalLead
       secondaryTechnicalLead: $secondaryTechnicalLead
+      accountCoding: $accountCoding
+      budget: $budget
     ) {
       id
       active
@@ -68,14 +70,19 @@ const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
-  ministryAG: yup.boolean().oneOf([true], "Message"),
-  cluster: ClusterSchema.required(),
+  provider: ProviderSchema.required(),
+  accountCoding: yup.string()
+  .transform((value) => value.replace(/\s/g, ''))
+  .max(24)
+  .min(24)
+  .required(),
+  budget: BudgetInputSchema().required(),
   projectOwner: CreateUserInputSchema(),
   primaryTechnicalLead: CreateUserInputSchema(),
   secondaryTechnicalLead: yup
     .object(CreateUserInputSchema)
     .nullable()
-    .transform((value) => (value.email === "" ? null : value)),
+    .transform((value) => (value?.email === "" ? null : value)),
   // commonComponents: CommonComponentsInputSchema(),
   commonComponents: yup
     .object(CommonComponentsInputSchema)
@@ -101,9 +108,8 @@ export default function Create({ requestsRoute }) {
   const toastId = useRef(null);
   const [open, setOpen] = useState(false);
   const [AGministries, setAGministries] = useState(false);
-  const isAdmin = useContext(AdminContext);
 
-  const [privateCloudProjectRequest, { data, loading, error }] = useMutation(
+  const [publicCloudProjectRequest, { data, loading, error }] = useMutation(
     CREATE_USER_PROJECT,
     {
       errorPolicy: "ignore", // Query to refetch might not have been called yet, so ignore error
@@ -133,7 +139,7 @@ export default function Create({ requestsRoute }) {
 
     const variables = validationSchema.cast(values);
 
-    privateCloudProjectRequest({
+    publicCloudProjectRequest({
       variables,
       onError: (error) => {
         toast.update(toastId.current, {
@@ -146,7 +152,7 @@ export default function Create({ requestsRoute }) {
       onCompleted: (data) => {
         navigate(requestsRoute);
 
-        if (data?.privateCloudProjectRequest) {
+        if (data?.publicCloudProjectRequest) {
           toast.update(toastId.current, {
             render: "Request successfuly created",
             type: toast.TYPE.SUCCESS,
@@ -164,22 +170,26 @@ export default function Create({ requestsRoute }) {
       <form onSubmit={formik.handleSubmit}>
         <NavToolbar title="Create Product"></NavToolbar>
         <Container>
-          <MetaDataInput formik={formik} isDisabled={false} />
+          <MetaDataInput
+            formik={formik}
+            isDisabled={false}
+            cloudProvider={"Public Cloud platform"}
+          />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={false} />
-              <ClusterInput
-                formik={formik}
-                isDisabled={false}
-                clusterOptions={isAdmin.admin ? adminClusters : userClusters}
-              />
+              <ProviderInput formik={formik} isDisabled={false} />
             </div>
             <AGMinistry formik={formik} setAGministries={setAGministries} />
           </div>
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Users formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <AccountCoding formik={formik} isDisabled={false} />
+          <Budget formik={formik} isDisabled={false} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+
           <CommonComponents formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Typography sx={{ mb: 3, mt: 3, width: 1100 }} color="text.primary">

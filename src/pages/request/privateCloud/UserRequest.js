@@ -1,16 +1,20 @@
+import { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
-import MetaDataInput from "../../components/plainText/MetaDataInput";
-import ClusterInput from "../../components/plainText/ClusterInput";
-import MinistryInput from "../../components/plainText/MinistryInput";
-import NavToolbar from "../../components/NavToolbar";
+import MetaDataInput from "../../../components/plainText/MetaDataInput";
+import ClusterInput from "../../../components/plainText/ClusterInput";
+import MinistryInput from "../../../components/plainText/MinistryInput";
+import NavToolbar from "../../../components/NavToolbar";
+import { projectInitialValues as initialValues } from "../../../components/common/FormHelpers";
 import { useParams } from "react-router-dom";
-import Container from "../../components/common/Container";
-import Users from "../../components/plainText/Users";
+import { useFormik } from "formik";
+import Container from "../../../components/common/Container";
+import Users from "../../../components/plainText/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../components/plainText/Quotas";
-import Namespaces from "../../components/Namespaces";
-import TitleTypography from "../../components/common/TitleTypography";
-import { Typography, Box } from "@mui/material";
+import Quotas from "../../../components/plainText/Quotas";
+import Namespaces from "../../../components/Namespaces";
+import TitleTypography from "../../../components/common/TitleTypography";
+import { Typography } from "@mui/material";
+
 const USER_REQUEST = gql`
   query UserPrivateCloudRequestById($requestId: ID!) {
     userPrivateCloudRequestById(requestId: $requestId) {
@@ -120,6 +124,8 @@ const USER_REQUEST = gql`
 export default function UserRequest() {
   const { id } = useParams();
 
+  console.log(id);
+
   const { data, loading, error } = useQuery(USER_REQUEST, {
     variables: { requestId: id },
   });
@@ -143,28 +149,19 @@ export default function UserRequest() {
           description={requestedProject?.description}
         />
         <MinistryInput ministry={requestedProject?.ministry} />
-        <Box
-          sx={{ pt: 2 }}
-        >
-          <ClusterInput cluster={requestedProject?.cluster} />
-        </Box>
+        <ClusterInput cluster={requestedProject?.cluster} />
         <div>
-          {request?.type !== "CREATE" ? (
-            <div>
-              <Namespaces
-                cluster={requestedProject?.cluster}
-                licencePlate={requestedProject?.licencePlate}
-              />
-              <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            </div>
-          ) : null}
           <Users
             projectOwner={requestedProject?.projectOwner}
             primaryTechnicalLead={requestedProject?.primaryTechnicalLead}
             secondaryTechnicalLead={requestedProject?.secondaryTechnicalLead}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas project={project} requestedProject={requestedProject} active={request.active} />
+          <Quotas
+            project={project}
+            requestedProject={requestedProject}
+            active={request.active}
+          />
           <Divider variant="middle" sx={{ mb: 6 }} />
         </div>
         {request?.humanCommentText && (

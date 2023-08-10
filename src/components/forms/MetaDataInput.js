@@ -1,11 +1,10 @@
-import React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import TitleTypography from "../common/TitleTypography";
 import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
 
-export default function MetaDataInput({ formik, isDisabled }) {
+export default function MetaDataInput({ formik, isDisabled, cloudProvider }) {
   return (
     <Box
       sx={{
@@ -24,11 +23,17 @@ export default function MetaDataInput({ formik, isDisabled }) {
           <div>
             <TitleTypography>Product Description</TitleTypography>
             <Typography sx={{ mb: 1 }} color="text.primary">
-              If this is your first time on the <b>OpenShift platform</b> you
-              need to book an alignment meeting with the{" "}
+              If this is your first time on the <b>{cloudProvider}</b> you need
+              to book an alignment meeting with the{" "}
               <b>Platform Services team.</b> Reach out to{" "}
-              <a target="_blank" rel="noopener noreferrer" href="mailto: PlatformServicesTeam@gov.bc.ca">Platform Services</a> to
-              get started.
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="mailto: PlatformServicesTeam@gov.bc.ca"
+              >
+                Platform Services
+              </a>{" "}
+              to get started.
             </Typography>
           </div>
           <TextField

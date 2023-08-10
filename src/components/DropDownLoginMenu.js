@@ -8,12 +8,9 @@ import Avatar from "../components/common/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Logout from "@mui/icons-material/Logout";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { ModeContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../context/user";
-import Divider from "@mui/material/Divider";
 
 export default function DropDownLoginMenu() {
   const { keycloak } = useKeycloak();
@@ -39,7 +36,14 @@ export default function DropDownLoginMenu() {
 
   return (
     <React.Fragment>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          textAlign: "center",
+          mr: 2
+        }}
+      >
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
@@ -74,7 +78,7 @@ export default function DropDownLoginMenu() {
               width: 32,
               height: 32,
               ml: -0.5,
-              mr: 1,
+              mr: 1
             },
             "&:before": {
               content: '""',
@@ -86,24 +90,13 @@ export default function DropDownLoginMenu() {
               height: 10,
               bgcolor: "background.paper",
               transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0,
-            },
-          },
+              zIndex: 0
+            }
+          }
         }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={modeLocal.toggleMode}>
-          <ListItemIcon>
-            {modeLocal.mode === "dark" ? (
-              <Brightness7Icon />
-            ) : (
-              <Brightness4Icon />
-            )}
-          </ListItemIcon>
-          {modeLocal.mode === "dark" ? "Light" : "Dark"}
-        </MenuItem>
-        <Divider />
         <MenuItem onClick={logout}>
           <ListItemIcon>
             <Logout fontSize="small" />
