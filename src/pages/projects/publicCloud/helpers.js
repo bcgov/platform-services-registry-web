@@ -13,7 +13,7 @@ const columns = [
   { id: "name", label: "Name", minWidth: 180, width: 180 },
   { id: "description", label: "Description", minWidth: 200, width: 200 },
   { id: "ministry", label: "Ministry", minWidth: 0, width: 100 },
-  { id: "cluster", label: "Cluster", minWidth: 0, width: 100 },
+  { id: "provider", label: "Provider", minWidth: 0, width: 100 },
   { id: "projectOwner", label: "Project Owner", minWidth: 0, width: 180 },
   { id: "technicalLeads", label: "Technical Leads", minWidth: 0, width: 180 },
   { id: "licencePlate", label: "License Plate", minWidth: 0, width: 100 },
@@ -50,7 +50,7 @@ const projectsToRows = ({
     <span style={{ fontSize: 18 }}> {truncate(description, 130)}</span>
   ),
   ministry,
-  cluster: provider === "AWS" ? "ROSA" : provider,
+  provider,
   licencePlate,
   projectOwner: (
     <Link
