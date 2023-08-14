@@ -1,17 +1,15 @@
-import { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/plainText/MetaDataInput";
 import AccountCoding from "../../../components/plainText/AccountCoding";
 import ProviderInput from "../../../components/plainText/ProviderInput";
 import MinistryInput from "../../../components/plainText/MinistryInput";
 import NavToolbar from "../../../components/NavToolbar";
-import { projectInitialValues as initialValues } from "../../../components/common/FormHelpers";
 import { useParams } from "react-router-dom";
-import { useFormik } from "formik";
 import Container from "../../../components/common/Container";
 import Users from "../../../components/plainText/Users";
 import Divider from "@mui/material/Divider";
 import Budget from "../../../components/plainText/Budget";
+import EnterpriseSupport from "../../../components/plainText/EnterpriseSupport";
 import TitleTypography from "../../../components/common/TitleTypography";
 import { Typography } from "@mui/material";
 
@@ -49,6 +47,12 @@ const USER_REQUEST = gql`
           test
           prod
           tools
+        }
+        enterpriseSupport {
+          dev
+          test
+          tools
+          prod
         }
         projectOwner {
           email
@@ -92,7 +96,7 @@ export default function UserRequest() {
   const { id } = useParams();
 
   const { data, loading, error } = useQuery(USER_REQUEST, {
-    variables: { requestId: id }
+    variables: { requestId: id },
   });
 
   const { project, requestedProject, ...request } =

@@ -55,6 +55,12 @@ const ADMIN_REQUEST = gql`
           prod
           tools
         }
+        enterpriseSupport {
+          dev
+          test
+          tools
+          prod
+        }
         projectOwner {
           email
           firstName
@@ -127,7 +133,7 @@ export default function AdminRequest() {
   const { readOnlyAdmin } = useContext(RolesContext);
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
-    variables: { requestId: id }
+    variables: { requestId: id },
   });
 
   const { project, requestedProject, ...request } =
@@ -135,9 +141,9 @@ export default function AdminRequest() {
 
   const [
     publicCloudRequestDecision,
-    { data: decisionData, loading: decisionLoading, error: decisionError }
+    { data: decisionData, loading: decisionLoading, error: decisionError },
   ] = useMutation(MAKE_REQUEST_DECISION, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
   const [
@@ -145,15 +151,15 @@ export default function AdminRequest() {
     {
       data: reprovisionData,
       loading: reprovisionLoading,
-      error: reprovisionError
-    }
+      error: reprovisionError,
+    },
   ] = useMutation(RE_PROVISION_REQUEST, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
 
   const reProvisionOnClick = () => {
     toastId.current = toast("Re provisioning request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     publicCloudReProvisionRequest({
@@ -163,7 +169,7 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
       onCompleted: () => {
@@ -171,15 +177,15 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: "Re provisioning request successful",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000
+          autoClose: 5000,
         });
-      }
+      },
     });
   };
 
   const makeDecisionOnClick = (decision) => {
     toastId.current = toast("Your decision has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
     publicCloudRequestDecision({
       variables: { requestId: id, decision, humanComment: humanCommentInput },
@@ -188,7 +194,7 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
       onCompleted: () => {
@@ -196,9 +202,9 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: "Decision successful",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000
+          autoClose: 5000,
         });
-      }
+      },
     });
   };
 

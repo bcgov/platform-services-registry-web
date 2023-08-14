@@ -5,6 +5,7 @@ import {
   ProviderSchema,
   MinistrySchema,
   BudgetInputSchema,
+  EnterpriseSupportSchema,
 } from "../../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/forms/MetaDataInput";
@@ -12,7 +13,7 @@ import ClusterInputText from "../../../components/plainText/ClusterInput";
 import MinistryInput from "../../../components/forms/MinistryInput";
 import NavToolbar from "../../../components/NavToolbar";
 import {
-  projectInitialValues,
+  createPublicCloudProjectInputInitalValues as projectInitialValues,
   replaceNullsWithEmptyString,
   replaceEmptyStringWithNull,
   stripTypeName,
@@ -39,6 +40,7 @@ import UserContext from "../../../context/user";
 import AccountCodingInput from "../../../components/forms/AccountCoding";
 import BudgetInput from "../../../components/forms/Budget";
 import ProviderInput from "../../../components/forms/ProviderInput";
+
 const USER_PROJECT = gql`
   query UserPublicCloudProjectById($projectId: ID!) {
     userPublicCloudProjectById(projectId: $projectId) {
@@ -53,6 +55,12 @@ const USER_PROJECT = gql`
         dev
         test
         tools
+      }
+      enterpriseSupport {
+        dev
+        test
+        tools
+        prod
       }
       activeEditRequest {
         active
@@ -144,6 +152,7 @@ const validationSchema = yup.object().shape({
     .max(24)
     .required(),
   budget: BudgetInputSchema().required(),
+  enterpriseSupport: EnterpriseSupportSchema().required(),
   projectOwner: CreateUserInputSchema,
   primaryTechnicalLead: CreateUserInputSchema,
   secondaryTechnicalLead: CreateUserInputSchema.nullable(),
@@ -289,6 +298,8 @@ export default function Project({ requestsRoute }) {
             <Users formik={formik} isDisabled={false} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <BudgetInput formik={formik} isDisabled={isDisabled} />
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            <EnterpriseSupport formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             <Button

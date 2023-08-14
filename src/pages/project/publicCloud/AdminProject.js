@@ -5,6 +5,7 @@ import {
   MinistrySchema,
   BudgetInputSchema,
   ProviderSchema,
+  EnterpriseSupportSchema,
 } from "../../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/forms/MetaDataInput";
@@ -51,6 +52,12 @@ const ADMIN_PROJECT = gql`
         dev
         test
         tools
+      }
+      enterpriseSupport {
+        dev
+        test
+        tools
+        prod
       }
       activeEditRequest {
         active
@@ -142,6 +149,7 @@ const validationSchema = yup.object().shape({
     .max(24)
     .required(),
   budget: BudgetInputSchema().required(),
+  enterpriseSupport: EnterpriseSupportSchema().required(),
   projectOwner: CreateUserInputSchema,
   primaryTechnicalLead: CreateUserInputSchema,
   secondaryTechnicalLead: CreateUserInputSchema.nullable(),
@@ -292,6 +300,8 @@ export default function AdminProject({ requestsRoute }) {
             <Users formik={formik} isDisabled={false} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <BudgetInput formik={formik} isDisabled={isDisabled} />
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            <EnterpriseSupport formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
