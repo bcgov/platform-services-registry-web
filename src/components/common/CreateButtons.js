@@ -20,7 +20,9 @@ const ColorButton = styled(Button)(({ theme }) => ({
 
 export default function CreateButtons({
   privateCloudCreatePath,
+  privateCloudCreateLabel,
   publicCloudCreatePath,
+  publicCloudCreateLabel,
 }) {
   const { featureTester } = useContext(RolesContext);
 
@@ -38,7 +40,7 @@ export default function CreateButtons({
           variant="contained"
           endIcon={<AddIcon />}
         >
-          Create Private Cloud Product
+          {privateCloudCreateLabel||'Create Private Cloud Product'}
         </ColorButton>
       )}
       {featureTester && publicCloudCreatePath && (
@@ -49,7 +51,7 @@ export default function CreateButtons({
           variant="contained"
           endIcon={<AddIcon />}
         >
-          Create Public Cloud Product
+          {publicCloudCreateLabel||'Create Public Cloud Product'}
         </ColorButton>
       )}
     </Stack>

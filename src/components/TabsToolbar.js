@@ -115,18 +115,18 @@ export default function TabsToolbar({ routes }) {
           </Tabs>
         </Box>
         {pathname === routes[1] ? <TabForm /> : null}
-        {pathname === routes[0] ? (
-          <Box sx={{ display: { xs: "none", xl: "flex" } }}>
-            <CreateButtons
-              privateCloudCreatePath={
-                admin || readOnlyAdmin ? routesAdmin[2] : routesUser[2]
-              }
-              publicCloudCreatePath={
-                admin || readOnlyAdmin ? routesAdmin[4] : routesUser[4]
-              }
-            />
-          </Box>
-        ) : null}
+        <Box sx={{ display: { xs: "none", xl: "flex" } }}>
+          <CreateButtons
+            privateCloudCreatePath={pathname.includes("private") || pathname.includes("requests") ?
+              (admin || readOnlyAdmin ? routesAdmin[2] : routesUser[2]) : undefined
+            }
+            privateCloudCreateLabel={pathname.includes("private") && "Create"}
+            publicCloudCreatePath={pathname.includes("public") || pathname.includes("requests") ?
+              (admin || readOnlyAdmin ? routesAdmin[4] : routesUser[4]) : undefined
+            }
+            publicCloudCreateLabel={pathname.includes("public") && "Create"}
+          />
+        </Box>
         {pathname.includes("requests") ? (
           <Box sx={{ display: { xs: "flex", xl: "none" } }}>
             <IconButton onClick={handleClick} color="inherit">
@@ -147,7 +147,7 @@ export default function TabsToolbar({ routes }) {
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              <CreateButtonsDropdown
+             <CreateButtonsDropdown
                 privateCloudCreatePath={
                   admin || readOnlyAdmin ? routesAdmin[2] : routesUser[2]
                 }
