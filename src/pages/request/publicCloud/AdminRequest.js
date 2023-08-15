@@ -19,6 +19,7 @@ import TextField from "@mui/material/TextField";
 import { Box } from "@mui/material";
 import ReProvisionButton from "../../../components/ReProvisionButton";
 import RolesContext from "../../../context/roles";
+import EnterpriseSupport from "../../../components/plainText/EnterpriseSupport";
 
 const ADMIN_REQUEST = gql`
   query PublicCloudRequestById($requestId: ID!) {
@@ -231,10 +232,16 @@ export default function AdminRequest() {
         <MinistryInput ministry={requestedProject?.ministry} />
         <ProviderInput provider={requestedProject?.provider} />
         <AccountCoding accountCoding={requestedProject?.accountCoding} />
+        <EnterpriseSupport
+          dev={requestedProject?.enterpriseSupport.dev}
+          test={requestedProject?.enterpriseSupport.test}
+          tools={requestedProject?.enterpriseSupport.tools}
+          prod={requestedProject?.enterpriseSupport.prod}
+        />
         <div>
-          {requestedProject?.budget && <Budget
-            budget={requestedProject?.budget}
-          />}
+          {requestedProject?.budget && (
+            <Budget budget={requestedProject?.budget} />
+          )}
           <Users
             projectOwner={requestedProject?.projectOwner}
             primaryTechnicalLead={requestedProject?.primaryTechnicalLead}

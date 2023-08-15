@@ -125,6 +125,21 @@ export enum DefaultStorageOptions {
   Storage_512 = 'STORAGE_512'
 }
 
+export type EnterpriseSupport = {
+  __typename?: 'EnterpriseSupport';
+  dev: Scalars['Boolean'];
+  prod: Scalars['Boolean'];
+  test: Scalars['Boolean'];
+  tools: Scalars['Boolean'];
+};
+
+export type EnterpriseSupportInput = {
+  dev: Scalars['Boolean'];
+  prod: Scalars['Boolean'];
+  test: Scalars['Boolean'];
+  tools: Scalars['Boolean'];
+};
+
 export enum Environment {
   Development = 'DEVELOPMENT',
   Production = 'PRODUCTION',
@@ -251,6 +266,7 @@ export type MutationPublicCloudProjectEditRequestArgs = {
   budget: BudgetInput;
   commonComponents: CommonComponentsInput;
   description: Scalars['String'];
+  enterpriseSupport: EnterpriseSupportInput;
   ministry: Ministry;
   name: Scalars['String'];
   primaryTechnicalLead: CreateUserInput;
@@ -265,6 +281,7 @@ export type MutationPublicCloudProjectRequestArgs = {
   budget: BudgetInput;
   commonComponents: CommonComponentsInput;
   description: Scalars['String'];
+  enterpriseSupport: EnterpriseSupportInput;
   ministry: Ministry;
   name: Scalars['String'];
   primaryTechnicalLead: CreateUserInput;
@@ -346,6 +363,7 @@ export type PublicCloudProject = {
   commonComponents: CommonComponents;
   created: Scalars['DateTime'];
   description: Scalars['String'];
+  enterpriseSupport: EnterpriseSupport;
   id: Scalars['ID'];
   licencePlate: Scalars['ID'];
   ministry: Ministry;
@@ -703,6 +721,15 @@ export const DefaultCpuOptionsSchema = yup.mixed().oneOf([DefaultCpuOptions.CpuR
 export const DefaultMemoryOptionsSchema = yup.mixed().oneOf([DefaultMemoryOptions.MemoryRequest_2Limit_4, DefaultMemoryOptions.MemoryRequest_4Limit_8, DefaultMemoryOptions.MemoryRequest_8Limit_16, DefaultMemoryOptions.MemoryRequest_16Limit_32, DefaultMemoryOptions.MemoryRequest_32Limit_64, DefaultMemoryOptions.MemoryRequest_64Limit_128]);
 
 export const DefaultStorageOptionsSchema = yup.mixed().oneOf([DefaultStorageOptions.Storage_1, DefaultStorageOptions.Storage_2, DefaultStorageOptions.Storage_4, DefaultStorageOptions.Storage_16, DefaultStorageOptions.Storage_32, DefaultStorageOptions.Storage_64, DefaultStorageOptions.Storage_128, DefaultStorageOptions.Storage_256, DefaultStorageOptions.Storage_512]);
+
+export function EnterpriseSupportInputSchema(): yup.SchemaOf<EnterpriseSupportInput> {
+  return yup.object({
+    dev: yup.boolean().defined(),
+    prod: yup.boolean().defined(),
+    test: yup.boolean().defined(),
+    tools: yup.boolean().defined()
+  })
+}
 
 export const EnvironmentSchema = yup.mixed().oneOf([Environment.Development, Environment.Production, Environment.Test, Environment.Tools]);
 

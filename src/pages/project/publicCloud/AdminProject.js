@@ -5,7 +5,7 @@ import {
   MinistrySchema,
   BudgetInputSchema,
   ProviderSchema,
-  EnterpriseSupportSchema,
+  EnterpriseSupportInputSchema,
 } from "../../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/forms/MetaDataInput";
@@ -37,6 +37,7 @@ import RolesContext from "../../../context/roles";
 import UserContext from "../../../context/user";
 import AccountCodingInput from "../../../components/forms/AccountCoding";
 import BudgetInput from "../../../components/forms/Budget";
+import EnterpriseSupport from "../../../components/forms/EnterpriseSupport";
 
 const ADMIN_PROJECT = gql`
   query PublicCloudProjectById($projectId: ID!) {
@@ -149,7 +150,7 @@ const validationSchema = yup.object().shape({
     .max(24)
     .required(),
   budget: BudgetInputSchema().required(),
-  enterpriseSupport: EnterpriseSupportSchema().required(),
+  enterpriseSupport: EnterpriseSupportInputSchema().required(),
   projectOwner: CreateUserInputSchema,
   primaryTechnicalLead: CreateUserInputSchema,
   secondaryTechnicalLead: CreateUserInputSchema.nullable(),

@@ -120,10 +120,16 @@ export default function UserRequest() {
         <MinistryInput ministry={requestedProject?.ministry} />
         <ProviderInput provider={requestedProject?.provider} />
         <AccountCoding accountCoding={requestedProject?.accountCoding} />
+        <EnterpriseSupport
+          dev={requestedProject?.enterpriseSupport.dev}
+          test={requestedProject?.enterpriseSupport.test}
+          tools={requestedProject?.enterpriseSupport.tools}
+          prod={requestedProject?.enterpriseSupport.prod}
+        />
         <div>
-        {requestedProject?.budget && <Budget
-            budget={requestedProject?.budget}
-          />}
+          {requestedProject?.budget && (
+            <Budget budget={requestedProject?.budget} />
+          )}
           <Users
             projectOwner={requestedProject?.projectOwner}
             primaryTechnicalLead={requestedProject?.primaryTechnicalLead}

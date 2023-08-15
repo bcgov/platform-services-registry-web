@@ -5,11 +5,10 @@ import {
   ProviderSchema,
   MinistrySchema,
   BudgetInputSchema,
-  EnterpriseSupportSchema,
+  EnterpriseSupportInputSchema,
 } from "../../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/forms/MetaDataInput";
-import ClusterInputText from "../../../components/plainText/ClusterInput";
 import MinistryInput from "../../../components/forms/MinistryInput";
 import NavToolbar from "../../../components/NavToolbar";
 import {
@@ -34,12 +33,10 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import ReProvisionButton from "../../../components/ReProvisionButton";
-import RolesContext from "../../../context/roles";
-import UserContext from "../../../context/user";
 import AccountCodingInput from "../../../components/forms/AccountCoding";
 import BudgetInput from "../../../components/forms/Budget";
 import ProviderInput from "../../../components/forms/ProviderInput";
+import EnterpriseSupport from "../../../components/forms/EnterpriseSupport";
 
 const USER_PROJECT = gql`
   query UserPublicCloudProjectById($projectId: ID!) {
@@ -152,7 +149,7 @@ const validationSchema = yup.object().shape({
     .max(24)
     .required(),
   budget: BudgetInputSchema().required(),
-  enterpriseSupport: EnterpriseSupportSchema().required(),
+  enterpriseSupport: EnterpriseSupportInputSchema().required(),
   projectOwner: CreateUserInputSchema,
   primaryTechnicalLead: CreateUserInputSchema,
   secondaryTechnicalLead: CreateUserInputSchema.nullable(),
