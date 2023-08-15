@@ -7,7 +7,7 @@ import FormControl from "@mui/material/FormControl";
 import ListItemText from "@mui/material/ListItemText";
 import Select from "@mui/material/Select";
 import Checkbox from "@mui/material/Checkbox";
-import { columns } from "../pages/projects/helpers";
+import { columns } from "../pages/projects/privateCloud/helpers.js";
 import Papa from "papaparse";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import SearchContext from "../context/search";
@@ -67,7 +67,7 @@ const flattenProject = (project) => {
       : "",
     secondaryTechnicalLeadEmail: secondaryTechnicalLead
       ? secondaryTechnicalLead.email
-      : "",
+      : ""
   };
 };
 
@@ -128,7 +128,7 @@ export default function DownloadCsv() {
 
   const handleChange = (event) => {
     const {
-      target: { value },
+      target: { value }
     } = event;
     setSelectedFields(typeof value === "string" ? value.split(",") : value);
   };
@@ -148,7 +148,7 @@ export default function DownloadCsv() {
   }, [open]);
 
   const [getCsvData, { data, error }] = useLazyQuery(GET_CSV_DATA, {
-    fetchPolicy: "no-cache", // Prevents error where query is called on every render
+    fetchPolicy: "no-cache" // Prevents error where query is called on every render
   });
 
   // Generate and download the csv file when the data is returned from the query
@@ -160,7 +160,7 @@ export default function DownloadCsv() {
       const columns = transformSelectedFields(selectedFields);
 
       const csvString = Papa.unparse(flattenedPrivateCloudProjects, {
-        columns,
+        columns
       });
 
       downloadCsv(csvString);
@@ -172,7 +172,7 @@ export default function DownloadCsv() {
       size="small"
       onClick={() => {
         getCsvData({
-          variables: { filter, search: debouncedSearch },
+          variables: { filter, search: debouncedSearch }
         });
       }}
       onMouseEnter={handleMouseEnter}
@@ -190,7 +190,7 @@ export default function DownloadCsv() {
         transitionDelay: "0.3s",
         transitionTimingFunction: "ease-out",
         width: !open ? 33 : 0,
-        visibility: !openFinished ? "hidden" : "visible",
+        visibility: !openFinished ? "hidden" : "visible"
       }}
       size="small"
       onMouseEnter={handleMouseEnter}
@@ -210,7 +210,7 @@ export default function DownloadCsv() {
         borderRadius: "5px",
         marginRight: "10px",
         height: 38.5,
-        paddingRight: 5,
+        paddingRight: 5
       }}
       onMouseLeave={handleMouseLeave}
     >
@@ -220,7 +220,7 @@ export default function DownloadCsv() {
           overflow: "hidden",
           transition: "width 0.8s",
           transitionTimingFunction: "ease-out",
-          width: open ? 210 : 0,
+          width: open ? 210 : 0
         }}
       >
         <FormControl variant="standard" sx={{ m: 1 }}>

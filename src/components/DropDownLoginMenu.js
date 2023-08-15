@@ -36,7 +36,14 @@ export default function DropDownLoginMenu() {
 
   return (
     <React.Fragment>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          textAlign: "center",
+          mr: 2
+        }}
+      >
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}

@@ -27,31 +27,22 @@ const requestsToRows = ({
     secondaryTechnicalLead,
     ministry,
     cluster,
+    provider,
   },
 }) => ({
   id,
+  onClickPath: (isAdmin) =>
+    `/registry/${isAdmin.admin || isAdmin.readOnlyAdmin ? "admin" : "user"}/${
+      provider && !cluster ? "public-cloud" : "private-cloud"
+    }/request/${id}`,
+
   name: <span style={{ fontSize: 18, fontWeight: "500" }}>{name}</span>,
   created: <span style={{ fontSize: 16 }}> {dayjs(created).fromNow()}</span>,
   licencePlate: (
-    <Link
-      sx={{
-        "&:hover": {
-          cursor: "pointer",
-        },
-      }}
-      underline="hover"
-      onClick={(e) =>
-        stopPropagationRow(
-          e,
-          `https://console.apps.${cluster}.devops.gov.bc.ca/topology/ns/${licencePlate}-prod`
-        )
-      }
-    >
-      <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
-    </Link>
+    <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
   ),
   ministry,
-  cluster,
+  cluster: provider === "AWS" ? "AWS" : cluster,
   projectOwner: (
     <Link
       underline="hover"
@@ -153,7 +144,7 @@ const columns = [
   { id: "status", label: "Status", minWidth: 0 },
   { id: "name", label: "Name", minWidth: 0 },
   { id: "ministry", label: "Ministry", minWidth: 0 },
-  { id: "cluster", label: "Cluster", minWidth: 0 },
+  { id: "cluster", label: "Cluster/Provider", minWidth: 0 },
   { id: "projectOwner", label: "Project Owner", minWidth: 0 },
   { id: "technicalLeads", label: "Technical Leads", minWidth: 0 },
   { id: "created", label: "Created", minWidth: 200 },

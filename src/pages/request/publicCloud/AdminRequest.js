@@ -1,28 +1,28 @@
 import { useRef, useState, useContext } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
-import MetaDataInput from "../../components/plainText/MetaDataInput";
-import ClusterInput from "../../components/plainText/ClusterInput";
-import MinistryInput from "../../components/plainText/MinistryInput";
-import NavToolbar from "../../components/NavToolbar";
-import TitleTypography from "../../components/common/TitleTypography";
+import MetaDataInput from "../../../components/plainText/MetaDataInput";
+import MinistryInput from "../../../components/plainText/MinistryInput";
+import ProviderInput from "../../../components/plainText/ProviderInput";
+import AccountCoding from "../../../components/plainText/AccountCoding";
+import NavToolbar from "../../../components/NavToolbar";
+import TitleTypography from "../../../components/common/TitleTypography";
 import { Button } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
-import { USER_REQUESTS } from "../requests/UserRequests";
-import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
+import { USER_REQUESTS } from "../../requests/UserRequests";
+import { ALL_ACTIVE_REQUESTS } from "../../requests/AdminRequests";
 import { toast } from "react-toastify";
-import Container from "../../components/common/Container";
-import Users from "../../components/plainText/Users";
+import Container from "../../../components/common/Container";
+import Users from "../../../components/plainText/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../components/plainText/Quotas";
-import Namespaces from "../../components/Namespaces";
+import Budget from "../../../components/plainText/Budget";
 import TextField from "@mui/material/TextField";
 import { Box } from "@mui/material";
-import ReProvisionButton from "../../components/ReProvisionButton";
-import ReadOnlyAdminContext from "../../context/readOnlyAdmin";
+import ReProvisionButton from "../../../components/ReProvisionButton";
+import RolesContext from "../../../context/roles";
 
 const ADMIN_REQUEST = gql`
-  query PrivateCloudRequestById($requestId: ID!) {
-    privateCloudRequestById(requestId: $requestId) {
+  query PublicCloudRequestById($requestId: ID!) {
+    publicCloudRequestById(requestId: $requestId) {
       id
       createdBy {
         firstName
@@ -41,33 +41,20 @@ const ADMIN_REQUEST = gql`
       decisionDate
       project {
         name
-        productionQuota {
-          cpu
-          memory
-          storage
-        }
-        testQuota {
-          cpu
-          memory
-          storage
-        }
-        developmentQuota {
-          cpu
-          memory
-          storage
-        }
-        toolsQuota {
-          cpu
-          memory
-          storage
-        }
       }
       requestedProject {
         id
         name
         licencePlate
         description
+        accountCoding
         status
+        budget {
+          dev
+          test
+          prod
+          tools
+        }
         projectOwner {
           email
           firstName
@@ -87,7 +74,7 @@ const ADMIN_REQUEST = gql`
           ministry
         }
         ministry
-        cluster
+        provider
         commonComponents {
           addressAndGeolocation
           workflowManagement
@@ -101,38 +88,18 @@ const ADMIN_REQUEST = gql`
           noServices
           other
         }
-        productionQuota {
-          cpu
-          memory
-          storage
-        }
-        testQuota {
-          cpu
-          memory
-          storage
-        }
-        developmentQuota {
-          cpu
-          memory
-          storage
-        }
-        toolsQuota {
-          cpu
-          memory
-          storage
-        }
       }
     }
   }
 `;
 
 const MAKE_REQUEST_DECISION = gql`
-  mutation PrivateCloudRequestDecision(
+  mutation PublicCloudRequestDecision(
     $requestId: ID!
     $decision: RequestDecision!
     $humanComment: String
   ) {
-    privateCloudRequestDecision(
+    publicCloudRequestDecision(
       requestId: $requestId
       decision: $decision
       humanComment: $humanComment
@@ -145,8 +112,8 @@ const MAKE_REQUEST_DECISION = gql`
 `;
 
 const RE_PROVISION_REQUEST = gql`
-  mutation PrivateCloudReProvisionRequest($requestId: ID!) {
-    privateCloudReProvisionRequest(requestId: $requestId) {
+  mutation PublicCloudReProvisionRequest($requestId: ID!) {
+    publicCloudReProvisionRequest(requestId: $requestId) {
       id
     }
   }
@@ -157,46 +124,46 @@ export default function AdminRequest() {
   const navigate = useNavigate();
   const toastId = useRef(null);
   const [humanCommentInput, setHumanCommentInput] = useState(null);
-  const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
+  const { readOnlyAdmin } = useContext(RolesContext);
 
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
-    variables: { requestId: id },
+    variables: { requestId: id }
   });
 
   const { project, requestedProject, ...request } =
-    data?.privateCloudRequestById || {};
+    data?.publicCloudRequestById || {};
 
   const [
-    privateCloudRequestDecision,
-    { data: decisionData, loading: decisionLoading, error: decisionError },
+    publicCloudRequestDecision,
+    { data: decisionData, loading: decisionLoading, error: decisionError }
   ] = useMutation(MAKE_REQUEST_DECISION, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
 
   const [
-    privateCloudReProvisionRequest,
+    publicCloudReProvisionRequest,
     {
       data: reprovisionData,
       loading: reprovisionLoading,
-      error: reprovisionError,
-    },
+      error: reprovisionError
+    }
   ] = useMutation(RE_PROVISION_REQUEST, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
 
   const reProvisionOnClick = () => {
     toastId.current = toast("Re provisioning request has been submitted", {
-      autoClose: false,
+      autoClose: false
     });
 
-    privateCloudReProvisionRequest({
+    publicCloudReProvisionRequest({
       variables: { requestId: id },
       onError: (error) => {
         console.log(error);
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000,
+          autoClose: 5000
         });
       },
       onCompleted: () => {
@@ -204,24 +171,24 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: "Re provisioning request successful",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000,
+          autoClose: 5000
         });
-      },
+      }
     });
   };
 
   const makeDecisionOnClick = (decision) => {
     toastId.current = toast("Your decision has been submitted", {
-      autoClose: false,
+      autoClose: false
     });
-    privateCloudRequestDecision({
+    publicCloudRequestDecision({
       variables: { requestId: id, decision, humanComment: humanCommentInput },
       onError: (error) => {
         console.log(error);
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000,
+          autoClose: 5000
         });
       },
       onCompleted: () => {
@@ -229,9 +196,9 @@ export default function AdminRequest() {
         toast.update(toastId.current, {
           render: "Decision successful",
           type: toast.TYPE.SUCCESS,
-          autoClose: 5000,
+          autoClose: 5000
         });
-      },
+      }
     });
   };
 
@@ -256,28 +223,17 @@ export default function AdminRequest() {
           description={requestedProject?.description}
         />
         <MinistryInput ministry={requestedProject?.ministry} />
-        <Box
-          sx={{ pt: 2 }}
-        >
-          <ClusterInput cluster={requestedProject?.cluster} />
-        </Box>
+        <ProviderInput provider={requestedProject?.provider} />
+        <AccountCoding accountCoding={requestedProject?.accountCoding} />
         <div>
-          {request?.type !== "CREATE" ? (
-            <div>
-              <Namespaces
-                cluster={requestedProject?.cluster}
-                licencePlate={requestedProject?.licencePlate}
-              />
-              <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            </div>
-          ) : null}
+          {requestedProject?.budget && <Budget
+            budget={requestedProject?.budget}
+          />}
           <Users
             projectOwner={requestedProject?.projectOwner}
             primaryTechnicalLead={requestedProject?.primaryTechnicalLead}
             secondaryTechnicalLead={requestedProject?.secondaryTechnicalLead}
           />
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas project={project} requestedProject={requestedProject} />
           <Divider variant="middle" sx={{ mb: 6 }} />
         </div>
         <TitleTypography sx={{ mt: 3, mb: 1 }}>
@@ -295,24 +251,26 @@ export default function AdminRequest() {
           multiline
           rows={4}
         />
-        {!readOnlyAdmin && <Box sx={{ mt: 3, mb: 3 }}>
-          <Button
-            disabled={isDisabled}
-            sx={{ mr: 1, minWidth: "120px" }}
-            onClick={() => makeDecisionOnClick("APPROVED")}
-            variant="contained"
-          >
-            Approve
-          </Button>
-          <Button
-            disabled={isDisabled}
-            sx={{ mr: 1, minWidth: "120px" }}
-            onClick={() => makeDecisionOnClick("REJECTED")}
-            variant="outlined"
-          >
-            Reject
-          </Button>
-        </Box>}
+        {!readOnlyAdmin && (
+          <Box sx={{ mt: 3, mb: 3 }}>
+            <Button
+              disabled={isDisabled}
+              sx={{ mr: 1, minWidth: "120px" }}
+              onClick={() => makeDecisionOnClick("APPROVED")}
+              variant="contained"
+            >
+              Approve
+            </Button>
+            <Button
+              disabled={isDisabled}
+              sx={{ mr: 1, minWidth: "120px" }}
+              onClick={() => makeDecisionOnClick("REJECTED")}
+              variant="outlined"
+            >
+              Reject
+            </Button>
+          </Box>
+        )}
       </Container>
     </div>
   );

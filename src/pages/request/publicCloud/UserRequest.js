@@ -1,19 +1,23 @@
+import { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
-import MetaDataInput from "../../components/plainText/MetaDataInput";
-import ClusterInput from "../../components/plainText/ClusterInput";
-import MinistryInput from "../../components/plainText/MinistryInput";
-import NavToolbar from "../../components/NavToolbar";
+import MetaDataInput from "../../../components/plainText/MetaDataInput";
+import AccountCoding from "../../../components/plainText/AccountCoding";
+import ProviderInput from "../../../components/plainText/ProviderInput";
+import MinistryInput from "../../../components/plainText/MinistryInput";
+import NavToolbar from "../../../components/NavToolbar";
+import { projectInitialValues as initialValues } from "../../../components/common/FormHelpers";
 import { useParams } from "react-router-dom";
-import Container from "../../components/common/Container";
-import Users from "../../components/plainText/Users";
+import { useFormik } from "formik";
+import Container from "../../../components/common/Container";
+import Users from "../../../components/plainText/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../components/plainText/Quotas";
-import Namespaces from "../../components/Namespaces";
-import TitleTypography from "../../components/common/TitleTypography";
-import { Typography, Box } from "@mui/material";
+import Budget from "../../../components/plainText/Budget";
+import TitleTypography from "../../../components/common/TitleTypography";
+import { Typography } from "@mui/material";
+
 const USER_REQUEST = gql`
-  query UserPrivateCloudRequestById($requestId: ID!) {
-    userPrivateCloudRequestById(requestId: $requestId) {
+  query UserPublicCloudRequestById($requestId: ID!) {
+    userPublicCloudRequestById(requestId: $requestId) {
       id
       createdBy {
         firstName
@@ -32,33 +36,20 @@ const USER_REQUEST = gql`
       decisionDate
       project {
         name
-        productionQuota {
-          cpu
-          memory
-          storage
-        }
-        testQuota {
-          cpu
-          memory
-          storage
-        }
-        developmentQuota {
-          cpu
-          memory
-          storage
-        }
-        toolsQuota {
-          cpu
-          memory
-          storage
-        }
       }
       requestedProject {
         id
         name
         licencePlate
         description
+        accountCoding
         status
+        budget {
+          dev
+          test
+          prod
+          tools
+        }
         projectOwner {
           email
           firstName
@@ -78,7 +69,7 @@ const USER_REQUEST = gql`
           ministry
         }
         ministry
-        cluster
+        provider
         commonComponents {
           addressAndGeolocation
           workflowManagement
@@ -92,26 +83,6 @@ const USER_REQUEST = gql`
           noServices
           other
         }
-        productionQuota {
-          cpu
-          memory
-          storage
-        }
-        testQuota {
-          cpu
-          memory
-          storage
-        }
-        developmentQuota {
-          cpu
-          memory
-          storage
-        }
-        toolsQuota {
-          cpu
-          memory
-          storage
-        }
       }
     }
   }
@@ -121,11 +92,11 @@ export default function UserRequest() {
   const { id } = useParams();
 
   const { data, loading, error } = useQuery(USER_REQUEST, {
-    variables: { requestId: id },
+    variables: { requestId: id }
   });
 
   const { project, requestedProject, ...request } =
-    data?.userPrivateCloudRequestById || {};
+    data?.userPublicCloudRequestById || {};
 
   const name =
     request?.type === "CREATE" ? requestedProject?.name : project?.name;
@@ -143,28 +114,17 @@ export default function UserRequest() {
           description={requestedProject?.description}
         />
         <MinistryInput ministry={requestedProject?.ministry} />
-        <Box
-          sx={{ pt: 2 }}
-        >
-          <ClusterInput cluster={requestedProject?.cluster} />
-        </Box>
+        <ProviderInput provider={requestedProject?.provider} />
+        <AccountCoding accountCoding={requestedProject?.accountCoding} />
         <div>
-          {request?.type !== "CREATE" ? (
-            <div>
-              <Namespaces
-                cluster={requestedProject?.cluster}
-                licencePlate={requestedProject?.licencePlate}
-              />
-              <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            </div>
-          ) : null}
+        {requestedProject?.budget && <Budget
+            budget={requestedProject?.budget}
+          />}
           <Users
             projectOwner={requestedProject?.projectOwner}
             primaryTechnicalLead={requestedProject?.primaryTechnicalLead}
             secondaryTechnicalLead={requestedProject?.secondaryTechnicalLead}
           />
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <Quotas project={project} requestedProject={requestedProject} active={request.active} />
           <Divider variant="middle" sx={{ mb: 6 }} />
         </div>
         {request?.humanCommentText && (

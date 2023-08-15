@@ -4,18 +4,21 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { adminClusters } from "../common/Constants";
 import TitleTypography from "../common/TitleTypography";
 import FormHelperText from "@mui/material/FormHelperText";
 import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
 import AdminContext from "../../context/roles";
 
-export default function ClusterInput({
-  formik,
-  isDisabled,
-  clusterOptions = adminClusters
-}) {
+export default function ProviderInput({ formik, isDisabled }) {
+  const isAdmin = useContext(AdminContext);
+  const providerNamesInput = [
+    {
+      name: "AWS",
+      humanFriendlyName: "Amazon Web Services"
+    }
+  ];
+  
   return (
     <Box
       sx={{
@@ -27,50 +30,49 @@ export default function ClusterInput({
       autoComplete="off"
     >
       <div>
-        <TitleTypography>Cluster</TitleTypography>
+        <TitleTypography>Provider</TitleTypography>
         <Typography sx={{ mb: 2 }} color="text.primary">
-          Select your cluster. <b>GOLD</b> will also create a <b>GOLDDR</b>{" "}
-          cluster.
+          Select your public cloud provider.
         </Typography>
       </div>
       <FormControl
         sx={{
           "& .MuiInputBase-input.Mui-disabled, .MuiInputBase-input-MuiOutlinedInput-input":
-            {
-              WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
-            },
+          {
+            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+          },
           "& .MuiInputLabel-root": {
             WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
           },
           "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline":
-            {
-              borderColor: "rgba(0, 0, 0, 0.87)"
-            },
+          {
+            borderColor: "rgba(0, 0, 0, 0.87)"
+          },
           width: 250,
           mt: 1
         }}
         size="small"
       >
-        <InputLabel id="cluster-label">Cluster</InputLabel>
+        <InputLabel id="provider-label">Provider</InputLabel>
         <Select
-          id="cluster"
-          name="cluster"
-          value={formik.values.cluster}
-          onChange={formik.handleChange}
-          error={formik.touched.cluster && Boolean(formik.errors.cluster)}
-          helpertext={formik.touched.cluster && formik.errors.cluster}
+          value={formik.values.provider || ''}
+          id="select-provider"
+          name="provider"
+          label="Provider"
+          labelId="select-provider"
           disabled={isDisabled}
-          labelId="select-cluster"
-          label="Cluster"
+          onChange={formik.handleChange}
+          error={formik.touched.provider && Boolean(formik.errors.provider)}
+          helpertext={formik.touched.provider && formik.errors.provider}
         >
-          {clusterOptions.map((clusterOption) => (
-            <MenuItem key={clusterOption.id} value={clusterOption.name}>
-              {clusterOption.humanFriendlyName}
+          {providerNamesInput.map((option, i) => (
+            <MenuItem key={i} value={option.name}>
+              {option.humanFriendlyName}
             </MenuItem>
           ))}
         </Select>
         <FormHelperText>
-          {formik.touched.cluster && <RequiredField />}
+          {formik.touched.provider && <RequiredField />}
         </FormHelperText>
       </FormControl>
     </Box>

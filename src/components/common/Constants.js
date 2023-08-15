@@ -310,18 +310,6 @@ const adminClusters = [
   }
 ];
 
-const routesUser = [
-  "/private-cloud/user/dashboard/requests",
-  "/private-cloud/user/dashboard/products",
-  "/private-cloud/user/create"
-];
-
-const routesAdmin = [
-  "/private-cloud/admin/dashboard/requests",
-  "/private-cloud/admin/dashboard/products",
-  "/private-cloud/admin/create"
-];
-
 const userClusters = [
   {
     id: 3,
@@ -451,8 +439,6 @@ export {
   defaultCpuOptionsLookup,
   defaultMemoryOptionsLookup,
   defaultStorageOptionsLookup,
-  routesUser,
-  routesAdmin,
   checkBoxMinistries,
   commonComponents
 };

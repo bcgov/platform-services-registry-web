@@ -3,19 +3,26 @@ import { Route, Routes, Navigate, Link, Outlet } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import RequireAuth from "./utilities/RequireAuth";
 import Login from "../pages/Login";
-import UserProjects from "../pages/projects/UserProjects";
+import UserPrivateCloudProjects from "../pages/projects/privateCloud/UserProjects";
 import UserRequests from "../pages/requests/UserRequests";
-import AdminProjects from "../pages/projects/AdminProjects";
-import AdminRequests from "../pages/requests/AdminRequests";
-import AdminProject from "../pages/project/AdminProject";
-import AdminRequest from "../pages/request/AdminRequest";
-import UserRequest from "../pages/request/UserRequest";
-import Create from "../pages/Create";
-import Project from "../pages/project/Project";
+import AdminPrivateCloudProjects from "../pages/projects/privateCloud/AdminProjects";
+import AdminPrivateCloudRequests from "../pages/requests/AdminRequests";
+import AdminPrivateCloudProject from "../pages/project/privateCloud/AdminProject";
+import AdminPrivateCloudRequest from "../pages/request/privateCloud/AdminRequest";
+import AdminPublicCloudProjects from "../pages/projects/publicCloud/AdminProjects";
+import AdminPublicCloudProject from "../pages/project/publicCloud/AdminProject";
+import AdminPublicCloudRequest from "../pages/request/publicCloud/AdminRequest";
+import UserPublicCloudProjects from "../pages/projects/publicCloud/UserProjects";
+import UserPublicCloudProject from "../pages/project/publicCloud/Project";
+import UserPublicCloudRequest from "../pages/request/publicCloud/UserRequest";
+import UserPrivateCloudRequest from "../pages/request/privateCloud/UserRequest";
+import PrivateCloudCreate from "../pages/create/PrivateCloudCreate";
+import PublicCloudCreate from "../pages/create/PublicCloudCreate";
+import UserPrivateCloudProject from "../pages/project/privateCloud/Project";
 import Layout from "./Layout";
 import LoadingSpinner from "./common/LoadingSpinner";
 import TabsToolbar from "./TabsToolbar";
-import {routesUser, routesAdmin} from "./common/Constants";
+
 const NoMatch = () => {
   return (
     <div style={{ marginLeft: 24, marginTop: 20 }}>
@@ -26,6 +33,22 @@ const NoMatch = () => {
     </div>
   );
 };
+
+export const routesUser = [
+  "/registry/user/dashboard/requests",
+  "/registry/user/dashboard/private-cloud-products",
+  "/registry/user/private-cloud/create",
+  "/registry/user/dashboard/public-cloud-products",
+  "/registry/user/public-cloud/create",
+];
+
+export const routesAdmin = [
+  "/registry/admin/dashboard/requests",
+  "/registry/admin/dashboard/private-cloud-products",
+  "/registry/admin/private-cloud/create",
+  "/registry/admin/dashboard/public-cloud-products",
+  "/registry/admin/public-cloud/create",
+];
 
 export const AppRouter = () => {
   const { initialized, keycloak } = useKeycloak();
@@ -52,7 +75,7 @@ export const AppRouter = () => {
           }
         />
         <Route path="*" element={<NoMatch />} />
-        <Route path="private-cloud">
+        <Route path="registry">
           <Route
             path="admin"
             element={
@@ -63,28 +86,45 @@ export const AppRouter = () => {
           >
             <Route
               path="dashboard"
-              element={
-                <TabsToolbar
-                  routes={routesAdmin}
-                />
-              }
+              element={<TabsToolbar routes={routesAdmin} />}
             >
-              <Route path="products" element={<AdminProjects />} />
-              <Route path="requests" element={<AdminRequests />} />
+              <Route
+                path="private-cloud-products"
+                element={<AdminPrivateCloudProjects />}
+              />
+              <Route
+                path="public-cloud-products"
+                element={<AdminPublicCloudProjects />}
+              />
+              <Route path="requests" element={<AdminPrivateCloudRequests />} />
             </Route>
             <Route
-              path="product/:id"
+              path="private-cloud/product/:id"
               element={
-                <AdminProject requestsRoute={routesAdmin[0]} />
+                <AdminPrivateCloudProject requestsRoute={routesAdmin[0]} />
               }
             />
-            <Route path="request/:id" element={<AdminRequest />} />
-
             <Route
-              path="create"
+              path="private-cloud/request/:id"
+              element={<AdminPrivateCloudRequest />}
+            />
+            <Route
+              path="private-cloud/create"
+              element={<PrivateCloudCreate requestsRoute={routesUser[0]} />}
+            />
+            <Route
+              path="public-cloud/product/:id"
               element={
-                <Create requestsRoute={routesAdmin[0]} />
+                <AdminPublicCloudProject requestsRoute={routesAdmin[0]} />
               }
+            />
+            <Route
+              path="public-cloud/request/:id"
+              element={<AdminPublicCloudRequest />}
+            />
+            <Route
+              path="public-cloud/create"
+              element={<PublicCloudCreate requestsRoute={routesAdmin[0]} />}
             />
           </Route>
           <Route
@@ -104,21 +144,41 @@ export const AppRouter = () => {
                 />
               }
             >
-              <Route path="products" element={<UserProjects />} />
+              <Route
+                path="private-cloud-products"
+                element={<UserPrivateCloudProjects />}
+              />
+              <Route
+                path="public-cloud-products"
+                element={<UserPublicCloudProjects />}
+              />
               <Route path="requests" element={<UserRequests />} />
             </Route>
             <Route
-              path="product/:id"
+              path="private-cloud/product/:id"
               element={
-                <Project requestsRoute={routesUser[0]} />
+                <UserPrivateCloudProject requestsRoute={routesUser[0]} />
               }
             />
-            <Route path="request/:id" element={<UserRequest />} />
             <Route
-              path="create"
-              element={
-                <Create requestsRoute={routesUser[0]} />
-              }
+              path="private-cloud/request/:id"
+              element={<UserPrivateCloudRequest />}
+            />
+            <Route
+              path="private-cloud/create"
+              element={<PrivateCloudCreate requestsRoute={routesUser[0]} />}
+            />
+            <Route
+              path="public-cloud/product/:id"
+              element={<UserPublicCloudProject requestsRoute={routesUser[0]} />}
+            />
+            <Route
+              path="public-cloud/request/:id"
+              element={<UserPublicCloudRequest />}
+            />
+            <Route
+              path="public-cloud/create"
+              element={<PublicCloudCreate requestsRoute={routesUser[0]} />}
             />
           </Route>
         </Route>
