@@ -62,7 +62,9 @@ const CreateUserInputSchema = yup.object({
   email: yup.string().defined(),
   firstName: yup.string().defined(),
   lastName: yup.string().defined(),
-  ministry: yup.string()
+  ministry: yup.string(),
+  upn: yup.string(),
+  idir: yup.string(),
 });
 
 const validationSchema = yup.object().shape({
