@@ -6,7 +6,7 @@
 
 const config = {
   CLIENT_ID: process.env.REACT_APP_SSO_CLIENT_ID || '{{ env "CLIENT_ID" }}',
-  API_BASE_URL: process.env.REACT_APP_API_URL + "/graphql" || '{{ env "API_BASE_URL" }}' + "/graphql",
+  API_BASE_URL: process.env.REACT_APP_API_URL + "/graphql" || '{{ env "REACT_APP_API_URL" }}' + "/graphql",
   SSO_URL: process.env.REACT_APP_SSO_URL || '{{ env "SSO_URL" }}',
   SSO_REALM: process.env.REACT_APP_SSO_REALM || '{{ env "SSO_REALM" }}'
 };
