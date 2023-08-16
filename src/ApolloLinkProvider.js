@@ -27,12 +27,12 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 export default function ApolloAuthProvider({ children }) {
   const { initialized, keycloak } = useKeycloak();
   const httpLink = new HttpLink({
-    uri: config.API_BASE_URL,
+    uri: config.API_BASE_URL + "/graphql",
   });
 
   const authMiddleware = new ApolloLink((operation, forward) => {
     const bearerToken = keycloak.authenticated ? keycloak.token : "";
-    
+
     operation.setContext(({ headers = {} }) => ({
       headers: {
         ...headers,

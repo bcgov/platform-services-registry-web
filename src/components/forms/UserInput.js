@@ -42,7 +42,7 @@ export default function UserInput({
 
   const getFilteredUsers = useCallback(async () => {
     const response = await fetch(
-      (process.env.REACT_APP_API_URL || '{{ env "REACT_APP_API_URL" }}') +
+      (process.env.REACT_APP_API_URL || '{{ env "API_BASE_URL" }}') +
       "/api/v1/getIdirEmails?email=" +
       debouncedEmail,
       {
@@ -59,7 +59,7 @@ export default function UserInput({
   const getUserIdir = useCallback(async () => {
     if (userId) {
       const response = await fetch(
-        (process.env.REACT_APP_API_URL || '{{ env "REACT_APP_API_URL" }}') +
+        (process.env.REACT_APP_API_URL || '{{ env "API_BASE_URL" }}') +
         "/api/v1/getIdir?id=" +
         userId,
         {
