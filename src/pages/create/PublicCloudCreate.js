@@ -5,11 +5,12 @@ import {
   CommonComponentsInputSchema,
   ProviderSchema,
   BudgetInputSchema,
-  MinistrySchema
+  MinistrySchema,
+  EnterpriseSupportInputSchema,
 } from "../../__generated__/resolvers-types";
 import {
   createPublicCloudProjectInputInitalValues as initialValues,
-  replaceEmptyStringWithNull
+  replaceEmptyStringWithNull,
 } from "../../components/common/FormHelpers";
 import { useFormik } from "formik";
 import { useMutation, gql } from "@apollo/client";
@@ -32,6 +33,7 @@ import Modal from "@mui/material/Modal";
 import AccountCoding from "../../components/forms/AccountCoding";
 import Budget from "../../components/forms/Budget";
 import ProviderInput from "../../components/forms/ProviderInput";
+import EnterpriseSupport from "../../components/forms/EnterpriseSupport";
 
 const CREATE_USER_PROJECT = gql`
   mutation PublicCloudProjectRequest(
@@ -45,6 +47,7 @@ const CREATE_USER_PROJECT = gql`
     $secondaryTechnicalLead: CreateUserInput
     $accountCoding: String
     $budget: BudgetInput!
+    $enterpriseSupport: EnterpriseSupportInput!
   ) {
     publicCloudProjectRequest(
       name: $name
@@ -57,6 +60,7 @@ const CREATE_USER_PROJECT = gql`
       secondaryTechnicalLead: $secondaryTechnicalLead
       accountCoding: $accountCoding
       budget: $budget
+      enterpriseSupport: $enterpriseSupport
     ) {
       id
       active
@@ -71,12 +75,14 @@ const validationSchema = yup.object().shape({
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   provider: ProviderSchema.required(),
-  accountCoding: yup.string()
-  .transform((value) => value.replace(/\s/g, ''))
-  .max(24)
-  .min(24)
-  .required(),
+  accountCoding: yup
+    .string()
+    .transform((value) => value.replace(/\s/g, ""))
+    .max(24)
+    .min(24)
+    .required(),
   budget: BudgetInputSchema().required(),
+  enterpriseSupport: EnterpriseSupportInputSchema().required(),
   projectOwner: CreateUserInputSchema(),
   primaryTechnicalLead: CreateUserInputSchema(),
   secondaryTechnicalLead: yup
@@ -88,7 +94,7 @@ const validationSchema = yup.object().shape({
     .object(CommonComponentsInputSchema)
     .transform((value, original) => {
       return replaceEmptyStringWithNull(value);
-    })
+    }),
 });
 
 const style = {
@@ -100,7 +106,7 @@ const style = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4
+  p: 4,
 };
 
 export default function Create({ requestsRoute }) {
@@ -113,7 +119,10 @@ export default function Create({ requestsRoute }) {
     CREATE_USER_PROJECT,
     {
       errorPolicy: "ignore", // Query to refetch might not have been called yet, so ignore error
-      refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+      refetchQueries: [
+        { query: USER_REQUESTS },
+        { query: ALL_ACTIVE_REQUESTS },
+      ],
     }
   );
 
@@ -127,14 +136,14 @@ export default function Create({ requestsRoute }) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
       }
-    }
+    },
   });
 
   const submitForm = () => {
     const { values } = formik;
 
     toastId.current = toast("Your create request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     const variables = validationSchema.cast(values);
@@ -145,7 +154,7 @@ export default function Create({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
 
@@ -156,10 +165,10 @@ export default function Create({ requestsRoute }) {
           toast.update(toastId.current, {
             render: "Request successfuly created",
             type: toast.TYPE.SUCCESS,
-            autoClose: 5000
+            autoClose: 5000,
           });
         }
-      }
+      },
     });
   };
 
@@ -188,6 +197,8 @@ export default function Create({ requestsRoute }) {
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <AccountCoding formik={formik} isDisabled={false} />
           <Budget formik={formik} isDisabled={false} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <EnterpriseSupport formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
 
           <CommonComponents formik={formik} isDisabled={false} />

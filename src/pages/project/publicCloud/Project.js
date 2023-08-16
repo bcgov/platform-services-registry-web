@@ -108,6 +108,8 @@ const UPDATE_PROJECT = gql`
     $ministry: Ministry!
     $accountCoding: String!
     $budget: BudgetInput!
+    $provider: Provider!
+    $enterpriseSupport: EnterpriseSupportInput!
     $projectOwner: CreateUserInput!
     $primaryTechnicalLead: CreateUserInput!
     $secondaryTechnicalLead: CreateUserInput
@@ -121,6 +123,8 @@ const UPDATE_PROJECT = gql`
       projectOwner: $projectOwner
       accountCoding: $accountCoding
       budget: $budget
+      provider: $provider
+      enterpriseSupport: $enterpriseSupport
       primaryTechnicalLead: $primaryTechnicalLead
       secondaryTechnicalLead: $secondaryTechnicalLead
       commonComponents: $commonComponents
