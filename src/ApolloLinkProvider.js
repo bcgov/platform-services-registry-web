@@ -27,7 +27,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 export default function ApolloAuthProvider({ children }) {
   const { initialized, keycloak } = useKeycloak();
   const httpLink = new HttpLink({
-    uri: config.API_BASE_URL + "/graphql",
+    uri: config.API_BASE_URL,
   });
 
   const authMiddleware = new ApolloLink((operation, forward) => {
