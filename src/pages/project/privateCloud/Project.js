@@ -55,24 +55,18 @@ const USER_PROJECT = gql`
         firstName
         lastName
         ministry
-        upn
-        idir
       }
       primaryTechnicalLead {
         email
         firstName
         lastName
         ministry
-        upn
-        idir
       }
       secondaryTechnicalLead {
         email
         firstName
         lastName
         ministry
-        upn
-        idir
       }
       ministry
       cluster
@@ -169,8 +163,6 @@ const CreateUserInputSchema = yup.object({
   firstName: yup.string().defined(),
   lastName: yup.string().defined(),
   ministry: yup.string(),
-  upn: yup.string(),
-  idir: yup.string(),
 });
 
 const validationSchema = yup.object().shape({

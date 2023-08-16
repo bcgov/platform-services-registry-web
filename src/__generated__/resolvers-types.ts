@@ -84,8 +84,12 @@ export type CreateUserInput = {
   firstName: Scalars['String'];
   idir?: InputMaybe<Scalars['String']>;
   lastName: Scalars['String'];
+<<<<<<< HEAD
   ministry?: InputMaybe<Scalars['String']>;
   upn?: InputMaybe<Scalars['String']>;
+=======
+  ministry?: InputMaybe<Ministry>;
+>>>>>>> parent of 5473751 (Merge pull request #58 from bcgov/user-upn)
 };
 
 export enum DecisionStatus {
@@ -697,10 +701,15 @@ export function CreateUserInputSchema(): yup.SchemaOf<CreateUserInput> {
   return yup.object({
     email: yup.string().defined(),
     firstName: yup.string().defined(),
+<<<<<<< HEAD
     idir: yup.string(),
     lastName: yup.string().defined(),
     ministry: yup.string(),
     upn: yup.string()
+=======
+    lastName: yup.string().defined(),
+    ministry: yup.mixed()
+>>>>>>> parent of 5473751 (Merge pull request #58 from bcgov/user-upn)
   })
 }
 

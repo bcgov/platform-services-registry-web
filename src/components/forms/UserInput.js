@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Box from "@mui/material/Box";
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import { TextField } from "@mui/material";
 import Avatar from "../common/Avatar";
 import useDebounce from "../../hooks/useDebounce";
@@ -12,7 +13,17 @@ import Divider from "@mui/material/Divider";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import RequiredField from "../common/RequiredField";
 import Autocomplete from "@mui/material/Autocomplete";
-import HelperIcon from '../../components/common/HelperIcon';
+
+const USER_BY_EMAIL = gql`
+  query UserByEmail($email: EmailAddress!) {
+    userByEmail(email: $email) {
+      firstName
+      lastName
+      email
+      ministry
+    }
+  }
+`;
 
 const parseMinistryFromDisplayName = (displayName) => {
   if (displayName && displayName.length > 0) {
@@ -29,51 +40,37 @@ export default function UserInput({
   label,
   defaultEditOpen = true,
   formik,
-  isDisabled = false
+  isDisabled = false,
 }) {
   const email = formik.values[contact]?.email;
-  const [userId, setUserId] = useState('');
-  const [userIdir, setUserIdir] = useState('');
+
   const [edit, setEdit] = useState(defaultEditOpen);
   const [userOptions, setUserOptions] = useState([email]);
+  const [userId, setUserId] = useState("");
   const [emailInput, setEmailInput] = useState("");
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const debouncedEmail = useDebounce(emailInput);
+
+  const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
+    errorPolicy: "ignore",
+    nextFetchPolicy: "cache-first",
+  });
 
   const getFilteredUsers = useCallback(async () => {
     const response = await fetch(
       (process.env.REACT_APP_API_URL || '{{ env "API_BASE_URL" }}') +
-      "/api/v1/getIdirEmails?email=" +
-      debouncedEmail,
+        "/api/v1/getIdirEmails?email=" +
+        debouncedEmail,
       {
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       }
     );
     const data = await response.json();
     setUserOptions(data);
   }, [debouncedEmail]);
-
-  const getUserIdir = useCallback(async () => {
-    if (userId) {
-      const response = await fetch(
-        (process.env.REACT_APP_API_URL || '{{ env "API_BASE_URL" }}') +
-        "/api/v1/getIdir?id=" +
-        userId,
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          }
-        }
-      );
-      const data = await response.json();
-      setUserIdir(data)
-    }
-  }, [userId]);
-
 
   useEffect(() => {
     if (!email) {
@@ -84,30 +81,27 @@ export default function UserInput({
         formik.setFieldValue(contact + ".firstName", null);
         formik.setFieldValue(contact + ".lastName", null);
         formik.setFieldValue(contact + ".ministry", null);
-        formik.setFieldValue(contact + ".upn", null);
-        formik.setFieldValue(contact + ".idir", null);
       }
     }
 
     const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
 
     if (user) {
-      setUserId(user.id)
-      getUserIdir()
-      if (email && userIdir) {
+      getUser({ variables: { email } });
+
+      setUserId(user.id);
+
+      if (email) {
         formik.setFieldValue(contact + ".email", user.mail.toLowerCase());
         formik.setFieldValue(contact + ".firstName", user.givenName);
         formik.setFieldValue(contact + ".lastName", user.surname);
-        formik.setFieldValue(contact + ".upn", user.userPrincipalName);
-        formik.setFieldValue(contact + ".idir", userIdir);
         formik.setFieldValue(
           contact + ".ministry",
           parseMinistryFromDisplayName(user.displayName)
         );
       }
     }
-
-  }, [email, userId, userIdir]);
+  }, [email]);
 
   useEffect(() => {
     if (debouncedEmail) {
@@ -120,7 +114,7 @@ export default function UserInput({
       <Box
         sx={{
           p: 2,
-          display: "flex"
+          display: "flex",
         }}
       >
         <Avatar
@@ -138,6 +132,7 @@ export default function UserInput({
           >
             {formik.values[contact]?.firstName}{" "}
             {formik.values[contact]?.lastName}
+            {/* {data?.userByEmail?.firstName} {data?.userByEmail?.lastName} */}
           </Typography>
         </Stack>
         {!edit ? (
@@ -169,7 +164,7 @@ export default function UserInput({
               display: "flex",
               flexDirection: "column",
               ml: 2,
-              width: "75%"
+              width: "75%",
             }}
           >
             <Autocomplete
@@ -182,7 +177,9 @@ export default function UserInput({
               name={contact + ".email"}
               label="Email"
               disabled={isDisabled}
-              onChange={(e, value) => formik.setFieldValue(contact + ".email", value)}
+              onChange={(e, value) =>
+                formik.setFieldValue(contact + ".email", value)
+              }
               value={email}
               helperText={formik.touched[contact]?.email && <RequiredField />}
               inputValue={inputValue}
@@ -196,18 +193,20 @@ export default function UserInput({
                   label="Email"
                   sx={{
                     "& .MuiInputBase-input.Mui-disabled": {
-                      WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                      WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                     },
-                    mb: 2
+                    mb: 2,
                   }}
                   error={
                     formik.touched[contact]?.firstName &&
                     Boolean(formik.errors[contact]?.firstName)
                   }
                   helperText={
+                    // formik.touched[contact]?.email && <RequiredField />
                     Boolean(formik.values[contact]?.email) ? (
                       <span></span>
-                    ) : userOptions.length === 0 && formik.values[contact]?.email ? (
+                    ) : userOptions.length === 0 &&
+                      formik.values[contact]?.email ? (
                       <div style={{ fontSize: 16, color: "red" }}>
                         Please enter a valid email address. This email address
                         is not linked to any IDIR account
@@ -224,9 +223,9 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                 },
-                mb: 2
+                mb: 2,
               }}
               variant="standard"
               id={contact + ".firstName"}
@@ -255,9 +254,9 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                 },
-                mb: 2
+                mb: 2,
               }}
               variant="standard"
               id={contact + ".lastName"}
@@ -286,9 +285,9 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                 },
-                mb: 2
+                mb: 2,
               }}
               variant="standard"
               id={contact + ".ministry"}
@@ -304,7 +303,8 @@ export default function UserInput({
               helperText={
                 Boolean(!formik.values[contact]?.ministry) && email ? (
                   <div style={{ fontSize: 16, color: "red" }}>
-                    Please populate your IDIR account with your home ministry name{" "}
+                    Please populate your IDIR account with your home ministry
+                    name{" "}
                   </div>
                 ) : formik.touched[contact]?.firstName ? (
                   <RequiredField />
@@ -312,80 +312,6 @@ export default function UserInput({
                   <span></span>
                 )
               }
-              size="small"
-            />
-            <TextField
-              sx={{
-                "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
-                },
-                mb: 2
-              }}
-              variant="standard"
-              id={contact + ".idir"}
-              name={contact + ".idir"}
-              label="IDIR"
-              disabled={true}
-              value={formik.values[contact]?.idir || ""}
-              onChange={formik.handleChange}
-              error={
-                formik.touched[contact]?.idir &&
-                Boolean(formik.errors[contact]?.idir)
-              }
-              helperText={
-                Boolean(!formik.values[contact]?.ministry) && email ? (
-                  <div style={{ fontSize: 16, color: "red" }}>
-                    Please populate your IDIR account with your IDIR
-                  </div>
-                ) : formik.touched[contact]?.firstName ? (
-                  <RequiredField />
-                ) : (
-                  <span></span>
-                )
-              }
-              InputProps={{
-                endAdornment: (
-                  <HelperIcon title="IDIR"
-                    description={'means Information Directory”, an electronic login identification that allows BC government employees, and their contractors, to access the BC government applications'} />
-                ),
-              }}
-              size="small"
-            />
-            <TextField
-              sx={{
-                "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
-                },
-                mb: 2
-              }}
-              variant="standard"
-              id={contact + ".upn"}
-              name={contact + ".upn"}
-              label="UPN"
-              disabled={true}
-              value={formik.values[contact]?.upn || ""}
-              onChange={formik.handleChange}
-              error={
-                formik.touched[contact]?.upn &&
-                Boolean(formik.errors[contact]?.upn)
-              }
-              helperText={
-                Boolean(!formik.values[contact]?.ministry) && email ? (
-                  <div style={{ fontSize: 16, color: "red" }}>
-                    Please populate your IDIR account with your User Principal Name
-                  </div>
-                ) : formik.touched[contact]?.firstName ? (
-                  <RequiredField />
-                ) : (
-                  <span></span>
-                )
-              }
-              InputProps={{
-                endAdornment: (
-                  <HelperIcon title="User Principal Name"
-                    description={'The User Principal Name (UPN) attribute is an internet communication standard for user accounts. A UPN consists of a prefix (user account name) and a suffix (DNS domain name). The prefix joins the suffix using the "@" symbol. For example, someone@example.com. '} />
-                ),
-              }}
               size="small"
             />
           </Box>
