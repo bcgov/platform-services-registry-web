@@ -279,25 +279,19 @@ export const createProjectInputInitalValues = {
     firstName: "",
     lastName: "",
     email: "",
-    ministry: "",
-    upn: "",
-    idir: "",
+    ministry: ""
   },
   primaryTechnicalLead: {
     firstName: "",
     lastName: "",
     email: "",
-    ministry: "",
-    upn: "",
-    idir: "",
+    ministry: ""
   },
   secondaryTechnicalLead: {
     firstName: "",
     lastName: "",
     email: "",
-    ministry: "",
-    upn: "",
-    idir: "",
+    ministry: ""
   },
   ministry: "",
   cluster: "",
