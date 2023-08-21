@@ -173,7 +173,9 @@ export default function Create({ requestsRoute }) {
           <MetaDataInput
             formik={formik}
             isDisabled={false}
-            cloudProvider={"Public Cloud platform"}
+            cloudProvider={"Cloud Pathfinder"}
+            mail={"cloud.pathfinder@gov.bc.ca"}
+            platform={"Public Cloud"}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>
