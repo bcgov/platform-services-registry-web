@@ -5,9 +5,11 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import DownloadCsv from "../DownloadCsv";
 import Search from "../Search";
-import Filter from "../Filter";
+import FilterPrivate from "../FilterPrivateCloud";
+import FilterPublic from "../FilterPublicCloud";
 
-export default function TabForm() {
+export default function TabForm({ isPrivate }) {
+  console.log(isPrivate)
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
   const handleOpenNavMenu = (event) => {
@@ -17,6 +19,7 @@ export default function TabForm() {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
 
   return (
     <div>
@@ -55,15 +58,16 @@ export default function TabForm() {
             }}
           >
             <Search />
-            <Filter />
-            <DownloadCsv />
+            <FilterPrivate />
+            {isPrivate ? <FilterPrivate /> : <FilterPublic />}
+            {isPrivate && <DownloadCsv />}
           </div>
         </Menu>
       </Box>
       <Box sx={{ flexGrow: 1, display: { xs: "none", xl: "flex" } }}>
         <Search />
-        <Filter />
-        <DownloadCsv />
+        {isPrivate ? <FilterPrivate /> : <FilterPublic />}
+        {isPrivate && <DownloadCsv />}
       </Box>
     </div>
   );

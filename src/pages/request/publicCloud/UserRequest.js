@@ -70,19 +70,19 @@ const USER_REQUEST = gql`
         }
         ministry
         provider
-        commonComponents {
-          addressAndGeolocation
-          workflowManagement
-          formDesignAndSubmission
-          identityManagement
-          paymentServices
-          documentManagement
-          endUserNotificationAndSubscription
-          publishing
-          businessIntelligence
-          noServices
-          other
-        }
+        # commonComponents {
+        #   addressAndGeolocation
+        #   workflowManagement
+        #   formDesignAndSubmission
+        #   identityManagement
+        #   paymentServices
+        #   documentManagement
+        #   endUserNotificationAndSubscription
+        #   publishing
+        #   businessIntelligence
+        #   noServices
+        #   other
+        # }
       }
     }
   }

@@ -9,7 +9,7 @@ function truncate(str, n) {
   return str.length > n ? str.substr(0, n - 1) + "..." : str;
 }
 
-const columns = [
+const columnsPublic = [
   { id: "name", label: "Name", minWidth: 180, width: 180 },
   { id: "description", label: "Description", minWidth: 200, width: 200 },
   { id: "ministry", label: "Ministry", minWidth: 0, width: 100 },
@@ -127,7 +127,7 @@ const projectsToRowsXs = ({
   primaryTechnicalLead,
   secondaryTechnicalLead,
   licencePlate,
-  cluster,
+  provider,
 }) => ({
   id,
   name: <span style={{ fontSize: 18, fontWeight: "450" }}>{name}</span>,
@@ -143,4 +143,4 @@ const projectsToRowsXs = ({
   licencePlate,
 });
 
-export { columns, columnsXs, projectsToRows, projectsToRowsXs };
+export { columnsPublic, columnsXs, projectsToRows, projectsToRowsXs };

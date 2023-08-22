@@ -272,6 +272,11 @@ const clusters = [
   "EMERALD"
 ];
 
+const providers = [
+  "AWS",
+  // "Google",
+];
+
 const adminClusters = [
   {
     id: 1,
@@ -440,5 +445,6 @@ export {
   defaultMemoryOptionsLookup,
   defaultStorageOptionsLookup,
   checkBoxMinistries,
-  commonComponents
+  commonComponents,
+  providers,
 };

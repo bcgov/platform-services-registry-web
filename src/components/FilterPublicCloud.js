@@ -3,15 +3,16 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import FilterContext from "../context/filter";
-import { ministriesNames, clusters } from "./common/Constants";
+import FilterContext from "../context/publicCloudFilter";
+import { ministriesNames, providers } from "./common/Constants";
 //readOnlyAdmin seeing only home ministry products functionality
 // import ReadOnlyAdminContext from "../context/readOnlyAdmin";
 // import UserContext from "../context/user";
 
 export default function Filter() {
-  const { setMinistry, setCluster, filter } = useContext(FilterContext);
-  const { ministry, cluster } = filter;
+    console.log('public')
+  const { setMinistry, setProvider, filter } = useContext(FilterContext);
+  const { ministry, provider } = filter;
   //readOnlyAdmin seeing only home ministry products functionality
   // const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
   // const userContext = useContext(UserContext);
@@ -45,7 +46,7 @@ export default function Filter() {
         </Select>
       </FormControl>
       {/* } */}
-      <FormControl size="small" sx={{ minWidth: 120, pr: 2 }}>
+      {/* <FormControl size="small" sx={{ minWidth: 120, pr: 2 }}>
         <InputLabel>Cluster</InputLabel>
         <Select
           value={cluster}
@@ -54,14 +55,14 @@ export default function Filter() {
             setCluster(event.target.value);
           }}
         >
-          <MenuItem value={""}>All Clusters</MenuItem>
-          {clusters.map((cluster) => (
-            <MenuItem key={cluster} value={cluster}>
-              {cluster}
+          <MenuItem value={""}>All Providers</MenuItem>
+          {providers.map((provider) => (
+            <MenuItem key={provider} value={provider}>
+              {provider}
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
+      </FormControl> */}
     </div>
   );
 }

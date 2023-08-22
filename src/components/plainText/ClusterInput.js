@@ -1,11 +1,11 @@
 import Typography from "@mui/material/Typography";
-
+import TitleTypography from "../common/TitleTypography";
 export default function ClusterInput({ cluster }) {
   return [
-    <Typography key="0" sx={{ fontSize: 19, mb: 1, fontWeight: "bold" }}>
+    <TitleTypography>
       Cluster
-    </Typography>,
-    <Typography key="1" color="text.primary">
+    </TitleTypography>,
+    <Typography color="text.primary">
       {cluster}
     </Typography>
   ];
