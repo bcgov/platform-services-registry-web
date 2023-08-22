@@ -17,7 +17,6 @@ export default function Filter() {
   // const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
   // const userContext = useContext(UserContext);
   // if(readOnlyAdmin) setMinistry(userContext.ministry)
-  console.log('private')
   return (
     <div
       style={{

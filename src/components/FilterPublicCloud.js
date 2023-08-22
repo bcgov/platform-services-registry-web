@@ -10,7 +10,6 @@ import { ministriesNames, providers } from "./common/Constants";
 // import UserContext from "../context/user";
 
 export default function Filter() {
-    console.log('public')
   const { setMinistry, setProvider, filter } = useContext(FilterContext);
   const { ministry, provider } = filter;
   //readOnlyAdmin seeing only home ministry products functionality

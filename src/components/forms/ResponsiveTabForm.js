@@ -9,7 +9,6 @@ import FilterPrivate from "../FilterPrivateCloud";
 import FilterPublic from "../FilterPublicCloud";
 
 export default function TabForm({ isPrivate }) {
-  console.log(isPrivate)
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
   const handleOpenNavMenu = (event) => {

@@ -15,11 +15,6 @@ function FilterProvider({ children }) {
     [filter, setMinistry]
   );
 
-//   useEffect(() => {
-//  console.log(filter)
-//   }, [filter]);
-
-//   console.log(filter)
   return (
     <FilterContext.Provider
       value={value}>
