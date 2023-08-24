@@ -114,7 +114,9 @@ export default function TabsToolbar({ routes }) {
             )}
           </Tabs>
         </Box>
-        {pathname === routes[1] ? <TabForm /> : null}
+        {pathname.includes("requests") ? null : <TabForm
+          isPrivate={pathname.includes('private')}
+        />}
         <Box sx={{ display: { xs: "none", xl: "flex" } }}>
           <CreateButtons
             privateCloudCreatePath={pathname.includes("private") || pathname.includes("requests") ?
@@ -147,7 +149,7 @@ export default function TabsToolbar({ routes }) {
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-             <CreateButtonsDropdown
+              <CreateButtonsDropdown
                 privateCloudCreatePath={
                   admin || readOnlyAdmin ? routesAdmin[2] : routesUser[2]
                 }

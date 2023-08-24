@@ -8,6 +8,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Select from "@mui/material/Select";
 import Checkbox from "@mui/material/Checkbox";
 import { columns } from "../pages/projects/privateCloud/helpers.js";
+import { columnsPublic } from "../pages/projects/publicCloud/helpers.js";
 import Papa from "papaparse";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import SearchContext from "../context/search";

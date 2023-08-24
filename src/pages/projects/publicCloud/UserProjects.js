@@ -2,7 +2,7 @@ import { InfoAlert, ErrorAlert } from "../../../components/common/Alert";
 import { useState, useContext, useEffect, useCallback } from "react";
 import { useQuery, gql } from "@apollo/client";
 import {
-  columns,
+  columnsPublic,
   columnsXs,
   projectsToRows,
   projectsToRowsXs,
@@ -147,7 +147,7 @@ export default function Projects() {
       {data.publicCloudProjectsPaginated?.projects.length > 0 ? (
         <StickyTable
           onNextPage={getNextPage}
-          columns={width < 900 ? columnsXs : columns}
+          columns={width < 900 ? columnsXs : columnsPublic}
           rows={
             width < 900
               ? data?.publicCloudProjectsPaginated?.projects

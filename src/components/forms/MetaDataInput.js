@@ -4,7 +4,7 @@ import TitleTypography from "../common/TitleTypography";
 import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
 
-export default function MetaDataInput({ formik, isDisabled, cloudProvider }) {
+export default function MetaDataInput({ formik, isDisabled, cloudProvider, mail, platform }) {
   return (
     <Box
       sx={{
@@ -22,19 +22,19 @@ export default function MetaDataInput({ formik, isDisabled, cloudProvider }) {
         <Box sx={{ mr: 0, width: 650 }}>
           <div>
             <TitleTypography>Product Description</TitleTypography>
-            <Typography sx={{ mb: 1 }} color="text.primary">
-              If this is your first time on the <b>{cloudProvider}</b> you need
+            {platform&&cloudProvider&&mail&&<Typography sx={{ mb: 1 }} color="text.primary">
+              If this is your first time on the <b>{platform} platform</b> you need
               to book an alignment meeting with the{" "}
-              <b>Platform Services team.</b> Reach out to{" "}
+              <b>{cloudProvider} Team.</b> Reach out to{" "}
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href="mailto: PlatformServicesTeam@gov.bc.ca"
+                href={`mailto:${mail}`}
               >
-                Platform Services
+                {cloudProvider}
               </a>{" "}
               to get started.
-            </Typography>
+            </Typography>}
           </div>
           <TextField
             sx={{

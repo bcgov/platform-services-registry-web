@@ -164,7 +164,9 @@ export default function Create({ requestsRoute }) {
           <MetaDataInput
             formik={formik}
             isDisabled={false}
-            cloudProvider={"OpenShift platform"}
+            cloudProvider={"Platform Services"}
+            mail={"PlatformServicesTeam@gov.bc.ca"}
+            platform={"Public Cloud"}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>

@@ -32,7 +32,7 @@ export default function ApolloAuthProvider({ children }) {
 
   const authMiddleware = new ApolloLink((operation, forward) => {
     const bearerToken = keycloak.authenticated ? keycloak.token : "";
-
+    
     operation.setContext(({ headers = {} }) => ({
       headers: {
         ...headers,

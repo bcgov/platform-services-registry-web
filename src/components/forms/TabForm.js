@@ -1,9 +1,10 @@
 import Box from "@mui/material/Box";
 import DownloadCsv from "../DownloadCsv";
 import Search from "../Search";
-import Filter from "../Filter";
+import FilterPrivate from "../FilterPrivateCloud";
+import FilterPublic from "../FilterPublicCloud";
 
-export default function TabForm() {
+export default function TabForm({isPrivate}) {
   return (
     <Box
       sx={{
@@ -16,8 +17,7 @@ export default function TabForm() {
       }}
     >
       <Search />
-      test
-      <Filter />
+      {isPrivate ? <FilterPrivate /> : <FilterPublic />}
       <DownloadCsv />
     </Box>
   );

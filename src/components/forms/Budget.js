@@ -29,10 +29,10 @@ export default function Budget({ formik, isDisabled }) {
             </Typography>
           </div>
           <TextField
-            sx={{ mr: 3 }}
+            sx={{ mr: 1 }}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
+                <InputAdornment position="start">CAD</InputAdornment>
               )
             }}
             type="number"
@@ -49,10 +49,9 @@ export default function Budget({ formik, isDisabled }) {
             size="small"
           />
           <TextField
-            sx={{ mr: 3 }}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
+                <InputAdornment position="start">CAD</InputAdornment>
               )
             }}
             type="number"
@@ -70,10 +69,10 @@ export default function Budget({ formik, isDisabled }) {
           />
 
           <TextField
-            sx={{ mr: 3 }}
+            sx={{ mr: 1 }}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
+                <InputAdornment position="start">CAD</InputAdornment>
               )
             }}
             type="number"
@@ -89,12 +88,10 @@ export default function Budget({ formik, isDisabled }) {
             helperText={formik.touched?.budget?.dev && <RequiredField />}
             size="small"
           />
-
           <TextField
-            sx={{ mr: 3 }}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
+                <InputAdornment position="start">CAD</InputAdornment>
               )
             }}
             type="number"

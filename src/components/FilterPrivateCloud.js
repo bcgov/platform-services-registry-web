@@ -10,13 +10,13 @@ import { ministriesNames, clusters } from "./common/Constants";
 // import UserContext from "../context/user";
 
 export default function Filter() {
+
   const { setMinistry, setCluster, filter } = useContext(FilterContext);
   const { ministry, cluster } = filter;
   //readOnlyAdmin seeing only home ministry products functionality
   // const { readOnlyAdmin } = useContext(ReadOnlyAdminContext);
   // const userContext = useContext(UserContext);
   // if(readOnlyAdmin) setMinistry(userContext.ministry)
-
   return (
     <div
       style={{

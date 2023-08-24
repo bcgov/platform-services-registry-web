@@ -102,7 +102,7 @@ export default function AccountCoding({ formik, isDisabled }) {
               <AccountCodingField
                 formik={formik}
                 isDisabled={isDisabled}
-                placeholder="Enter the responsibility centre here (e.g. 22222)"
+                placeholder="Enter the STOB here (e.g. 4444)"
                 title="Standard Object of Expense (STOB)"
                 length={4}
                 handleChange={handleChange}

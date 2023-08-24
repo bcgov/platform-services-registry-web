@@ -24,18 +24,18 @@ export default function Budget({ budget }) {
       <Box sx={{ display: "flex", p: 0 }}>
         <Box sx={{ mr: 0, width: 550 }}>
           <Typography sx={{ mb: 1 }} color="text.primary">
-            Production - {budget.prod}
+            Production - {budget.prod} CAD 
           </Typography>
           <Typography sx={{ mb: 1 }} color="text.primary">
-            Development - {budget.dev}
+            Development - {budget.dev} CAD 
           </Typography>
         </Box>
         <Box sx={{ mr: 0, width: 550 }}>
           <Typography sx={{ mb: 1 }} color="text.primary">
-            Test - {budget.test}
+            Test - {budget.test} CAD 
           </Typography>
           <Typography sx={{ mb: 1 }} color="text.primary">
-            Tools - {budget.tools}
+            Tools - {budget.tools} CAD 
           </Typography>
         </Box>
       </Box>
