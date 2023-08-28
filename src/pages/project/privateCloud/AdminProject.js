@@ -42,6 +42,7 @@ import Delete from "../../../components/Delete";
 import ClusterInputText from "../../../components/plainText/ClusterInput";
 import MetaDataInputText from "../../../components/plainText/MetaDataInput";
 import {default as MinistryInputText} from "../../../components/plainText/MinistryInput";
+import {default as QuotasInputText} from "../../../components/plainText/Quotas";
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -147,6 +148,36 @@ const UPDATE_USER_PROJECT = gql`
   }
 `;
 
+const ADMIN_REQUEST = gql`
+  query PrivateCloudRequestById($requestId: ID!) {
+    privateCloudRequestById(requestId: $requestId) {
+      project {
+        name
+        productionQuota {
+          cpu
+          memory
+          storage
+        }
+        testQuota {
+          cpu
+          memory
+          storage
+        }
+        developmentQuota {
+          cpu
+          memory
+          storage
+        }
+        toolsQuota {
+          cpu
+          memory
+          storage
+        }
+      }
+    }
+  }
+`;
+
 const DELETE_USER_PROJECT = gql`
   mutation Mutation(
     $projectId: ID!
@@ -221,10 +252,22 @@ export default function AdminProject({ requestsRoute }) {
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
+  const { data } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network",
   });
+
+  const { reqData } = useQuery(ADMIN_REQUEST, {
+    variables: { requestId: id }
+  });
+
+  const { project, requestedProject, ...request } =
+    reqData?.privateCloudRequestById || {};
+
+  // const { project, requestedProject, ...request } =
+  //   data?.privateCloudProjectById || {};
+
+  
 
   const readOnlyAdminIsAbleToEdit =
     userContext.email === data?.privateCloudProjectById.projectOwner.email ||
@@ -371,6 +414,7 @@ export default function AdminProject({ requestsRoute }) {
 
   const handleClose = () => setOpen(false);
 
+  console.log(data);
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -441,8 +485,8 @@ export default function AdminProject({ requestsRoute }) {
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Users formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Quotas formik={formik} isDisabled={isDisabled} />
-            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            {isDisabled ? <QuotasInputText project={data.privateCloudProjectById} requestedProject={requestedProject} /> 
+            : <Quotas formik={formik} isDisabled={isDisabled} /> }<Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
               <Button
