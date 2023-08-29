@@ -114,17 +114,25 @@ export default function TabsToolbar({ routes }) {
             )}
           </Tabs>
         </Box>
-        {pathname.includes("requests") ? null : <TabForm
-          isPrivate={pathname.includes('private')}
-        />}
-        <Box sx={{ display: { xs: "none", xl: "flex" } }}>
+        {pathname.includes("requests") ? null : (
+          <TabForm isPrivate={pathname.includes("private")} />
+        )}
+        <Box>
           <CreateButtons
-            privateCloudCreatePath={pathname.includes("private") || pathname.includes("requests") ?
-              (admin || readOnlyAdmin ? routesAdmin[2] : routesUser[2]) : undefined
+            privateCloudCreatePath={
+              pathname.includes("private") || pathname.includes("requests")
+                ? admin || readOnlyAdmin
+                  ? routesAdmin[2]
+                  : routesUser[2]
+                : undefined
             }
             privateCloudCreateLabel={pathname.includes("private") && "Create"}
-            publicCloudCreatePath={pathname.includes("public") || pathname.includes("requests") ?
-              (admin || readOnlyAdmin ? routesAdmin[4] : routesUser[4]) : undefined
+            publicCloudCreatePath={
+              pathname.includes("public") || pathname.includes("requests")
+                ? admin || readOnlyAdmin
+                  ? routesAdmin[4]
+                  : routesUser[4]
+                : undefined
             }
             publicCloudCreateLabel={pathname.includes("public") && "Create"}
           />
