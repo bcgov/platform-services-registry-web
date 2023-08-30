@@ -14,8 +14,7 @@ import { toast } from "react-toastify";
 import Container from "../../../components/common/Container";
 import Users from "../../../components/plainText/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../../components/plainText/Quotas";
-import Namespaces from "../../../components/Namespaces";
+import Budget from "../../../components/plainText/Budget";
 import TextField from "@mui/material/TextField";
 import { Box } from "@mui/material";
 import ReProvisionButton from "../../../components/ReProvisionButton";
@@ -76,19 +75,19 @@ const ADMIN_REQUEST = gql`
         }
         ministry
         provider
-        commonComponents {
-          addressAndGeolocation
-          workflowManagement
-          formDesignAndSubmission
-          identityManagement
-          paymentServices
-          documentManagement
-          endUserNotificationAndSubscription
-          publishing
-          businessIntelligence
-          noServices
-          other
-        }
+        # commonComponents {
+        #   addressAndGeolocation
+        #   workflowManagement
+        #   formDesignAndSubmission
+        #   identityManagement
+        #   paymentServices
+        #   documentManagement
+        #   endUserNotificationAndSubscription
+        #   publishing
+        #   businessIntelligence
+        #   noServices
+        #   other
+        # }
       }
     }
   }
@@ -130,8 +129,6 @@ export default function AdminRequest() {
   const { data, loading, error } = useQuery(ADMIN_REQUEST, {
     variables: { requestId: id }
   });
-
-  console.log(data);
 
   const { project, requestedProject, ...request } =
     data?.publicCloudRequestById || {};
@@ -229,23 +226,15 @@ export default function AdminRequest() {
         <ProviderInput provider={requestedProject?.provider} />
         <AccountCoding accountCoding={requestedProject?.accountCoding} />
         <div>
-          {request?.type !== "CREATE" ? (
-            <div>
-              <Namespaces
-                cluster={requestedProject?.cluster}
-                licencePlate={requestedProject?.licencePlate}
-              />
-              <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            </div>
-          ) : null}
+          {requestedProject?.budget && <Budget
+            budget={requestedProject?.budget}
+          />}
           <Users
             projectOwner={requestedProject?.projectOwner}
             primaryTechnicalLead={requestedProject?.primaryTechnicalLead}
             secondaryTechnicalLead={requestedProject?.secondaryTechnicalLead}
           />
-
           <Divider variant="middle" sx={{ mb: 6 }} />
-          
         </div>
         <TitleTypography sx={{ mt: 3, mb: 1 }}>
           Reviewer’s comments

@@ -261,11 +261,11 @@ export default function AdminProject({ requestsRoute }) {
     variables: { requestId: id }
   });
 
-  const { project, requestedProject, ...request } =
-    reqData?.privateCloudRequestById || {};
-
   // const { project, requestedProject, ...request } =
-  //   data?.privateCloudProjectById || {};
+  //   reqData?.privateCloudRequestById || {};
+
+  const { project, requestedProject, ...request } =
+    data?.privateCloudProjectById || {};
 
   
 
@@ -485,7 +485,7 @@ export default function AdminProject({ requestsRoute }) {
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Users formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            {isDisabled ? <QuotasInputText project={data.privateCloudProjectById} requestedProject={requestedProject} /> 
+            {isDisabled ? <QuotasInputText project={data.privateCloudProjectById} requestedProject={data.privateCloudProjectById} /> 
             : <Quotas formik={formik} isDisabled={isDisabled} /> }<Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (

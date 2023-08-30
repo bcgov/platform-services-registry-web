@@ -40,7 +40,7 @@ export default function UserInput({
   label,
   defaultEditOpen = true,
   formik,
-  isDisabled = false
+  isDisabled = false,
 }) {
   const email = formik.values[contact]?.email;
 
@@ -48,24 +48,24 @@ export default function UserInput({
   const [userOptions, setUserOptions] = useState([email]);
   const [userId, setUserId] = useState("");
   const [emailInput, setEmailInput] = useState("");
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const debouncedEmail = useDebounce(emailInput);
 
   const [getUser, { loading, error, data }] = useLazyQuery(USER_BY_EMAIL, {
     errorPolicy: "ignore",
-    nextFetchPolicy: "cache-first"
+    nextFetchPolicy: "cache-first",
   });
 
   const getFilteredUsers = useCallback(async () => {
     const response = await fetch(
-      (process.env.REACT_APP_MSAL_ENDPOINT || '{{ env "MSAL_ENDPOINT" }}') +
-      "/getIdirEmails?email=" +
-      debouncedEmail,
+      (process.env.REACT_APP_API_URL || '{{ env "API_BASE_URL" }}') +
+        "/api/v1/getIdirEmails?email=" +
+        debouncedEmail,
       {
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       }
     );
     const data = await response.json();
@@ -101,7 +101,6 @@ export default function UserInput({
         );
       }
     }
-
   }, [email]);
 
   useEffect(() => {
@@ -115,7 +114,7 @@ export default function UserInput({
       <Box
         sx={{
           p: 2,
-          display: "flex"
+          display: "flex",
         }}
       >
         <Avatar
@@ -165,7 +164,7 @@ export default function UserInput({
               display: "flex",
               flexDirection: "column",
               ml: 2,
-              width: "75%"
+              width: "75%",
             }}
           >
             <Autocomplete
@@ -178,7 +177,9 @@ export default function UserInput({
               name={contact + ".email"}
               label="Email"
               disabled={isDisabled}
-              onChange={(e, value) => formik.setFieldValue(contact + ".email", value)}
+              onChange={(e, value) =>
+                formik.setFieldValue(contact + ".email", value)
+              }
               value={email}
               helperText={formik.touched[contact]?.email && <RequiredField />}
               inputValue={inputValue}
@@ -192,9 +193,9 @@ export default function UserInput({
                   label="Email"
                   sx={{
                     "& .MuiInputBase-input.Mui-disabled": {
-                      WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                      WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                     },
-                    mb: 2
+                    mb: 2,
                   }}
                   error={
                     formik.touched[contact]?.firstName &&
@@ -204,7 +205,8 @@ export default function UserInput({
                     // formik.touched[contact]?.email && <RequiredField />
                     Boolean(formik.values[contact]?.email) ? (
                       <span></span>
-                    ) : userOptions.length === 0 && formik.values[contact]?.email ? (
+                    ) : userOptions.length === 0 &&
+                      formik.values[contact]?.email ? (
                       <div style={{ fontSize: 16, color: "red" }}>
                         Please enter a valid email address. This email address
                         is not linked to any IDIR account
@@ -213,7 +215,6 @@ export default function UserInput({
                       <RequiredField />
                     )
                   }
-                
                   variant="standard"
                   size="small"
                 />
@@ -222,9 +223,9 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                 },
-                mb: 2
+                mb: 2,
               }}
               variant="standard"
               id={contact + ".firstName"}
@@ -253,9 +254,9 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                 },
-                mb: 2
+                mb: 2,
               }}
               variant="standard"
               id={contact + ".lastName"}
@@ -284,9 +285,9 @@ export default function UserInput({
             <TextField
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
-                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)"
+                  WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
                 },
-                mb: 2
+                mb: 2,
               }}
               variant="standard"
               id={contact + ".ministry"}
@@ -302,7 +303,8 @@ export default function UserInput({
               helperText={
                 Boolean(!formik.values[contact]?.ministry) && email ? (
                   <div style={{ fontSize: 16, color: "red" }}>
-                    Please populate your IDIR account with your home ministry name{" "}
+                    Please populate your IDIR account with your home ministry
+                    name{" "}
                   </div>
                 ) : formik.touched[contact]?.firstName ? (
                   <RequiredField />

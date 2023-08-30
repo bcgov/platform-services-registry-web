@@ -202,7 +202,6 @@ export default function Project({ requestsRoute }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const toastId = useRef(null);
-  console.log("ffdf");
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);

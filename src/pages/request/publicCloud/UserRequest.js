@@ -11,8 +11,7 @@ import { useFormik } from "formik";
 import Container from "../../../components/common/Container";
 import Users from "../../../components/plainText/Users";
 import Divider from "@mui/material/Divider";
-import Quotas from "../../../components/plainText/Quotas";
-import Namespaces from "../../../components/Namespaces";
+import Budget from "../../../components/plainText/Budget";
 import TitleTypography from "../../../components/common/TitleTypography";
 import { Typography } from "@mui/material";
 
@@ -71,19 +70,19 @@ const USER_REQUEST = gql`
         }
         ministry
         provider
-        commonComponents {
-          addressAndGeolocation
-          workflowManagement
-          formDesignAndSubmission
-          identityManagement
-          paymentServices
-          documentManagement
-          endUserNotificationAndSubscription
-          publishing
-          businessIntelligence
-          noServices
-          other
-        }
+        # commonComponents {
+        #   addressAndGeolocation
+        #   workflowManagement
+        #   formDesignAndSubmission
+        #   identityManagement
+        #   paymentServices
+        #   documentManagement
+        #   endUserNotificationAndSubscription
+        #   publishing
+        #   businessIntelligence
+        #   noServices
+        #   other
+        # }
       }
     }
   }
@@ -118,15 +117,9 @@ export default function UserRequest() {
         <ProviderInput provider={requestedProject?.provider} />
         <AccountCoding accountCoding={requestedProject?.accountCoding} />
         <div>
-          {request?.type !== "CREATE" ? (
-            <div>
-              <Namespaces
-                cluster={requestedProject?.cluster}
-                licencePlate={requestedProject?.licencePlate}
-              />
-              <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            </div>
-          ) : null}
+        {requestedProject?.budget && <Budget
+            budget={requestedProject?.budget}
+          />}
           <Users
             projectOwner={requestedProject?.projectOwner}
             primaryTechnicalLead={requestedProject?.primaryTechnicalLead}

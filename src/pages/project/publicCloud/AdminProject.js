@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import * as yup from "yup";
 import {
-  CommonComponentsInputSchema,
+  // CommonComponentsInputSchema,
   MinistrySchema,
   BudgetInputSchema,
   ProviderSchema,
@@ -17,7 +17,7 @@ import {
   replaceEmptyStringWithNull,
   stripTypeName,
 } from "../../../components/common/FormHelpers";
-import CommonComponents from "../../../components/forms/CommonComponents";
+// import CommonComponents from "../../../components/forms/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
 import { USER_REQUESTS } from "../../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../../requests/AdminRequests";
@@ -36,6 +36,7 @@ import RolesContext from "../../../context/roles";
 import UserContext from "../../../context/user";
 import AccountCodingInput from "../../../components/forms/AccountCoding";
 import BudgetInput from "../../../components/forms/Budget";
+import ProviderPlainText from "../../../components/plainText/ProviderInput";
 
 const ADMIN_PROJECT = gql`
   query PublicCloudProjectById($projectId: ID!) {
@@ -76,19 +77,19 @@ const ADMIN_PROJECT = gql`
       }
       ministry
       provider
-      commonComponents {
-        addressAndGeolocation
-        workflowManagement
-        formDesignAndSubmission
-        identityManagement
-        paymentServices
-        documentManagement
-        endUserNotificationAndSubscription
-        publishing
-        businessIntelligence
-        noServices
-        other
-      }
+      # commonComponents {
+      #   addressAndGeolocation
+      #   workflowManagement
+      #   formDesignAndSubmission
+      #   identityManagement
+      #   paymentServices
+      #   documentManagement
+      #   endUserNotificationAndSubscription
+      #   publishing
+      #   businessIntelligence
+      #   noServices
+      #   other
+      # }
     }
   }
 `;
@@ -104,7 +105,7 @@ const UPDATE_PROJECT = gql`
     $projectOwner: CreateUserInput!
     $primaryTechnicalLead: CreateUserInput!
     $secondaryTechnicalLead: CreateUserInput
-    $commonComponents: CommonComponentsInput!
+    # $commonComponents: CommonComponentsInput!
   ) {
     publicCloudProjectEditRequest(
       projectId: $projectId
@@ -116,7 +117,7 @@ const UPDATE_PROJECT = gql`
       budget: $budget
       primaryTechnicalLead: $primaryTechnicalLead
       secondaryTechnicalLead: $secondaryTechnicalLead
-      commonComponents: $commonComponents
+      # commonComponents: $commonComponents
     ) {
       id
       active
@@ -145,11 +146,11 @@ const validationSchema = yup.object().shape({
   projectOwner: CreateUserInputSchema,
   primaryTechnicalLead: CreateUserInputSchema,
   secondaryTechnicalLead: CreateUserInputSchema.nullable(),
-  commonComponents: yup
-    .object(CommonComponentsInputSchema)
-    .transform((value, original) => {
-      return replaceEmptyStringWithNull(value);
-    }),
+  // commonComponents: yup
+  //   .object(CommonComponentsInputSchema)
+  // .transform((value, original) => {
+  //   return replaceEmptyStringWithNull(value);
+  // }),
   // commonComponents: CommonComponentsInputSchema(),
 });
 
@@ -183,9 +184,9 @@ export default function AdminProject({ requestsRoute }) {
   const readOnlyAdminIsAbleToEdit =
     userContext.email === data?.publicCloudProjectById.projectOwner.email ||
     userContext.email ===
-      data?.publicCloudProjectById?.primaryTechnicalLead?.email ||
+    data?.publicCloudProjectById?.primaryTechnicalLead?.email ||
     userContext.email ===
-      data?.publicCloudProjectById?.secondaryTechnicalLead?.email;
+    data?.publicCloudProjectById?.secondaryTechnicalLead?.email;
 
   const [
     publicCloudProjectEditRequest,
@@ -284,8 +285,10 @@ export default function AdminProject({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <ProviderInput formik={formik} isDisabled={true} />
-            </div>
+              <Box sx={{ pt: 3 }}><ProviderPlainText
+                provider={formik.initialValues.provider}
+              />
+              </Box>            </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <AccountCodingInput formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
@@ -293,7 +296,7 @@ export default function AdminProject({ requestsRoute }) {
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <BudgetInput formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <CommonComponents formik={formik} isDisabled={isDisabled} />
+            {/* <CommonComponents formik={formik} isDisabled={isDisabled} /> */}
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
               <Button
                 type="submit"
