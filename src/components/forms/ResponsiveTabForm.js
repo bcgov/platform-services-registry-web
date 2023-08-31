@@ -19,7 +19,6 @@ export default function TabForm({ isPrivate }) {
     setAnchorElNav(null);
   };
 
-
   return (
     <div>
       <Box sx={{ flexGrow: 1, display: { xs: "flex", xl: "none" } }}>
@@ -38,12 +37,12 @@ export default function TabForm({ isPrivate }) {
           anchorEl={anchorElNav}
           anchorOrigin={{
             vertical: "bottom",
-            horizontal: "left"
+            horizontal: "left",
           }}
           keepMounted
           transformOrigin={{
             vertical: "top",
-            horizontal: "left"
+            horizontal: "left",
           }}
           open={Boolean(anchorElNav)}
           onClose={handleCloseNavMenu}
@@ -53,13 +52,15 @@ export default function TabForm({ isPrivate }) {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-around",
-              height: 150
+              height: 150,
+              padding: "10px", // Add padding here
             }}
           >
-            <Search />
-            <FilterPrivate />
-            {isPrivate ? <FilterPrivate /> : <FilterPublic />}
-            {isPrivate && <DownloadCsv />}
+            <Search style={{ margin: "5px 0" }} />
+            <div style={{ margin: "5px 0" }}>
+              {isPrivate ? <FilterPrivate /> : <FilterPublic />}
+            </div>
+            {isPrivate && <DownloadCsv style={{ margin: "5px 0" }} />}
           </div>
         </Menu>
       </Box>
