@@ -84,6 +84,7 @@ export type CreateUserInput = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   ministry?: InputMaybe<Scalars['String']>;
+  upn?: InputMaybe<Scalars['String']>;
 };
 
 export enum DecisionStatus {
@@ -691,8 +692,10 @@ export function CreateUserInputSchema(): yup.SchemaOf<CreateUserInput> {
   return yup.object({
     email: yup.string().defined(),
     firstName: yup.string().defined(),
+    idir: yup.string(),
     lastName: yup.string().defined(),
-    ministry: yup.string()
+    ministry: yup.string(),
+    upn: yup.string()
   })
 }
 
