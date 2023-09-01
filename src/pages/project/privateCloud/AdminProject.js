@@ -148,11 +148,87 @@ const UPDATE_USER_PROJECT = gql`
   }
 `;
 
-const ADMIN_REQUEST = gql`
-  query PrivateCloudRequestById($requestId: ID!) {
-    privateCloudRequestById(requestId: $requestId) {
+const ADMIN_REQUEST_BY_LICENCE_PLATE = gql`
+  query PrivateCloudRequestByLicencePlate($licencePlate: String!) {
+    PrivateCloudRequestByLicencePlate(licencePlate: $licencePlate) {
+      id
+      createdBy {
+        firstName
+        lastName
+      }
+      decisionMaker {
+        firstName
+        lastName
+        id
+      }
+      type
+      decisionStatus
+      humanComment
+      active
+      created
+      decisionDate
       project {
         name
+        productionQuota {
+          cpu
+          memory
+          storage
+        }
+        testQuota {
+          cpu
+          memory
+          storage
+        }
+        developmentQuota {
+          cpu
+          memory
+          storage
+        }
+        toolsQuota {
+          cpu
+          memory
+          storage
+        }
+      }
+      requestedProject {
+        id
+        name
+        licencePlate
+        description
+        status
+        projectOwner {
+          email
+          firstName
+          lastName
+          ministry
+        }
+        primaryTechnicalLead {
+          email
+          firstName
+          lastName
+          ministry
+        }
+        secondaryTechnicalLead {
+          email
+          firstName
+          lastName
+          ministry
+        }
+        ministry
+        cluster
+        commonComponents {
+          addressAndGeolocation
+          workflowManagement
+          formDesignAndSubmission
+          identityManagement
+          paymentServices
+          documentManagement
+          endUserNotificationAndSubscription
+          publishing
+          businessIntelligence
+          noServices
+          other
+        }
         productionQuota {
           cpu
           memory
@@ -252,20 +328,20 @@ export default function AdminProject({ requestsRoute }) {
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const { data } = useQuery(ADMIN_PROJECT, {
+  const { data, loading, error, refetch } = useQuery(ADMIN_PROJECT, {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network",
   });
 
-  const { reqData } = useQuery(ADMIN_REQUEST, {
-    variables: { requestId: id }
-  });
+  // const { data: requestData, loading: requestLoading, error: requestError }  = useQuery(ADMIN_REQUEST_BY_LICENCE_PLATE, {
+  //   variables: { licencePlate: "c531e8" }
+  // });
+
+  // console.log("error from graphql is: " + requestError);
+  // console.log("object is: " + JSON.stringify(requestData));
 
   // const { project, requestedProject, ...request } =
-  //   reqData?.privateCloudRequestById || {};
-
-  const { project, requestedProject, ...request } =
-    data?.privateCloudProjectById || {};
+  //   requestData?.privateCloudRequestById || {};
 
   
 
@@ -414,7 +490,6 @@ export default function AdminProject({ requestsRoute }) {
 
   const handleClose = () => setOpen(false);
 
-  console.log(data);
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -485,8 +560,9 @@ export default function AdminProject({ requestsRoute }) {
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Users formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            {isDisabled ? <QuotasInputText project={data.privateCloudProjectById} requestedProject={data.privateCloudProjectById} /> 
-            : <Quotas formik={formik} isDisabled={isDisabled} /> }<Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            {/* {isDisabled ? <QuotasInputText project={project} requestedProject={requestedProject}  /> 
+            : <Quotas formik={formik} isDisabled={isDisabled} /> } */}
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
               <Button
