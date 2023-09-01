@@ -14,6 +14,7 @@ import SearchProvider from "./providers/search";
 import FilterProvider from "./providers/filter";
 import PublicCloudFilterProvider from "./providers/publicCloudFilter";
 import SortProvider from "./providers/sort";
+import PublicCloudAlert from "./components/PublicCloudAlert";
 
 const theme = createTheme({
   typography: {
@@ -105,6 +106,7 @@ function App() {
               <PublicCloudFilterProvider>
                 <SortProvider>
                     <RolesProvider>
+                      <PublicCloudAlert />
                       <AppRouter />
                     </RolesProvider>
                 </SortProvider>

@@ -108,8 +108,8 @@ const UPDATE_PROJECT = gql`
     $projectOwner: CreateUserInput!
     $primaryTechnicalLead: CreateUserInput!
     $secondaryTechnicalLead: CreateUserInput
-    # $commonComponents: CommonComponentsInput!
-  ) {
+  ) # $commonComponents: CommonComponentsInput!
+  {
     publicCloudProjectEditRequest(
       projectId: $projectId
       name: $name
@@ -120,8 +120,8 @@ const UPDATE_PROJECT = gql`
       budget: $budget
       primaryTechnicalLead: $primaryTechnicalLead
       secondaryTechnicalLead: $secondaryTechnicalLead
-      # commonComponents: $commonComponents
-    ) {
+    ) # commonComponents: $commonComponents
+    {
       id
       active
     }
@@ -283,9 +283,8 @@ export default function Project({ requestsRoute }) {
           <div>
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <Box sx={{ pt: 3 }}><ProviderPlainText 
-              provider={formik.initialValues.provider}
-              />
+              <Box sx={{ pt: 3 }}>
+                <ProviderPlainText provider={formik.initialValues.provider} />
               </Box>
             </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
@@ -298,7 +297,8 @@ export default function Project({ requestsRoute }) {
             {/* <CommonComponents formik={formik} isDisabled={isDisabled} /> */}
             <Button
               type="submit"
-              disabled={!formik.dirty}
+              // disabled={!formik.dirty}
+              disabled
               sx={{ mr: 1, width: "170px" }}
               variant="contained"
             >
@@ -318,7 +318,8 @@ export default function Project({ requestsRoute }) {
                   Are you sure you want to edit this product?
                   <Button
                     onClick={submitForm}
-                    disabled={!formik.dirty}
+                    // disabled={!formik.dirty}
+                    disabled
                     sx={{ mr: 1, width: "170px", mt: 3 }}
                     variant="contained"
                   >

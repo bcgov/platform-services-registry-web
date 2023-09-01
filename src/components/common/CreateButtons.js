@@ -50,6 +50,7 @@ export default function CreateButtons({
           size="small"
           variant="contained"
           endIcon={<AddIcon />}
+          disabled
         >
           {publicCloudCreateLabel||'Create Public Cloud Product'}
         </ColorButton>
