@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
 import StickyTable from "../../components/common/Table";
-import { requestsToRows, columns } from "./helpers";
+import { adminRequestsToRows, columns } from "./helpers";
 import { EmptyAlert, ErrorAlert } from "../../components/common/Alert";
 import EmptyList from "../../components/common/EmptyList";
 
@@ -23,19 +23,19 @@ export const ALL_ACTIVE_REQUESTS = gql`
           email
           firstName
           lastName
-          email
+          isNew
         }
         primaryTechnicalLead {
           email
           firstName
           lastName
-          email
+          isNew
         }
         secondaryTechnicalLead {
           email
           firstName
           lastName
-          email
+          isNew
         }
       }
     }
@@ -55,19 +55,19 @@ export const ALL_ACTIVE_REQUESTS = gql`
           email
           firstName
           lastName
-          email
+          isNew
         }
         primaryTechnicalLead {
           email
           firstName
           lastName
-          email
+          isNew
         }
         secondaryTechnicalLead {
           email
           firstName
           lastName
-          email
+          isNew
         }
       }
     }
@@ -98,7 +98,7 @@ export default function Requests() {
           ...data.publicCloudActiveRequests,
         ]
           .sort((a, b) => (a.created > b.created ? 1 : -1))
-          .map(requestsToRows)
+          .map(adminRequestsToRows)
           .reverse()}
         title="Active Requests"
         loading={loading}
