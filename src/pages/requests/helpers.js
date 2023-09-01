@@ -10,8 +10,136 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "@mui/material/Link";
 import { stopPropagationRow } from "../../components/common/FormHelpers";
+import DoneIcon from "@mui/icons-material/Done";
+import CloseIcon from '@mui/icons-material/Close';
 
 dayjs.extend(relativeTime);
+
+const adminRequestsToRows = ({
+  id,
+  active,
+  decisionStatus,
+  type,
+  created,
+  requestedProject: {
+    name,
+    licencePlate,
+    projectOwner,
+    primaryTechnicalLead,
+    secondaryTechnicalLead,
+    ministry,
+    cluster,
+    provider,
+  },
+}) => ({
+  id,
+  onClickPath: (isAdmin) =>
+    `/registry/${isAdmin.admin || isAdmin.readOnlyAdmin ? "admin" : "user"}/${
+      provider && !cluster ? "public-cloud" : "private-cloud"
+    }/request/${id}`,
+
+  name: <span style={{ fontSize: 18, fontWeight: "500" }}>{name}</span>,
+  created: <span style={{ fontSize: 16 }}> {dayjs(created).fromNow()}</span>,
+  licencePlate: (
+    <b style={{ fontSize: 16, fontWeight: "500" }}>{licencePlate}</b>
+  ),
+  ministry,
+  cluster: provider === "AWS" ? "AWS" : cluster,
+  projectOwner: (
+    <Link
+      underline="hover"
+      onClick={(e) => stopPropagationRow(e, "mailto:" + projectOwner.email)}
+    >
+      <div style={{ display: "flex" }}>
+        <div style={{ marginTop: 4, marginRight: 4 }}>
+          {projectOwner.isNew ? (
+            <DoneIcon style={{ color: "green" }} />
+          ) : (
+            <CloseIcon style={{ color: "red" }} />
+          )}
+        </div>
+        <Chip
+          key={projectOwner.email + "po"}
+          style={{ width: "fit-content" }}
+          avatar={
+            <Avatar
+              firstName={projectOwner.firstName}
+              email={projectOwner.email}
+              lastName={projectOwner.lastName}
+            />
+          }
+          label={`${projectOwner.firstName} ${projectOwner.lastName}`}
+          variant="outlined"
+        />
+      </div>
+    </Link>
+  ),
+  technicalLeads: (
+    <Stack direction="column" spacing={1}>
+      {[primaryTechnicalLead, secondaryTechnicalLead]
+        .filter(Boolean)
+        .map(({ firstName, lastName, githubId, email, isNew }) => (
+          <Link
+            underline="hover"
+            onClick={(e) => stopPropagationRow(e, "mailto:" + email)}
+          >
+            <div style={{ display: "flex" }}>
+              <div style={{ marginTop: 4, marginRight: 4 }}>
+                {isNew ? (
+                  <DoneIcon style={{ color: "green" }} />
+                ) : (
+                  <CloseIcon style={{ color: "red" }} />
+                )}
+              </div>
+              <Chip
+                key={email + "tl"}
+                style={{ width: "fit-content" }}
+                avatar={
+                  <Avatar
+                    firstName={firstName}
+                    email={email}
+                    lastName={lastName}
+                  />
+                }
+                label={`${firstName} ${lastName}`}
+                variant="outlined"
+              />
+            </div>
+          </Link>
+        ))}
+    </Stack>
+  ),
+  status: (
+    <Box sx={{ display: "flex" }}>
+      {decisionStatus === "APPROVED" ? <CircularProgress /> : null}
+      {decisionStatus === "REJECTED" ? (
+        <CancelIcon fontSize="small" color="error" sx={{ mt: 0.7 }} />
+      ) : null}
+      {decisionStatus === "PENDING" ? (
+        <HourglassBottomRoundedIcon
+          fontSize="small"
+          color="secondary"
+          sx={{ mt: 0.7 }}
+        />
+      ) : null}
+      {decisionStatus === "PROVISIONED" ? (
+        <CheckCircleRoundedIcon
+          fontSize="small"
+          color="success"
+          sx={{ mt: 0.7 }}
+        />
+      ) : null}
+      <Chip
+        style={{ borderRadius: 7, fontWeight: "500", border: "none" }}
+        // color={decisionStatusColourLookup[decisionStatus]}
+        variant="outlined"
+        label={decisionStatusLookup[decisionStatus]}
+      />
+    </Box>
+  ),
+
+  type: <Chip style={{ borderRadius: 7 }} label={type} />,
+});
 
 const requestsToRows = ({
   id,
@@ -151,4 +279,4 @@ const columns = [
   { id: "licencePlate", label: "License Plate", minWidth: 0 },
 ];
 
-export { requestsToRows, columns };
+export { requestsToRows, adminRequestsToRows, columns };
