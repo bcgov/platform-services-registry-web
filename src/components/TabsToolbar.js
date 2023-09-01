@@ -117,7 +117,7 @@ export default function TabsToolbar({ routes }) {
         {pathname.includes("requests") ? null : (
           <TabForm isPrivate={pathname.includes("private")} />
         )}
-        <Box>
+        <Box sx={{ display: { xs: "none", sm: "flex" } }}>
           <CreateButtons
             privateCloudCreatePath={
               pathname.includes("private") || pathname.includes("requests")
