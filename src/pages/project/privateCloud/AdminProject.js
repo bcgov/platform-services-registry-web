@@ -119,44 +119,9 @@ const ADMIN_PROJECT = gql`
   }
 `;
 
-const UPDATE_USER_PROJECT = gql`
-  mutation Mutation(
-    $projectId: ID!
-    $name: String!
-    $description: String!
-    $ministry: Ministry!
-    $projectOwner: CreateUserInput!
-    $primaryTechnicalLead: CreateUserInput!
-    $secondaryTechnicalLead: CreateUserInput
-    $commonComponents: CommonComponentsInput!
-    $productionQuota: QuotaInput!
-    $developmentQuota: QuotaInput!
-    $testQuota: QuotaInput!
-    $toolsQuota: QuotaInput!
-  ) {
-    privateCloudProjectEditRequest(
-      projectId: $projectId
-      name: $name
-      description: $description
-      ministry: $ministry
-      projectOwner: $projectOwner
-      primaryTechnicalLead: $primaryTechnicalLead
-      secondaryTechnicalLead: $secondaryTechnicalLead
-      commonComponents: $commonComponents
-      productionQuota: $productionQuota
-      developmentQuota: $developmentQuota
-      testQuota: $testQuota
-      toolsQuota: $toolsQuota
-    ) {
-      id
-      active
-    }
-  }
-`;
-
-const ADMIN_REQUEST_BY_LICENCE_PLATE = gql`
-  query PrivateCloudRequestByLicencePlate($licencePlate: String!) {
-    PrivateCloudRequestByLicencePlate(licencePlate: $licencePlate) {
+const ADMIN_REQUEST = gql`
+  query PrivateCloudRequestById($requestId: ID!) {
+    privateCloudRequestById(requestId: $requestId) {
       id
       createdBy {
         firstName
@@ -260,6 +225,41 @@ const ADMIN_REQUEST_BY_LICENCE_PLATE = gql`
   }
 `;
 
+const UPDATE_USER_PROJECT = gql`
+  mutation Mutation(
+    $projectId: ID!
+    $name: String!
+    $description: String!
+    $ministry: Ministry!
+    $projectOwner: CreateUserInput!
+    $primaryTechnicalLead: CreateUserInput!
+    $secondaryTechnicalLead: CreateUserInput
+    $commonComponents: CommonComponentsInput!
+    $productionQuota: QuotaInput!
+    $developmentQuota: QuotaInput!
+    $testQuota: QuotaInput!
+    $toolsQuota: QuotaInput!
+  ) {
+    privateCloudProjectEditRequest(
+      projectId: $projectId
+      name: $name
+      description: $description
+      ministry: $ministry
+      projectOwner: $projectOwner
+      primaryTechnicalLead: $primaryTechnicalLead
+      secondaryTechnicalLead: $secondaryTechnicalLead
+      commonComponents: $commonComponents
+      productionQuota: $productionQuota
+      developmentQuota: $developmentQuota
+      testQuota: $testQuota
+      toolsQuota: $toolsQuota
+    ) {
+      id
+      active
+    }
+  }
+`;
+
 const DELETE_USER_PROJECT = gql`
   mutation Mutation(
     $projectId: ID!
@@ -341,19 +341,16 @@ export default function AdminProject({ requestsRoute }) {
     nextFetchPolicy: "cache-and-network",
   });
 
-  // const { data: requestData, loading: requestLoading, error: requestError }  = useQuery(ADMIN_REQUEST_BY_LICENCE_PLATE, {
-  //   variables: { licencePlate: "c531e8" }
-  // });
+  const requestId = data?.privateCloudProjectById.activeEditRequest.id;
 
-  // console.log("error from graphql is: " + requestError);
-  // console.log("object is: " + JSON.stringify(requestData));
-
-  // const { project, requestedProject, ...request } =
-  //   requestData?.privateCloudRequestById || {};
-
+  const { data: requestData, loading: requestLoading, error: requestError }  = useQuery(ADMIN_REQUEST, {
+    variables: { requestId: requestId }
+  });
   
+  const requestedProject = requestData?.privateCloudRequestById.requestedProject;
 
-  const readOnlyAdminIsAbleToEdit =
+
+  const readOnlyAdminIsAbleToEdit = 
     userContext.email === data?.privateCloudProjectById.projectOwner.email ||
     userContext.email ===
     data?.privateCloudProjectById?.primaryTechnicalLead?.email ||
@@ -568,8 +565,8 @@ export default function AdminProject({ requestsRoute }) {
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Users formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            {/* {isDisabled ? <QuotasInputText project={project} requestedProject={requestedProject}  /> 
-            : <Quotas formik={formik} isDisabled={isDisabled} /> } */}
+            {isDisabled ? <QuotasInputText project={data?.privateCloudProjectById} requestedProject={requestedProject}  /> 
+            : <Quotas formik={formik} isDisabled={isDisabled} /> }
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (

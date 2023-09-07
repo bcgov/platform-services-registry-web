@@ -82,6 +82,7 @@ export enum CommonComponentsOptions {
 export type CreateUserInput = {
   email: Scalars['EmailAddress'];
   firstName: Scalars['String'];
+  idir?: InputMaybe<Scalars['String']>;
   lastName: Scalars['String'];
   ministry?: InputMaybe<Scalars['String']>;
   upn?: InputMaybe<Scalars['String']>;
@@ -250,7 +251,6 @@ export type MutationPrivateCloudRequestDecisionArgs = {
 export type MutationPublicCloudProjectEditRequestArgs = {
   accountCoding?: InputMaybe<Scalars['String']>;
   budget: BudgetInput;
-  commonComponents: CommonComponentsInput;
   description: Scalars['String'];
   ministry: Ministry;
   name: Scalars['String'];
@@ -264,7 +264,6 @@ export type MutationPublicCloudProjectEditRequestArgs = {
 export type MutationPublicCloudProjectRequestArgs = {
   accountCoding?: InputMaybe<Scalars['String']>;
   budget: BudgetInput;
-  commonComponents: CommonComponentsInput;
   description: Scalars['String'];
   ministry: Ministry;
   name: Scalars['String'];
@@ -344,7 +343,6 @@ export type PublicCloudProject = {
   accountCoding: Scalars['String'];
   activeEditRequest?: Maybe<PublicCloudRequest>;
   budget: Budget;
-  commonComponents: CommonComponents;
   created: Scalars['DateTime'];
   description: Scalars['String'];
   id: Scalars['ID'];
@@ -609,10 +607,12 @@ export type UpdateUserInput = {
   archived?: InputMaybe<Scalars['Boolean']>;
   email?: InputMaybe<Scalars['EmailAddress']>;
   firstName?: InputMaybe<Scalars['String']>;
+  idir?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
   lastSeen?: InputMaybe<Scalars['DateTime']>;
   projectOwner?: InputMaybe<Array<Scalars['ID']>>;
   technicalLead?: InputMaybe<Array<Scalars['ID']>>;
+  upn?: InputMaybe<Scalars['String']>;
 };
 
 export type User = {
@@ -622,6 +622,7 @@ export type User = {
   email: Scalars['EmailAddress'];
   firstName?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  idir?: Maybe<Scalars['String']>;
   isNew?: Maybe<Scalars['Boolean']>;
   lastName?: Maybe<Scalars['String']>;
   lastSeen?: Maybe<Scalars['DateTime']>;
@@ -631,6 +632,7 @@ export type User = {
   privateCloudProjectSecondaryTechnicalLead: Array<Maybe<PrivateCloudProject>>;
   publicCloudProjectOwner: Array<Maybe<PublicCloudProject>>;
   publicCloudProjectTechnicalLead: Array<Maybe<PublicCloudProject>>;
+  upn?: Maybe<Scalars['String']>;
 };
 
 export type PrivateCloudProjectsPaginatedOutput = {
@@ -753,9 +755,11 @@ export function UpdateUserInputSchema(): yup.SchemaOf<UpdateUserInput> {
     archived: yup.boolean(),
     email: yup.string(),
     firstName: yup.string(),
+    idir: yup.string(),
     lastName: yup.string(),
     lastSeen: yup.string(),
     projectOwner: yup.array().of(yup.string().defined()).optional(),
-    technicalLead: yup.array().of(yup.string().defined()).optional()
+    technicalLead: yup.array().of(yup.string().defined()).optional(),
+    upn: yup.string()
   })
 }
