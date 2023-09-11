@@ -378,9 +378,11 @@ export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
   privateCloudActiveRequestById: PrivateCloudRequest;
+  privateCloudActiveRequestByLP: PrivateCloudRequest;
   privateCloudActiveRequests: Array<PrivateCloudRequest>;
   privateCloudActiveRequestsById: Array<PrivateCloudRequest>;
   privateCloudProjectById: PrivateCloudProject;
+  privateCloudProjectByLP: PrivateCloudProject;
   privateCloudProjects: Array<PrivateCloudProject>;
   privateCloudProjectsById: Array<PrivateCloudProject>;
   privateCloudProjectsPaginated: ProjectsPaginatedOutput;
@@ -399,6 +401,7 @@ export type Query = {
   user?: Maybe<User>;
   userByEmail?: Maybe<User>;
   userPrivateCloudActiveRequestById: PrivateCloudRequest;
+  userPrivateCloudActiveRequestByLP: PrivateCloudRequest[];
   userPrivateCloudActiveRequests: Array<PrivateCloudRequest>;
   userPrivateCloudActiveRequestsByIds: PrivateCloudRequest;
   userPrivateCloudDeletionCheck: Scalars['Boolean'];
@@ -425,6 +428,9 @@ export type QueryPrivateCloudActiveRequestByIdArgs = {
   requestId: Scalars['ID'];
 };
 
+export type QueryPrivateCloudActiveRequestByLPArgs = {
+  licencePlate: Scalars['String'];
+};
 
 export type QueryPrivateCloudActiveRequestsByIdArgs = {
   requestIds: Scalars['ID'];
@@ -509,6 +515,9 @@ export type QueryUserByEmailArgs = {
 
 export type QueryUserPrivateCloudActiveRequestByIdArgs = {
   requestId: Scalars['ID'];
+};
+export type QueryUserPrivateCloudActiveRequestByLPArgs = {
+  licencePlate: Scalars['String'];
 };
 
 
