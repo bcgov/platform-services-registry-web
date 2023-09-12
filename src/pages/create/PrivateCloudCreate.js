@@ -164,11 +164,9 @@ export default function Create({ requestsRoute }) {
         <NavToolbar title="Create Product"></NavToolbar>
         <Container>
           <MetaDataInput
-            formik={formik}
-            isDisabled={false}
-            cloudProvider={"Platform Services"}
-            mail={"PlatformServicesTeam@gov.bc.ca"}
-            platform={"Public Cloud"}
+             formik={formik}
+             isDisabled={false}      
+             isPrivate={true}  
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>
