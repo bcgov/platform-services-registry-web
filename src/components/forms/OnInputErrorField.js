@@ -55,7 +55,7 @@ export default function OnInputErrorField({
                     setErrorLengthMessage('')
                 }
                 setError(specialChars.test(e.target.value) || e.target.value.length < length)
-                e.target.value = e.target.value.replace(`${specialChars}g`, '').toUpperCase().substring(0, length)
+                e.target.value = e.target.value.replace(specialChars, '').toUpperCase().substring(0, length)
             }}
         />
     );

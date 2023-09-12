@@ -6,7 +6,7 @@ import RequiredField from "../common/RequiredField";
 import Typography from "@mui/material/Typography";
 
 //. : + = @ _ / - allowed
-const specialChars = /[!#$%^&*()_\-\[\]{};'"\\|,<>\?]/;
+const specialChars = /[!#$%^&*()_\-\[\]{};'"\\|,<>\?]/g;
 
 export default function MetaDataInput({ formik, isDisabled, isPublic = false, isPrivate = false }) {
   const cloudProvider = isPublic ? "Cloud Pathfinder" : isPrivate ? "Platform Services" : undefined;
@@ -92,17 +92,15 @@ export default function MetaDataInput({ formik, isDisabled, isPublic = false, is
               else {
                 setErrorSpecialCharMessage('')
               }
-              if (e.target.value.length !== 250) {
-                if (e.target.value.length > 250) {
-                  setError(true)
-                  setErrorLengthMessage(`There are more than ${250} characters - code should be ${250} characters`)
-                }
+              if (e.target.value.length > 250) {
+                setError(true)
+                setErrorLengthMessage(`There are more than ${250} characters - code should be ${250} characters`)
               }
               else {
                 setErrorLengthMessage('')
               }
-              setError(e.target.value.length !== 250 || specialChars.test(e.target.value))
-              e.target.value = e.target.value.replace(`${specialChars}g`, '')
+              setError(e.target.value.length > 250 || specialChars.test(e.target.value))
+              e.target.value = e.target.value.replace(specialChars, '')
             }}
           />
           <TextField
