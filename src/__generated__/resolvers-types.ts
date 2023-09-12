@@ -22,17 +22,17 @@ export type AdditionalEntityFields = {
 
 export type Budget = {
   __typename?: 'Budget';
-  dev: Scalars['Int'];
-  prod: Scalars['Int'];
-  test: Scalars['Int'];
-  tools: Scalars['Int'];
+  dev: Scalars['Float'];
+  prod: Scalars['Float'];
+  test: Scalars['Float'];
+  tools: Scalars['Float'];
 };
 
 export type BudgetInput = {
-  dev: Scalars['Int'];
-  prod: Scalars['Int'];
-  test: Scalars['Int'];
-  tools: Scalars['Int'];
+  dev: Scalars['Float'];
+  prod: Scalars['Float'];
+  test: Scalars['Float'];
+  tools: Scalars['Float'];
 };
 
 export enum Cluster {
