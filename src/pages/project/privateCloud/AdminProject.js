@@ -115,6 +115,32 @@ const ADMIN_PROJECT = gql`
         memory
         storage
       }
+      requestHistory{
+        active
+        requestedProject{
+          status
+          productionQuota {
+        cpu
+        memory
+        storage
+      }
+      testQuota {
+        cpu
+        memory
+        storage
+      }
+      developmentQuota {
+        cpu
+        memory
+        storage
+      }
+      toolsQuota {
+        cpu
+        memory
+        storage
+      }
+        }
+      }
     }
   }
 `;
@@ -340,14 +366,14 @@ export default function AdminProject({ requestsRoute }) {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network",
   });
+console.log(data)
+  // const requestId = data?.privateCloudProjectById.activeEditRequest?.id;
 
-  const requestId = data?.privateCloudProjectById.activeEditRequest.id;
-
-  const { data: requestData, loading: requestLoading, error: requestError }  = useQuery(ADMIN_REQUEST, {
-    variables: { requestId: requestId }
-  });
+  // const { data: requestData, loading: requestLoading, error: requestError }  = useQuery(ADMIN_REQUEST, {
+  //   variables: { requestId: requestId }
+  // });
   
-  const requestedProject = requestData?.privateCloudRequestById.requestedProject;
+  // const requestedProject = requestData?.privateCloudRequestById.requestedProject;
 
 
   const readOnlyAdminIsAbleToEdit = 
@@ -565,8 +591,8 @@ export default function AdminProject({ requestsRoute }) {
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Users formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            {isDisabled ? <QuotasInputText project={data?.privateCloudProjectById} requestedProject={requestedProject}  /> 
-            : <Quotas formik={formik} isDisabled={isDisabled} /> }
+            {/* {isDisabled ? <QuotasInputText project={data?.privateCloudProjectById} requestedProject={requestedProject}  /> 
+            : <Quotas formik={formik} isDisabled={isDisabled} /> } */}
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
