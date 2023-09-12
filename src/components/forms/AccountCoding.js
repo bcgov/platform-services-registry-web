@@ -5,7 +5,7 @@ import TitleTypography from "../common/TitleTypography";
 import Typography from "@mui/material/Typography";
 import OnInputErrorField from "./OnInputErrorField"
 
-const specialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+const specialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
 
 export default function AccountCoding({ formik, isDisabled }) {
   const [value, setValue] = useState({
