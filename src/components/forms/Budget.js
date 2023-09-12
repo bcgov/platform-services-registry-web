@@ -16,7 +16,7 @@ export default function Budget({ formik, isDisabled }) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "flex-end",
-        "& .css-16dsu82-MuiTypography-root": {
+        "& .MuiTypography-root": {
           color: "text.primary",
         }
       }}
