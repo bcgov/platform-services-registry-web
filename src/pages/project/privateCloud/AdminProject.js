@@ -41,8 +41,8 @@ import UserContext from "../../../context/user";
 import Delete from "../../../components/Delete";
 import ClusterInputText from "../../../components/plainText/ClusterInput";
 import MetaDataInputText from "../../../components/plainText/MetaDataInput";
-import {default as MinistryInputText} from "../../../components/plainText/MinistryInput";
-import {default as QuotasInputText} from "../../../components/plainText/Quotas";
+import { default as MinistryInputText } from "../../../components/plainText/MinistryInput";
+import { default as QuotasInputText } from "../../../components/plainText/Quotas";
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -117,6 +117,7 @@ const ADMIN_PROJECT = gql`
       }
       requestHistory{
         active
+        decisionStatus
         requestedProject{
           status
           productionQuota {
@@ -366,17 +367,17 @@ export default function AdminProject({ requestsRoute }) {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network",
   });
-console.log(data)
+  console.log(data)
   // const requestId = data?.privateCloudProjectById.activeEditRequest?.id;
 
   // const { data: requestData, loading: requestLoading, error: requestError }  = useQuery(ADMIN_REQUEST, {
   //   variables: { requestId: requestId }
   // });
-  
+
   // const requestedProject = requestData?.privateCloudRequestById.requestedProject;
 
 
-  const readOnlyAdminIsAbleToEdit = 
+  const readOnlyAdminIsAbleToEdit =
     userContext.email === data?.privateCloudProjectById.projectOwner.email ||
     userContext.email ===
     data?.privateCloudProjectById?.primaryTechnicalLead?.email ||
@@ -571,28 +572,32 @@ console.log(data)
         ) : null}
         <Container>
           {isDisabled ? <MetaDataInputText name={data?.privateCloudProjectById?.name}
-            description={data?.privateCloudProjectById?.description}/> 
-            : <MetaDataInput formik={formik} isDisabled={isDisabled}/>}
+            description={data?.privateCloudProjectById?.description} />
+            : <MetaDataInput formik={formik} isDisabled={isDisabled} />}
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           {isDisabled ? <><MinistryInputText ministry={data?.privateCloudProjectById?.ministry} />
-          <Box sx={{ pt: 2 }}><ClusterInputText cluster={data?.privateCloudProjectById?.cluster} /></Box></> 
+            <Box sx={{ pt: 2 }}><ClusterInputText cluster={data?.privateCloudProjectById?.cluster} /></Box></>
             : <div style={{ display: "flex" }}>
-            <MinistryInput formik={formik} isDisabled={isDisabled} />
-            <Box sx={{ pt: 5 }}>
-              <ClusterInputText cluster={formik.values.cluster} />
-            </Box>
-          </div>}
-            
+              <MinistryInput formik={formik} isDisabled={isDisabled} />
+              <Box sx={{ pt: 5 }}>
+                <ClusterInputText cluster={formik.values.cluster} />
+              </Box>
+            </div>}
+
           <div>
-            <Divider variant="middle" sx={{ mt: 1, mb: 1 }}/>
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
               cluster={data?.privateCloudProjectById?.cluster}
-              licencePlate={data?.privateCloudProjectById?.licencePlate}/>
+              licencePlate={data?.privateCloudProjectById?.licencePlate} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Users formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            {/* {isDisabled ? <QuotasInputText project={data?.privateCloudProjectById} requestedProject={requestedProject}  /> 
-            : <Quotas formik={formik} isDisabled={isDisabled} /> } */}
+            {isDisabled ? <QuotasInputText
+              project={data?.privateCloudProjectById}
+              requestedProject={
+                data?.privateCloudProjectById.requestHistory.filter(item => Boolean(item.active))[0].requestedProject}
+            />
+              : <Quotas formik={formik} isDisabled={isDisabled} />}
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
