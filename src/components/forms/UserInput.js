@@ -14,6 +14,7 @@ import RequiredField from "../common/RequiredField";
 import Autocomplete from "@mui/material/Autocomplete";
 import HelperIcon from '../../components/common/HelperIcon';
 
+
 const parseMinistryFromDisplayName = (displayName) => {
   if (displayName && displayName.length > 0) {
     const dividedString = displayName.split(/(\s+)/);
@@ -23,6 +24,7 @@ const parseMinistryFromDisplayName = (displayName) => {
     }
   }
 };
+
 
 export default function UserInput({
   contact, // e.g "projectOwner" or "primaryTechnicalLead" or "secondaryTechnicalLead"
@@ -40,6 +42,7 @@ export default function UserInput({
   const [inputValue, setInputValue] = useState('');
   const debouncedEmail = useDebounce(emailInput);
 
+
   const getFilteredUsers = useCallback(async () => {
     const response = await fetch(
       (process.env.REACT_APP_API_URL || '{{ env "API_BASE_URL" }}') +
@@ -55,6 +58,7 @@ export default function UserInput({
     const data = await response.json();
     setUserOptions(data);
   }, [debouncedEmail]);
+
 
   const getUserIdir = useCallback(async () => {
     if (userId) {
@@ -75,6 +79,8 @@ export default function UserInput({
   }, [userId]);
 
 
+
+
   useEffect(() => {
     if (!email) {
       if (contact === "secondaryTechnicalLead") {
@@ -89,7 +95,9 @@ export default function UserInput({
       }
     }
 
+
     const user = userOptions.find((user) => user.mail?.toLowerCase() === email);
+
 
     if (user) {
       setUserId(user.id)
@@ -106,14 +114,26 @@ export default function UserInput({
         );
       }
     }
-
   }, [email, userId, userIdir]);
+
 
   useEffect(() => {
     if (debouncedEmail) {
       getFilteredUsers();
     }
   }, [debouncedEmail]);
+
+//temporary solution for old registry DB users who don't have full account info(idir/ministry/upn etc)
+  useEffect(() => {
+    setEdit(Boolean(formik.errors[contact]?.firstName) ||
+      Boolean(formik.errors[contact]?.email) ||
+      Boolean(formik.errors[contact]?.lastName) ||
+      Boolean(formik.errors[contact]?.ministry) ||
+      Boolean(formik.errors[contact]?.idir) ||
+      Boolean(formik.errors[contact]?.upn)
+    )
+  }, [contact, formik.errors, formik.touched]);
+
 
   return (
     <Card sx={{ mr: 8, width: 400 }}>
@@ -201,8 +221,8 @@ export default function UserInput({
                     mb: 2
                   }}
                   error={
-                    formik.touched[contact]?.firstName &&
-                    Boolean(formik.errors[contact]?.firstName)
+                    formik.touched[contact]?.email &&
+                    Boolean(formik.errors[contact]?.email)
                   }
                   helperText={
                     Boolean(formik.values[contact]?.email) ? (
@@ -275,7 +295,7 @@ export default function UserInput({
                   <div style={{ fontSize: 16, color: "red" }}>
                     Please populate your IDIR account with your last name{" "}
                   </div>
-                ) : formik.touched[contact]?.firstName ? (
+                ) : formik.touched[contact]?.lastName ? (
                   <RequiredField />
                 ) : (
                   <span></span>
@@ -306,7 +326,7 @@ export default function UserInput({
                   <div style={{ fontSize: 16, color: "red" }}>
                     Please populate your IDIR account with your home ministry name{" "}
                   </div>
-                ) : formik.touched[contact]?.firstName ? (
+                ) : formik.touched[contact]?.ministry ? (
                   <RequiredField />
                 ) : (
                   <span></span>
@@ -333,11 +353,11 @@ export default function UserInput({
                 Boolean(formik.errors[contact]?.idir)
               }
               helperText={
-                Boolean(!formik.values[contact]?.ministry) && email ? (
+                Boolean(!formik.values[contact]?.idir) && email ? (
                   <div style={{ fontSize: 16, color: "red" }}>
                     Please populate your IDIR account with your IDIR
                   </div>
-                ) : formik.touched[contact]?.firstName ? (
+                ) : formik.touched[contact]?.idir ? (
                   <RequiredField />
                 ) : (
                   <span></span>
@@ -370,11 +390,11 @@ export default function UserInput({
                 Boolean(formik.errors[contact]?.upn)
               }
               helperText={
-                Boolean(!formik.values[contact]?.ministry) && email ? (
+                Boolean(!formik.values[contact]?.upn) && email ? (
                   <div style={{ fontSize: 16, color: "red" }}>
                     Please populate your IDIR account with your User Principal Name
                   </div>
-                ) : formik.touched[contact]?.firstName ? (
+                ) : formik.touched[contact]?.upn ? (
                   <RequiredField />
                 ) : (
                   <span></span>
