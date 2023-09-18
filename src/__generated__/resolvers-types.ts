@@ -28,19 +28,17 @@ export type Budget = {
   tools: Scalars['Float'];
 };
 
-export type IsNew = {
-  __typename?: 'IsNew';
-  dev: Scalars['Boolean'];
-  prod: Scalars['Boolean'];
-  test: Scalars['Boolean'];
-  tools: Scalars['Boolean'];
-};
-
 export type BudgetInput = {
   dev: Scalars['Float'];
   prod: Scalars['Float'];
   test: Scalars['Float'];
   tools: Scalars['Float'];
+};
+
+export type IsNew = {
+  __typename?: 'IsNew';
+  public: Scalars['Boolean'];
+  private: Scalars['Boolean'];
 };
 
 export enum Cluster {
