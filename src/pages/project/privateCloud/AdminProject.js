@@ -431,11 +431,6 @@ export default function AdminProject({ requestsRoute }) {
     });
   };
 
-//   const { dataTmp, loadingTmp, errorTmp, refetchTmp } = useQuery(ADMIN_PROJECT_LP, {
-//     variables: { licencePlate:"c531e8" },
-//     nextFetchPolicy: "cache-and-network",
-//   });
-// console.log("dataTmp", dataTmp)
   const [
     privateCloudReProvisionProject,
     {
