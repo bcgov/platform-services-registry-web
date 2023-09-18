@@ -43,6 +43,12 @@ export type BudgetInput = {
   tools: Scalars['Float'];
 };
 
+export type IsNew = {
+  __typename?: 'IsNew';
+  public: Scalars['Boolean'];
+  private: Scalars['Boolean'];
+};
+
 export enum Cluster {
   Clab = 'CLAB',
   Emerald = 'EMERALD',
