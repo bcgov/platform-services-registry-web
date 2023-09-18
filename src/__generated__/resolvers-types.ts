@@ -20,14 +20,6 @@ export type AdditionalEntityFields = {
   type?: InputMaybe<Scalars['String']>;
 };
 
-export type Budget = {
-  __typename?: 'Budget';
-  dev: Scalars['Float'];
-  prod: Scalars['Float'];
-  test: Scalars['Float'];
-  tools: Scalars['Float'];
-};
-
 export type IsNew = {
   __typename?: 'IsNew';
   dev: Scalars['Boolean'];
