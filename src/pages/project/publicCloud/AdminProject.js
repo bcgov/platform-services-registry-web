@@ -300,7 +300,8 @@ export default function AdminProject({ requestsRoute }) {
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
               <Button
                 type="submit"
-                disabled={!formik.dirty}
+                // disabled={!formik.dirty}
+                disabled
                 sx={{ mr: 1, width: "170px" }}
                 variant="contained"
               >
@@ -321,9 +322,10 @@ export default function AdminProject({ requestsRoute }) {
                   Are you sure you want to edit this product?
                   <Button
                     onClick={submitForm}
-                    disabled={!formik.dirty}
+                    // disabled={!formik.dirty}
                     sx={{ mr: 1, width: "170px", mt: 3 }}
                     variant="contained"
+                    disabled
                   >
                     Submit
                   </Button>
