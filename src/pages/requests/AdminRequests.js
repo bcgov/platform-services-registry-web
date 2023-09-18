@@ -23,19 +23,28 @@ export const ALL_ACTIVE_REQUESTS = gql`
           email
           firstName
           lastName
-          isNew
+          isNew{
+            public
+            private
+          }
         }
         primaryTechnicalLead {
           email
           firstName
           lastName
-          isNew
+          isNew{
+            public
+            private
+          }
         }
         secondaryTechnicalLead {
           email
           firstName
           lastName
-          isNew
+          isNew{
+            public
+            private
+          }
         }
       }
     }
@@ -55,19 +64,28 @@ export const ALL_ACTIVE_REQUESTS = gql`
           email
           firstName
           lastName
-          isNew
+          isNew{
+            public
+            private
+          }
         }
         primaryTechnicalLead {
           email
           firstName
           lastName
-          isNew
+          isNew{
+            public
+            private
+          }
         }
         secondaryTechnicalLead {
           email
           firstName
           lastName
-          isNew
+          isNew{
+            public
+            private
+          }
         }
       }
     }
