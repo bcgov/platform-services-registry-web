@@ -15,7 +15,10 @@ export default function Budget({ formik, isDisabled }) {
         mt: 2,
         display: "flex",
         justifyContent: "space-between",
-        alignItems: "flex-end"
+        alignItems: "flex-end",
+        "& .MuiTypography-root": {
+          color: "text.primary",
+        }
       }}
       noValidate
       autoComplete="off"
@@ -32,9 +35,9 @@ export default function Budget({ formik, isDisabled }) {
             sx={{ mr: 1 }}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">CAD</InputAdornment>
+                <InputAdornment position="start">USD</InputAdornment>
               )
-            }}
+            }}           
             type="number"
             id="budgetProd"
             name="budget.prod"
@@ -51,7 +54,7 @@ export default function Budget({ formik, isDisabled }) {
           <TextField
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">CAD</InputAdornment>
+                <InputAdornment position="start">USD</InputAdornment>
               )
             }}
             type="number"
@@ -72,7 +75,7 @@ export default function Budget({ formik, isDisabled }) {
             sx={{ mr: 1 }}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">CAD</InputAdornment>
+                <InputAdornment position="start">USD</InputAdornment>
               )
             }}
             type="number"
@@ -91,7 +94,7 @@ export default function Budget({ formik, isDisabled }) {
           <TextField
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">CAD</InputAdornment>
+                <InputAdornment position="start">USD</InputAdornment>
               )
             }}
             type="number"

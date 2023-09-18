@@ -40,6 +40,13 @@ import RolesContext from "../../../context/roles";
 import UserContext from "../../../context/user";
 import Delete from "../../../components/Delete";
 import ClusterInputText from "../../../components/plainText/ClusterInput";
+const ADMIN_PROJECT_LP = gql`
+  query privateCloudActiveRequestByLP($licencePlate: String!) {
+    privateCloudActiveRequestByLP(licencePlate: $licencePlate) {
+      id      
+    }
+  }
+`;
 import MetaDataInputText from "../../../components/plainText/MetaDataInput";
 import { default as MinistryInputText } from "../../../components/plainText/MinistryInput";
 import { default as QuotasInputText } from "../../../components/plainText/Quotas";
@@ -52,6 +59,9 @@ const ADMIN_PROJECT = gql`
       licencePlate
       description
       status
+      requestHistory{
+        id
+      }
       activeEditRequest {
         active
         id
@@ -367,14 +377,7 @@ export default function AdminProject({ requestsRoute }) {
     variables: { projectId: id },
     nextFetchPolicy: "cache-and-network",
   });
-  console.log(data)
-  // const requestId = data?.privateCloudProjectById.activeEditRequest?.id;
 
-  // const { data: requestData, loading: requestLoading, error: requestError }  = useQuery(ADMIN_REQUEST, {
-  //   variables: { requestId: requestId }
-  // });
-
-  // const requestedProject = requestData?.privateCloudRequestById.requestedProject;
 
 
   const readOnlyAdminIsAbleToEdit =
@@ -428,6 +431,11 @@ export default function AdminProject({ requestsRoute }) {
     });
   };
 
+//   const { dataTmp, loadingTmp, errorTmp, refetchTmp } = useQuery(ADMIN_PROJECT_LP, {
+//     variables: { licencePlate:"c531e8" },
+//     nextFetchPolicy: "cache-and-network",
+//   });
+// console.log("dataTmp", dataTmp)
   const [
     privateCloudReProvisionProject,
     {

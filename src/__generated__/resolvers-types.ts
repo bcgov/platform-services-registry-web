@@ -22,17 +22,25 @@ export type AdditionalEntityFields = {
 
 export type Budget = {
   __typename?: 'Budget';
-  dev: Scalars['Int'];
-  prod: Scalars['Int'];
-  test: Scalars['Int'];
-  tools: Scalars['Int'];
+  dev: Scalars['Float'];
+  prod: Scalars['Float'];
+  test: Scalars['Float'];
+  tools: Scalars['Float'];
+};
+
+export type IsNew = {
+  __typename?: 'IsNew';
+  dev: Scalars['Boolean'];
+  prod: Scalars['Boolean'];
+  test: Scalars['Boolean'];
+  tools: Scalars['Boolean'];
 };
 
 export type BudgetInput = {
-  dev: Scalars['Int'];
-  prod: Scalars['Int'];
-  test: Scalars['Int'];
-  tools: Scalars['Int'];
+  dev: Scalars['Float'];
+  prod: Scalars['Float'];
+  test: Scalars['Float'];
+  tools: Scalars['Float'];
 };
 
 export enum Cluster {
@@ -376,9 +384,11 @@ export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
   privateCloudActiveRequestById: PrivateCloudRequest;
+  privateCloudActiveRequestByLP: PrivateCloudRequest;
   privateCloudActiveRequests: Array<PrivateCloudRequest>;
   privateCloudActiveRequestsById: Array<PrivateCloudRequest>;
   privateCloudProjectById: PrivateCloudProject;
+  privateCloudProjectByLP: PrivateCloudProject;
   privateCloudProjects: Array<PrivateCloudProject>;
   privateCloudProjectsById: Array<PrivateCloudProject>;
   privateCloudProjectsPaginated: ProjectsPaginatedOutput;
@@ -397,6 +407,7 @@ export type Query = {
   user?: Maybe<User>;
   userByEmail?: Maybe<User>;
   userPrivateCloudActiveRequestById: PrivateCloudRequest;
+  userPrivateCloudActiveRequestByLP: PrivateCloudRequest[];
   userPrivateCloudActiveRequests: Array<PrivateCloudRequest>;
   userPrivateCloudActiveRequestsByIds: PrivateCloudRequest;
   userPrivateCloudDeletionCheck: Scalars['Boolean'];
@@ -423,6 +434,9 @@ export type QueryPrivateCloudActiveRequestByIdArgs = {
   requestId: Scalars['ID'];
 };
 
+export type QueryPrivateCloudActiveRequestByLPArgs = {
+  licencePlate: Scalars['String'];
+};
 
 export type QueryPrivateCloudActiveRequestsByIdArgs = {
   requestIds: Scalars['ID'];
@@ -507,6 +521,9 @@ export type QueryUserByEmailArgs = {
 
 export type QueryUserPrivateCloudActiveRequestByIdArgs = {
   requestId: Scalars['ID'];
+};
+export type QueryUserPrivateCloudActiveRequestByLPArgs = {
+  licencePlate: Scalars['String'];
 };
 
 
@@ -622,8 +639,7 @@ export type User = {
   email: Scalars['EmailAddress'];
   firstName?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
-  idir?: Maybe<Scalars['String']>;
-  isNew?: Maybe<Scalars['Boolean']>;
+  isNew?: IsNew;
   lastName?: Maybe<Scalars['String']>;
   lastSeen?: Maybe<Scalars['DateTime']>;
   ministry?: Maybe<Scalars['String']>;

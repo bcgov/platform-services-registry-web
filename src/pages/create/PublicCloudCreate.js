@@ -8,8 +8,7 @@ import {
   MinistrySchema
 } from "../../__generated__/resolvers-types";
 import {
-  createPublicCloudProjectInputInitalValues as initialValues,
-  replaceEmptyStringWithNull
+  createPublicCloudProjectInputInitalValues as initialValues
 } from "../../components/common/FormHelpers";
 import { useFormik } from "formik";
 import { useMutation, gql } from "@apollo/client";
@@ -18,7 +17,6 @@ import NavToolbar from "../../components/NavToolbar";
 import Button from "@mui/material/Button";
 import MetaDataInput from "../../components/forms/MetaDataInput";
 import MinistryInput from "../../components/forms/MinistryInput";
-// import CommonComponents from "../../components/forms/CommonComponents";
 import AGMinistry from "../../components/forms/AGMinistry";
 import { USER_REQUESTS } from "../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../requests/AdminRequests";
@@ -39,7 +37,6 @@ const CREATE_USER_PROJECT = gql`
       $description: String!
       $ministry: Ministry!
       $provider: Provider!
-      # $commonComponents: CommonComponentsInput!
       $projectOwner: CreateUserInput!
       $primaryTechnicalLead: CreateUserInput!
       $secondaryTechnicalLead: CreateUserInput
@@ -51,7 +48,6 @@ const CREATE_USER_PROJECT = gql`
         description: $description
         ministry: $ministry
         provider: $provider
-        # commonComponents: $commonComponents
         projectOwner: $projectOwner
         primaryTechnicalLead: $primaryTechnicalLead
         secondaryTechnicalLead: $secondaryTechnicalLead
@@ -83,12 +79,6 @@ const validationSchema = yup.object().shape({
     .object(CreateUserInputSchema)
     .nullable()
     .transform((value) => (value?.email === "" ? null : value)),
-  // commonComponents: CommonComponentsInputSchema(),
-  // commonComponents: yup
-  // .object(CommonComponentsInputSchema)
-  // .transform((value, original) => {
-  //   return replaceEmptyStringWithNull(value);
-  // })
 });
 
 const style = {
@@ -173,9 +163,7 @@ export default function Create({ requestsRoute }) {
           <MetaDataInput
             formik={formik}
             isDisabled={false}
-            cloudProvider={"Cloud Pathfinder"}
-            mail={"cloud.pathfinder@gov.bc.ca"}
-            platform={"Public Cloud"}
+            isPublic={true}
           />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>

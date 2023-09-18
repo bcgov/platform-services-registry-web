@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import RequiredField from "../common/RequiredField";
 
-export default function AccountCodingField({
+export default function OnInputErrorField({
     formik,
     value,
     isDisabled,
@@ -10,16 +10,12 @@ export default function AccountCodingField({
     title,
     length,
     id,
-    handleChange
+    handleChange,
+    specialChars
 }) {
     const [errorLengthMessage, setErrorLengthMessage] = useState('');
     const [errorSpecialCharMessage, setErrorSpecialCharMessage] = useState('');
     const [error, setError] = useState(false);
-
-    const hasSpecialCharacters = (str) => {
-        const specialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-        return specialChars.test(str);
-    }
 
     return (
         <TextField
@@ -35,28 +31,31 @@ export default function AccountCodingField({
                 (formik.touched.accountCoding && Boolean(formik.errors.accountCoding)) || error
             }
             helperText={
-                (formik.touched.accountCoding && <RequiredField />) || (error && [<p>{errorLengthMessage}</p>, <p>{errorSpecialCharMessage}</p>])
+                (formik.touched.accountCoding && <RequiredField />) || (error && [<span>{errorLengthMessage}</span>, <span>{errorSpecialCharMessage}</span>])
             }
             size="small"
             onInput={(e) => {
-                if (hasSpecialCharacters(e.target.value)) {
+                if (specialChars.test(e.target.value)) {
                     setErrorSpecialCharMessage("Wrong input only digits and Uppercase characters are allowed")
+                    setError(true)
                 }
-                else if (e.target.value.length !== length) {
+                else {
+                    setErrorSpecialCharMessage('')
+                }
+                if (e.target.value.length !== length) {
+                    setError(true)
                     if (e.target.value.length < length) {
                         setErrorLengthMessage(`There are ${e.target.value.replace(/\s/g, '').length} characters - code should be ${length} characters`)
-                        setError(true)
                     }
                     if (e.target.value.length > length) {
                         setErrorLengthMessage(`There are more than ${length} characters - code should be ${length} characters`)
                     }
                 }
                 else {
-                    setError(false)
                     setErrorLengthMessage('')
-                    setErrorSpecialCharMessage('')
                 }
-                e.target.value = e.target.value.replace(/[@#$%^&*()_+[\]{}|\\,.?:;'"!<>~`\-=/\s]/g, '').toUpperCase().substring(0, length)
+                setError(specialChars.test(e.target.value) || e.target.value.length < length)
+                e.target.value = e.target.value.replace(specialChars, '').toUpperCase().substring(0, length)
             }}
         />
     );

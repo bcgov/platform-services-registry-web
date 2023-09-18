@@ -3,7 +3,9 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import TitleTypography from "../common/TitleTypography";
 import Typography from "@mui/material/Typography";
-import AccountCodingField from "./AccountCodingField"
+import OnInputErrorField from "./OnInputErrorField"
+
+const specialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
 
 export default function AccountCoding({ formik, isDisabled }) {
   const [value, setValue] = useState({
@@ -57,7 +59,7 @@ export default function AccountCoding({ formik, isDisabled }) {
           </div>
           <Box sx={{ display: "flex", justifyContent: 'space-between', p: 0 }}>
             <Box sx={{ width: '48%' }}>
-              <AccountCodingField
+              <OnInputErrorField
                 formik={formik}
                 isDisabled={isDisabled}
                 placeholder="Enter the client code here (e.g. 111)"
@@ -66,8 +68,9 @@ export default function AccountCoding({ formik, isDisabled }) {
                 id="accountCodingClientCode"
                 handleChange={handleChange}
                 value={value.accountCodingClientCode}
+                specialChars={specialChars}
               />
-              <AccountCodingField
+              <OnInputErrorField
                 formik={formik}
                 isDisabled={isDisabled}
                 placeholder="Enter the service line here (e.g. 33333)"
@@ -76,8 +79,9 @@ export default function AccountCoding({ formik, isDisabled }) {
                 handleChange={handleChange}
                 value={value.accountCodingSL}
                 id="accountCodingSL"
+                specialChars={specialChars}
               />
-              <AccountCodingField
+              <OnInputErrorField
                 formik={formik}
                 isDisabled={isDisabled}
                 placeholder="Enter the project code here (e.g. 9999999)"
@@ -86,10 +90,11 @@ export default function AccountCoding({ formik, isDisabled }) {
                 handleChange={handleChange}
                 value={value.accountCodingProjectCode}
                 id="accountCodingProjectCode"
+                specialChars={specialChars}
               />
             </Box>
             <Box sx={{ width: '48%' }}>
-              <AccountCodingField
+              <OnInputErrorField
                 formik={formik}
                 isDisabled={isDisabled}
                 placeholder="Enter the responsibility centre here (e.g. 22222)"
@@ -98,8 +103,9 @@ export default function AccountCoding({ formik, isDisabled }) {
                 handleChange={handleChange}
                 value={value.accountCodingRC}
                 id="accountCodingRC"
+                specialChars={specialChars}
               />
-              <AccountCodingField
+              <OnInputErrorField
                 formik={formik}
                 isDisabled={isDisabled}
                 placeholder="Enter the STOB here (e.g. 4444)"
@@ -108,6 +114,7 @@ export default function AccountCoding({ formik, isDisabled }) {
                 handleChange={handleChange}
                 value={value.accountCodingSTOB}
                 id="accountCodingSTOB"
+                specialChars={specialChars}
               />
             </Box>
           </Box>
