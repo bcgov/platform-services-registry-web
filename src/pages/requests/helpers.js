@@ -11,7 +11,6 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "@mui/material/Link";
 import { stopPropagationRow } from "../../components/common/FormHelpers";
 import DoneIcon from "@mui/icons-material/Done";
-import CloseIcon from '@mui/icons-material/Close';
 
 dayjs.extend(relativeTime);
 
@@ -34,8 +33,7 @@ const adminRequestsToRows = ({
 }) => ({
   id,
   onClickPath: (isAdmin) =>
-    `/registry/${isAdmin.admin || isAdmin.readOnlyAdmin ? "admin" : "user"}/${
-      provider && !cluster ? "public-cloud" : "private-cloud"
+    `/registry/${isAdmin.admin || isAdmin.readOnlyAdmin ? "admin" : "user"}/${provider && !cluster ? "public-cloud" : "private-cloud"
     }/request/${id}`,
 
   name: <span style={{ fontSize: 18, fontWeight: "500" }}>{name}</span>,
@@ -52,11 +50,11 @@ const adminRequestsToRows = ({
     >
       <div style={{ display: "flex" }}>
         <div style={{ marginTop: 4, marginRight: 4 }}>
-          {projectOwner.isNew ? (
-            <DoneIcon style={{ color: "green" }} />
-          ) : (
-            <CloseIcon style={{ color: "red" }} />
-          )}
+          {provider === "AWS" ?
+            projectOwner.isNew.public ?
+              <DoneIcon style={{ color: "green" }} /> : null :
+            projectOwner.isNew.private ?
+              <DoneIcon style={{ color: "green" }} /> : null}
         </div>
         <Chip
           key={projectOwner.email + "po"}
@@ -78,18 +76,18 @@ const adminRequestsToRows = ({
     <Stack direction="column" spacing={1}>
       {[primaryTechnicalLead, secondaryTechnicalLead]
         .filter(Boolean)
-        .map(({ firstName, lastName, githubId, email, isNew }) => (
+        .map(({ firstName, lastName, email, isNew }) => (
           <Link
             underline="hover"
             onClick={(e) => stopPropagationRow(e, "mailto:" + email)}
           >
             <div style={{ display: "flex" }}>
               <div style={{ marginTop: 4, marginRight: 4 }}>
-                {isNew ? (
-                  <DoneIcon style={{ color: "green" }} />
-                ) : (
-                  <CloseIcon style={{ color: "red" }} />
-                )}
+                {provider === "AWS" ?
+                  isNew.public ?
+                    <DoneIcon style={{ color: "green" }} /> : null :
+                  isNew.private ?
+                    <DoneIcon style={{ color: "green" }} /> : null}
               </div>
               <Chip
                 key={email + "tl"}
@@ -160,8 +158,7 @@ const requestsToRows = ({
 }) => ({
   id,
   onClickPath: (isAdmin) =>
-    `/registry/${isAdmin.admin || isAdmin.readOnlyAdmin ? "admin" : "user"}/${
-      provider && !cluster ? "public-cloud" : "private-cloud"
+    `/registry/${isAdmin.admin || isAdmin.readOnlyAdmin ? "admin" : "user"}/${provider && !cluster ? "public-cloud" : "private-cloud"
     }/request/${id}`,
 
   name: <span style={{ fontSize: 18, fontWeight: "500" }}>{name}</span>,

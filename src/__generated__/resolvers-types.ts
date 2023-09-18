@@ -28,6 +28,14 @@ export type Budget = {
   tools: Scalars['Float'];
 };
 
+export type IsNew = {
+  __typename?: 'IsNew';
+  dev: Scalars['Boolean'];
+  prod: Scalars['Boolean'];
+  test: Scalars['Boolean'];
+  tools: Scalars['Boolean'];
+};
+
 export type BudgetInput = {
   dev: Scalars['Float'];
   prod: Scalars['Float'];
@@ -631,7 +639,7 @@ export type User = {
   email: Scalars['EmailAddress'];
   firstName?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
-  isNew?: Maybe<Scalars['Boolean']>;
+  isNew?: IsNew;
   lastName?: Maybe<Scalars['String']>;
   lastSeen?: Maybe<Scalars['DateTime']>;
   ministry?: Maybe<Scalars['String']>;
