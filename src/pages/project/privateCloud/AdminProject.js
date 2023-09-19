@@ -40,16 +40,11 @@ import RolesContext from "../../../context/roles";
 import UserContext from "../../../context/user";
 import Delete from "../../../components/Delete";
 import ClusterInputText from "../../../components/plainText/ClusterInput";
-const ADMIN_PROJECT_LP = gql`
-  query privateCloudActiveRequestByLP($licencePlate: String!) {
-    privateCloudActiveRequestByLP(licencePlate: $licencePlate) {
-      id      
-    }
-  }
-`;
 import MetaDataInputText from "../../../components/plainText/MetaDataInput";
 import { default as MinistryInputText } from "../../../components/plainText/MinistryInput";
 import { default as QuotasInputText } from "../../../components/plainText/Quotas";
+import { default as UsersInputText} from "../../../components/plainText/Users";
+
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -150,112 +145,6 @@ const ADMIN_PROJECT = gql`
         memory
         storage
       }
-        }
-      }
-    }
-  }
-`;
-
-const ADMIN_REQUEST = gql`
-  query PrivateCloudRequestById($requestId: ID!) {
-    privateCloudRequestById(requestId: $requestId) {
-      id
-      createdBy {
-        firstName
-        lastName
-      }
-      decisionMaker {
-        firstName
-        lastName
-        id
-      }
-      type
-      decisionStatus
-      humanComment
-      active
-      created
-      decisionDate
-      project {
-        name
-        productionQuota {
-          cpu
-          memory
-          storage
-        }
-        testQuota {
-          cpu
-          memory
-          storage
-        }
-        developmentQuota {
-          cpu
-          memory
-          storage
-        }
-        toolsQuota {
-          cpu
-          memory
-          storage
-        }
-      }
-      requestedProject {
-        id
-        name
-        licencePlate
-        description
-        status
-        projectOwner {
-          email
-          firstName
-          lastName
-          ministry
-        }
-        primaryTechnicalLead {
-          email
-          firstName
-          lastName
-          ministry
-        }
-        secondaryTechnicalLead {
-          email
-          firstName
-          lastName
-          ministry
-        }
-        ministry
-        cluster
-        commonComponents {
-          addressAndGeolocation
-          workflowManagement
-          formDesignAndSubmission
-          identityManagement
-          paymentServices
-          documentManagement
-          endUserNotificationAndSubscription
-          publishing
-          businessIntelligence
-          noServices
-          other
-        }
-        productionQuota {
-          cpu
-          memory
-          storage
-        }
-        testQuota {
-          cpu
-          memory
-          storage
-        }
-        developmentQuota {
-          cpu
-          memory
-          storage
-        }
-        toolsQuota {
-          cpu
-          memory
-          storage
         }
       }
     }
@@ -577,9 +466,9 @@ export default function AdminProject({ requestsRoute }) {
           {isDisabled ? <MetaDataInputText name={data?.privateCloudProjectById?.name}
             description={data?.privateCloudProjectById?.description} />
             : <MetaDataInput formik={formik} isDisabled={isDisabled} />}
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          
           {isDisabled ? <><MinistryInputText ministry={data?.privateCloudProjectById?.ministry} />
-            <Box sx={{ pt: 2 }}><ClusterInputText cluster={data?.privateCloudProjectById?.cluster} /></Box></>
+            <Box sx={{ pt: 0 }}><ClusterInputText cluster={data?.privateCloudProjectById?.cluster} /></Box></>
             : <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
               <Box sx={{ pt: 5 }}>
@@ -593,7 +482,15 @@ export default function AdminProject({ requestsRoute }) {
               cluster={data?.privateCloudProjectById?.cluster}
               licencePlate={data?.privateCloudProjectById?.licencePlate} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Users formik={formik} isDisabled={isDisabled} />
+            
+            {isDisabled ? <UsersInputText
+            projectOwner={data?.privateCloudProjectById?.projectOwner}
+            primaryTechnicalLead={data?.privateCloudProjectById?.primaryTechnicalLead}
+            secondaryTechnicalLead={data?.privateCloudProjectById?.secondaryTechnicalLead}
+          />
+          :
+          <Users formik={formik} isDisabled={isDisabled} />}
+
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             {isDisabled ? <QuotasInputText
               project={data?.privateCloudProjectById}

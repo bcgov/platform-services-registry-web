@@ -37,6 +37,10 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Delete from "../../../components/Delete";
+import MetaDataInputText from "../../../components/plainText/MetaDataInput";
+import { default as QuotasInputText } from "../../../components/plainText/Quotas";
+import { default as MinistryInputText } from "../../../components/plainText/MinistryInput";
+import { default as UsersInputText} from "../../../components/plainText/Users";
 
 const USER_PROJECT = gql`
   query UserPrivateCloudProjectById($projectId: ID!) {
@@ -108,6 +112,33 @@ const USER_PROJECT = gql`
         cpu
         memory
         storage
+      }
+      requestHistory{
+        active
+        decisionStatus
+        requestedProject{
+          status
+          productionQuota {
+        cpu
+        memory
+        storage
+      }
+      testQuota {
+        cpu
+        memory
+        storage
+      }
+      developmentQuota {
+        cpu
+        memory
+        storage
+      }
+      toolsQuota {
+        cpu
+        memory
+        storage
+      }
+        }
       }
     }
   }
@@ -364,28 +395,52 @@ export default function Project({ requestsRoute }) {
         </NavToolbar>
         {isDisabled ? (
           <ActiveRequestText
-            requestId={data?.privateCloudProjectById?.activeEditRequest?.id}
+            requestId={data?.userPrivateCloudProjectById?.activeEditRequest?.id}
           />
         ) : null}
         <Container>
-          <MetaDataInput formik={formik} isDisabled={isDisabled} />
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+        {isDisabled ? <MetaDataInputText name={data?.userPrivateCloudProjectById?.name}
+            description={data?.userPrivateCloudProjectById?.description} />
+            : <MetaDataInput formik={formik} isDisabled={isDisabled} />}
+          {isDisabled ? <><MinistryInputText ministry={data?.userPrivateCloudProjectById?.ministry} />
+            <Box sx={{ pt: 2 }}><ClusterInputText cluster={data?.userPrivateCloudProjectById?.cluster} /></Box></>
+            : <div style={{ display: "flex" }}>
+              <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+              <MinistryInput formik={formik} isDisabled={isDisabled} />
+              <Box sx={{ pt: 5 }}>
+                <ClusterInputText cluster={formik.values.cluster} />
+              </Box>
+            </div>}
+
           <div>
+          {/* 
             <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
               <Box sx={{ pt: 5 }}>
                 <ClusterInputText cluster={formik.values.cluster} />
               </Box>
-            </div>
+            </div> */}
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
               cluster={data?.userPrivateCloudProjectById?.cluster}
               licencePlate={data?.userPrivateCloudProjectById?.licencePlate}
             />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Users formik={formik} isDisabled={isDisabled} />
+            {/* <Users formik={formik} isDisabled={isDisabled} /> */}
+            {isDisabled ? <UsersInputText
+            projectOwner={data?.userPrivateCloudProjectById?.projectOwner}
+            primaryTechnicalLead={data?.userPrivateCloudProjectById?.primaryTechnicalLead}
+            secondaryTechnicalLead={data?.userPrivateCloudProjectById?.secondaryTechnicalLead}
+          />
+          :
+          <Users formik={formik} isDisabled={isDisabled} />}
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Quotas formik={formik} isDisabled={isDisabled} />
+            {isDisabled ? <QuotasInputText
+              project={data?.userPrivateCloudProjectById}
+              requestedProject={
+                data?.userPrivateCloudProjectById.requestHistory.filter(item => Boolean(item.active))[0].requestedProject}
+            />
+              : <Quotas formik={formik} isDisabled={isDisabled} />}
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             <Button
