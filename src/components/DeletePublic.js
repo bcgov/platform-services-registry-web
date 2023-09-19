@@ -21,13 +21,8 @@ const style = {
   p: 4
 };
 
-const USER_DELETE_CHECK = gql`
-  query UserPrivateCloudDeletionCheck($projectId: ID!) {
-    userPrivateCloudDeletionCheck(projectId: $projectId)
-  }
-`;
 
-export default function Delete({
+export default function DeletePublic({
   deleteOnClick,
   projectId,
   name,
@@ -37,10 +32,6 @@ export default function Delete({
   const [projectLicencePlate, setLicencePlateNumber] = useState("");
   const [projectOwnerEmail, setProjectOwnerEmail] = useState("");
 
-  const { data, loading, error, refetch } = useQuery(USER_DELETE_CHECK, {
-    variables: { projectId },
-    fetchPolicy: "network-only"
-  });
 
   return (
     <Box sx={style}>
@@ -53,19 +44,19 @@ export default function Delete({
       >
         Please Confirm Your Delete Request
       </Typography>
-      <Chip
+      {/* <Chip
         sx={{ mb: 1 }}
         label={
           loading
             ? "Checking..."
-            : data.userPrivateCloudDeletionCheck
+            : data.userPublicCloudDeletionCheck
             ? "Ready to Delete"
             : "Not Ready to Delete"
         }
         icon={
           loading ? (
             <HourglassBottomRoundedIcon />
-          ) : data.userPrivateCloudDeletionCheck ? (
+          ) : data.userPublicCloudDeletionCheck ? (
             <DoneIcon />
           ) : (
             <CancelIcon />
@@ -75,12 +66,10 @@ export default function Delete({
       <p>
         {loading
           ? "Performing a deletion check on your namespace to make sure it is empty..."
-          : data.userPrivateCloudDeletionCheck
+          : data.userPublicCloudDeletionCheck
           ? "Deletion check has passed."
           : "Deletion check has failed. Please make sure your namespace is empty before deleting."}
-      </p>
-
-      {data?.userPrivateCloudDeletionCheck ? (
+      </p> */}
         <Box sx={{ mt: 2 }}>
           <Typography>Project Name: {name}</Typography>
           <Typography>License Plate: {licencePlate}</Typography>
@@ -127,13 +116,12 @@ export default function Delete({
               }
               sx={{ mr: 1, width: "170px", mt: 2 }}
               variant="contained"
-              disabled={!data?.userPrivateCloudDeletionCheck}
+            //   disabled={!data?.userPublicCloudDeletionCheck}
             >
               Delete
             </Button>
           </Typography>
         </Box>
-      ) : null}
     </Box>
   );
 }

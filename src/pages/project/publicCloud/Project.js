@@ -65,34 +65,27 @@ const USER_PROJECT = gql`
         firstName
         lastName
         ministry
+        upn
+        idir
       }
       primaryTechnicalLead {
         email
         firstName
         lastName
         ministry
+        upn
+        idir
       }
       secondaryTechnicalLead {
         email
         firstName
         lastName
         ministry
+        upn
+        idir
       }
       ministry
       provider
-      # commonComponents {
-      #   addressAndGeolocation
-      #   workflowManagement
-      #   formDesignAndSubmission
-      #   identityManagement
-      #   paymentServices
-      #   documentManagement
-      #   endUserNotificationAndSubscription
-      #   publishing
-      #   businessIntelligence
-      #   noServices
-      #   other
-      # }
     }
   }
 `;
@@ -108,7 +101,6 @@ const UPDATE_PROJECT = gql`
     $projectOwner: CreateUserInput!
     $primaryTechnicalLead: CreateUserInput!
     $secondaryTechnicalLead: CreateUserInput
-    # $commonComponents: CommonComponentsInput!
   ) {
     publicCloudProjectEditRequest(
       projectId: $projectId
@@ -120,7 +112,6 @@ const UPDATE_PROJECT = gql`
       budget: $budget
       primaryTechnicalLead: $primaryTechnicalLead
       secondaryTechnicalLead: $secondaryTechnicalLead
-      # commonComponents: $commonComponents
     ) {
       id
       active
@@ -149,12 +140,6 @@ const validationSchema = yup.object().shape({
   projectOwner: CreateUserInputSchema,
   primaryTechnicalLead: CreateUserInputSchema,
   secondaryTechnicalLead: CreateUserInputSchema.nullable(),
-  // commonComponents: yup
-  //   .object(CommonComponentsInputSchema)
-  //   .transform((value, original) => {
-  //     return replaceEmptyStringWithNull(value);
-  //   }),
-  // commonComponents: CommonComponentsInputSchema(),
 });
 
 const style = {
@@ -245,10 +230,6 @@ export default function Project({ requestsRoute }) {
       setInitialValues(stripTypeName(data?.userPublicCloudProjectById));
     }
   }, [data]);
-
-  // useEffect(() => {
-  //      console.log("initialValues", initialValues)
-  // }, [initialValues]);
 
   const name = data?.userPublicCloudProjectById?.name;
   const isDisabled = !!data?.userPublicCloudProjectById?.activeEditRequest;

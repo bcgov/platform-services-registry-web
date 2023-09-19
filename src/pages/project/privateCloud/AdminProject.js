@@ -40,13 +40,6 @@ import RolesContext from "../../../context/roles";
 import UserContext from "../../../context/user";
 import Delete from "../../../components/Delete";
 import ClusterInputText from "../../../components/plainText/ClusterInput";
-const ADMIN_PROJECT_LP = gql`
-  query privateCloudActiveRequestByLP($licencePlate: String!) {
-    privateCloudActiveRequestByLP(licencePlate: $licencePlate) {
-      id      
-    }
-  }
-`;
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -294,12 +287,7 @@ export default function AdminProject({ requestsRoute }) {
       },
     });
   };
-
-//   const { dataTmp, loadingTmp, errorTmp, refetchTmp } = useQuery(ADMIN_PROJECT_LP, {
-//     variables: { licencePlate:"c531e8" },
-//     nextFetchPolicy: "cache-and-network",
-//   });
-// console.log("dataTmp", dataTmp)
+  
   const [
     privateCloudReProvisionProject,
     {

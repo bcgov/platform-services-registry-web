@@ -192,6 +192,7 @@ export type Mutation = {
   publicCloudProjectEditRequest: PublicCloudRequest;
   publicCloudProjectRequest: PublicCloudRequest;
   publicCloudRequestDecision?: Maybe<PublicCloudRequest>;
+  publicCloudProjectDeleteRequest: PublicCloudRequest;
   signUp: User;
 };
 
@@ -278,6 +279,12 @@ export type MutationPublicCloudProjectRequestArgs = {
   projectOwner: CreateUserInput;
   provider: Provider;
   secondaryTechnicalLead?: InputMaybe<CreateUserInput>;
+};
+
+export type MutationPublicCloudProjectDeleteRequestArgs = {
+  licencePlate: Scalars['String'];
+  projectId: Scalars['ID'];
+  projectOwnerEmail: Scalars['EmailAddress'];
 };
 
 
