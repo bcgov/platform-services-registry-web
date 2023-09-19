@@ -40,7 +40,7 @@ import Delete from "../../../components/Delete";
 import MetaDataInputText from "../../../components/plainText/MetaDataInput";
 import { default as QuotasInputText } from "../../../components/plainText/Quotas";
 import { default as MinistryInputText } from "../../../components/plainText/MinistryInput";
-import { default as UsersInputText} from "../../../components/plainText/Users";
+import { default as UsersInputText } from "../../../components/plainText/Users";
 
 const USER_PROJECT = gql`
   query UserPrivateCloudProjectById($projectId: ID!) {
@@ -399,11 +399,13 @@ export default function Project({ requestsRoute }) {
           />
         ) : null}
         <Container>
-        {isDisabled ? <MetaDataInputText name={data?.userPrivateCloudProjectById?.name}
+          {isDisabled ? <MetaDataInputText name={data?.userPrivateCloudProjectById?.name}
             description={data?.userPrivateCloudProjectById?.description} />
             : <MetaDataInput formik={formik} isDisabled={isDisabled} />}
-          {isDisabled ? <><MinistryInputText ministry={data?.userPrivateCloudProjectById?.ministry} />
-            <Box sx={{ pt: 2 }}><ClusterInputText cluster={data?.userPrivateCloudProjectById?.cluster} /></Box></>
+          {isDisabled ? [<MinistryInputText ministry={data?.userPrivateCloudProjectById?.ministry} />,
+          <Box sx={{ pb: 2 }}>
+            <ClusterInputText cluster={data?.userPrivateCloudProjectById?.cluster} />
+          </Box>]
             : <div style={{ display: "flex" }}>
               <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
               <MinistryInput formik={formik} isDisabled={isDisabled} />
@@ -411,15 +413,7 @@ export default function Project({ requestsRoute }) {
                 <ClusterInputText cluster={formik.values.cluster} />
               </Box>
             </div>}
-
           <div>
-          {/* 
-            <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <Box sx={{ pt: 5 }}>
-                <ClusterInputText cluster={formik.values.cluster} />
-              </Box>
-            </div> */}
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
               cluster={data?.userPrivateCloudProjectById?.cluster}
@@ -428,12 +422,12 @@ export default function Project({ requestsRoute }) {
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             {/* <Users formik={formik} isDisabled={isDisabled} /> */}
             {isDisabled ? <UsersInputText
-            projectOwner={data?.userPrivateCloudProjectById?.projectOwner}
-            primaryTechnicalLead={data?.userPrivateCloudProjectById?.primaryTechnicalLead}
-            secondaryTechnicalLead={data?.userPrivateCloudProjectById?.secondaryTechnicalLead}
-          />
-          :
-          <Users formik={formik} isDisabled={isDisabled} />}
+              projectOwner={data?.userPrivateCloudProjectById?.projectOwner}
+              primaryTechnicalLead={data?.userPrivateCloudProjectById?.primaryTechnicalLead}
+              secondaryTechnicalLead={data?.userPrivateCloudProjectById?.secondaryTechnicalLead}
+            />
+              :
+              <Users formik={formik} isDisabled={isDisabled} />}
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             {isDisabled ? <QuotasInputText
               project={data?.userPrivateCloudProjectById}
