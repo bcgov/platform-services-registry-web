@@ -65,18 +65,24 @@ const USER_PROJECT = gql`
         firstName
         lastName
         ministry
+        upn
+        idir
       }
       primaryTechnicalLead {
         email
         firstName
         lastName
         ministry
+        upn
+        idir
       }
       secondaryTechnicalLead {
         email
         firstName
         lastName
         ministry
+        upn
+        idir
       }
       ministry
       provider
