@@ -43,7 +43,7 @@ import ClusterInputText from "../../../components/plainText/ClusterInput";
 import MetaDataInputText from "../../../components/plainText/MetaDataInput";
 import { default as MinistryInputText } from "../../../components/plainText/MinistryInput";
 import { default as QuotasInputText } from "../../../components/plainText/Quotas";
-import { default as UsersInputText} from "../../../components/plainText/Users";
+import { default as UsersInputText } from "../../../components/plainText/Users";
 
 
 const ADMIN_PROJECT = gql`
@@ -466,31 +466,29 @@ export default function AdminProject({ requestsRoute }) {
           {isDisabled ? <MetaDataInputText name={data?.privateCloudProjectById?.name}
             description={data?.privateCloudProjectById?.description} />
             : <MetaDataInput formik={formik} isDisabled={isDisabled} />}
-          
-          {isDisabled ? <><MinistryInputText ministry={data?.privateCloudProjectById?.ministry} />
-            <Box sx={{ pt: 0 }}><ClusterInputText cluster={data?.privateCloudProjectById?.cluster} /></Box></>
+          {isDisabled ? [<MinistryInputText ministry={data?.privateCloudProjectById?.ministry} />,
+          <Box sx={{ pb: 2 }}>
+            <ClusterInputText cluster={data?.privateCloudProjectById?.cluster} />
+          </Box>]
             : <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
               <Box sx={{ pt: 5 }}>
                 <ClusterInputText cluster={formik.values.cluster} />
               </Box>
             </div>}
-
           <div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
               cluster={data?.privateCloudProjectById?.cluster}
               licencePlate={data?.privateCloudProjectById?.licencePlate} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            
             {isDisabled ? <UsersInputText
-            projectOwner={data?.privateCloudProjectById?.projectOwner}
-            primaryTechnicalLead={data?.privateCloudProjectById?.primaryTechnicalLead}
-            secondaryTechnicalLead={data?.privateCloudProjectById?.secondaryTechnicalLead}
-          />
-          :
-          <Users formik={formik} isDisabled={isDisabled} />}
-
+              projectOwner={data?.privateCloudProjectById?.projectOwner}
+              primaryTechnicalLead={data?.privateCloudProjectById?.primaryTechnicalLead}
+              secondaryTechnicalLead={data?.privateCloudProjectById?.secondaryTechnicalLead}
+            />
+              :
+              <Users formik={formik} isDisabled={isDisabled} />}
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             {isDisabled ? <QuotasInputText
               project={data?.privateCloudProjectById}
