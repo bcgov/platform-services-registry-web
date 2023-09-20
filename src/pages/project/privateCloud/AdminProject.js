@@ -40,6 +40,11 @@ import RolesContext from "../../../context/roles";
 import UserContext from "../../../context/user";
 import Delete from "../../../components/Delete";
 import ClusterInputText from "../../../components/plainText/ClusterInput";
+import MetaDataInputText from "../../../components/plainText/MetaDataInput";
+import { default as MinistryInputText } from "../../../components/plainText/MinistryInput";
+import { default as QuotasInputText } from "../../../components/plainText/Quotas";
+import { default as UsersInputText } from "../../../components/plainText/Users";
+
 
 const ADMIN_PROJECT = gql`
   query PrivateCloudProjectById($projectId: ID!) {
@@ -114,6 +119,33 @@ const ADMIN_PROJECT = gql`
         cpu
         memory
         storage
+      }
+      requestHistory{
+        active
+        decisionStatus
+        requestedProject{
+          status
+          productionQuota {
+        cpu
+        memory
+        storage
+      }
+      testQuota {
+        cpu
+        memory
+        storage
+      }
+      developmentQuota {
+        cpu
+        memory
+        storage
+      }
+      toolsQuota {
+        cpu
+        memory
+        storage
+      }
+        }
       }
     }
   }
@@ -240,9 +272,9 @@ export default function AdminProject({ requestsRoute }) {
   const readOnlyAdminIsAbleToEdit =
     userContext.email === data?.privateCloudProjectById.projectOwner.email ||
     userContext.email ===
-      data?.privateCloudProjectById?.primaryTechnicalLead?.email ||
+    data?.privateCloudProjectById?.primaryTechnicalLead?.email ||
     userContext.email ===
-      data?.privateCloudProjectById?.secondaryTechnicalLead?.email;
+    data?.privateCloudProjectById?.secondaryTechnicalLead?.email;
 
   const [
     privateCloudProjectEditRequest,
@@ -288,6 +320,7 @@ export default function AdminProject({ requestsRoute }) {
     });
   };
   
+
   const [
     privateCloudReProvisionProject,
     {
@@ -431,24 +464,39 @@ export default function AdminProject({ requestsRoute }) {
           />
         ) : null}
         <Container>
-          <MetaDataInput formik={formik} isDisabled={isDisabled} />
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-          <div>
-            <div style={{ display: "flex" }}>
+          {isDisabled ? <MetaDataInputText name={data?.privateCloudProjectById?.name}
+            description={data?.privateCloudProjectById?.description} />
+            : <MetaDataInput formik={formik} isDisabled={isDisabled} />}
+          {isDisabled ? [<MinistryInputText ministry={data?.privateCloudProjectById?.ministry} />,
+          <Box sx={{ pb: 2 }}>
+            <ClusterInputText cluster={data?.privateCloudProjectById?.cluster} />
+          </Box>]
+            : <div style={{ display: "flex" }}>
               <MinistryInput formik={formik} isDisabled={isDisabled} />
               <Box sx={{ pt: 5 }}>
                 <ClusterInputText cluster={formik.values.cluster} />
               </Box>
-            </div>
+            </div>}
+          <div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <Namespaces
               cluster={data?.privateCloudProjectById?.cluster}
-              licencePlate={data?.privateCloudProjectById?.licencePlate}
+              licencePlate={data?.privateCloudProjectById?.licencePlate} />
+            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            {isDisabled ? <UsersInputText
+              projectOwner={data?.privateCloudProjectById?.projectOwner}
+              primaryTechnicalLead={data?.privateCloudProjectById?.primaryTechnicalLead}
+              secondaryTechnicalLead={data?.privateCloudProjectById?.secondaryTechnicalLead}
             />
+              :
+              <Users formik={formik} isDisabled={isDisabled} />}
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Users formik={formik} isDisabled={isDisabled} />
-            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Quotas formik={formik} isDisabled={isDisabled} />
+            {isDisabled ? <QuotasInputText
+              project={data?.privateCloudProjectById}
+              requestedProject={
+                data?.privateCloudProjectById.requestHistory.filter(item => Boolean(item.active))[0].requestedProject}
+            />
+              : <Quotas formik={formik} isDisabled={isDisabled} />}
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <CommonComponents formik={formik} isDisabled={isDisabled} />
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
@@ -456,8 +504,7 @@ export default function AdminProject({ requestsRoute }) {
                 type="submit"
                 sx={{ mr: 1, width: "170px" }}
                 variant="contained"
-                disabled={isDisabled || !formik.dirty}
-              >
+                disabled={isDisabled || !formik.dirty}>
                 Submit
               </Button>
             ) : null}
@@ -465,8 +512,7 @@ export default function AdminProject({ requestsRoute }) {
               open={open}
               onClose={handleClose}
               aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
+              aria-describedby="modal-modal-description">
               <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                   Please Confirm Your Request
@@ -477,8 +523,7 @@ export default function AdminProject({ requestsRoute }) {
                     onClick={submitForm}
                     disabled={!formik.dirty}
                     sx={{ mr: 1, width: "170px", mt: 3 }}
-                    variant="contained"
-                  >
+                    variant="contained">
                     Submit
                   </Button>
                 </Typography>
