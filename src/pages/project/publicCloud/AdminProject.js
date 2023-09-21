@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import * as yup from "yup";
 import {
-  // CommonComponentsInputSchema,
   MinistrySchema,
   BudgetInputSchema,
   ProviderSchema,
@@ -17,7 +16,6 @@ import {
   replaceEmptyStringWithNull,
   stripTypeName,
 } from "../../../components/common/FormHelpers";
-// import CommonComponents from "../../../components/forms/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
 import { USER_REQUESTS } from "../../requests/UserRequests";
 import { ALL_ACTIVE_REQUESTS } from "../../requests/AdminRequests";
@@ -37,6 +35,8 @@ import UserContext from "../../../context/user";
 import AccountCodingInput from "../../../components/forms/AccountCoding";
 import BudgetInput from "../../../components/forms/Budget";
 import ProviderPlainText from "../../../components/plainText/ProviderInput";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import DeletePublic from "../../../components/DeletePublic";
 
 const ADMIN_PROJECT = gql`
   query PublicCloudProjectById($projectId: ID!) {
@@ -83,20 +83,7 @@ const ADMIN_PROJECT = gql`
       }
       ministry
       provider
-      # commonComponents {
-      #   addressAndGeolocation
-      #   workflowManagement
-      #   formDesignAndSubmission
-      #   identityManagement
-      #   paymentServices
-      #   documentManagement
-      #   endUserNotificationAndSubscription
-      #   publishing
-      #   businessIntelligence
-      #   noServices
-      #   other
-      # }
-    }
+     }
   }
 `;
 
@@ -111,7 +98,6 @@ const UPDATE_PROJECT = gql`
     $projectOwner: CreateUserInput!
     $primaryTechnicalLead: CreateUserInput!
     $secondaryTechnicalLead: CreateUserInput
-    # $commonComponents: CommonComponentsInput!
   ) {
     publicCloudProjectEditRequest(
       projectId: $projectId
@@ -123,10 +109,25 @@ const UPDATE_PROJECT = gql`
       budget: $budget
       primaryTechnicalLead: $primaryTechnicalLead
       secondaryTechnicalLead: $secondaryTechnicalLead
-      # commonComponents: $commonComponents
     ) {
       id
       active
+    }
+  }
+`;
+
+const DELETE_USER_PROJECT = gql`
+  mutation Mutation(
+    $projectId: ID!
+    $licencePlate: String!
+    $projectOwnerEmail: EmailAddress!
+  ) {
+    publicCloudProjectDeleteRequest(
+      projectId: $projectId
+      licencePlate: $licencePlate
+      projectOwnerEmail: $projectOwnerEmail
+    ) {
+      id
     }
   }
 `;
@@ -152,12 +153,6 @@ const validationSchema = yup.object().shape({
   projectOwner: CreateUserInputSchema,
   primaryTechnicalLead: CreateUserInputSchema,
   secondaryTechnicalLead: CreateUserInputSchema.nullable(),
-  // commonComponents: yup
-  //   .object(CommonComponentsInputSchema)
-  // .transform((value, original) => {
-  //   return replaceEmptyStringWithNull(value);
-  // }),
-  // commonComponents: CommonComponentsInputSchema(),
 });
 
 const style = {
@@ -204,6 +199,39 @@ export default function AdminProject({ requestsRoute }) {
   ] = useMutation(UPDATE_PROJECT, {
     refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
   });
+
+  const [publicCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
+  });
+
+  const deleteOnClick = (licencePlate, projectOwnerEmail) => {
+    toastId.current = toast("Your edit request has been submitted", {
+      autoClose: false,
+    });
+
+    publicCloudProjectDeleteRequest({
+      variables: {
+        projectId: id,
+        licencePlate,
+        projectOwnerEmail,
+      },
+      onError: (error) => {
+        toast.update(toastId.current, {
+          render: `Error: ${error.message}`,
+          type: toast.TYPE.ERROR,
+          autoClose: 5000,
+        });
+      },
+      onCompleted: () => {
+        navigate(requestsRoute);
+        toast.update(toastId.current, {
+          render: "Delete request successfuly created",
+          type: toast.TYPE.SUCCESS,
+          autoClose: 5000,
+        });
+      },
+    });
+  };
 
   const formik = useFormik({
     initialValues,
@@ -262,7 +290,8 @@ export default function AdminProject({ requestsRoute }) {
   const isDisabled = !!data?.publicCloudProjectById?.activeEditRequest;
 
   const handleClose = () => setOpen(false);
-
+ const handleDeleteClose = () => setDeleteOpen(false);
+ 
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -279,6 +308,29 @@ export default function AdminProject({ requestsRoute }) {
           >
             <RestartAltIcon />
           </IconButton>
+          <IconButton
+            disabled={isDisabled}
+            onClick={() => setDeleteOpen(true)}
+            aria-label="delete"
+          >
+            <DeleteForeverIcon />
+          </IconButton>
+          <Modal
+              open={deleteOpen}
+              onClose={handleDeleteClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+               <DeletePublic
+              projectId={id}
+              name={data?.publicCloudProjectById?.name}
+              licencePlate={data?.publicCloudProjectById?.licencePlate}
+              projectOwnerEmail={
+                data?.publicCloudProjectById?.projectOwner?.email
+              }
+              deleteOnClick={deleteOnClick}
+            />
+            </Modal>
         </NavToolbar>
         {isDisabled ? (
           <ActiveRequestText
@@ -294,7 +346,8 @@ export default function AdminProject({ requestsRoute }) {
               <Box sx={{ pt: 3 }}><ProviderPlainText
                 provider={formik.initialValues.provider}
               />
-              </Box>            </div>
+              </Box>
+            </div>
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <AccountCodingInput formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
@@ -302,7 +355,6 @@ export default function AdminProject({ requestsRoute }) {
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
             <BudgetInput formik={formik} isDisabled={isDisabled} />
             <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            {/* <CommonComponents formik={formik} isDisabled={isDisabled} /> */}
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
               <Button
                 type="submit"
