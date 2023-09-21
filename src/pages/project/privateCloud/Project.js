@@ -314,8 +314,6 @@ export default function Project({ requestsRoute }) {
       autoClose: false,
     });
 
-    console.log(values);
-
     const variables = validationSchema.cast(values);
 
     privateCloudProjectEditRequest({
