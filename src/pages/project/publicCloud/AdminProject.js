@@ -37,6 +37,11 @@ import BudgetInput from "../../../components/forms/Budget";
 import ProviderPlainText from "../../../components/plainText/ProviderInput";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DeletePublic from "../../../components/DeletePublic";
+import { default as MetaDataPlainText } from "../../../components/plainText/MetaDataInput";
+import { default as AccountCodingPlainText } from "../../../components/plainText/AccountCoding";
+import { default as MinistryPlainText } from "../../../components/plainText/MinistryInput";
+import { default as UsersPlainText } from "../../../components/plainText/Users";
+import { default as BudgetPlainText } from "../../../components/plainText/Budget";
 
 const ADMIN_PROJECT = gql`
   query PublicCloudProjectById($projectId: ID!) {
@@ -338,23 +343,49 @@ export default function AdminProject({ requestsRoute }) {
           />
         ) : null}
         <Container>
-          <MetaDataInput formik={formik} isDisabled={isDisabled} />
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+        { isDisabled ? <MetaDataPlainText
+                          name={name} description={data?.publicCloudProjectById?.description}/> 
+                      : 
+                        [<MetaDataInput formik={formik} isDisabled={isDisabled} />, 
+                        <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />]
+          }
+
+          
           <div>
-            <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <Box sx={{ pt: 3 }}><ProviderPlainText
-                provider={formik.initialValues.provider}
-              />
-              </Box>
-            </div>
-            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <AccountCodingInput formik={formik} isDisabled={isDisabled} />
-            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Users formik={formik} isDisabled={false} />
-            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <BudgetInput formik={formik} isDisabled={isDisabled} />
-            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            { isDisabled ? [<MinistryPlainText ministry={data?.publicCloudProjectById?.ministry} />,
+                            <ProviderPlainText provider={data?.publicCloudProjectById?.provider} />]
+                        :
+                            <div style={{ display: "flex" }}>
+                            <MinistryInput formik={formik} isDisabled={isDisabled} />
+                            <Box sx={{ pt: 3 }}><ProviderPlainText 
+                            provider={formik.initialValues.provider}
+                            />
+                            </Box>
+                            </div>
+            }
+
+
+            { isDisabled ? 
+                          <AccountCodingPlainText accountCoding={data?.publicCloudProjectById?.accountCoding} />
+                        : 
+                          [<Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                          <AccountCodingInput formik={formik} isDisabled={isDisabled} />]
+            }
+            
+
+            { isDisabled ?
+                          [<BudgetPlainText budget={data?.publicCloudProjectById?.budget}/>,
+                          <UsersPlainText projectOwner={data?.publicCloudProjectById?.projectOwner} 
+                          primaryTechnicalLead={data?.publicCloudProjectById?.primaryTechnicalLead} 
+                          secondaryTechnicalLead={data?.publicCloudProjectById?.secondaryTechnicalLead}/>]
+                        :
+                         [<Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                         <Users formik={formik} isDisabled={false} />,
+                         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                         <BudgetInput formik={formik} isDisabled={isDisabled} />,
+                         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />]
+            }
+          
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
               <Button
                 type="submit"
