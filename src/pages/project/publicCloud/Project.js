@@ -40,6 +40,11 @@ import AccountCodingInput from "../../../components/forms/AccountCoding";
 import BudgetInput from "../../../components/forms/Budget";
 import ProviderInput from "../../../components/forms/ProviderInput";
 import ProviderPlainText from "../../../components/plainText/ProviderInput";
+import { default as MetaDataPlainText } from "../../../components/plainText/MetaDataInput";
+import { default as AccountCodingPlainText } from "../../../components/plainText/AccountCoding";
+import { default as MinistryPlainText } from "../../../components/plainText/MinistryInput";
+import { default as UsersPlainText } from "../../../components/plainText/Users";
+import { default as BudgetPlainText } from "../../../components/plainText/Budget";
 
 const USER_PROJECT = gql`
   query UserPublicCloudProjectById($projectId: ID!) {
@@ -166,7 +171,6 @@ export default function Project({ requestsRoute }) {
     nextFetchPolicy: "cache-and-network",
   });
 
-  // console.log(data)
   const [
     publicCloudProjectEditRequest,
     {
@@ -259,23 +263,50 @@ export default function Project({ requestsRoute }) {
           />
         ) : null}
         <Container>
-          <MetaDataInput formik={formik} isDisabled={isDisabled} />
-          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          { isDisabled ? <MetaDataPlainText
+                          name={name} description={data?.userPublicCloudProjectById?.description}/> 
+                      : 
+                        [<MetaDataInput formik={formik} isDisabled={isDisabled} />, 
+                        <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />]
+          }
+
+          
           <div>
-            <div style={{ display: "flex" }}>
-              <MinistryInput formik={formik} isDisabled={isDisabled} />
-              <Box sx={{ pt: 3 }}><ProviderPlainText 
-              provider={formik.initialValues.provider}
-              />
-              </Box>
-            </div>
-            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <AccountCodingInput formik={formik} isDisabled={isDisabled} />
-            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <Users formik={formik} isDisabled={false} />
-            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
-            <BudgetInput formik={formik} isDisabled={isDisabled} />
-            <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            { isDisabled ? [<MinistryPlainText ministry={data?.userPublicCloudProjectById?.ministry} />,
+                            <ProviderPlainText provider={data?.userPublicCloudProjectById?.provider} />]
+                        :
+                            <div style={{ display: "flex" }}>
+                            <MinistryInput formik={formik} isDisabled={isDisabled} />
+                            <Box sx={{ pt: 3 }}><ProviderPlainText 
+                            provider={formik.initialValues.provider}
+                            />
+                            </Box>
+                            </div>
+            }
+
+
+            { isDisabled ? 
+                          <AccountCodingPlainText accountCoding={data?.userPublicCloudProjectById?.accountCoding} />
+                        : 
+                          [<Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                          <AccountCodingInput formik={formik} isDisabled={isDisabled} />]
+            }
+            
+
+            { isDisabled ?
+                          [<BudgetPlainText budget={data?.userPublicCloudProjectById?.budget}/>,
+                          <UsersPlainText projectOwner={data?.userPublicCloudProjectById?.projectOwner} 
+                          primaryTechnicalLead={data?.userPublicCloudProjectById?.primaryTechnicalLead} 
+                          secondaryTechnicalLead={data?.userPublicCloudProjectById?.secondaryTechnicalLead}/>]
+                        :
+                         [<Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                         <Users formik={formik} isDisabled={false} />,
+                         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                         <BudgetInput formik={formik} isDisabled={isDisabled} />,
+                         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />]
+            }
+            
+            
             {/* <CommonComponents formik={formik} isDisabled={isDisabled} /> */}
             <Button
               type="submit"
