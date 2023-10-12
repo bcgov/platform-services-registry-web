@@ -88,7 +88,7 @@ const ADMIN_PROJECT = gql`
       }
       ministry
       provider
-     }
+    }
   }
 `;
 
@@ -190,9 +190,9 @@ export default function AdminProject({ requestsRoute }) {
   const readOnlyAdminIsAbleToEdit =
     userContext.email === data?.publicCloudProjectById.projectOwner.email ||
     userContext.email ===
-    data?.publicCloudProjectById?.primaryTechnicalLead?.email ||
+      data?.publicCloudProjectById?.primaryTechnicalLead?.email ||
     userContext.email ===
-    data?.publicCloudProjectById?.secondaryTechnicalLead?.email;
+      data?.publicCloudProjectById?.secondaryTechnicalLead?.email;
 
   const [
     publicCloudProjectEditRequest,
@@ -295,8 +295,8 @@ export default function AdminProject({ requestsRoute }) {
   const isDisabled = !!data?.publicCloudProjectById?.activeEditRequest;
 
   const handleClose = () => setOpen(false);
- const handleDeleteClose = () => setDeleteOpen(false);
- 
+  const handleDeleteClose = () => setDeleteOpen(false);
+
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -321,12 +321,12 @@ export default function AdminProject({ requestsRoute }) {
             <DeleteForeverIcon />
           </IconButton>
           <Modal
-              open={deleteOpen}
-              onClose={handleDeleteClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-               <DeletePublic
+            open={deleteOpen}
+            onClose={handleDeleteClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <DeletePublic
               projectId={id}
               name={data?.publicCloudProjectById?.name}
               licencePlate={data?.publicCloudProjectById?.licencePlate}
@@ -335,7 +335,7 @@ export default function AdminProject({ requestsRoute }) {
               }
               deleteOnClick={deleteOnClick}
             />
-            </Modal>
+          </Modal>
         </NavToolbar>
         {isDisabled ? (
           <ActiveRequestText
@@ -343,49 +343,71 @@ export default function AdminProject({ requestsRoute }) {
           />
         ) : null}
         <Container>
-        { isDisabled ? <MetaDataPlainText
-                          name={name} description={data?.publicCloudProjectById?.description}/> 
-                      : 
-                        [<MetaDataInput formik={formik} isDisabled={isDisabled} />, 
-                        <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />]
-          }
+          {isDisabled ? (
+            <MetaDataPlainText
+              name={name}
+              description={data?.publicCloudProjectById?.description}
+            />
+          ) : (
+            [
+              <MetaDataInput formik={formik} isDisabled={isDisabled} />,
+              <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+            ]
+          )}
 
-          
           <div>
-            { isDisabled ? [<MinistryPlainText ministry={data?.publicCloudProjectById?.ministry} />,
-                            <ProviderPlainText provider={data?.publicCloudProjectById?.provider} />]
-                        :
-                            <div style={{ display: "flex" }}>
-                            <MinistryInput formik={formik} isDisabled={isDisabled} />
-                            <Box sx={{ pt: 3 }}><ProviderPlainText 
-                            provider={formik.initialValues.provider}
-                            />
-                            </Box>
-                            </div>
-            }
+            {isDisabled ? (
+              [
+                <MinistryPlainText
+                  ministry={data?.publicCloudProjectById?.ministry}
+                />,
+                <ProviderPlainText
+                  provider={data?.publicCloudProjectById?.provider}
+                />,
+              ]
+            ) : (
+              <div style={{ display: "flex" }}>
+                <MinistryInput formik={formik} isDisabled={isDisabled} />
+                <Box sx={{ pt: 3 }}>
+                  <ProviderPlainText provider={formik.initialValues.provider} />
+                </Box>
+              </div>
+            )}
 
+            {isDisabled ? (
+              <AccountCodingPlainText
+                accountCoding={data?.publicCloudProjectById?.accountCoding}
+              />
+            ) : (
+              [
+                <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                <AccountCodingInput formik={formik} isDisabled={isDisabled} />,
+              ]
+            )}
 
-            { isDisabled ? 
-                          <AccountCodingPlainText accountCoding={data?.publicCloudProjectById?.accountCoding} />
-                        : 
-                          [<Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
-                          <AccountCodingInput formik={formik} isDisabled={isDisabled} />]
-            }
-            
+            {isDisabled
+              ? [
+                  <BudgetPlainText
+                    budget={data?.publicCloudProjectById?.budget}
+                  />,
+                  <UsersPlainText
+                    projectOwner={data?.publicCloudProjectById?.projectOwner}
+                    primaryTechnicalLead={
+                      data?.publicCloudProjectById?.primaryTechnicalLead
+                    }
+                    secondaryTechnicalLead={
+                      data?.publicCloudProjectById?.secondaryTechnicalLead
+                    }
+                  />,
+                ]
+              : [
+                  <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                  <Users formik={formik} isDisabled={false} />,
+                  <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                  <BudgetInput formik={formik} isDisabled={isDisabled} />,
+                  <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                ]}
 
-            { isDisabled ?
-                          [<BudgetPlainText budget={data?.publicCloudProjectById?.budget}/>,
-                          <UsersPlainText projectOwner={data?.publicCloudProjectById?.projectOwner} 
-                          primaryTechnicalLead={data?.publicCloudProjectById?.primaryTechnicalLead} 
-                          secondaryTechnicalLead={data?.publicCloudProjectById?.secondaryTechnicalLead}/>]
-                        :
-                         [<Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
-                         <Users formik={formik} isDisabled={false} />,
-                         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
-                         <BudgetInput formik={formik} isDisabled={isDisabled} />,
-                         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />]
-            }
-          
             {!readOnlyAdmin || readOnlyAdminIsAbleToEdit ? (
               <Button
                 type="submit"

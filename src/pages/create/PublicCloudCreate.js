@@ -5,11 +5,9 @@ import {
   // CommonComponentsInputSchema,
   ProviderSchema,
   BudgetInputSchema,
-  MinistrySchema
+  MinistrySchema,
 } from "../../__generated__/resolvers-types";
-import {
-  createPublicCloudProjectInputInitalValues as initialValues
-} from "../../components/common/FormHelpers";
+import { createPublicCloudProjectInputInitalValues as initialValues } from "../../components/common/FormHelpers";
 import { useFormik } from "formik";
 import { useMutation, gql } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
@@ -32,43 +30,44 @@ import Budget from "../../components/forms/Budget";
 import ProviderInput from "../../components/forms/ProviderInput";
 
 const CREATE_USER_PROJECT = gql`
-    mutation PublicCloudProjectRequest(
-      $name: String!
-      $description: String!
-      $ministry: Ministry!
-      $provider: Provider!
-      $projectOwner: CreateUserInput!
-      $primaryTechnicalLead: CreateUserInput!
-      $secondaryTechnicalLead: CreateUserInput
-      $accountCoding: String
-      $budget: BudgetInput!
+  mutation PublicCloudProjectRequest(
+    $name: String!
+    $description: String!
+    $ministry: Ministry!
+    $provider: Provider!
+    $projectOwner: CreateUserInput!
+    $primaryTechnicalLead: CreateUserInput!
+    $secondaryTechnicalLead: CreateUserInput
+    $accountCoding: String
+    $budget: BudgetInput!
+  ) {
+    publicCloudProjectRequest(
+      name: $name
+      description: $description
+      ministry: $ministry
+      provider: $provider
+      projectOwner: $projectOwner
+      primaryTechnicalLead: $primaryTechnicalLead
+      secondaryTechnicalLead: $secondaryTechnicalLead
+      accountCoding: $accountCoding
+      budget: $budget
     ) {
-      publicCloudProjectRequest(
-        name: $name
-        description: $description
-        ministry: $ministry
-        provider: $provider
-        projectOwner: $projectOwner
-        primaryTechnicalLead: $primaryTechnicalLead
-        secondaryTechnicalLead: $secondaryTechnicalLead
-        accountCoding: $accountCoding
-        budget: $budget
-      ) {
-        id
-        active
-        decisionStatus
-        humanComment
-      }
+      id
+      active
+      decisionStatus
+      humanComment
     }
-  `;
+  }
+`;
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
   ministry: MinistrySchema.required(),
   provider: ProviderSchema.required(),
-  accountCoding: yup.string()
-    .transform((value) => value.replace(/\s/g, ''))
+  accountCoding: yup
+    .string()
+    .transform((value) => value.replace(/\s/g, ""))
     .max(24)
     .min(24)
     .required(),
@@ -86,11 +85,11 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: '70%',
+  width: "70%",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4
+  p: 4,
 };
 
 export default function Create({ requestsRoute }) {
@@ -103,7 +102,10 @@ export default function Create({ requestsRoute }) {
     CREATE_USER_PROJECT,
     {
       errorPolicy: "ignore", // Query to refetch might not have been called yet, so ignore error
-      refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+      refetchQueries: [
+        { query: USER_REQUESTS },
+        { query: ALL_ACTIVE_REQUESTS },
+      ],
     }
   );
 
@@ -117,14 +119,14 @@ export default function Create({ requestsRoute }) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
       }
-    }
+    },
   });
 
   const submitForm = () => {
     const { values } = formik;
 
     toastId.current = toast("Your create request has been submitted", {
-      autoClose: false
+      autoClose: false,
     });
 
     const variables = validationSchema.cast(values);
@@ -135,7 +137,7 @@ export default function Create({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000
+          autoClose: 5000,
         });
       },
 
@@ -146,10 +148,10 @@ export default function Create({ requestsRoute }) {
           toast.update(toastId.current, {
             render: "Request successfuly created",
             type: toast.TYPE.SUCCESS,
-            autoClose: 5000
+            autoClose: 5000,
           });
         }
-      }
+      },
     });
   };
 
@@ -160,11 +162,7 @@ export default function Create({ requestsRoute }) {
       <form onSubmit={formik.handleSubmit}>
         <NavToolbar title="Create Product"></NavToolbar>
         <Container>
-          <MetaDataInput
-            formik={formik}
-            isDisabled={false}
-            isPublic={true}
-          />
+          <MetaDataInput formik={formik} isDisabled={false} isPublic={true} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <div>
             <div style={{ display: "flex" }}>
@@ -177,7 +175,7 @@ export default function Create({ requestsRoute }) {
           <Users formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <AccountCoding formik={formik} isDisabled={false} />
-           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+          <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Budget formik={formik} isDisabled={false} />
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Typography sx={{ mb: 3, mt: 3, width: 1100 }} color="text.primary">
@@ -211,36 +209,65 @@ export default function Create({ requestsRoute }) {
                   All Set?
                 </Typography>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  After hitting request, our smart robots will start working hard behind the scenes. There is one step, the approval process, where a human is involved. They'll take the opportunity, if needed, to reach out and have an on-boarding conversation with you.
-                  <br />Also, look out for our Notification emails that will provide you with valuable information regarding your product status and details.
+                  After hitting request, our smart robots will start working
+                  hard behind the scenes. There is one step, the approval
+                  process, where a human is involved. They'll take the
+                  opportunity, if needed, to reach out and have an on-boarding
+                  conversation with you.
+                  <br />
+                  Also, look out for our Notification emails that will provide
+                  you with valuable information regarding your product status
+                  and details.
                 </Typography>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  Provisioning Requests for BC Gov’s Landing Zone in AWS - Ministry Product Teams are required to complete two prior steps;
-                  <br />1. Sign a Memorandum of Understanding (MoU) with the Public Cloud Accelerator Service Team. If you do not have a MoU in place, please email us at <a
+                  Provisioning Requests for BC Gov’s Landing Zone in AWS -
+                  Ministry Product Teams are required to complete two prior
+                  steps;
+                  <br />
+                  1. Sign a Memorandum of Understanding (MoU) with the Public
+                  Cloud Accelerator Service Team. If you do not have a MoU in
+                  place, please email us at{" "}
+                  <a
                     target="_blank"
                     rel="noopener noreferrer"
                     href={`mailto:cloud.pathfinder@gov.bc.ca`}
                   >
                     cloud.pathfinder@gov.bc.ca
-                  </a>.
-                  <br />2. Attend an onboarding session with the Public Cloud Accelerator Service Team. To book an onboarding session, please email us at <a
+                  </a>
+                  .
+                  <br />
+                  2. Attend an onboarding session with the Public Cloud
+                  Accelerator Service Team. To book an onboarding session,
+                  please email us at{" "}
+                  <a
                     target="_blank"
                     rel="noopener noreferrer"
                     href={`mailto:cloud.pathfinder@gov.bc.ca`}
                   >
                     cloud.pathfinder@gov.bc.ca
-                  </a>.
+                  </a>
+                  .
                 </Typography>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  By clicking Create button, I confirm that the ministry product team has signed a Memorandum of Understanding (MoU) and have attended an onboarding session with the Public Cloud Accelerator Service Team. I also confirm that I have read and understood the roles and responsibilities as described in the <a
+                  By clicking Create button, I confirm that the ministry product
+                  team has signed a Memorandum of Understanding (MoU) and have
+                  attended an onboarding session with the Public Cloud
+                  Accelerator Service Team. I also confirm that I have read and
+                  understood the roles and responsibilities as described in the{" "}
+                  <a
                     target="_blank"
                     rel="noopener noreferrer"
                     href={`https://aws.amazon.com/compliance/shared-responsibility-model/`}
                   >
-                    Public Cloud Services Shared Responsibility Model                    </a>.
+                    Public Cloud Services Shared Responsibility Model{" "}
+                  </a>
+                  .
                 </Typography>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  By clicking Create button, I confirm that the ministry product team is liable to pay the base charge of CAD 400 to 600 per month for each project set created. This value may fluctuate depending on the USD to CAD exchange rate changes.
+                  By clicking Create button, I confirm that the ministry product
+                  team is liable to pay the base charge of CAD 400 to 600 per
+                  month for each project set created. This value may fluctuate
+                  depending on the USD to CAD exchange rate changes.
                 </Typography>
                 <Button
                   onClick={submitForm}
