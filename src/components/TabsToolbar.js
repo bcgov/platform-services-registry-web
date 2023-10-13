@@ -33,13 +33,13 @@ function CreateButtonsDropdown({
       >
         Create Private Cloud Project
       </MenuItem>
-        <MenuItem
-          onClick={handleClose}
-          component={Link}
-          to={publicCloudCreatePath}
-        >
-          Create Public Cloud Project
-        </MenuItem>
+      <MenuItem
+        onClick={handleClose}
+        component={Link}
+        to={publicCloudCreatePath}
+      >
+        Create Public Cloud Project
+      </MenuItem>
     </MenuList>
   );
 }
@@ -101,11 +101,11 @@ export default function TabsToolbar({ routes }) {
               label="Private Cloud Products"
               to={routes[1]}
             />
-              <Tab
-                component={Link}
-                label="Public Cloud Products"
-                to={routes[3]}
-              />
+            <Tab
+              component={Link}
+              label="Public Cloud Products"
+              to={routes[3]}
+            />
           </Tabs>
         </Box>
         {pathname.includes("requests") ? null : (

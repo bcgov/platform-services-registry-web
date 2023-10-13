@@ -1,10 +1,8 @@
-import { useContext } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
-import RolesContext from "../../context/roles";
 
 const ColorButton = styled(Button)(({ theme }) => ({
   color: "#003366",
@@ -39,10 +37,10 @@ export default function CreateButtons({
           variant="contained"
           endIcon={<AddIcon />}
         >
-          {privateCloudCreateLabel||'Create Private Cloud Product'}
+          {privateCloudCreateLabel || 'Create Private Cloud Product'}
         </ColorButton>
       )}
-      { publicCloudCreatePath && (
+      {publicCloudCreatePath && (
         <ColorButton
           component={Link}
           to={publicCloudCreatePath}
@@ -50,7 +48,7 @@ export default function CreateButtons({
           variant="contained"
           endIcon={<AddIcon />}
         >
-          {publicCloudCreateLabel||'Create Public Cloud Product'}
+          {publicCloudCreateLabel || 'Create Public Cloud Product'}
         </ColorButton>
       )}
     </Stack>
