@@ -23,7 +23,6 @@ function CreateButtonsDropdown({
   publicCloudCreatePath,
   handleClose,
 }) {
-  const { featureTester } = useContext(RolesContext);
 
   return (
     <MenuList>
@@ -34,7 +33,6 @@ function CreateButtonsDropdown({
       >
         Create Private Cloud Project
       </MenuItem>
-      {featureTester && (
         <MenuItem
           onClick={handleClose}
           component={Link}
@@ -42,14 +40,13 @@ function CreateButtonsDropdown({
         >
           Create Public Cloud Project
         </MenuItem>
-      )}
     </MenuList>
   );
 }
 
 export default function TabsToolbar({ routes }) {
   const { pathname } = useLocation();
-  const { admin, readOnlyAdmin, featureTester } = useContext(RolesContext);
+  const { admin, readOnlyAdmin } = useContext(RolesContext);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -104,14 +101,11 @@ export default function TabsToolbar({ routes }) {
               label="Private Cloud Products"
               to={routes[1]}
             />
-
-            {featureTester && (
               <Tab
                 component={Link}
                 label="Public Cloud Products"
                 to={routes[3]}
               />
-            )}
           </Tabs>
         </Box>
         {pathname.includes("requests") ? null : (

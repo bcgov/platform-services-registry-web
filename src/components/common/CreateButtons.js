@@ -24,7 +24,6 @@ export default function CreateButtons({
   publicCloudCreatePath,
   publicCloudCreateLabel,
 }) {
-  const { featureTester } = useContext(RolesContext);
 
   return (
     <Stack
@@ -43,7 +42,7 @@ export default function CreateButtons({
           {privateCloudCreateLabel||'Create Private Cloud Product'}
         </ColorButton>
       )}
-      {featureTester && publicCloudCreatePath && (
+      { publicCloudCreatePath && (
         <ColorButton
           component={Link}
           to={publicCloudCreatePath}
