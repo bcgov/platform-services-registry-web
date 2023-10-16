@@ -5,7 +5,7 @@ import {
   columnsPublic,
   columnsXs,
   projectsToRows,
-  projectsToRowsXs,
+  projectsToRowsXs
 } from "./helpers";
 import StickyTable from "../../../components/common/Table";
 import SearchContext from "../../../context/search";
@@ -80,8 +80,8 @@ export default function Projects() {
         search: debouncedSearch,
         filter,
         sortOrder,
-        userId: userContext.id,
-      },
+        userId: userContext.id
+      }
     }
   );
 
@@ -98,11 +98,24 @@ export default function Projects() {
         search: debouncedSearch,
         filter,
         sortOrder,
-        userId: userContext.id,
-      },
+        userId: userContext.id
+      }
     });
     setPage(1);
   }, [rowsPerPage, debouncedSearch, filter, sortOrder, fetchMore]);
+
+  useEffect(() => {
+    fetchMore({
+      variables: {
+        page: 1,
+        pageSize: rowsPerPage,
+        search: debouncedSearch,
+        filter,
+        sortOrder,
+        userId: userContext.id
+      }
+    });
+  }, []);
 
   const getNextPage = useCallback(
     (page, pageSize) => {
@@ -115,8 +128,8 @@ export default function Projects() {
             search: debouncedSearch,
             filter,
             sortOrder,
-            userId: userContext.id,
-          },
+            userId: userContext.id
+          }
         });
         return nextPage;
       });
