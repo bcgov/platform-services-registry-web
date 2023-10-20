@@ -88,129 +88,70 @@ const Login = () => {
     >
       <Box mb={3}>
         <Text as="h1" mb={3}>
-          Welcome to B.C. Government's Platform as a Service(PaaS) Product Registry
+          Welcome to BC Gov's Product Registry
         </Text>
       </Box>
 
       <Box mb={3}>
         <Text as="h1" mb={3}>
-          Private Cloud OpenShift Platform and Public Cloud AWS
+          Private Cloud OpenShift Platform & BC Gov's Landing Zone in AWS
         </Text>
       </Box>
 
       <Box mb={3}>
         <Text as="h2" mb={2}>
-          Make changes to an existing product
+          Request a new project set or make changes to an existing product
         </Text>
         <Text mb={2}>
-          For existing application's hosted on OpenShift 4 Platform or B.C. Government landing zone in AWS. You can
-          update/change all product details and request product resource quota
-          increases and downgrades (including CPU/RAM/Storage.)
+          You can request a new project set for hosting on the Private Cloud Openshift Platform or BC Gov's Landing Zone in AWS after logging
+          in below. For existing applications's hosted on Private Cloud OpenShift Platform you can update/change all product details and request
+          product resource quota increases and downgrades (including CPU/RAM/Storage). For existing applications hosted in the BC Gov's Landing Zone
+          in AWS, you can update/change product details, change account coding, and set projected monthly budget for your product to receive spend alerts.
         </Text>
         <StyledButton onClick={() => keycloak.login()}>Login</StyledButton>
       </Box>
-      <Box mb={3}>
-        <Text as="h2" mb={2}>
-          Register a new product
-        </Text>
-        <Text mb={2}>
-          If you are a Product Owner for a new cloud-native application and are interested in hosting the application please review the available options below:{" "}
-          <Text as="li">
-          <StyledExternalLink
-            rel="noopener noreferrer"
-            href="https://developer.gov.bc.ca/topic/featured/Service-Overview-for-BC-Government-Private-Cloud-as-a-ServiceOpenshift-4-Platform"
-            target="_blank"
-          >
-            Private cloud hosting
-          </StyledExternalLink>
-          </Text>
-
-          <Text as="li">
-          <StyledExternalLink
-            rel="noopener noreferrer"
-            href="https://digital.gov.bc.ca/cloud/services/public/intro/"
-            target="_blank"
-          >
-            Public cloud hosting
-          </StyledExternalLink>
-          </Text>
-        </Text>
-      </Box>
-      <Box mb={3}>
-        <Text as="h3" mb={2}>
-          Before you start:
-        </Text>
-        <Text mb={2}>
-          
-          This self-serve online tool is for teams who have attended an onboarding session with the platform team.
-          <br></br>
-          If you haven't attended an onboarding session, please contact:
-          <br></br>
-
-          
-
-          <Text as="li">
-            Private Cloud Platform Adminstrators <StyledExternalLink
-            rel="noopener noreferrer"
-            href="mailto:PlatformServicesTeam@gov.bc.ca "
-            target="_blank"
-          >
-            PlatformServicesTeam@gov.bc.ca 
-          </StyledExternalLink>
-          {" "} to book an onboarding session for the OpenShift 4 Platform
-          </Text>
-
-          <Text as="li">
-            Public Cloud Platform Adminstrators <StyledExternalLink
-            rel="noopener noreferrer"
-            href="mailto:Cloud.Pathfinder@gov.bc.ca "
-            target="_blank"
-          >
-            Cloud.Pathfinder@gov.bc.ca 
-          </StyledExternalLink>
-          {" "} to book an onboarding session for the B.C. Government landing zone in AWS
-          </Text>
-            
-        </Text>
-       
-        <StyledButton
-          onClick={() => {
-            if (isAttendedSession) {
-              keycloak.login();
-              return;
-            }
-            setShowWarningMessage(true);
-          }}
-        >
-          REGISTER A NEW PRODUCT (log in with BC IDIR)
-        </StyledButton>
-        {showWarningMessage && (
-          <Text as="p" color="red">
-            Please confirm above checkbox before continuing.
-          </Text>
-        )}
-      </Box>
-      <Box mb={3}>
-        <Text as="h3">What you will need</Text>
+      
+      <Box mb={2}>
+        <Text as="h3">What you will need to request a new project set</Text>
         <StyledList>
           <Text as="li">
-            Fulfill the onboarding prerequisites
-          </Text>
-          <Text as="li">Have a valid IDIR account, which you'll use to access the registry</Text>
-          <Text as="li">
-            Provide an application name and description without using acronyms
+            A descriptive product name (no acronyms)
           </Text>
           <Text as="li">
-            Share contact details and IDIR information for the product owner and up to 2 technical leads
+            Contact details and IDIR accounts for the Product Owner and up to 2 Technical Leads
           </Text>
           <Text as="li">
-            An idea of which common components you will use
+            For Private Cloud OpenShift Platform - An idea of which common components you will use
+            (refer to  <a href="https://digital.gov.bc.ca/common-components/" target="_blank" rel="noopener noreferrer">common components list</a>)
           </Text>
           <Text as="li">
-            Provide an estimate for your project's projected budget if using AWS
+            For BC Gov's Landing Zone in AWS an estimate for the product's projected monthly spend on cloud services (Refer to the 
+            <a href="https://calculator.aws/#/" target="_blank" rel="noopener noreferrer">AWS Cost Calculator</a>) and an AWS Account Code (Refer to MOU).
           </Text>
         </StyledList>
       </Box>
+      <Box>
+        <Text as="h4">Note:</Text>
+        <Text mb={2}>
+          All new Product Teams requesting space on the Private Cloud OpenShift platform, book an onboarding meeting
+          with the Platform Services team at <a href="mailto:PlatfomServicesTeam@gov.bc.ca">PlatfomServicesTeam@gov.bc.ca</a> before submitting the provisioning request.
+        </Text>
+        <Text mb={2}>
+          All new Product Teams requesting space in the AWS Landing Zone complete the following 2 steps before submitting
+          the provisioning request:
+        </Text>
+        <StyledList>
+          <ol>
+          <Text as="li">
+            Sign a Memorandum of the Understanding (MoU) with OCIO.
+            Request and MoU template from <a href="mailto:cloud.pathfinder@gov.bc.ca">cloud.pathfinder@gov.bc.ca</a>
+          </Text>
+          <Text as="li">
+            Book an onboarding session with the Cloud Pathfinder Team at <a href="mailto:cloud.pathfinder@gov.bc.ca">cloud.pathfinder@gov.bc.ca</a>
+          </Text>
+          </ol>
+        </StyledList>
+        </Box>
     </Flex>
   );
 };
