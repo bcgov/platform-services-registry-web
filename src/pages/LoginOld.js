@@ -98,7 +98,7 @@ const Login = () => {
         </Text>
       </Box>
 
-      <Box mb={3} maxWidth="90%">
+      <Box mb={3} maxWidth="1600px">
         <Text as="h2" mb={2} >
           Request a new project set or make changes to an existing product
         </Text>
