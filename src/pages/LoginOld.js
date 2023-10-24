@@ -98,13 +98,13 @@ const Login = () => {
         </Text>
       </Box>
 
-      <Box mb={3}>
-        <Text as="h2" mb={2}>
+      <Box mb={3} maxWidth="1600px">
+        <Text as="h2" mb={2} >
           Request a new project set or make changes to an existing product
         </Text>
         <Text mb={2}>
           You can request a new project set for hosting on the Private Cloud Openshift Platform or BC Gov's Landing Zone in AWS after logging
-          in below. For existing applications's hosted on Private Cloud OpenShift Platform you can update/change all product details and request
+          in below. For existing application's hosted on Private Cloud OpenShift Platform you can update/change all product details and request
           product resource quota increases and downgrades (including CPU/RAM/Storage). For existing applications hosted in the BC Gov's Landing Zone
           in AWS, you can update/change product details, change account coding, and set projected monthly budget for your product to receive spend alerts.
         </Text>
@@ -121,12 +121,11 @@ const Login = () => {
             Contact details and IDIR accounts for the Product Owner and up to 2 Technical Leads
           </Text>
           <Text as="li">
-            For Private Cloud OpenShift Platform - An idea of which common components you will use
-            (refer to  <a href="https://digital.gov.bc.ca/common-components/" target="_blank" rel="noopener noreferrer">common components list</a>)
+            For Private Cloud OpenShift Platform - an idea of which common components you will use
+            (refer to <a href="https://digital.gov.bc.ca/common-components/" target="_blank" rel="noopener noreferrer">common components list</a>)
           </Text>
           <Text as="li">
-            For BC Gov's Landing Zone in AWS an estimate for the product's projected monthly spend on cloud services (Refer to the 
-            <a href="https://calculator.aws/#/" target="_blank" rel="noopener noreferrer">AWS Cost Calculator</a>) and an AWS Account Code (Refer to MOU).
+            For BC Gov's Landing Zone in AWS an estimate for the product's projected monthly spend on cloud services (Refer to the <a href="https://calculator.aws/#/" target="_blank" rel="noopener noreferrer"> AWS Cost Calculator</a>) and an AWS Account Code (Refer to MOU).
           </Text>
         </StyledList>
       </Box>
@@ -143,8 +142,8 @@ const Login = () => {
         <StyledList>
           <ol>
           <Text as="li">
-            Sign a Memorandum of the Understanding (MoU) with OCIO.
-            Request and MoU template from <a href="mailto:cloud.pathfinder@gov.bc.ca">cloud.pathfinder@gov.bc.ca</a>
+            Sign a Memorandum of Understanding (MoU) with OCIO.
+            Request an MoU template from <a href="mailto:cloud.pathfinder@gov.bc.ca">cloud.pathfinder@gov.bc.ca</a>
           </Text>
           <Text as="li">
             Book an onboarding session with the Cloud Pathfinder Team at <a href="mailto:cloud.pathfinder@gov.bc.ca">cloud.pathfinder@gov.bc.ca</a>
