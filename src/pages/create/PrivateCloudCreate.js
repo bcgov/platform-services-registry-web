@@ -176,7 +176,7 @@ export default function Create({ requestsRoute }) {
             <AGMinistry
               formik={formik}
               setAGministries={setAGministries}
-              text={"the namespaces in Private Cloud Openshift"}
+              text={"the namespaces in Private Cloud Openshift plaform"}
             />
           </div>
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />

@@ -58,7 +58,7 @@ const AGMinistry = ({ formik, setAGministries, text }) => {
               color="text.secondary"
             >
               I confirm that I have contacted the AG Security and received their
-              approval for provisioning {text} plaform.
+              approval for provisioning {text}.
             </Typography>
           }
         />
