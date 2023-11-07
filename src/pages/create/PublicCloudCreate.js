@@ -169,7 +169,11 @@ export default function Create({ requestsRoute }) {
               <MinistryInput formik={formik} isDisabled={false} />
               <ProviderInput formik={formik} isDisabled={false} />
             </div>
-            <AGMinistry formik={formik} setAGministries={setAGministries} />
+            <AGMinistry
+              formik={formik}
+              setAGministries={setAGministries}
+              text={"project set in Public cloud"}
+            />
           </div>
           <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
           <Users formik={formik} isDisabled={false} />
