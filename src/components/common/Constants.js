@@ -1,4 +1,4 @@
-const checkBoxMinistries = ["AG", "PSSG", "EMBC"];
+const checkBoxMinistries = ["AG", "PSSG", "EMBC", "HOUS"];
 
 const ministriesNames = [
   {
@@ -135,7 +135,12 @@ const ministriesNames = [
     id: 29,
     name: "TRAN",
     humanFriendlyName: "Transportation and Infrastructure"
-  }
+  },
+  {
+    id: 30,
+    name: "HOUS",
+    humanFriendlyName: "Ministry of Housing"
+  },
 ].sort((item1, item2) =>
   item1.humanFriendlyName > item2.humanFriendlyName
     ? 1
