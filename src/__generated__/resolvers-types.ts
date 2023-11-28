@@ -35,12 +35,6 @@ export type BudgetInput = {
   tools: Scalars['Float'];
 };
 
-export type IsNew = {
-  __typename?: 'IsNew';
-  public: Scalars['Boolean'];
-  private: Scalars['Boolean'];
-};
-
 export enum Cluster {
   Clab = 'CLAB',
   Emerald = 'EMERALD',
@@ -167,6 +161,7 @@ export enum Ministry {
   Fin = 'FIN',
   Flnr = 'FLNR',
   Hlth = 'HLTH',
+  Hous = 'HOUS',
   Irr = 'IRR',
   Jedc = 'JEDC',
   Lbr = 'LBR',
@@ -178,8 +173,7 @@ export enum Ministry {
   Pssg = 'PSSG',
   Sdpr = 'SDPR',
   Tca = 'TCA',
-  Tran = 'TRAN',
-  Hous = 'HOUS',
+  Tran = 'TRAN'
 }
 
 export type Mutation = {
@@ -191,10 +185,10 @@ export type Mutation = {
   privateCloudReProvisionProject?: Maybe<PrivateCloudProject>;
   privateCloudReProvisionRequest?: Maybe<PrivateCloudRequest>;
   privateCloudRequestDecision?: Maybe<PrivateCloudRequest>;
+  publicCloudProjectDeleteRequest: PrivateCloudRequest;
   publicCloudProjectEditRequest: PublicCloudRequest;
   publicCloudProjectRequest: PublicCloudRequest;
   publicCloudRequestDecision?: Maybe<PublicCloudRequest>;
-  publicCloudProjectDeleteRequest: PublicCloudRequest;
   signUp: User;
 };
 
@@ -256,8 +250,15 @@ export type MutationPrivateCloudRequestDecisionArgs = {
 };
 
 
+export type MutationPublicCloudProjectDeleteRequestArgs = {
+  licencePlate: Scalars['String'];
+  projectId: Scalars['ID'];
+  projectOwnerEmail: Scalars['EmailAddress'];
+};
+
+
 export type MutationPublicCloudProjectEditRequestArgs = {
-  accountCoding?: InputMaybe<Scalars['String']>;
+  accountCoding: Scalars['String'];
   budget: BudgetInput;
   description: Scalars['String'];
   ministry: Ministry;
@@ -279,12 +280,6 @@ export type MutationPublicCloudProjectRequestArgs = {
   projectOwner: CreateUserInput;
   provider: Provider;
   secondaryTechnicalLead?: InputMaybe<CreateUserInput>;
-};
-
-export type MutationPublicCloudProjectDeleteRequestArgs = {
-  licencePlate: Scalars['String'];
-  projectId: Scalars['ID'];
-  projectOwnerEmail: Scalars['EmailAddress'];
 };
 
 
@@ -390,11 +385,9 @@ export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
   privateCloudActiveRequestById: PrivateCloudRequest;
-  privateCloudActiveRequestByLP: PrivateCloudRequest;
   privateCloudActiveRequests: Array<PrivateCloudRequest>;
   privateCloudActiveRequestsById: Array<PrivateCloudRequest>;
   privateCloudProjectById: PrivateCloudProject;
-  privateCloudProjectByLP: PrivateCloudProject;
   privateCloudProjects: Array<PrivateCloudProject>;
   privateCloudProjectsById: Array<PrivateCloudProject>;
   privateCloudProjectsPaginated: ProjectsPaginatedOutput;
@@ -413,7 +406,6 @@ export type Query = {
   user?: Maybe<User>;
   userByEmail?: Maybe<User>;
   userPrivateCloudActiveRequestById: PrivateCloudRequest;
-  userPrivateCloudActiveRequestByLP: PrivateCloudRequest[];
   userPrivateCloudActiveRequests: Array<PrivateCloudRequest>;
   userPrivateCloudActiveRequestsByIds: PrivateCloudRequest;
   userPrivateCloudDeletionCheck: Scalars['Boolean'];
@@ -440,9 +432,6 @@ export type QueryPrivateCloudActiveRequestByIdArgs = {
   requestId: Scalars['ID'];
 };
 
-export type QueryPrivateCloudActiveRequestByLPArgs = {
-  licencePlate: Scalars['String'];
-};
 
 export type QueryPrivateCloudActiveRequestsByIdArgs = {
   requestIds: Scalars['ID'];
@@ -527,9 +516,6 @@ export type QueryUserByEmailArgs = {
 
 export type QueryUserPrivateCloudActiveRequestByIdArgs = {
   requestId: Scalars['ID'];
-};
-export type QueryUserPrivateCloudActiveRequestByLPArgs = {
-  licencePlate: Scalars['String'];
 };
 
 
@@ -645,7 +631,8 @@ export type User = {
   email: Scalars['EmailAddress'];
   firstName?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
-  isNew?: IsNew;
+  idir?: Maybe<Scalars['String']>;
+  isNew?: Maybe<IsNew>;
   lastName?: Maybe<Scalars['String']>;
   lastSeen?: Maybe<Scalars['DateTime']>;
   ministry?: Maybe<Scalars['String']>;
@@ -655,6 +642,12 @@ export type User = {
   publicCloudProjectOwner: Array<Maybe<PublicCloudProject>>;
   publicCloudProjectTechnicalLead: Array<Maybe<PublicCloudProject>>;
   upn?: Maybe<Scalars['String']>;
+};
+
+export type IsNew = {
+  __typename?: 'isNew';
+  private?: Maybe<Scalars['Boolean']>;
+  public?: Maybe<Scalars['Boolean']>;
 };
 
 export type PrivateCloudProjectsPaginatedOutput = {
@@ -748,7 +741,7 @@ export function FilterPublicCloudProjectsInputSchema(): yup.SchemaOf<FilterPubli
   })
 }
 
-export const MinistrySchema = yup.mixed().oneOf([Ministry.Aest, Ministry.Ag, Ministry.Agri, Ministry.Alc, Ministry.Bcpc, Ministry.Citz, Ministry.Dbc, Ministry.Eao, Ministry.Educ, Ministry.Embc, Ministry.Empr, Ministry.Env, Ministry.Fin, Ministry.Flnr, Ministry.Hlth, Ministry.Irr, Ministry.Jedc, Ministry.Lbr, Ministry.Ldb, Ministry.Mah, Ministry.Mcf, Ministry.Mmha, Ministry.Psa, Ministry.Pssg, Ministry.Sdpr, Ministry.Tca, Ministry.Tran]);
+export const MinistrySchema = yup.mixed().oneOf([Ministry.Aest, Ministry.Ag, Ministry.Agri, Ministry.Alc, Ministry.Bcpc, Ministry.Citz, Ministry.Dbc, Ministry.Eao, Ministry.Educ, Ministry.Embc, Ministry.Empr, Ministry.Env, Ministry.Fin, Ministry.Flnr, Ministry.Hlth, Ministry.Hous, Ministry.Irr, Ministry.Jedc, Ministry.Lbr, Ministry.Ldb, Ministry.Mah, Ministry.Mcf, Ministry.Mmha, Ministry.Psa, Ministry.Pssg, Ministry.Sdpr, Ministry.Tca, Ministry.Tran]);
 
 export const PlatformSchema = yup.mixed().oneOf([Platform.PrivateCloud, Platform.PublicCloud]);
 

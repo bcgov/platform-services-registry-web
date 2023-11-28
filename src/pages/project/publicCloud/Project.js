@@ -323,10 +323,10 @@ export default function Project({ requestsRoute }) {
           >
             <DeletePublic
               projectId={id}
-              name={data?.publicCloudProjectById?.name}
-              licencePlate={data?.publicCloudProjectById?.licencePlate}
+              name={data?.userPublicCloudProjectById?.name}
+              licencePlate={data?.userPublicCloudProjectById?.licencePlate}
               projectOwnerEmail={
-                data?.publicCloudProjectById?.projectOwner?.email
+                data?.userPublicCloudProjectById?.projectOwner?.email
               }
               deleteOnClick={deleteOnClick}
             />
