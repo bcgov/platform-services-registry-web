@@ -4,7 +4,7 @@ import {
   // CommonComponentsInputSchema,
   ProviderSchema,
   MinistrySchema,
-  BudgetInputSchema,
+  BudgetInputSchema
 } from "../../../__generated__/resolvers-types";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import MetaDataInput from "../../../components/forms/MetaDataInput";
@@ -15,7 +15,7 @@ import {
   createPublicCloudProjectInputInitalValues as projectInitialValues,
   replaceNullsWithEmptyString,
   replaceEmptyStringWithNull,
-  stripTypeName,
+  stripTypeName
 } from "../../../components/common/FormHelpers";
 // import CommonComponents from "../../../components/forms/CommonComponents";
 import { useParams, useNavigate } from "react-router-dom";
@@ -25,7 +25,6 @@ import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import Container from "../../../components/common/Container";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Button, IconButton } from "@mui/material";
 import ActiveRequestText from "../../../components/common/ActiveRequestText";
 import Users from "../../../components/forms/Users";
@@ -40,6 +39,8 @@ import AccountCodingInput from "../../../components/forms/AccountCoding";
 import BudgetInput from "../../../components/forms/Budget";
 import ProviderInput from "../../../components/forms/ProviderInput";
 import ProviderPlainText from "../../../components/plainText/ProviderInput";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import DeletePublic from "../../../components/DeletePublic";
 import { default as MetaDataPlainText } from "../../../components/plainText/MetaDataInput";
 import { default as AccountCodingPlainText } from "../../../components/plainText/AccountCoding";
 import { default as MinistryPlainText } from "../../../components/plainText/MinistryInput";
@@ -95,6 +96,22 @@ const USER_PROJECT = gql`
   }
 `;
 
+const DELETE_USER_PROJECT = gql`
+  mutation Mutation(
+    $projectId: ID!
+    $licencePlate: String!
+    $projectOwnerEmail: EmailAddress!
+  ) {
+    publicCloudProjectDeleteRequest(
+      projectId: $projectId
+      licencePlate: $licencePlate
+      projectOwnerEmail: $projectOwnerEmail
+    ) {
+      id
+    }
+  }
+`;
+
 const UPDATE_PROJECT = gql`
   mutation Mutation(
     $projectId: ID!
@@ -128,7 +145,7 @@ const CreateUserInputSchema = yup.object({
   email: yup.string().defined(),
   firstName: yup.string().defined(),
   lastName: yup.string().defined(),
-  ministry: yup.string(),
+  ministry: yup.string()
 });
 
 const validationSchema = yup.object().shape({
@@ -144,7 +161,7 @@ const validationSchema = yup.object().shape({
   budget: BudgetInputSchema().required(),
   projectOwner: CreateUserInputSchema,
   primaryTechnicalLead: CreateUserInputSchema,
-  secondaryTechnicalLead: CreateUserInputSchema.nullable(),
+  secondaryTechnicalLead: CreateUserInputSchema.nullable()
 });
 
 const style = {
@@ -156,7 +173,7 @@ const style = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4,
+  p: 4
 };
 
 export default function Project({ requestsRoute }) {
@@ -165,10 +182,11 @@ export default function Project({ requestsRoute }) {
   const toastId = useRef(null);
   const [initialValues, setInitialValues] = useState(projectInitialValues);
   const [open, setOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const { data, loading, error, refetch } = useQuery(USER_PROJECT, {
     variables: { projectId: id },
-    nextFetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-and-network"
   });
 
   const [
@@ -176,11 +194,44 @@ export default function Project({ requestsRoute }) {
     {
       data: editProjectData,
       loading: editProjectLoading,
-      error: editProjectError,
-    },
+      error: editProjectError
+    }
   ] = useMutation(UPDATE_PROJECT, {
-    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }],
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
   });
+
+  const [publicCloudProjectDeleteRequest] = useMutation(DELETE_USER_PROJECT, {
+    refetchQueries: [{ query: USER_REQUESTS }, { query: ALL_ACTIVE_REQUESTS }]
+  });
+
+  const deleteOnClick = (licencePlate, projectOwnerEmail) => {
+    toastId.current = toast("Your edit request has been submitted", {
+      autoClose: false
+    });
+
+    publicCloudProjectDeleteRequest({
+      variables: {
+        projectId: id,
+        licencePlate,
+        projectOwnerEmail
+      },
+      onError: (error) => {
+        toast.update(toastId.current, {
+          render: `Error: ${error.message}`,
+          type: toast.TYPE.ERROR,
+          autoClose: 5000
+        });
+      },
+      onCompleted: () => {
+        navigate(requestsRoute);
+        toast.update(toastId.current, {
+          render: "Delete request successfuly created",
+          type: toast.TYPE.SUCCESS,
+          autoClose: 5000
+        });
+      }
+    });
+  };
 
   const formik = useFormik({
     initialValues,
@@ -193,14 +244,14 @@ export default function Project({ requestsRoute }) {
         // Submit the form only if there are no errors and the form has been touched
         setOpen(true);
       }
-    },
+    }
   });
 
   const submitForm = () => {
     const { values } = formik;
 
     toastId.current = toast("Your edit request has been submitted", {
-      autoClose: false,
+      autoClose: false
     });
 
     const variables = validationSchema.cast(values);
@@ -211,7 +262,7 @@ export default function Project({ requestsRoute }) {
         toast.update(toastId.current, {
           render: `Error: ${error.message}`,
           type: toast.TYPE.ERROR,
-          autoClose: 5000,
+          autoClose: 5000
         });
       },
 
@@ -222,10 +273,10 @@ export default function Project({ requestsRoute }) {
           toast.update(toastId.current, {
             render: "Request successfuly created",
             type: toast.TYPE.SUCCESS,
-            autoClose: 5000,
+            autoClose: 5000
           });
         }
-      },
+      }
     });
   };
 
@@ -239,13 +290,14 @@ export default function Project({ requestsRoute }) {
   const isDisabled = !!data?.userPublicCloudProjectById?.activeEditRequest;
 
   const handleClose = () => setOpen(false);
+  const handleDeleteClose = () => setDeleteOpen(false);
 
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
         <NavToolbar
           label={"products"}
-          path={"admin/dashboard/public-cloud-products"}
+          path={"user/dashboard/public-cloud-products"}
           title={name}
         >
           <IconButton
@@ -256,6 +308,29 @@ export default function Project({ requestsRoute }) {
           >
             <RestartAltIcon />
           </IconButton>
+          <IconButton
+            disabled={isDisabled}
+            onClick={() => setDeleteOpen(true)}
+            aria-label="delete"
+          >
+            <DeleteForeverIcon />
+          </IconButton>
+          <Modal
+            open={deleteOpen}
+            onClose={handleDeleteClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <DeletePublic
+              projectId={id}
+              name={data?.userPublicCloudProjectById?.name}
+              licencePlate={data?.userPublicCloudProjectById?.licencePlate}
+              projectOwnerEmail={
+                data?.userPublicCloudProjectById?.projectOwner?.email
+              }
+              deleteOnClick={deleteOnClick}
+            />
+          </Modal>
         </NavToolbar>
         {isDisabled ? (
           <ActiveRequestText
@@ -263,50 +338,73 @@ export default function Project({ requestsRoute }) {
           />
         ) : null}
         <Container>
-          { isDisabled ? <MetaDataPlainText
-                          name={name} description={data?.userPublicCloudProjectById?.description}/> 
-                      : 
-                        [<MetaDataInput formik={formik} isDisabled={isDisabled} />, 
-                        <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />]
-          }
+          {isDisabled ? (
+            <MetaDataPlainText
+              name={name}
+              description={data?.userPublicCloudProjectById?.description}
+            />
+          ) : (
+            [
+              <MetaDataInput formik={formik} isDisabled={isDisabled} />,
+              <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+            ]
+          )}
 
-          
           <div>
-            { isDisabled ? [<MinistryPlainText ministry={data?.userPublicCloudProjectById?.ministry} />,
-                            <ProviderPlainText provider={data?.userPublicCloudProjectById?.provider} />]
-                        :
-                            <div style={{ display: "flex" }}>
-                            <MinistryInput formik={formik} isDisabled={isDisabled} />
-                            <Box sx={{ pt: 3 }}><ProviderPlainText 
-                            provider={formik.initialValues.provider}
-                            />
-                            </Box>
-                            </div>
-            }
+            {isDisabled ? (
+              [
+                <MinistryPlainText
+                  ministry={data?.userPublicCloudProjectById?.ministry}
+                />,
+                <ProviderPlainText
+                  provider={data?.userPublicCloudProjectById?.provider}
+                />
+              ]
+            ) : (
+              <div style={{ display: "flex" }}>
+                <MinistryInput formik={formik} isDisabled={isDisabled} />
+                <Box sx={{ pt: 3 }}>
+                  <ProviderPlainText provider={formik.initialValues.provider} />
+                </Box>
+              </div>
+            )}
 
+            {isDisabled ? (
+              <AccountCodingPlainText
+                accountCoding={data?.userPublicCloudProjectById?.accountCoding}
+              />
+            ) : (
+              [
+                <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                <AccountCodingInput formik={formik} isDisabled={isDisabled} />
+              ]
+            )}
 
-            { isDisabled ? 
-                          <AccountCodingPlainText accountCoding={data?.userPublicCloudProjectById?.accountCoding} />
-                        : 
-                          [<Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
-                          <AccountCodingInput formik={formik} isDisabled={isDisabled} />]
-            }
-            
+            {isDisabled
+              ? [
+                  <BudgetPlainText
+                    budget={data?.userPublicCloudProjectById?.budget}
+                  />,
+                  <UsersPlainText
+                    projectOwner={
+                      data?.userPublicCloudProjectById?.projectOwner
+                    }
+                    primaryTechnicalLead={
+                      data?.userPublicCloudProjectById?.primaryTechnicalLead
+                    }
+                    secondaryTechnicalLead={
+                      data?.userPublicCloudProjectById?.secondaryTechnicalLead
+                    }
+                  />
+                ]
+              : [
+                  <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                  <Users formik={formik} isDisabled={false} />,
+                  <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
+                  <BudgetInput formik={formik} isDisabled={isDisabled} />,
+                  <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />
+                ]}
 
-            { isDisabled ?
-                          [<BudgetPlainText budget={data?.userPublicCloudProjectById?.budget}/>,
-                          <UsersPlainText projectOwner={data?.userPublicCloudProjectById?.projectOwner} 
-                          primaryTechnicalLead={data?.userPublicCloudProjectById?.primaryTechnicalLead} 
-                          secondaryTechnicalLead={data?.userPublicCloudProjectById?.secondaryTechnicalLead}/>]
-                        :
-                         [<Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
-                         <Users formik={formik} isDisabled={false} />,
-                         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />,
-                         <BudgetInput formik={formik} isDisabled={isDisabled} />,
-                         <Divider variant="middle" sx={{ mt: 1, mb: 1 }} />]
-            }
-            
-            
             {/* <CommonComponents formik={formik} isDisabled={isDisabled} /> */}
             <Button
               type="submit"
