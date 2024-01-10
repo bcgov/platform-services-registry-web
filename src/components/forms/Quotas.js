@@ -27,7 +27,7 @@ const Quotas = ({ formik, isDisabled, currentProjectQuota={}}) => {
           target="_blank"
           rel="noopener noreferrer"
           underline="hover"
-          href="https://docs.developer.gov.bc.ca/openshift-project-resource-quotas/"
+          href="https://docs.developer.gov.bc.ca/request-quota-increase-for-openshift-project-set/"
         >
           the quota increase documentation
         </Link> page.
