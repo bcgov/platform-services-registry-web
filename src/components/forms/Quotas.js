@@ -2,6 +2,7 @@ import QuotaInput from "./QuotaInput";
 import Box from "@mui/material/Box";
 import TitleTypography from "../common/TitleTypography";
 import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 
 const Quotas = ({ formik, isDisabled, currentProjectQuota={}}) => {
  
@@ -13,7 +14,23 @@ const Quotas = ({ formik, isDisabled, currentProjectQuota={}}) => {
           All quota increase requests require <b>Platform Services Team's</b> approval
           and must have supporting information as per the <i>Quota Increase Request
           Process</i>. The Quota Requests without supporting information will <b>not</b>{" "}
-          be processed.
+          be processed. Find more information at 
+          <Link
+          sx={{
+            mb: 2,
+            display: "inline-block",
+            fontWeight: "bold",
+            "&:hover": {
+              cursor: "pointer"
+            }
+          }}
+          target="_blank"
+          rel="noopener noreferrer"
+          underline="hover"
+          href="https://docs.developer.gov.bc.ca/openshift-project-resource-quotas/"
+        >
+          the quota increase documentation
+        </Link> page.
         </Typography>
       </div>
       <div style={{ display: "flex" }}>
