@@ -14,7 +14,7 @@ const Quotas = ({ formik, isDisabled, currentProjectQuota={}}) => {
           All quota increase requests require <b>Platform Services Team's</b> approval
           and must have supporting information as per the <i>Quota Increase Request
           Process</i>. The Quota Requests without supporting information will <b>not</b>{" "}
-          be processed. Find more information at 
+          be processed. Find more information at{" "}
           <Link
           sx={{
             mb: 2,
